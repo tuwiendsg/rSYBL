@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<CloudService id="CloudService">
+	<ServiceTopology id="MainTopology">
+			<ServiceTopology id="CassandraComponentTopology">
+				<Relationship>
+					<Master>CassandraController</Master>
+					<Slave>CassandraDB</Slave>
+				</Relationship>
+				<ServiceUnit defaultImage="33b2e781-7b3e-4185-845b-bfbe69de83ff"
+					AssociatedIps="10.99.0.94" 
+					defaultFlavor="1" id="CassandraController" />
+				<ServiceUnit defaultImage="6ca55932-f12b-4f3d-9ff3-49f371ae5cb3"
+					AssociatedIps="10.99.0.88" defaultFlavor="9112" id="CassandraDB" />
+			</ServiceTopology>
+			<Relationship>
+				<Master>ycsbClient</Master>
+				<Slave>CassandraComponentTopology</Slave>
+			</Relationship>
+			<ServiceUnit defaultImage="67410022-a26d-4aea-a28c-d4c665e92fe6"
+				AssociatedIps="128.130.172.216 10.99.0.80" defaultFlavor="1"
+				id="ycsbClient" />
+	</ServiceTopology>
+</CloudService>

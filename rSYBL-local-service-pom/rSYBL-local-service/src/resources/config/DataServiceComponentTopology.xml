@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<SYBLSpecification id="DataServiceComponentTopology" type="ComponentTopology">
+	<Constraint Id="Co2">
+		<ToEnforce>
+			<BinaryRestriction Type="lessThan">
+				<LeftHandSide>
+					<Metric>cost.perHour</Metric>
+				</LeftHandSide>
+				<RightHandSide>
+					<Number>800</Number>
+				</RightHandSide>
+			</BinaryRestriction>
+		</ToEnforce>
+	</Constraint>
+</SYBLSpecification>

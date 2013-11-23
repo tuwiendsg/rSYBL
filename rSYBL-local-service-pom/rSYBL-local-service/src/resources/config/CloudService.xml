@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<SYBLSpecification id="CloudService" type="CloudService">
+	<Constraint Id="Co5">
+		<ToEnforce>
+			<BinaryRestriction Type="lessThan">
+				<LeftHandSide>
+					<Metric>cost.perHour</Metric>
+				</LeftHandSide>
+				<RightHandSide>
+					<Number>1200</Number>
+				</RightHandSide>
+			</BinaryRestriction>
+		</ToEnforce>
+	</Constraint>
+</SYBLSpecification>

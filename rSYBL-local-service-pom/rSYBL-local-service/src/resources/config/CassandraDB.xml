@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<SYBLSpecification id="CassandraDB" type="Component">
+	<Constraint Id="Co3">
+		<ToEnforce>
+			<BinaryRestriction Type="lessThan">
+				<LeftHandSide>
+					<Metric>latency.average</Metric>
+				</LeftHandSide>
+				<RightHandSide>
+					<Number>250</Number>
+				</RightHandSide>
+			</BinaryRestriction>
+		</ToEnforce>
+	</Constraint>
+	<Constraint Id="Co4">
+		<ToEnforce>
+			<BinaryRestriction Type="lessThan">
+				<LeftHandSide>
+					<Metric>cpu.usage</Metric>
+				</LeftHandSide>
+				<RightHandSide>
+					<Number>70</Number>
+				</RightHandSide>
+			</BinaryRestriction>
+		</ToEnforce>
+	</Constraint>
+	<Constraint Id="Co9">
+		<ToEnforce>
+			<BinaryRestriction Type="lessThan">
+				<LeftHandSide>
+					<Metric>memory.usage</Metric>
+				</LeftHandSide>
+				<RightHandSide>
+					<Number>90</Number>
+				</RightHandSide>
+			</BinaryRestriction>
+		</ToEnforce>
+	</Constraint>
+	<Constraint Id="Co10">
+		<ToEnforce>
+			<BinaryRestriction Type="lessThan">
+				<LeftHandSide>
+					<Metric>storage.usage</Metric>
+				</LeftHandSide>
+				<RightHandSide>
+					<Number>50</Number>
+				</RightHandSide>
+			</BinaryRestriction>
+		</ToEnforce>
+	</Constraint>
+</SYBLSpecification>

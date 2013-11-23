@@ -1,0 +1,167 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<project basedir="." name="ant.build">
+    <property name="jdk.home" value="/usr/lib/jvm/java-7-openjdk-i386"/>
+    <property name="jdk.bin" value="${jdk.home}/bin"/>
+    <path id="jdk.classpath">
+        <fileset dir="${jdk.home}">
+            <include name="jre/lib/plugin.jar"/>
+            <include name="jre/lib/management-agent.jar"/>
+            <include name="jre/lib/resources.jar"/>
+            <include name="jre/lib/alt-rt.jar"/>
+            <include name="jre/lib/alt-string.jar"/>
+            <include name="jre/lib/deploy.jar"/>
+            <include name="jre/lib/jce.jar"/>
+            <include name="jre/lib/charsets.jar"/>
+            <include name="jre/lib/javaws.jar"/>
+            <include name="jre/lib/jsse.jar"/>
+            <include name="jre/lib/rt.jar"/>
+            <include name="jre/lib/ext/sunjce_provider.jar"/>
+            <include name="jre/lib/ext/localedata.jar"/>
+            <include name="jre/lib/ext/sunpkcs11.jar"/>
+            <include name="jre/lib/ext/dnsns.jar"/>
+        </fileset>
+    </path>
+    <path id="project.lib.classpath">
+        <fileset dir="${jdk.home}">
+            <include name="*.jar"/>
+        </fileset>
+    	<fileset dir="./ycsbLibs"/>
+     <pathelement location="../SYBLLocalInterpretor.jar"/>
+    	<pathelement location="../SYBLDirectives.jar"/>
+    	<pathelement location="../RMISYBL.jar"/>
+	<fileset dir="../aspectJ">
+		<include name="*.jar"/>	
+	</fileset>
+    </path>
+
+
+    <patternset id="ignored.files">
+        <exclude name="**/CVS/**"/>
+        <exclude name="**/SCCS/**"/>
+        <exclude name="**/RCS/**"/>
+        <exclude name="**/rcs/**"/>
+        <exclude name="**/.DS_Store/**"/>
+        <exclude name="**/.svn/**"/>
+        <exclude name="**/.pyc/**"/>
+        <exclude name="**/.pyo/**"/>
+        <exclude name="**/*.pyc/**"/>
+        <exclude name="**/*.pyo/**"/>
+        <exclude name="**/.git/**"/>
+        <exclude name="**/*.hprof/**"/>
+        <exclude name="**/_svn/**"/>
+        <exclude name="**/.hg/**"/>
+        <exclude name="**/*.lib/**"/>
+        <exclude name="**/*~/**"/>
+        <exclude name="**/__pycache__/**"/>
+        <exclude name="**/.bundle/**"/>
+    </patternset>
+
+    <patternset id="library.patterns">
+        <include name="*.zip"/>
+        <include name="*.war"/>
+        <include name="*.egg"/>
+        <include name="*.ear"/>
+        <include name="*.swc"/>
+        <include name="*.jar"/>
+    </patternset>
+
+    <patternset id="compiler.resources">
+        <include name="**/?*.prope${basedir}/librties"/>
+        <include name="**/?*.xml"/>
+        <include name="**/?*.gif"/>
+        <include name="**/?*.png"/>
+        <include name="**/?*.jpeg"/>
+        <include name="**/?*.jpg"/>
+        <include name="**/?*.html"/>
+        <include name="**/?*.dtd"/>
+        <include name="**/?*.tld"/>
+        <include name="**/?*.ftl"/>
+        <include name="**/?*.java"/>
+    </patternset>
+    <property name="basedir" value="."/>
+    <property name="build" value="${basedir}/build"/>
+    <property name="dist" value="${basedir}/dist"/>
+ <taskdef resource="org/aspectj/tools/ant/taskdefs/aspectjTaskdefs.properties">
+        <classpath>
+            <pathelement location="../aspectJ/aspectjtools.jar"/>
+        </classpath>
+    </taskdef>
+    <target name="compile.all">
+        <mkdir dir="${build}"/>
+        <mkdir dir="${dist}"/>
+        
+        <iajc destdir="${build}" classpath="${jdk.home}" verbose="true" source="1.7" debug="on">
+            <src path="${basedir}"/>
+            <classpath>
+                <path refid="jdk.classpath"/>
+                <path refid="project.lib.classpath"/>
+	   	<pathelement location="../aspectJ/aspectjrt.jar"/>
+            </classpath>
+	<inpath>
+		<pathelement location="../SYBLLocalInterpretor.jar"/>
+	</inpath>
+	<bootclasspath refid="project.lib.classpath"/>
+        </iajc>
+
+        <copy todir="${dist}/lib">
+            <fileset dir="../aspectJ"/>
+        	<fileset dir="./ycsbLibs"/>
+	   
+         	<fileset dir="..">
+         		<include name="SYBLLocalInterpretor.jar"/>
+         		
+         		</fileset>
+		<fileset dir="..">
+         		
+         		<include name="../RMISYBL.jar"/>
+         		</fileset>
+		<fileset dir="..">
+         		
+         		<include name="../SYBLDirectives.jar"/>
+         		</fileset>
+	    </copy>
+	<copy todir="${dist}">
+	    <fileset dir="${basedir}" includes="languageDescription.xml"/>
+	</copy>
+        
+
+        <manifestclasspath property="complete.lib.list" jarfile="${dist}/SYBLAnnotated.jar">
+            <classpath>
+                <path id="all.manifest.classpath">
+                    <fileset dir="${dist}/lib">
+                        <patternset refid="library.patterns"/>
+                    </fileset>
+                </path>
+            </classpath>
+        </manifestclasspath>
+
+
+        <jar destfile="${dist}/SYBLAnnotated.jar" basedir="${build}">
+            <manifest>
+                <attribute name="Main-Class" value="test.Main"/>
+                <attribute name="Class-Path" value="${complete.lib.list}"/>
+            </manifest>
+        </jar>
+	 <copy todir="..">
+            <fileset dir="${dist}" includes="*.jar"/>
+		
+		
+        </copy>
+        
+        <delete dir="${build}"/>
+    </target>
+
+
+    <!--sterge tot build si dist-->
+    <target name="clean.all">
+        <delete dir="${build}"/>
+        <delete dir="${dist}"/>
+    </target>
+
+    <!--ruleaza aplicatia-->
+    <target name="run">
+        <java jar="./dist/SYBLAnnotated.jar" fork="true"/>
+    </target>
+
+</project>

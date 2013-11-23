@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<SYBLSpecification id="HadoopSlave" type="Component">
+	<Constraint Id="Co8">
+		<ToEnforce>
+			<BinaryRestriction Type="lessThan">
+				<LeftHandSide>
+					<Metric>cpu.usage</Metric>
+				</LeftHandSide>
+				<RightHandSide>
+					<Number>80</Number>
+				</RightHandSide>
+			</BinaryRestriction>
+		</ToEnforce>
+	</Constraint>
+</SYBLSpecification>

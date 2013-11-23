@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<SYBLSpecification id="CassandraComponentTopology" type="ComponentTopology">
+	<Constraint Id="Co1">
+		<ToEnforce>
+			<BinaryRestriction Type="greaterThan">
+				<LeftHandSide>
+					<Metric>cpu.usage</Metric>
+				</LeftHandSide>
+				<RightHandSide>
+					<Number>90</Number>
+				</RightHandSide>
+			</BinaryRestriction>
+		</ToEnforce>
+	</Constraint>
+	<Strategy Id="St1">
+		<Condition>
+			<BinaryRestriction Type="greaterThan">
+				<LeftHandSide>
+					<Metric>cost.perHour</Metric>
+				</LeftHandSide>
+				<RightHandSide>
+					<Number>2000</Number>
+				</RightHandSide>
+			</BinaryRestriction>
+		</Condition>
+		<ToEnforce ActionName="scalein"/>
+		</Strategy>
+	<Monitoring Id="Mo1">
+		<Monitor EnvironmentVariable="cpuUsage">
+			<Metric>cpu.usage</Metric>
+		</Monitor>
+	</Monitoring>
+</SYBLSpecification>

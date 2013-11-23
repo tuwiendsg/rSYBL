@@ -1,0 +1,20 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+  xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+  <parent>
+    <groupId>rsybl</groupId>
+    <artifactId>rSYBL-pom</artifactId>
+    <version>0.1-SNAPSHOT</version>
+  </parent>
+  <groupId>rsybl.local-service</groupId>
+  <artifactId>rSYBL-local-service-pom</artifactId>
+  <version>0.1-SNAPSHOT</version>
+  <url>https://github.com/rsybl/rsybl-repo</url>
+  <packaging>pom</packaging>
+    <modules>
+    <module>rSYBL-local-monitor</module>
+    <module>rSYBL-local-communication</module>
+    <module>rSYBL-local-service</module>
+  </modules>
+</project>
+

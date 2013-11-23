@@ -1,0 +1,83 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+  <parent>
+    <groupId>rsybl.local-service</groupId>
+    <artifactId>rSYBL-local-service-pom</artifactId>
+    <version>0.1-SNAPSHOT</version>
+  </parent>
+  <groupId>rsybl.local-service</groupId>
+  <artifactId>rSYBL-local-communication</artifactId>
+  <version>0.1-SNAPSHOT</version>
+  <packaging>jar</packaging>
+
+  <name>Local Communication</name>
+
+  <properties>
+    <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+  </properties>
+
+  <dependencies>
+    <dependency>
+      <groupId>junit</groupId>
+      <artifactId>junit</artifactId>
+      <version>3.8.1</version>
+      <scope>test</scope>
+    </dependency>
+	 <dependency>
+		<groupId>rsybl.control-service</groupId>
+		<artifactId>rSYBL-cloud-application-dependency-graph</artifactId>
+		<version>0.1-SNAPSHOT</version>
+		<type>jar</type>
+		<scope>compile</scope>
+	 </dependency>
+	  </dependencies>
+  <build>
+  <plugins>
+			<plugin>
+				<artifactId>maven-compiler-plugin</artifactId>
+				<version>2.5.1</version>
+				<configuration>
+					<source>1.7</source>
+					<target>1.7</target>
+					<!--<includeDependencies>true</includeDependencies>-->
+
+				</configuration>
+			</plugin>
+			
+			 
+<!--        <plugin> -->
+<!--          <groupId>org.codehaus.mojo</groupId> -->
+<!--            <artifactId>jaxws-maven-plugin</artifactId> -->
+<!--            <executions> -->
+<!--              <execution> -->
+<!--                <goals> -->
+<!--                  <goal>wsimport</goal> -->
+<!--                </goals> -->
+<!--                <configuration> -->
+<!--                  <wsdlUrls> -->
+<!--                    <wsdlUrl> -->
+<!--         http://localhost:8080/ControlService-0.0.1-SNAPSHOT/ControlService?wsdl -->
+<!--                    </wsdlUrl> -->
+<!--                  </wsdlUrls> -->
+<!--              <packageName>at.ac.tuwien.dsg.sybl.controlService.service -->
+<!--              </packageName> -->
+<!--                </configuration> -->
+<!--              </execution> -->
+<!--            </executions> -->
+<!--        </plugin> -->
+     
+			<plugin>
+      <artifactId>maven-assembly-plugin</artifactId>
+      <configuration>
+        <descriptorRefs>
+          <descriptorRef>jar-with-dependencies</descriptorRef>
+        </descriptorRefs>
+        <archive>
+         
+        </archive>
+      </configuration>
+    </plugin>
+		</plugins>
+		</build>
+</project>

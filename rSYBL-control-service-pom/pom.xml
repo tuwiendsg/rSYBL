@@ -1,0 +1,29 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+  xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+  
+  <groupId>rsybl.control-service</groupId>
+  <artifactId>rSYBL-control-service-pom</artifactId>
+  <version>0.1-SNAPSHOT</version>
+
+
+  <url>https://github.com/rsybl/rsybl-repo</url>
+
+ 
+
+  <packaging>pom</packaging>
+
+  <modules>
+    <module>rSYBL-data-processing-unit</module>
+    <module>rSYBL-analysis-engine</module>
+    <module>rSYBL-analysis-engine-tar</module>
+    <module>rSYBL-planning-engine</module>
+    <module>rSYBL-learning-engine</module>
+    <module>rSYBL-cloud-interaction-unit</module>
+    <module>rSYBL-cloud-application-dependency-graph</module>
+    <module>rSYBL-sybl-processing-unit</module>
+    <module>rSYBL-client</module>
+  </modules>
+
+</project>
+

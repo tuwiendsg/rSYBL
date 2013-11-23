@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<SYBLSpecification id="CassandraController" type="Component">
+	<Constraint Id="Co6">
+		<ToEnforce>
+			<BinaryRestriction Type="lessThan">
+				<LeftHandSide>
+					<Metric>latency.average</Metric>
+				</LeftHandSide>
+				<RightHandSide>
+					<Number>250</Number>
+				</RightHandSide>
+			</BinaryRestriction>
+		</ToEnforce>
+	</Constraint>
+	<Constraint Id="Co7">
+		<ToEnforce>
+			<BinaryRestriction Type="lessThan">
+				<LeftHandSide>
+					<Metric>cpu.usage</Metric>
+				</LeftHandSide>
+				<RightHandSide>
+					<Number>85</Number>
+				</RightHandSide>
+			</BinaryRestriction>
+		</ToEnforce>
+	</Constraint>
+</SYBLSpecification>

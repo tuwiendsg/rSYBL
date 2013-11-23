@@ -1,0 +1,28 @@
+CLOUD_USER = CELAR:ecopil
+CLOUD_PASSWORD = Aeb2Piec
+ 
+#PATH to the certificate used to ssh to the machines
+PEM_CERT_PATH = /home/georgiana/Desktop/workspace/SyblAPI/data/keypair_1.pem
+
+GANGLIA_PORT = 8650
+
+#Machine from which all other machines can be onitored from ganglia
+#means machine from inside which "telnet private_ip_of_other_cloud_machine GANGLIA_PORT" works 
+ACCESS_MACHINE_IP = 128.130.172.213
+
+
+#all machines having names starting with cassandra will be monitored
+MACHINES_NAME_ROOT = cassandra
+
+#name of the keypair to be injected in the created machien to allow
+#ssh connection
+MACHINE_ACCESS_KEY_PAIR_NAME = keypair_1
+
+#default image used in scaling out the system
+DEFAULT_IMAGE_ID = e9832752-f945-47aa-80f9-cf053589d0cb
+
+#default flavour used in scaling out the system
+DEFAULT_FLAVOR_ID = 2
+
+#when scaling in avoid shuttind down the machine which has the publicly accessible IP 
+CONTROLLER_MACHINE_NAME = cassandraCX1
