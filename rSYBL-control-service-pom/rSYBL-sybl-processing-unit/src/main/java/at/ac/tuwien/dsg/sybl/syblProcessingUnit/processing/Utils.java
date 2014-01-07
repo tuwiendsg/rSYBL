@@ -617,7 +617,7 @@ public boolean evaluateCompositeCondition (String compCond)throws MethodNotFound
 	return false;
 }
 public Comparable evaluateTerm(String term) throws NoSuchMethodException, SecurityException, IllegalAccessException, IllegalArgumentException, InvocationTargetException  {
-	Float result = 0.0f;
+	Double result = 0.0;
 	SYBLDescriptionParser descriptionParser = new SYBLDescriptionParser();
 	
 	if ((term.charAt(0) >= 'a')
@@ -633,7 +633,7 @@ public Comparable evaluateTerm(String term) throws NoSuchMethodException, Securi
 				partypes[0]=Node.class;
 							
 				Method method = MonitoringAPIInterface.class.getMethod(methodName,partypes);
-				result= (Float) method.invoke(monitoringAPI, parameters);
+				result= (Double) method.invoke(monitoringAPI, parameters);
 
 			
 
@@ -647,17 +647,17 @@ public Comparable evaluateTerm(String term) throws NoSuchMethodException, Securi
 				}
 			}
 			if (myVar == null){
-				 result= (Float) monitoringAPI.getMetricValue(term, currentEntity);
+				 result= (Double) monitoringAPI.getMetricValue(term, currentEntity);
 
 			}else
-			result= (Float) monitoredVariables.get(myVar);
+			result= (Double) monitoredVariables.get(myVar);
 			
 		}
 			
 	} else {
 		if ((term.charAt(0) >= '0')
 				&& (term.charAt(0) <= '9')) {
-			result= Float.parseFloat(term);
+			result= Double.parseDouble(term);
 		}
 	}
 	SYBLDirectivesEnforcementLogger.logger.info("The value of "+term+" is "+result+ " for node "+currentEntity.getId());

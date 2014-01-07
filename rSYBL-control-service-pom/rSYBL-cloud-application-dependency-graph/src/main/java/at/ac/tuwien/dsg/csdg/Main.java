@@ -28,6 +28,7 @@ import at.ac.tuwien.dsg.csdg.Node.NodeType;
 import at.ac.tuwien.dsg.csdg.Relationship.RelationshipType;
 import at.ac.tuwien.dsg.csdg.elasticityInformation.ElasticityRequirement;
 import at.ac.tuwien.dsg.csdg.elasticityInformation.elasticityRequirements.SYBLAnnotation;
+import at.ac.tuwien.dsg.csdg.elasticityInformation.elasticityRequirements.SYBLElasticityRequirementsDescription;
 import at.ac.tuwien.dsg.csdg.inputProcessing.multiLevelModel.InputProcessing;
 import at.ac.tuwien.dsg.csdg.inputProcessing.tosca.TOSCAProcessing;
 
@@ -127,18 +128,25 @@ public class Main {
 	}
 	
 	public static void main(String[] args) {
-		Main m = new Main();
-		Node cloudService = m.constructExampleDependencyGraph();
+		//Main m = new Main();
+		//Node cloudService = m.constructExampleDependencyGraph();
 		
-		DependencyGraph dependencyGraph = new DependencyGraph();
-		dependencyGraph.setCloudService(cloudService);
-		
-		//System.out.println(dependencyGraph.graphToString());
+//		DependencyGraph dependencyGraph = new DependencyGraph();
+//		dependencyGraph.setCloudService(cloudService);
+//		
+//		System.out.println(dependencyGraph.graphToString());
+		SYBLElasticityRequirementsDescription description = new SYBLElasticityRequirementsDescription();
+		try {
+			description.generateXSD("sybl.xsd");
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 		//DependencyGraph fromTosca = new TOSCAProcessing().toscaDescriptionToDependencyGraph();
 		//System.out.println(fromTosca.graphToString());
 		
-		InputProcessing inputProcessing=new InputProcessing();
-		System.out.println(inputProcessing.loadDependencyGraphFromFile().graphToString());
+		//InputProcessing inputProcessing=new InputProcessing();
+	//	System.out.println(inputProcessing.loadDependencyGraphFromFile().graphToString());
 	}
 	
 	}

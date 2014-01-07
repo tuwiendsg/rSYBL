@@ -83,6 +83,8 @@ public class JCloudsOpenStackConnection {
 
 //		Iterable<Module> modules = ImmutableSet.<Module>of(
 //                new SLF4JLoggingModule());
+		
+		RuntimeLogger.logger.info(Configuration.getCloudAPIType()+" "+Configuration.getCloudUser()+" "+Configuration.getCloudPassword()+" "+Configuration.getCloudAPIEndpoint());
 		ComputeServiceContext context = ContextBuilder.newBuilder(Configuration.getCloudAPIType())
                 .credentials(Configuration.getCloudUser(), Configuration.getCloudPassword())
                 .endpoint(Configuration.getCloudAPIEndpoint())
@@ -90,6 +92,7 @@ public class JCloudsOpenStackConnection {
                 .buildView(ComputeServiceContext.class);
 
 
+		
         ComputeService computeService = context.getComputeService();
 
 
@@ -99,6 +102,9 @@ public class JCloudsOpenStackConnection {
         final String region = "myregion";
 
         serverApi = client.getServerApiForZone(region);
+        for (Resource flavor : client.getFlavorApiForZone(region).list().concat()) {
+            RuntimeLogger.logger.error( flavor.getId()+" "+flavor.getName());
+          }
 	}
 	/**
 	 * 
@@ -138,9 +144,9 @@ public class JCloudsOpenStackConnection {
         Map<String, String> nodeMetaData = new HashMap<String, String>();
         
         String metadata ="";
-        if (entity.getId().equalsIgnoreCase("DataNodeServiceUnit"))metadata= "CASSANDRA_SEED_NODE_IP=10.99.0.147";
+        if (entity.getId().equalsIgnoreCase("DataNodeServiceUnit"))metadata= "CASSANDRA_SEED_NODE_IP=10.99.0.30";
         else 
-        	metadata="LOAD_BALANCER_IP=10.99.0.151 \n CASSANDRA_SEED_NODE_IP=10.99.0.147";
+        	metadata="LOAD_BALANCER_IP=10.99.0.23 \n CASSANDRA_SEED_NODE_IP=10.99.0.30";
         nodeMetaData.put(metadata, "");
         createNodeOptions.metadata(nodeMetaData);
         createNodeOptions.userData(metadata.getBytes());

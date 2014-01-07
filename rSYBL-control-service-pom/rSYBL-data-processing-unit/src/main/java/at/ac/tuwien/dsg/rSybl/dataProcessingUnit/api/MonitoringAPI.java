@@ -27,7 +27,7 @@ import at.ac.tuwien.dsg.rSybl.dataProcessingUnit.utils.RuntimeLogger;
 
 
 public class MonitoringAPI implements MonitoringAPIInterface{
-	private  static HashMap<Node, ArrayList<Float>> avgRunningTimes = new HashMap<Node,ArrayList<Float>>();
+	private  static HashMap<Node, ArrayList<Double>> avgRunningTimes = new HashMap<Node,ArrayList<Double>>();
 	
 	private boolean executingControlAction = false;
 	
@@ -40,7 +40,7 @@ public class MonitoringAPI implements MonitoringAPIInterface{
 
 	
 	
-	public Float getCurrentCPUSize(Node e)  {
+	public Double getCurrentCPUSize(Node e)  {
 		if (isExecutingControlAction())
 			try {
 				Thread.sleep(1000);
@@ -52,11 +52,11 @@ public class MonitoringAPI implements MonitoringAPIInterface{
 	return offeredMonitoringMetrics.getCPUSpeed(e);
 	}catch(Exception ex){
 		RuntimeLogger.logger.error("In get current cpu" + ex.toString()+"for node "+e.getId());
-		return 0.0f;
+		return 0.0;
 	}
 	}
 	
-	public Float getCostPerHour(Node e)  {
+	public Double getCostPerHour(Node e)  {
 
 		if (isExecutingControlAction())
 			try {
@@ -69,12 +69,12 @@ public class MonitoringAPI implements MonitoringAPIInterface{
 		return offeredMonitoringMetrics.getCostPerHour(e);
 		}catch(Exception ex){
 			RuntimeLogger.logger.error("In get cost per hour "+ ex.toString()+"for node "+e.getId());
-			return 0.0f;
+			return 0.0;
 		}	
 	
 	}
 	
-	public Float getCurrentRAMSize(Node e) {
+	public Double getCurrentRAMSize(Node e) {
 		
 		if (isExecutingControlAction())
 			try {
@@ -87,7 +87,7 @@ public class MonitoringAPI implements MonitoringAPIInterface{
 		return offeredMonitoringMetrics.getMemorySize(e);
 		}catch(Exception ex){
 			RuntimeLogger.logger.error(" In get ram size "+ex.toString()+"for node "+e.getId());
-			return 0.0f;
+			return 0.0;
 		}
 }
 	
@@ -96,7 +96,7 @@ public class MonitoringAPI implements MonitoringAPIInterface{
 		return "TEST Working";
 	}
 	
-	public Float getCurrentMemUsage(Node e) {
+	public Double getCurrentMemUsage(Node e) {
 		if (isExecutingControlAction())
 			try {
 				Thread.sleep(1000);
@@ -108,12 +108,12 @@ public class MonitoringAPI implements MonitoringAPIInterface{
 		return offeredMonitoringMetrics.getMemoryUsage(e);
 		}catch(Exception ex){
 			RuntimeLogger.logger.error("In get memory usage "+ex.toString()+"for node "+e.getId());
-			return 0.0f;
+			return 0.0;
 		}
 	}
 	
 	
-	public Float getTotalCostSoFar(Node e) {
+	public Double getTotalCostSoFar(Node e) {
 	  return offeredMonitoringMetrics.getTotalCostSoFar(e);
 	}
 
@@ -138,7 +138,7 @@ public class MonitoringAPI implements MonitoringAPIInterface{
 	
 	
 	
-	public Float getCurrentReadLatency(Node e)   {
+	public Double getCurrentReadLatency(Node e)   {
 		if (isExecutingControlAction())
 			try {
 				Thread.sleep(1000);
@@ -150,11 +150,11 @@ public class MonitoringAPI implements MonitoringAPIInterface{
 	return offeredMonitoringMetrics.getReadLatency(e);
 		}catch(Exception ex){
 			RuntimeLogger.logger.error("Read Latency "+ex.toString()+"for node "+e.getId());
-			return 0.0f;
+			return 0.0;
 		}
 		}
 	
-	public Float getCurrentReadCount(Node e)   {
+	public Double getCurrentReadCount(Node e)   {
 		if (isExecutingControlAction())
 			try {
 				Thread.sleep(1000);
@@ -166,11 +166,11 @@ public class MonitoringAPI implements MonitoringAPIInterface{
 		return offeredMonitoringMetrics.getReadCount(e);
 		}catch(Exception ex){
 			RuntimeLogger.logger.error("Read Count "+ex.toString()+"for node "+e.getId());
-			return 0.0f;
+			return 0.0;
 		}
 		}
 	
-	public Float getCurrentWriteLatency(Node e)   {
+	public Double getCurrentWriteLatency(Node e)   {
 		if (isExecutingControlAction())
 			try {
 				Thread.sleep(1000);
@@ -182,11 +182,11 @@ public class MonitoringAPI implements MonitoringAPIInterface{
 		return offeredMonitoringMetrics.getWriteLatency(e);
 		}catch(Exception ex){
 			RuntimeLogger.logger.error("Write Latency "+ex.toString()+"for node "+e.getId());
-			return 0.0f;
+			return 0.0;
 		}
 		}
 	
-	public Float getCurrentWriteCount(Node e)   {
+	public Double getCurrentWriteCount(Node e)   {
 		if (isExecutingControlAction())
 			try {
 				Thread.sleep(1000);
@@ -198,12 +198,12 @@ public class MonitoringAPI implements MonitoringAPIInterface{
 		return offeredMonitoringMetrics.getWriteCount(e);	
 		}catch(Exception ex){
 			RuntimeLogger.logger.error("Write Count "+ex.toString()+"for node "+e.getId());
-			return 0.0f;
+			return 0.0;
 		}
 		}
 
 	
-	public Float getCurrentCPUUsage(Node e)   {
+	public Double getCurrentCPUUsage(Node e)   {
 		if (isExecutingControlAction())
 			try {
 				Thread.sleep(1000);
@@ -217,13 +217,13 @@ try{
 		return offeredMonitoringMetrics.getCpuUsage(e);
 }catch(Exception ex){
 	RuntimeLogger.logger.error("CPU Usage "+ex.toString()+"for node "+e.getId());
-	return 0.0f;
+	return 0.0;
 }
 	}
 
 
 	
-	public Float getCurrentHDDSize(Node e)   {
+	public Double getCurrentHDDSize(Node e)   {
 		if (isExecutingControlAction())
 			try {
 				Thread.sleep(1000);
@@ -235,7 +235,7 @@ try{
 		return offeredMonitoringMetrics.getDiskSize(e);
 		}catch(Exception ex){
 			RuntimeLogger.logger.error("HDD Size "+ex.toString()+"for node "+e.getId());
-			return 0.0f;
+			return 0.0;
 		}
 	}
 
@@ -244,7 +244,7 @@ try{
 	
 	
 	
-	public Float getCurrentLatency(Node arg0)   {
+	public Double getCurrentLatency(Node arg0)   {
 		if (isExecutingControlAction())
 			try {
 				Thread.sleep(1000);
@@ -253,12 +253,12 @@ try{
 				e1.printStackTrace();
 			}
 		try{
-			float returnedLatency = 0.0f;
+			Double returnedLatency = 0.0;
 			if (!getCurrentReadLatency(arg0).isNaN() && !getCurrentWriteLatency(arg0).isNaN())
 				returnedLatency= (getCurrentReadLatency(arg0)+getCurrentWriteLatency(arg0))/2;
 			if (getCurrentReadLatency(arg0).isNaN())
 				if (getCurrentWriteLatency(arg0).isNaN())
-					returnedLatency =0.0f;
+					returnedLatency =0.0;
 				else returnedLatency= getCurrentWriteLatency(arg0);
 			else
 				returnedLatency= getCurrentReadLatency(arg0);
@@ -267,13 +267,13 @@ try{
 			return returnedLatency;
 		}catch (Exception ex){
 			RuntimeLogger.logger.error("Current latency "+ex.toString()+"for node "+arg0.getId());
-			return 0.0f;
+			return 0.0;
 		}	
 		
 	}
 
 
-	public Float getCurrentOperationCount(Node arg0){
+	public Double getCurrentOperationCount(Node arg0){
 		return (getCurrentReadCount(arg0)+getCurrentWriteCount(arg0));
 
 	}
@@ -281,7 +281,7 @@ try{
 
 
 	
-	public Float getCurrentHDDUsage(Node e) {
+	public Double getCurrentHDDUsage(Node e) {
 		if (isExecutingControlAction())
 			try {
 				Thread.sleep(1000);
@@ -293,10 +293,10 @@ try{
 		return offeredMonitoringMetrics.getDiskUsage(e);
 		}catch(Exception ex){
 			RuntimeLogger.logger.error("Current HDD Usage"+ex.toString()+"for node "+e.getId());
-			return 0.0f;
+			return 0.0;
 		}
 	}
-	public Float getMetricValue(String metricName, Node e){
+	public Double getMetricValue(String metricName, Node e){
 		if (isExecutingControlAction())
 			try {
 				Thread.sleep(1000);
@@ -309,7 +309,7 @@ try{
 		return offeredMonitoringMetrics.getMetricValue(metricName, e);
 		}catch(Exception ex){
 			RuntimeLogger.logger.error("Current "+metricName +ex.toString()+"for node "+e.getId());
-			return 0.0f;
+			return 0.0;
 		}
 	}
 	public boolean isExecutingControlAction() {
@@ -342,7 +342,7 @@ try{
 
 	}
 
-	public Float getNumberInstances(Node n){
+	public Double getNumberInstances(Node n){
 		return offeredMonitoringMetrics.getNumberInstances(n);
 	}
 

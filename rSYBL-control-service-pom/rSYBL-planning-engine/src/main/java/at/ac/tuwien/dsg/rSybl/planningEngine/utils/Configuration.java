@@ -62,6 +62,9 @@ public class Configuration {
     public static String getDirectivesPath(){
     	return configuration.getProperty("SYBLDirectives");
     }
+    public static String getEffectsPath(){
+    	return configuration.getProperty("Effects");
+    }
     public static String getMonitoringServiceURL(){
     	return configuration.getProperty("MonitoringServiceURL");
     }   

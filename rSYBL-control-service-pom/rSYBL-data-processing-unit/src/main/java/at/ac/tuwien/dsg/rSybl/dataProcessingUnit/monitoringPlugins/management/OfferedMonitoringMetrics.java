@@ -37,8 +37,8 @@ public class OfferedMonitoringMetrics implements MonitoringInterface{
 	}
 	
 
-    public float getCpuUsage(Node string){
-    	Float result = 0.0f;
+    public Double getCpuUsage(Node string){
+    	Double result = 0.0;
     	Map<Method,MonitoringInterface> methods = manageMonitoringPlugins.getMethods(manageMonitoringPlugins.getAllPlugins(cloudService));
 		for (Method method:methods.keySet()){
 
@@ -49,8 +49,8 @@ public class OfferedMonitoringMetrics implements MonitoringInterface{
 		
     	return result;
     }
-    public float getMemoryAvailable(Node string){
-    	Float result = 0.0f;
+    public Double getMemoryAvailable(Node string){
+    	Double result = 0.0;
     	Map<Method,MonitoringInterface> methods = manageMonitoringPlugins.getMethods(manageMonitoringPlugins.getAllPlugins(cloudService));
 		for (Method method:methods.keySet()){
 
@@ -61,8 +61,8 @@ public class OfferedMonitoringMetrics implements MonitoringInterface{
 		
     	return result;
     }
-    public float getMemorySize(Node string){
-    	Float result = 0.0f;
+    public Double getMemorySize(Node string){
+    	Double result = 0.0;
     	Map<Method,MonitoringInterface> methods = manageMonitoringPlugins.getMethods(manageMonitoringPlugins.getAllPlugins(cloudService));
 		for (Method method:methods.keySet()){
 
@@ -73,8 +73,8 @@ public class OfferedMonitoringMetrics implements MonitoringInterface{
 		
     	return result;
     }
-    public float getMemoryUsage(Node string){
-    	Float result = 0.0f;
+    public Double getMemoryUsage(Node string){
+    	Double result = 0.0;
     	Map<Method,MonitoringInterface> methods = manageMonitoringPlugins.getMethods(manageMonitoringPlugins.getAllPlugins(cloudService));
 		for (Method method:methods.keySet()){
 
@@ -85,8 +85,8 @@ public class OfferedMonitoringMetrics implements MonitoringInterface{
 		
     	return result;
     }   
-    public float getDiskSize(Node string){
-    	Float result = 0.0f;
+    public Double getDiskSize(Node string){
+    	Double result = 0.0;
     	Map<Method,MonitoringInterface> methods = manageMonitoringPlugins.getMethods(manageMonitoringPlugins.getAllPlugins(cloudService));
 		for (Method method:methods.keySet()){
 
@@ -98,8 +98,8 @@ public class OfferedMonitoringMetrics implements MonitoringInterface{
     	return result;
     }
     
-    public float getDiskAvailable(Node string){
-    	Float result = 0.0f;
+    public Double getDiskAvailable(Node string){
+    	Double result = 0.0;
     	Map<Method,MonitoringInterface> methods = manageMonitoringPlugins.getMethods(manageMonitoringPlugins.getAllPlugins(cloudService));
 		for (Method method:methods.keySet()){
 
@@ -109,8 +109,8 @@ public class OfferedMonitoringMetrics implements MonitoringInterface{
 		}
 		
     	return result;    }
-    public float getDiskUsage(Node string){
-    	Float result = 0.0f;
+    public Double getDiskUsage(Node string){
+    	Double result = 0.0;
     	Map<Method,MonitoringInterface> methods = manageMonitoringPlugins.getMethods(manageMonitoringPlugins.getAllPlugins(cloudService));
 		for (Method method:methods.keySet()){
 
@@ -120,8 +120,8 @@ public class OfferedMonitoringMetrics implements MonitoringInterface{
 		}
 		
     	return result;    }
-    public float getCPUSpeed(Node string){
-    	Float result = 0.0f;
+    public Double getCPUSpeed(Node string){
+    	Double result = 0.0;
     	Map<Method,MonitoringInterface> methods = manageMonitoringPlugins.getMethods(manageMonitoringPlugins.getAllPlugins(cloudService));
 		for (Method method:methods.keySet()){
 
@@ -131,8 +131,8 @@ public class OfferedMonitoringMetrics implements MonitoringInterface{
 		}
 		
     	return result;    }
-    public float getPkts(Node string){
-    	Float result = 0.0f;
+    public Double getPkts(Node string){
+    	Double result = 0.0;
     	Map<Method,MonitoringInterface> methods = manageMonitoringPlugins.getMethods(manageMonitoringPlugins.getAllPlugins(cloudService));
 		for (Method method:methods.keySet()){
 
@@ -142,8 +142,8 @@ public class OfferedMonitoringMetrics implements MonitoringInterface{
 		}
 		
     	return result;    }
-    public float getPktsIn(Node string){
-    	Float result = 0.0f;
+    public Double getPktsIn(Node string){
+    	Double result = 0.0;
     	Map<Method,MonitoringInterface> methods = manageMonitoringPlugins.getMethods(manageMonitoringPlugins.getAllPlugins(cloudService));
 		for (Method method:methods.keySet()){
 
@@ -153,8 +153,8 @@ public class OfferedMonitoringMetrics implements MonitoringInterface{
 		}
 		
     	return result;    }
-    public float getPktsOut(Node string){
-    	Float result = 0.0f;
+    public Double getPktsOut(Node string){
+    	Double result = 0.0;
     	Map<Method,MonitoringInterface> methods = manageMonitoringPlugins.getMethods(manageMonitoringPlugins.getAllPlugins(cloudService));
 		for (Method method:methods.keySet()){
 
@@ -164,8 +164,8 @@ public class OfferedMonitoringMetrics implements MonitoringInterface{
 		}
 		
     	return result;    }
-    public float getReadLatency(Node string){
-    	Float result = 0.0f;
+    public Double getReadLatency(Node string){
+    	Double result = 0.0;
     	Map<Method,MonitoringInterface> methods = manageMonitoringPlugins.getMethods(manageMonitoringPlugins.getAllPlugins(cloudService));
 		for (Method method:methods.keySet()){
 
@@ -175,8 +175,8 @@ public class OfferedMonitoringMetrics implements MonitoringInterface{
 		}
 		
     	return result;    }
-    public float getWriteLatency(Node string){
-    	Float result = 0.0f;
+    public Double getWriteLatency(Node string){
+    	Double result = 0.0;
     	Map<Method,MonitoringInterface> methods = manageMonitoringPlugins.getMethods(manageMonitoringPlugins.getAllPlugins(cloudService));
 		for (Method method:methods.keySet()){
 
@@ -186,8 +186,8 @@ public class OfferedMonitoringMetrics implements MonitoringInterface{
 		}
 		
     	return result;    }
-    public float getReadCount(Node string){
-    	Float result = 0.0f;
+    public Double getReadCount(Node string){
+    	Double result = 0.0;
     	Map<Method,MonitoringInterface> methods = manageMonitoringPlugins.getMethods(manageMonitoringPlugins.getAllPlugins(cloudService));
 		for (Method method:methods.keySet()){
 
@@ -198,8 +198,8 @@ public class OfferedMonitoringMetrics implements MonitoringInterface{
 		
     	return result;    }
 
-    public float getWriteCount(Node string){
-    	Float result = 0.0f;
+    public Double getWriteCount(Node string){
+    	Double result = 0.0;
     	Map<Method,MonitoringInterface> methods = manageMonitoringPlugins.getMethods(manageMonitoringPlugins.getAllPlugins(cloudService));
 		for (Method method:methods.keySet()){
 
@@ -209,8 +209,8 @@ public class OfferedMonitoringMetrics implements MonitoringInterface{
 		}
 		
     	return result;    }
-    public float getCostPerHour(Node string){
-    	Float result = 0.0f;
+    public Double getCostPerHour(Node string){
+    	Double result = 0.0;
     	Map<Method,MonitoringInterface> methods = manageMonitoringPlugins.getMethods(manageMonitoringPlugins.getAllPlugins(cloudService));
 		for (Method method:methods.keySet()){
 
@@ -222,8 +222,8 @@ public class OfferedMonitoringMetrics implements MonitoringInterface{
     	return result;
     }
 
-    public float getTotalCostSoFar(Node string){
-    	Float result = 0.0f;
+    public Double getTotalCostSoFar(Node string){
+    	Double result = 0.0;
     	Map<Method,MonitoringInterface> methods = manageMonitoringPlugins.getMethods(manageMonitoringPlugins.getAllPlugins(cloudService));
 		for (Method method:methods.keySet()){
 			if (method.getName().equalsIgnoreCase("getTotalCostSoFar")){
@@ -244,8 +244,8 @@ public class OfferedMonitoringMetrics implements MonitoringInterface{
     	return metricsAvailable;
     }
     
-    public float getMetricValue(String metricName, Node node){
-    	Float result = 0.0f;
+    public Double getMetricValue(String metricName, Node node){
+    	Double result = 0.0;
     	Map<Method,MonitoringInterface> methods = manageMonitoringPlugins.getMethods(manageMonitoringPlugins.getAllPlugins(cloudService));
 		for (Method method:methods.keySet()){
 			if (method.getName().equalsIgnoreCase("getMetricValue")){
@@ -294,8 +294,8 @@ public class OfferedMonitoringMetrics implements MonitoringInterface{
 		}
 	}
 	@Override
-	public float getNumberInstances(Node string) {
-		Float result = 0.0f;
+	public Double getNumberInstances(Node string) {
+		Double result = 0.0;
     	Map<Method,MonitoringInterface> methods = manageMonitoringPlugins.getMethods(manageMonitoringPlugins.getAllPlugins(cloudService));
 		for (Method method:methods.keySet()){
 			if (method.getName().equalsIgnoreCase("getNumberInstances")){

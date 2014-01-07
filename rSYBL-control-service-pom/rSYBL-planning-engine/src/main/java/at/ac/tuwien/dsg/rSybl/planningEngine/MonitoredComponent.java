@@ -29,14 +29,14 @@ import java.util.HashMap;
 import at.ac.tuwien.dsg.rSybl.cloudInteractionUnit.utils.RuntimeLogger;
 public class MonitoredComponent extends MonitoredEntity{
 	private String id;
-	private HashMap<String,Float> monitoredData=new HashMap<String,Float>();
+	private HashMap<String,Double> monitoredData=new HashMap<String,Double>();
 	private HashMap<String,String> monitoredVariables = new HashMap<String,String>();
 
-	public void setMonitoredValue(String data, Float value){
+	public void setMonitoredValue(String data, Double value){
             
 		monitoredData.put(data,value);
 	}
-	public Float getMonitoredValue(String data){
+	public Double getMonitoredValue(String data){
 		return getMonitoredData().get(data);
 	}
 	public String getId() {
@@ -57,10 +57,10 @@ public class MonitoredComponent extends MonitoredEntity{
 	public MonitoredComponent clone(){
 		MonitoredComponent cloudService=new MonitoredComponent();
 		cloudService.setId(id);
-		HashMap<String,Float> newMonitoredData = new HashMap<String,Float>();
+		HashMap<String,Double> newMonitoredData = new HashMap<String,Double>();
 		for (String entry:getMonitoredData().keySet()){
 			
-			newMonitoredData.put(entry, getMonitoredData().get(entry).floatValue());
+			newMonitoredData.put(entry, getMonitoredData().get(entry).doubleValue());
 		}
 
 		HashMap<String,String> newMonitoredVariables = new HashMap<String,String>();
@@ -73,10 +73,10 @@ public class MonitoredComponent extends MonitoredEntity{
 		cloudService.setMonitoredVariables(newMonitoredVariables);
 		return cloudService;
 	}
-	public HashMap<String,Float> getMonitoredData() {
+	public HashMap<String,Double> getMonitoredData() {
 		return monitoredData;
 	}
-	public void setMonitoredData(HashMap<String,Float> monitoredData) {
+	public void setMonitoredData(HashMap<String,Double> monitoredData) {
 		this.monitoredData = monitoredData;
 	}
 	public HashMap<String,String> getMonitoredVariables() {

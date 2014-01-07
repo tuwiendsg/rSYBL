@@ -190,8 +190,7 @@ public class PlanningGreedyAlgorithm implements Runnable {
 			lastContextRepresentation=new ContextRepresentation(dependencyGraph, monitoringAPI);
 			lastContextRepresentation.initializeContext();
 			PlanningLogger.logger.info("Strategies that could be enforced. ... "+strategiesThatNeedToBeImproved+" Violated constraints: "+contextRepresentation.getViolatedConstraints());
-		HashMap<String, List<ActionEffect>> actionEffects = ActionEffects
-				.getActionEffects(dependencyGraph,monitoringAPI,contextRepresentation);
+		HashMap<String, List<ActionEffect>> actionEffects = ActionEffects.getActionEffects();
 
 		int numberOfBrokenConstraints = contextRepresentation
 				.countViolatedConstraints();

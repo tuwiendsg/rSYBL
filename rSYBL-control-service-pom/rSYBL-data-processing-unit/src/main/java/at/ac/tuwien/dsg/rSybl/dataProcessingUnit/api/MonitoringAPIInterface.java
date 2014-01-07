@@ -24,33 +24,33 @@ import at.ac.tuwien.dsg.csdg.elasticityInformation.ElasticityRequirement;
 
 public interface MonitoringAPIInterface {
     
-	public Float getCurrentCPUSize(Node e)  ;
+	public Double getCurrentCPUSize(Node e)  ;
     
-	public Float getCostPerHour(Node e)  ;
+	public Double getCostPerHour(Node e)  ;
     	
-	public Float getCurrentRAMSize(Node e) ;
+	public Double getCurrentRAMSize(Node e) ;
     
    
-    public Float getCurrentMemUsage(Node e);
+    public Double getCurrentMemUsage(Node e);
     
-	public Float getTotalCostSoFar(Node e) ;
+	public Double getTotalCostSoFar(Node e) ;
 
     
 	public Node getControlledService() ;
     
 	public void setControlledService(Node controlledService) ;
     
-	public Float getCurrentReadLatency(Node e)  ;
+	public Double getCurrentReadLatency(Node e)  ;
     
-	public Float getCurrentReadCount(Node e)  ;
+	public Double getCurrentReadCount(Node e)  ;
     
-    public Float getCurrentWriteLatency(Node e)  ;
+    public Double getCurrentWriteLatency(Node e)  ;
     
-	public Float getCurrentWriteCount(Node e)  ;
-    public Float getMetricValue(String metricName, Node e);
-	public Float getCurrentCPUUsage(Node e) ;
+	public Double getCurrentWriteCount(Node e)  ;
+    public Double getMetricValue(String metricName, Node e);
+	public Double getCurrentCPUUsage(Node e) ;
     public void submitElasticityRequirements(ArrayList<ElasticityRequirement> description);
-	public Float getCurrentHDDSize(Node e)  ; 
+	public Double getCurrentHDDSize(Node e)  ; 
     
 	public void scaleinstarted(Node arg0);
 	public void scaleinended(Node arg0);
@@ -59,16 +59,16 @@ public interface MonitoringAPIInterface {
 	public void scaleoutstarted(Node arg0);
 	public void scaleoutended(Node arg0);
    	
-	public Float getCurrentLatency(Node arg0)  ;
+	public Double getCurrentLatency(Node arg0)  ;
 
     
-	public Float getCurrentOperationCount(Node arg0);
+	public Double getCurrentOperationCount(Node arg0);
 
     
-	public Float getCurrentHDDUsage(Node e) ;
+	public Double getCurrentHDDUsage(Node e) ;
     public void enforcingActionStarted(String actionName, Node e);
     public void enforcingActionEnded(String actionName, Node e);
 
-    public Float getNumberInstances(Node e);
+    public Double getNumberInstances(Node e);
     public void refreshServiceStructure(Node cloudService);
 }

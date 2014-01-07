@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<tosca:Definitions xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:elasticity="http://www.example.org/NewXMLSchema" xmlns:tosca="http://docs.oasis-open.org/tosca/ns/2011/12">
+  <tosca:ServiceTemplate name="DemoApp">
+    <tosca:BoundaryDefinitions xsi:type="elasticity:TBoundaryDefinitionsExtension">
+      <tosca:Policies>
+        <tosca:Policy name="CG0: CONSTRAINT Cost &lt; 1000 $" policyType="SYBLConstraint"/>
+      </tosca:Policies>
+    </tosca:BoundaryDefinitions>
+    <tosca:TopologyTemplate>
+      <tosca:NodeTemplate xsi:type="elasticity:TNodeTemplateExtension" id="1870090479" type="substituteNode">
+        <tosca:Policies>
+          <tosca:Policy name="C18700904790: CONSTRAINT Throughput &lt; 6400 MB/s" policyType="SYBLConstraint"/>
+          <tosca:Policy name="S18700904791: STRATEGY Add VM WHEN Violated ( C18700904790 )" policyType="SYBLStrategy"/>
+        </tosca:Policies>
+      </tosca:NodeTemplate>
+      <tosca:NodeTemplate xsi:type="elasticity:TNodeTemplateExtension" id="905307179" maxInstances="1" minInstances="1" name="YSCB_Client">
+        <tosca:DeploymentArtifacts>
+          <tosca:DeploymentArtifact artifactType="VMI" name="Ubuntu-12.04-64bit"/>
+        </tosca:DeploymentArtifacts>
+      </tosca:NodeTemplate>
+      <tosca:RelationshipTemplate name="Directed Relation">
+        <tosca:SourceElement ref="905307179"/>
+        <tosca:TargetElement ref="520000850"/>
+      </tosca:RelationshipTemplate>
+    </tosca:TopologyTemplate>
+  </tosca:ServiceTemplate>
+  <tosca:ServiceTemplate substitutableNodeType="substituteNode">
+    <tosca:TopologyTemplate>
+      <tosca:NodeTemplate xsi:type="elasticity:TNodeTemplateExtension" id="520000850" maxInstances="1" minInstances="1" name="Cassandra_Master">
+        <tosca:Policies>
+          <tosca:Policy name="C5200008500: CONSTRAINT Response Time &lt; 1 s" policyType="SYBLConstraint"/>
+        </tosca:Policies>
+        <tosca:DeploymentArtifacts>
+          <tosca:DeploymentArtifact artifactType="VMI" name="Ubuntu-12.04-32bit"/>
+        </tosca:DeploymentArtifacts>
+      </tosca:NodeTemplate>
+      <tosca:NodeTemplate xsi:type="elasticity:TNodeTemplateExtension" id="1916021542" maxInstances="2" minInstances="1" name="Cassandra_Slave">
+        <tosca:DeploymentArtifacts>
+          <tosca:DeploymentArtifact artifactType="VMI" name="Ubuntu-11.10-BuildEsset-64bit"/>
+        </tosca:DeploymentArtifacts>
+      </tosca:NodeTemplate>
+      <tosca:RelationshipTemplate name="Relation">
+        <tosca:SourceElement ref="520000850"/>
+        <tosca:TargetElement ref="1916021542"/>
+      </tosca:RelationshipTemplate>
+    </tosca:TopologyTemplate>
+  </tosca:ServiceTemplate>
+</tosca:Definitions>

@@ -42,7 +42,7 @@ public class MonitoringGangliaAPI implements Runnable,MonitoringInterface{
 	private GangliaMonitor gangliaMonitor;
 	private Date startingTime;
 	private Date refreshedCost;
-	private float totalCost = 0;
+	private Double totalCost = 0.0;
 	private int MAX_COST =300;
     private String methodName = "";
 	private Thread t ;
@@ -99,13 +99,13 @@ public class MonitoringGangliaAPI implements Runnable,MonitoringInterface{
 		}
     	}
     }
-    public float getAverageCost(Node entity){
+    public Double getAverageCost(Node entity){
     	Date now = new Date();
     	
 		totalCost += getInstantCost(entity)*((now.getTime()-refreshedCost.getTime())/1000.0f);
 		RuntimeLogger.logger.info((now.getTime()-refreshedCost.getTime()));
 		//RuntimeLogger.logger.info("Instant cost "+getInstantCost()+" Total cost "+totalCost+" runningTime "+((now.getTime()-startingTime.getTime())/1000.0f));
-		float avgCost = 0;
+		Double avgCost = 0.0;
 		if (!now.equals(startingTime))
 		 avgCost = totalCost/((now.getTime() - startingTime.getTime())/1000.0f);
 		else
@@ -115,13 +115,13 @@ public class MonitoringGangliaAPI implements Runnable,MonitoringInterface{
 		RuntimeLogger.logger.info("Average Cost "+avgCost);	
 		return avgCost;
     }
-    public float getCpuUsage(Node e){
+    public Double getCpuUsage(Node e){
     	try{
-    		Float retValue = 0.0f;
+    		Double retValue = 0.0;
     		int nb=0;	
     		for (String ip:e.getAssociatedIps()){
     			if(ip.split("\\.")[0].length()==2){
-    			retValue += (100.0f - Float.parseFloat(searchMetricsByExactName("cpu_idle",ip).getValue()));
+    			retValue += (100.0f - Double.parseDouble(searchMetricsByExactName("cpu_idle",ip).getValue()));
     			nb++;
     			}
     		}
@@ -131,16 +131,16 @@ public class MonitoringGangliaAPI implements Runnable,MonitoringInterface{
     		RuntimeLogger.logger.info("Current cpu usage for entity "+ e.getId()+" is "+retValue);
     	return retValue;
     		}catch (Exception ex){
-    			return 0.0f;
+    			return 0.0;
     		}
     	
     	    }
-    public float getMemoryAvailable(Node e){
-    	Float retValue = 0.0f;
+    public Double getMemoryAvailable(Node e){
+    	Double retValue = 0.0;
 		for (String ip:e.getAssociatedIps()){
 			if(ip.split("\\.")[0].length()==2)
 	    	try{
-	    		retValue+=(Float.parseFloat(searchMetricsByExactName("mem_free",ip).getValue()));
+	    		retValue+=(Double.parseDouble(searchMetricsByExactName("mem_free",ip).getValue()));
 	    	}catch(Exception ex){
 	    		
 	    		RuntimeLogger.logger.info("Metric mem_total not found for ip "+ip);
@@ -150,11 +150,11 @@ public class MonitoringGangliaAPI implements Runnable,MonitoringInterface{
     	return retValue ;  	
     	
     }
-    public float getMemoryAvailable(String ip){
-    	Float retValue = 0.0f;
+    public Double getMemoryAvailable(String ip){
+    	Double retValue = 0.0;
 
 	    	try{
-	    		retValue+=(Float.parseFloat(searchMetricsByExactName("mem_free",ip).getValue()));
+	    		retValue+=(Double.parseDouble(searchMetricsByExactName("mem_free",ip).getValue()));
 	    	}catch(Exception ex){
 	    		
 	    		
@@ -163,12 +163,12 @@ public class MonitoringGangliaAPI implements Runnable,MonitoringInterface{
     return retValue;
        }
     
-    public float getMemorySize(Node e){
-    	Float retValue = 0.0f;
+    public Double getMemorySize(Node e){
+    	Double retValue = 0.0;
 		for (String ip:e.getAssociatedIps()){
 			if(ip.split("\\.")[0].length()==2)
 	    	try{
-	    		retValue+=(Float.parseFloat(searchMetricsByExactName("mem_total",ip).getValue()));
+	    		retValue+=(Double.parseDouble(searchMetricsByExactName("mem_total",ip).getValue()));
 	    	}catch(Exception ex){
 	    		
 	    		RuntimeLogger.logger.info("Metric mem_total not found for ip "+ip);
@@ -177,16 +177,16 @@ public class MonitoringGangliaAPI implements Runnable,MonitoringInterface{
     	}
     	return retValue ;
     }
-    public float getMemorySize(String ip){
-    	return (Float.parseFloat(searchMetricsByExactName("mem_total",ip).getValue()));
+    public Double getMemorySize(String ip){
+    	return (Double.parseDouble(searchMetricsByExactName("mem_total",ip).getValue()));
     }
-    public float getMemoryUsage(Node e){
+    public Double getMemoryUsage(Node e){
 		try{
-		Float retValue = 0.0f;
+		Double retValue = 0.0;
 		int nb=0;
 		for (String ip:e.getAssociatedIps())
 			if(ip.split("\\.")[0].length()==2){
-			float val = (getMemoryAvailable(ip)/getMemorySize(ip)*100);
+			Double val = (getMemoryAvailable(ip)/getMemorySize(ip)*100);
 			if (val>=0 && val <=100){
 			retValue += val;
 			nb++;
@@ -194,26 +194,26 @@ public class MonitoringGangliaAPI implements Runnable,MonitoringInterface{
 			}
 		if (nb>0)
 		return retValue/nb;
-		else return 0.0f;
+		else return 0.0;
 
 
 	}catch (Exception ex){
-		return 0.0f;
+		return 0.0;
 	}
 
     }
-   public float getInstantCost (Node e){
+   public Double getInstantCost (Node e){
 	   int privateIps = 0;
 	   for (String ip:e.getAssociatedIps())
 			if(ip.split("\\.")[0].length()==2){
 				privateIps++;
 			}
-		return 20*privateIps;
+		return 20.0*privateIps;
    }
-   public float getTotalCostSoFar(Node e) {
+   public Double getTotalCostSoFar(Node e) {
 		Date now = new Date();
 	
-		totalCost += getInstantCost(e)*(((float)now.getTime()-refreshedCost.getTime())/1000.0f);
+		totalCost += getInstantCost(e)*((now.getTime()-refreshedCost.getTime())/1000.0f);
 		refreshedCost = now;
 		return totalCost;
 	}
@@ -251,28 +251,28 @@ public class MonitoringGangliaAPI implements Runnable,MonitoringInterface{
 		monitoringThread.start();
 	}
 	}
-    public float getDiskSize(Node e){
-    	Float retValue = 0.0f;
+    public Double getDiskSize(Node e){
+    	Double retValue = 0.0;
 		
 		for (String ip:e.getAssociatedIps())
 			if(ip.split("\\.")[0].length()==2){
-			retValue +=Float.parseFloat(searchMetricsByExactName("disk_total",ip).getValue());
+			retValue +=Double.parseDouble(searchMetricsByExactName("disk_total",ip).getValue());
 			}
 		return retValue;	
     }
     
-    public float getDiskSize(String ip){
+    public Double getDiskSize(String ip){
     	RuntimeLogger.logger.error("Get disk size for ip "+ip+" "+searchMetricsByExactName("disk_total",ip));
-			return Float.parseFloat(searchMetricsByExactName("disk_total",ip).getValue());
+			return Double.parseDouble(searchMetricsByExactName("disk_total",ip).getValue());
 	
     }
-    public float getDiskAvailable(Node e){
-Float retValue = 0.0f;
+    public Double getDiskAvailable(Node e){
+Double retValue = 0.0;
 		
 		for (String ip:e.getAssociatedIps())
 			if(ip.split("\\.")[0].length()==2){
 				try{
-		    		retValue+=(Float.parseFloat(searchMetricsByExactName("disk_free",ip).getValue()));
+		    		retValue+=(Double.parseDouble(searchMetricsByExactName("disk_free",ip).getValue()));
 		    	}catch(Exception ex){   		
     		
 		    	}
@@ -280,10 +280,10 @@ Float retValue = 0.0f;
 		return retValue;	
     	
     }
-    public float getDiskAvailable(String ip){
-    	Float result = 0.0f;
+    public Double getDiskAvailable(String ip){
+    	Double result = 0.0;
     	try{
-    		result =(Float.parseFloat(searchMetricsByExactName("disk_free",ip).getValue()));
+    		result =(Double.parseDouble(searchMetricsByExactName("disk_free",ip).getValue()));
     	}catch(Exception e){
     		
     	//	RuntimeLogger.logger.info("Metric disk_free not found for ip "+ip);
@@ -291,9 +291,9 @@ Float retValue = 0.0f;
     	}
     	return result ;
     }
-    public float getDiskUsage(Node e){
+    public Double getDiskUsage(Node e){
     	
-		Float retValue = 0.0f;
+		Double retValue = 0.0;
 		int nb=0;	
 		//RuntimeLogger.logger.info("Trying to find hdd usage for entity "+e.getId()+" "+e.getAssociatedIps());
 		for (String ip:e.getAssociatedIps()){
@@ -316,13 +316,13 @@ Float retValue = 0.0f;
 	
 
     }
-    public float getCPUSpeed(Node e){
-    		Float retValue = 0.0f;
+    public Double getCPUSpeed(Node e){
+    		Double retValue = 0.0;
 		
 		for (String ip:e.getAssociatedIps())
 			if(ip.split("\\.")[0].length()==2){
 				try{
-					retValue +=( Float.parseFloat(searchMetricsByExactName("cpu_speed",ip).getValue()));
+					retValue +=( Double.parseDouble(searchMetricsByExactName("cpu_speed",ip).getValue()));
 		    	}catch(Exception ex){
 		    	}
 			}
@@ -330,39 +330,39 @@ Float retValue = 0.0f;
 		
     	
     }
-    public float getPkts(Node e){
+    public Double getPkts(Node e){
     	
     	return getPktsIn(e)+getPktsOut(e);
     }
-    public float getPktsIn(Node e){
-	Float retValue = 0.0f;
+    public Double getPktsIn(Node e){
+	Double retValue = 0.0;
 		
 		for (String ip:e.getAssociatedIps())
 			if(ip.split("\\.")[0].length()==2){
 				try{
-					retValue +=( Float.parseFloat(searchMetricsByExactName("pkts_in",ip).getValue()));
+					retValue +=( Double.parseDouble(searchMetricsByExactName("pkts_in",ip).getValue()));
 		    	}catch(Exception ex){
 		    	}
 			}
 		return retValue;
     	
     }
-    public float getPktsOut(Node e){
-Float retValue = 0.0f;
+    public Double getPktsOut(Node e){
+Double retValue = 0.0;
 		
 		for (String ip:e.getAssociatedIps())
 			if(ip.split("\\.")[0].length()==2){
 				try{
-					retValue +=(Float.parseFloat(searchMetricsByExactName("pkts_out",ip).getValue()));
+					retValue +=(Double.parseDouble(searchMetricsByExactName("pkts_out",ip).getValue()));
 		    	}catch(Exception ex){
 		    	}
 			}
 		return retValue;
     	
     }
-    public float getReadLatency(Node e){
-    	Float result = 0.0f;
-    	Float retValue = 0.0f;
+    public Double getReadLatency(Node e){
+    	Double result = 0.0;
+    	Double retValue = 0.0;
 		int nb = 0;
 		for (String ip:e.getAssociatedIps())
 			if(ip.split("\\.")[0].length()==2){
@@ -379,16 +379,16 @@ Float retValue = 0.0f;
 		
       	
     }
-    public float getWriteLatency(Node e){Float result = 0.0f;
+    public Double getWriteLatency(Node e){Double result = 0.0;
 	try{
-		Float retValue = 0.0f;
+		Double retValue = 0.0;
 		int nb = 0;
 		for (String ip:e.getAssociatedIps())
 			if(ip.split("\\.")[0].length()==2){
 				 try{
 					 String val = searchMetricsByExactName("write_latency",ip).getValue();
 					 if (!val.equalsIgnoreCase("nan")){
-					 result=(Float.parseFloat(val));
+					 result=(Double.parseDouble(val));
 					if (!result.isNaN()){	
 					   retValue+=result;
 						nb++;
@@ -402,19 +402,19 @@ Float retValue = 0.0f;
 			}
 		return retValue/nb;			
 		}catch (Exception ex){
-			return 0.0f;
+			return 0.0;
 		}
 	
    
     }
-    public float getReadCount(Node e){
+    public Double getReadCount(Node e){
     	try{
-    		Float retValue = 0.0f;
+    		Double retValue = 0.0;
     		int nb=0;
     		for (String ip:e.getAssociatedIps())
     			if(ip.split("\\.")[0].length()==2){
     				try{
-    					retValue += (Float.parseFloat(searchMetricsByExactName("read_count",ip).getValue()));
+    					retValue += (Double.parseDouble(searchMetricsByExactName("read_count",ip).getValue()));
     	    			nb++;
     		    	}catch(Exception ex){
     		    		
@@ -424,19 +424,19 @@ Float retValue = 0.0f;
     			}
     		return retValue/nb;	
     	}catch (Exception ex){
-    		return 0.0f;
+    		return 0.0;
     	}
     	
     
     }
-    public float getWriteCount(Node e){
+    public Double getWriteCount(Node e){
     	
-    	Float retValue = 0.0f;
+    	Double retValue = 0.0;
 		int nb=0;
 		for (String ip:e.getAssociatedIps())
 			if(ip.split("\\.")[0].length()==2){
 				try{
-					retValue += ( Float.parseFloat(searchMetricsByExactName("write_count",ip).getValue()));
+					retValue += ( Double.parseDouble(searchMetricsByExactName("write_count",ip).getValue()));
 					nb++;
 
 				}catch(Exception ex){
@@ -463,7 +463,7 @@ Float retValue = 0.0f;
             if (metricInfo.getName().contains(name)) {
             	if (myNewMetric!=null){
            		
-            		if (((Float.parseFloat(myNewMetric.getValue()))<=0.0f && Float.parseFloat(metricInfo.getValue())>0)){
+            		if (((Double.parseDouble(myNewMetric.getValue()))<=0.0f && Double.parseDouble(metricInfo.getValue())>0)){
             			myNewMetric=metricInfo;
             		}
             	}else{
@@ -476,7 +476,7 @@ Float retValue = 0.0f;
 
     }
 
- public float getCostPerHour(Node e)  {
+ public Double getCostPerHour(Node e)  {
 
 		try{
 			
@@ -489,9 +489,9 @@ Float retValue = 0.0f;
 		
 		RuntimeLogger.logger.info("Current cost cost per hour for entity "+e.getId()+" is "+(50*nb));
 
-		return 50.0f*nb;
+		return 50.0*nb;
 		}catch(Exception ex){
-			return 0.0f;
+			return 0.0;
 		}
 	}
 	
@@ -509,7 +509,7 @@ Float retValue = 0.0f;
 		
 		return avMetrics;
 	}
-	public float getMetricValue(String metricName, Node e) {
+	public Double getMetricValue(String metricName, Node e) {
 		
 		switch (metricName.toLowerCase()){
 		case "cpuspeed":
@@ -517,7 +517,7 @@ Float retValue = 0.0f;
 		case "memoryusage":
 			return getMemoryUsage(e);
 		default:
-			return 0.0f;
+			return 0.0;
 		}
 	}
 	public void notifyControlActionStarted(){
@@ -556,9 +556,9 @@ Float retValue = 0.0f;
 		
 	}
 	@Override
-	public float getNumberInstances(Node node) {
+	public Double getNumberInstances(Node node) {
 		// TODO Auto-generated method stub
-		return 0;
+		return 0.0;
 	}
 	@Override
 	public void refreshServiceStructure(Node node) {

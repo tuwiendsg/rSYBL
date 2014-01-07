@@ -36,10 +36,13 @@ import javax.xml.bind.Unmarshaller;
 import javax.xml.namespace.QName;
 
 import org.oasis_open.docs.tosca.ns._2011._12.Definitions;
+import org.oasis_open.docs.tosca.ns._2011._12.TBoundaryDefinitions;
+import org.oasis_open.docs.tosca.ns._2011._12.TEntityTemplate;
 import org.oasis_open.docs.tosca.ns._2011._12.TExtensibleElements;
 import org.oasis_open.docs.tosca.ns._2011._12.TDefinitions.Extensions;
 import org.oasis_open.docs.tosca.ns._2011._12.TDefinitions.Types;
 import org.oasis_open.docs.tosca.ns._2011._12.TNodeTemplate;
+import org.oasis_open.docs.tosca.ns._2011._12.TNodeTemplate.Policies;
 import org.oasis_open.docs.tosca.ns._2011._12.TPolicy;
 import org.oasis_open.docs.tosca.ns._2011._12.TRelationshipTemplate;
 import org.oasis_open.docs.tosca.ns._2011._12.TServiceTemplate;
@@ -50,6 +53,9 @@ import at.ac.tuwien.dsg.csdg.Node;
 import at.ac.tuwien.dsg.csdg.Relationship;
 import at.ac.tuwien.dsg.csdg.Node.NodeType;
 import at.ac.tuwien.dsg.csdg.Relationship.RelationshipType;
+import at.ac.tuwien.dsg.csdg.elasticityInformation.ElasticityRequirement;
+import at.ac.tuwien.dsg.csdg.elasticityInformation.elasticityRequirements.SYBLAnnotation;
+import at.ac.tuwien.dsg.csdg.elasticityInformation.elasticityRequirements.SYBLAnnotation.AnnotationType;
 import at.ac.tuwien.dsg.csdg.inputProcessing.multiLevelModel.InputProcessing;
 import at.ac.tuwien.dsg.csdg.inputProcessing.multiLevelModel.deploymentDescription.DeploymentDescription;
 import at.ac.tuwien.dsg.csdg.utils.Configuration;
@@ -64,9 +70,9 @@ public class TOSCAProcessing {
 			 
 			 JAXBContext a = JAXBContext.newInstance( Definitions.class );
 			 Unmarshaller u  = a.createUnmarshaller();
-			//Definitions	def = (Definitions) u.unmarshal(new File(Configuration.getCloudServiceTOSCADescription()));
+			Definitions	def = (Definitions) u.unmarshal(new File("./tosca_sybl_example.xml"));
    
-			 Definitions def = (Definitions) u.unmarshal( InputProcessing.class.getClassLoader().getResourceAsStream(Configuration.getCloudServiceTOSCADescription())) ;
+			// Definitions def = (Definitions) u.unmarshal( Definitions.class.getClassLoader().getResourceAsStream("./tosca_sybl_example.xml")) ;
 
 			    return def;			
 		} catch (JAXBException e) {
@@ -96,103 +102,184 @@ public class TOSCAProcessing {
 		
 
 	}
-	public HashMap<String,Node> parseTOSCAGraph(HashMap<String,Node> nodes,List<TExtensibleElements> currentElements,String parentID){
+	private void setElasticityRequirementsForService(Node node,TBoundaryDefinitions reqs){
+		SYBLAnnotation annotation = new SYBLAnnotation();
+		ElasticityRequirement elasticityRequirement= new ElasticityRequirement();
+
+		for (TPolicy policy:reqs.getPolicies().getPolicy()){
+			
+			switch (node.getNodeType()){
+			case CLOUD_SERVICE:annotation.setAnnotationType(AnnotationType.CLOUD_SERVICE);
+			break;
+			case SERVICE_TOPOLOGY:annotation.setAnnotationType(AnnotationType.SERVICE_TOPOLOGY);
+			break;
+			case SERVICE_UNIT:annotation.setAnnotationType(AnnotationType.SERVICE_UNIT);
+			break;
+			
+			}
+			switch (policy.getPolicyType().getLocalPart()){
+			case "SYBLConstraint": annotation.setConstraints(annotation.getConstraints()+"; "+policy.getName());break;
+			case "SYBLStrategy": annotation.setConstraints(annotation.getStrategies()+"; "+policy.getName());break;
+			case "SYBLMonitoring": annotation.setConstraints(annotation.getMonitoring()+"; "+policy.getName());break;
+
+			}
+			
+		}
+		annotation.setEntityID(node.getId());
+
+		elasticityRequirement.setAnnotation(annotation);
+		node.addElasticityRequirement(elasticityRequirement);
+		System.out.println(annotation.getConstraints()+" "+annotation.getStrategies()+ " "+annotation.getMonitoring());
+	}
+	private void setElasticityRequirements(Node node,TNodeTemplate.Policies policies){
+		SYBLAnnotation annotation = new SYBLAnnotation();
+		ElasticityRequirement elasticityRequirement= new ElasticityRequirement();
+		//System.out.println("Node "+node.getId());
+		for (TPolicy policy:policies.getPolicy()){
+			//System.out.println(policy);
+			switch (node.getNodeType()){
+			case CLOUD_SERVICE:annotation.setAnnotationType(AnnotationType.CLOUD_SERVICE);
+			break;
+			case SERVICE_TOPOLOGY:annotation.setAnnotationType(AnnotationType.SERVICE_TOPOLOGY);
+			break;
+			case SERVICE_UNIT:annotation.setAnnotationType(AnnotationType.SERVICE_UNIT);
+			break;
+			
+			}
+			switch (policy.getPolicyType().getLocalPart()){
+			case "SYBLConstraint": annotation.setConstraints(annotation.getConstraints()+"; "+policy.getName());break;
+			case "SYBLStrategy": annotation.setConstraints(annotation.getStrategies()+"; "+policy.getName());break;
+			case "SYBLMonitoring": annotation.setConstraints(annotation.getMonitoring()+"; "+policy.getName());break;
+
+			}
+			
+		}
+		annotation.setEntityID(node.getId());
+		
+		elasticityRequirement.setAnnotation(annotation);
+		node.addElasticityRequirement(elasticityRequirement);
+		System.out.println(annotation.getConstraints()+" "+annotation.getStrategies()+ " "+annotation.getMonitoring());
+	}
+	public HashMap<String,Node> parseTOSCAGraph(HashMap<String,Node> nodes,List<TExtensibleElements> currentElements){
+		List<TExtensibleElements> c = new ArrayList<TExtensibleElements>();
+		String cloudServiceName="";
 		for (TExtensibleElements extensibleElements: currentElements){
 			if (extensibleElements instanceof TServiceTemplate){
+				//System.out.println("Found of type service "+extensibleElements);
 				Node n = new Node();
 				TServiceTemplate serviceTemplate = (TServiceTemplate)extensibleElements;
-				n.setId(serviceTemplate.getId());
+			
+				n.setId(serviceTemplate.getName());
 				n.setNodeType(NodeType.CLOUD_SERVICE);
-				
-				Node topology = new Node();
-				
-				topology.setId(serviceTemplate.getTopologyTemplate().getOtherAttributes().get(new QName("id")));
-				
-				topology.setNodeType(NodeType.SERVICE_TOPOLOGY);
-				Relationship rel  = new Relationship();
-				rel.setType(RelationshipType.COMPOSITION_RELATIONSHIP);
-				rel.setSourceElement(n.getId());
-				rel.setTargetElement(topology.getId());
-				n.addNode(topology,rel );
-				nodes.put(topology.getId(), topology);
-				nodes.put(((TServiceTemplate) extensibleElements).getId(), n);
-				List<TExtensibleElements> c = new ArrayList<TExtensibleElements>();
-				c.add(serviceTemplate.getTopologyTemplate());
-				return parseTOSCAGraph(nodes, c, n.getId());
-			}
-			if (extensibleElements instanceof TTopologyTemplate){
-				Node serviceTopology = null;
-				
-				TTopologyTemplate topologyTemplate = (TTopologyTemplate)extensibleElements;
-				
-				if (nodes.containsKey(topologyTemplate.getOtherAttributes().get(new QName("id")))){
-					serviceTopology=nodes.get(topologyTemplate.getOtherAttributes().get(new QName("id")));
-				}else{
-					serviceTopology = new Node();
-					serviceTopology.setId(topologyTemplate.getOtherAttributes().get(new QName("id")));
-					serviceTopology.setNodeType(NodeType.SERVICE_TOPOLOGY);
+				if (serviceTemplate.getSubstitutableNodeType()!=null){
+					if (nodes.containsKey(serviceTemplate.getSubstitutableNodeType().getLocalPart())){
+						n=nodes.get(serviceTemplate.getSubstitutableNodeType().getLocalPart());
+					}
+					n.setId(serviceTemplate.getSubstitutableNodeType().getLocalPart());
+					
+					n.setNodeType(NodeType.SERVICE_TOPOLOGY);
+					Relationship rel  = new Relationship();
+					rel.setType(RelationshipType.COMPOSITION_RELATIONSHIP);
+					rel.setSourceElement(cloudServiceName);
+					rel.setTargetElement(n.getId());
+					if (!nodes.get(cloudServiceName).getAllRelatedNodes().contains(n))
+					{
+						nodes.get(cloudServiceName).addNode(n, rel);
+						nodes.put(n.getId(), n);
+					}
+					TTopologyTemplate topologyTemplate=serviceTemplate.getTopologyTemplate();
+					if (topologyTemplate!=null){
+						for (TEntityTemplate tExt:topologyTemplate.getNodeTemplateOrRelationshipTemplate()){
+							if (tExt instanceof TNodeTemplate){
+								TNodeTemplate nodeTemplate =(TNodeTemplate)tExt;
+								Node serviceUnit=null;
+								if (nodes.containsKey(nodeTemplate.getId())){
+									serviceUnit=nodes.get(nodeTemplate.getId());
+								}else{
+									serviceUnit = new Node();
+									serviceUnit.setId(nodeTemplate.getId());
+									serviceUnit.setNodeType(NodeType.SERVICE_UNIT);
 
-				}
-				List<TExtensibleElements> c = new ArrayList<TExtensibleElements>();
-				for (TExtensibleElements tExt:topologyTemplate.getNodeTemplateOrRelationshipTemplate()){
-					if (tExt instanceof TNodeTemplate){
-						TNodeTemplate nodeTemplate =(TNodeTemplate)tExt;
-						Node serviceUnit=null;
-						if (nodes.containsKey(nodeTemplate.getId())){
-							serviceUnit=nodes.get(nodeTemplate.getId());
-						}else{
-							serviceUnit = new Node();
-							serviceUnit.setId(nodeTemplate.getId());
-							serviceUnit.setNodeType(NodeType.SERVICE_UNIT);
-
-						}
-						serviceUnit.setId(nodeTemplate.getId());
-						serviceUnit.setNodeType(NodeType.SERVICE_UNIT);
-						Relationship rel  = new Relationship();
-						rel.setType(RelationshipType.COMPOSITION_RELATIONSHIP);
-						serviceTopology.addNode(serviceUnit,rel );
-						nodes.put(serviceUnit.getId(), serviceUnit);
-						
-					}else{
-						if (tExt instanceof TTopologyTemplate){
-							TTopologyTemplate topTemplate =(TTopologyTemplate)tExt;
-							Node serviceUnit=null;
-							if (nodes.containsKey(topTemplate.getOtherAttributes().get(new QName("id")))){
-								serviceUnit=nodes.get(topTemplate.getOtherAttributes().get(new QName("id")));
+								}
+								//System.out.println(n+" "+nodeTemplate.getId());
+								//serviceUnit.setId(nodeTemplate.getId());
+							//	serviceUnit.setNodeType(NodeType.SERVICE_UNIT);
+								rel  = new Relationship();
+								rel.setType(RelationshipType.COMPOSITION_RELATIONSHIP);
+								n.addNode(serviceUnit,rel );
+								nodes.put(serviceUnit.getId(), serviceUnit);
+								if (nodeTemplate.getPolicies()!=null)
+									setElasticityRequirements(serviceUnit,nodeTemplate.getPolicies());
 							}else{
-								serviceUnit = new Node();
-								serviceUnit.setId(topTemplate.getOtherAttributes().get(new QName("id")));
-								serviceUnit.setNodeType(NodeType.SERVICE_TOPOLOGY);
-
-							}
-							serviceUnit.setId(topTemplate.getOtherAttributes().get(new QName("id")));
-							serviceUnit.setNodeType(NodeType.SERVICE_TOPOLOGY);
-							Relationship rel  = new Relationship();
-							rel.setSourceElement(serviceTopology.getId());
-							rel.setTargetElement(serviceUnit.getId());
-							rel.setType(RelationshipType.COMPOSITION_RELATIONSHIP);
-							serviceTopology.addNode(serviceUnit,rel );
-							nodes.put(serviceUnit.getId(), serviceUnit);
-						}else{
-							if (tExt instanceof TRelationshipTemplate){
-								TRelationshipTemplate relationship = (TRelationshipTemplate) tExt;
-							
+								if (tExt instanceof TRelationshipTemplate){
+									TRelationshipTemplate relationship = (TRelationshipTemplate) tExt;
+									
+								}
 							}
 						}
 					}
 					
 					
-					
-				
-				}
-				nodes.put(serviceTopology.getId(), serviceTopology);
+				}else{
+					cloudServiceName=n.getId();
+					nodes.put(n.getId(),n);
+					TTopologyTemplate topologyTemplate=serviceTemplate.getTopologyTemplate();
 
-			}
-			if (extensibleElements instanceof TNodeTemplate){
+					if (topologyTemplate!=null){
+						for (TEntityTemplate tExt:topologyTemplate.getNodeTemplateOrRelationshipTemplate()){
+//							if (tExt.getType()!=null){
+//								for (String node:nodes.keySet()){
+//									if (tExt.getType().getLocalPart().equalsIgnoreCase(node)){
+//																		
+//										if (((TNodeTemplate)tExt).getPolicies()!=null)
+//											setElasticityRequirements(nodes.get(node),((TNodeTemplate)tExt).getPolicies());
+//									
+//									}
+//								}
+//								
+//							}else
+							if (tExt instanceof TNodeTemplate ){
+								TNodeTemplate nodeTemplate =(TNodeTemplate)tExt;
+								Node serviceUnit=null;
+								if (nodes.containsKey(nodeTemplate.getId())){
+									serviceUnit=nodes.get(nodeTemplate.getId());
+								}else{
+									if (tExt.getType()!=null){
+										serviceUnit = new Node();
+										serviceUnit.setId(tExt.getType().getLocalPart());
+										serviceUnit.setNodeType(NodeType.SERVICE_TOPOLOGY);
+									}else{
+									serviceUnit = new Node();
+									serviceUnit.setId(nodeTemplate.getId());
+									serviceUnit.setNodeType(NodeType.SERVICE_UNIT);
+									}
+								}
+								//serviceUnit.setId(nodeTemplate.getId());
+								//serviceUnit.setNodeType(NodeType.SERVICE_UNIT);
+								Relationship rel  = new Relationship();
+								rel.setType(RelationshipType.COMPOSITION_RELATIONSHIP);
+								n.addNode(serviceUnit,rel );
+								nodes.put(serviceUnit.getId(), serviceUnit);
+								if (nodeTemplate.getPolicies()!=null)
+									setElasticityRequirements(serviceUnit,nodeTemplate.getPolicies());
+							}else{
+								if (tExt instanceof TRelationshipTemplate){
+									TRelationshipTemplate relationship = (TRelationshipTemplate) tExt;
+									
+								}
+							}
+						}
+					}
+				}
 				
-				
+				if (serviceTemplate.getBoundaryDefinitions()!=null && serviceTemplate.getBoundaryDefinitions().getPolicies()!=null)
+					setElasticityRequirementsForService(n,serviceTemplate.getBoundaryDefinitions());
 			}
+			
+		
 		}
+		
+	
 		return nodes;
 	}
 	public DependencyGraph toscaDescriptionToDependencyGraph(){
@@ -201,7 +288,7 @@ public class TOSCAProcessing {
 		Relationship rel = new Relationship();
 		//TODO: take each construct present in TOSCA and transform it to our model
 		Definitions definitions = readTOSCADescriptionsFile();
-		parseTOSCAGraph(nodes, definitions.getServiceTemplateOrNodeTypeOrNodeTypeImplementation(), "");
+		parseTOSCAGraph(nodes, definitions.getServiceTemplateOrNodeTypeOrNodeTypeImplementation());
 		for (Node n:nodes.values())
 			if (n.getNodeType()==NodeType.CLOUD_SERVICE)
 				dependencyGraph.setCloudService(n);
@@ -216,7 +303,7 @@ public class TOSCAProcessing {
 		Definitions definitions = readTOSCADescriptionsString(tosca);
 		TPolicy policy=new TPolicy();
 
-		parseTOSCAGraph(nodes, definitions.getServiceTemplateOrNodeTypeOrNodeTypeImplementation(), "");
+		parseTOSCAGraph(nodes, definitions.getServiceTemplateOrNodeTypeOrNodeTypeImplementation());
 		for (Node n:nodes.values())
 			if (n.getNodeType()==NodeType.CLOUD_SERVICE)
 				dependencyGraph.setCloudService(n);

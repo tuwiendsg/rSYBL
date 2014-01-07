@@ -394,92 +394,92 @@ public class MELA_API implements MonitoringInterface{
 
     }
 
-//    public float getCpuUsage(Node entity) {
+//    public Double getCpuUsage(Node entity) {
 //        Metric metric = new Metric("cpu_usage");
 //        RuntimeLogger.logger.info("For entity " + entity.getId() + " Cpu usage is " + getMetricValue(metric, entity) + "cpu idle is" + getMetricValue(new Metric("cpu_idle"), entity));
 //        return getMetricValue(metric, entity);
 //    }
 //
-//    public float getMemoryAvailable(Node entity) {
+//    public Double getMemoryAvailable(Node entity) {
 //        Metric metric = new Metric("mem_free_in_GB");
 //        return getMetricValue(metric, entity);
 //    }
 //
-//    public float getMemorySize(Node entity) {
+//    public Double getMemorySize(Node entity) {
 //        Metric metric = new Metric("mem_total_in_GB");
 //        return getMetricValue(metric, entity);
 //    }
 //
-//    public float getMemoryUsage(Node entity) {
+//    public Double getMemoryUsage(Node entity) {
 //        Metric metric = new Metric("mem_used");
 //        return getMetricValue(metric, entity);
 //    }
 //
-//    public float getDiskSize(Node entity) {
+//    public Double getDiskSize(Node entity) {
 //        Metric metric = new Metric("disk_total");
 //        return getMetricValue(metric, entity);
 //    }
 //
-//    public float getDiskAvailable(Node entity) {
+//    public Double getDiskAvailable(Node entity) {
 //        Metric metric = new Metric("disk_free");
 //        return getMetricValue(metric, entity);
 //    }
 //
 //    //TODO: define agg rule in procentaj
-//    public float getDiskUsage(Node entity) {
+//    public Double getDiskUsage(Node entity) {
 //
 //        return (getDiskSize(entity) - getDiskAvailable(entity)) / getDiskSize(entity) * 100;
 //    }
 //
-//    public float getCPUSpeed(Node entity) {
+//    public Double getCPUSpeed(Node entity) {
 //
 //        Metric metric = new Metric("cpu_speed");
 //        return getMetricValue(metric, entity);
 //    }
 //
 //    //TODO: define agg rule in TOTAL
-//    public float getPkts(Node entity) {
+//    public Double getPkts(Node entity) {
 //        Metric metric = new Metric("pkts_total");
 //        return getMetricValue(metric, entity);
 //    }
 //
-//    public float getPktsIn(Node entity) {
+//    public Double getPktsIn(Node entity) {
 //        Metric metric = new Metric("pkts_in");
 //        return getMetricValue(metric, entity);
 //    }
 //
-//    public float getPktsOut(Node entity) {
+//    public Double getPktsOut(Node entity) {
 //        Metric metric = new Metric("pkts_out");
 //        return getMetricValue(metric, entity);
 //    }
 //
-//    public float getReadLatency(Node entity) {
+//    public Double getReadLatency(Node entity) {
 //        Metric metric = new Metric("read_latency");
 //        return getMetricValue(metric, entity);
 //    }
 //
-//    public float getWriteLatency(Node entity) {
+//    public Double getWriteLatency(Node entity) {
 //        Metric metric = new Metric("write_latency");
 //        return getMetricValue(metric, entity);
 //    }
 //
-//    public float getReadCount(Node entity) {
+//    public Double getReadCount(Node entity) {
 //        Metric metric = new Metric("read_count");
 //        return getMetricValue(metric, entity);
 //    }
 //
-//    public float getCostPerHour(Node entity) {
+//    public Double getCostPerHour(Node entity) {
 //        Metric metric = new Metric("costPerHour");
 //        return getMetricValue(metric, entity);
 //    }
 //
-//    public float getWriteCount(Node entity) {
+//    public Double getWriteCount(Node entity) {
 //        Metric metric = new Metric("write_count");
 //        return getMetricValue(metric, entity);
 //    }
 //
 //    //TODO: can;t be done currentlu
-//    public float getTotalCostSoFar(Node entity) {
+//    public Double getTotalCostSoFar(Node entity) {
 //        Metric metric = new Metric("costPerHour");
 //        return getMetricValue(metric, entity);
 //    }
@@ -600,11 +600,11 @@ public class MELA_API implements MonitoringInterface{
         }
     }
 
-    public float getMetricValue(Metric metric, Node entity) {
+    public Double getMetricValue(Metric metric, Node entity) {
 
         if (entity.getId() == null) {
             Logger.getLogger(this.getClass().getName()).log(Level.WARNING, "Supplied entity has no ID. Can't get metric value");
-            return -1;
+            return -1.0;
         }
 
         //get the Entity level so I can search it in the monitored snapshot easily (only in entity and its children)
@@ -626,10 +626,10 @@ public class MELA_API implements MonitoringInterface{
                     MetricValue value = currentlyUnderInspection.getMetricValue(metric);
                     switch (value.getValueType()) {
                         case NUMERIC:
-                            return Float.parseFloat(value.getValueRepresentation());
+                            return Double.parseDouble(value.getValueRepresentation());
                         default:
                             Logger.getLogger(this.getClass().getName()).log(Level.WARNING, "Value ''{0}''for metric {1} for Node {2} is not Numeric", new Object[]{value.getValueRepresentation(), metric.toString(), entity.getId()});
-                            return -1;
+                            return -1.0;
                     }
                 }
             } else {
@@ -639,7 +639,7 @@ public class MELA_API implements MonitoringInterface{
 
         //if we have reached this point, either the monitored element was not found, either the metric
         RuntimeLogger.logger.info( "Metric "+metric.toString()+" OR   Node "+entity.getId()+" not found");
-        return -1;
+        return -1.0;
     }
 //
 
@@ -878,96 +878,96 @@ public class MELA_API implements MonitoringInterface{
     }
 
     @Override
-    public float getNumberInstances(Node entity) {
+    public Double getNumberInstances(Node entity) {
         Metric metric = new Metric("vmCount");
         return getMetricValue(metric, entity);
     }
-    public float getCpuUsage(Node entity) {
+    public Double getCpuUsage(Node entity) {
         Metric metric = new Metric("cpu_usage");
         RuntimeLogger.logger.info("For entity "+entity.getId()+" Cpu usage is "+getMetricValue(metric,entity)+"cpu idle is" + getMetricValue(new Metric("cpu_idle"), entity));
         return getMetricValue(metric, entity);
     }
 
-    public float getMemoryAvailable(Node entity) {
+    public Double getMemoryAvailable(Node entity) {
         Metric metric = new Metric("mem_free_in_GB");
         return getMetricValue(metric, entity);
     }
 
-    public float getMemorySize(Node entity) {
+    public Double getMemorySize(Node entity) {
         Metric metric = new Metric("mem_total_in_GB");
         return getMetricValue(metric, entity);
     }
 
-    public float getMemoryUsage(Node entity) {
+    public Double getMemoryUsage(Node entity) {
         Metric metric = new Metric("mem_used");
         return getMetricValue(metric, entity);
     }
 
-    public float getDiskSize(Node entity) {
+    public Double getDiskSize(Node entity) {
         Metric metric = new Metric("disk_total");
         return getMetricValue(metric, entity);
     }
 
-    public float getDiskAvailable(Node entity) {
+    public Double getDiskAvailable(Node entity) {
         Metric metric = new Metric("disk_free");
         return getMetricValue(metric, entity);
     }
 
     //TODO: define agg rule in procentaj
-    public float getDiskUsage(Node entity) {
+    public Double getDiskUsage(Node entity) {
 
         return (getDiskSize(entity) - getDiskAvailable(entity)) / getDiskSize(entity) * 100;
     }
 
-    public float getCPUSpeed(Node entity) {
+    public Double getCPUSpeed(Node entity) {
 
         Metric metric = new Metric("cpu_speed");
         return getMetricValue(metric, entity);
     }
 
     //TODO: define agg rule in TOTAL
-    public float getPkts(Node entity) {
+    public Double getPkts(Node entity) {
         Metric metric = new Metric("pkts_total");
         return getMetricValue(metric, entity);
     }
 
-    public float getPktsIn(Node entity) {
+    public Double getPktsIn(Node entity) {
         Metric metric = new Metric("pkts_in");
         return getMetricValue(metric, entity);
     }
 
-    public float getPktsOut(Node entity) {
+    public Double getPktsOut(Node entity) {
         Metric metric = new Metric("pkts_out");
         return getMetricValue(metric, entity);
     }
 
-    public float getReadLatency(Node entity) {
+    public Double getReadLatency(Node entity) {
         Metric metric = new Metric("read_latency");
         return getMetricValue(metric, entity);
     }
 
-    public float getWriteLatency(Node entity) {
+    public Double getWriteLatency(Node entity) {
         Metric metric = new Metric("write_latency");
         return getMetricValue(metric, entity);
     }
 
-    public float getReadCount(Node entity) {
+    public Double getReadCount(Node entity) {
         Metric metric = new Metric("read_count");
         return getMetricValue(metric, entity);
     }
 
-    public float getCostPerHour(Node entity) {
+    public Double getCostPerHour(Node entity) {
         Metric metric = new Metric("costPerHour");
         return getMetricValue(metric, entity);
     }
 
-    public float getWriteCount(Node entity) {
+    public Double getWriteCount(Node entity) {
         Metric metric = new Metric("write_count");
         return getMetricValue(metric, entity);
     }
 
     //TODO: can;t be done currentlu
-    public float getTotalCostSoFar(Node entity) {
+    public Double getTotalCostSoFar(Node entity) {
         Metric metric = new Metric("costPerHour");
         return getMetricValue(metric, entity);
     }
@@ -1000,7 +1000,7 @@ public class MELA_API implements MonitoringInterface{
     	RuntimeLogger.logger.error("Error when submitting composition rules, in MELA_API");
     }
     	}
-    public float getMetricValue(String metricName, Node entity) {
+    public Double getMetricValue(String metricName, Node entity) {
         Metric metric = new Metric(metricName);
         
         return getMetricValue(metric, entity);

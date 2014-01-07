@@ -22,16 +22,26 @@
 
 package at.ac.tuwien.dsg.rSybl.planningEngine.staticData;
 
+import java.io.FileNotFoundException;
+import java.io.FileReader;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map.Entry;
+
+import org.json.simple.JSONArray;
+import org.json.simple.JSONObject;
+import org.json.simple.parser.JSONParser;
+import org.json.simple.parser.ParseException;
 
 import at.ac.tuwien.dsg.csdg.DependencyGraph;
 import at.ac.tuwien.dsg.rSybl.dataProcessingUnit.api.MonitoringAPIInterface;
 import at.ac.tuwien.dsg.rSybl.planningEngine.ContextRepresentation;
-import at.ac.tuwien.dsg.rSybl.planningEngine.MonitoredEntity;
-import at.ac.tuwien.dsg.rSybl.planningEngine.utils.PlanningLogger;
+import at.ac.tuwien.dsg.rSybl.planningEngine.utils.Configuration;
 
 
 
@@ -79,8 +89,8 @@ public class ActionEffects {
 //		}
 		{
 			scaleOutEffectForCassandraDB.setTargetedEntityID("DataNodeServiceUnit");
-			scaleOutEffectForCassandraDB.setActionEffectForMetric("cpuUsage", -30.0f,"DataNodeServiceUnit");
-			scaleOutEffectForCassandraDB.setActionEffectForMetric("cpuUsage", -40.0f,"DataControllerServiceUnit");
+			scaleOutEffectForCassandraDB.setActionEffectForMetric("cpuUsage", -30.0,"DataNodeServiceUnit");
+			scaleOutEffectForCassandraDB.setActionEffectForMetric("cpuUsage", -40.0,"DataControllerServiceUnit");
 //			if (ycsbClient!=null){
 //                            float val = 0;
 //                            if (ycsbClient.getMonitoredValue("throughput")==null){
@@ -88,9 +98,9 @@ public class ActionEffects {
 //                            }else{
 //                                val=ycsbClient.getMonitoredValue("throughput");
 //                            }
-			scaleOutEffectForCassandraDB.setActionEffectForMetric("latency", -2.0f,"DataNodeServiceUnit");
+			scaleOutEffectForCassandraDB.setActionEffectForMetric("latency", -2.0,"DataNodeServiceUnit");
 		
-			scaleOutEffectForCassandraDB.setActionEffectForMetric("cost", 0.12f,"DataNodeServiceUnit");
+			scaleOutEffectForCassandraDB.setActionEffectForMetric("cost", 0.12,"DataNodeServiceUnit");
 			scaleOutEffectForCassandraDB.setActionName("scaleOutEffectForDataNode");
 			scaleOutEffectForCassandraDB.setActionType("scaleout");
 
@@ -98,10 +108,10 @@ public class ActionEffects {
 
 		{
 			scaleOutEffectForWebServer.setTargetedEntityID("EventProcessingServiceUnit") ; 
-			scaleOutEffectForWebServer.setActionEffectForMetric("cpuUsage", -40.0f,"EventProcessingServiceUnit");
-			scaleOutEffectForWebServer.setActionEffectForMetric("cost",0.12f,"EventProcessingServiceUnit");
-			scaleOutEffectForWebServer.setActionEffectForMetric("responseTime", -1000.0f,"EventProcessingServiceUnit");
-			scaleOutEffectForWebServer.setActionEffectForMetric("throughput", 1000f,"EventProcessingServiceUnit");
+			scaleOutEffectForWebServer.setActionEffectForMetric("cpuUsage", -40.0,"EventProcessingServiceUnit");
+			scaleOutEffectForWebServer.setActionEffectForMetric("cost",0.12,"EventProcessingServiceUnit");
+			scaleOutEffectForWebServer.setActionEffectForMetric("responseTime", -1000.0,"EventProcessingServiceUnit");
+			scaleOutEffectForWebServer.setActionEffectForMetric("throughput", 1000.0,"EventProcessingServiceUnit");
 			scaleOutEffectForWebServer.setActionName("scaleOutEffectForEventProcessingServiceUnit");
 			scaleOutEffectForWebServer.setActionType("scaleout");
 
@@ -119,13 +129,13 @@ public class ActionEffects {
 
 		{
 			scaleInEffectForCassandraDB.setTargetedEntityID("DataNodeServiceUnit");
-			scaleInEffectForCassandraDB.setActionEffectForMetric("cpuUsage", 35.0f,"DataNodeServiceUnit");
-			scaleInEffectForCassandraDB.setActionEffectForMetric("cpuUsage", 20.0f,"DataNodeServiceUnit");
+			scaleInEffectForCassandraDB.setActionEffectForMetric("cpuUsage", 35.0,"DataNodeServiceUnit");
+			scaleInEffectForCassandraDB.setActionEffectForMetric("cpuUsage", 20.0,"DataControllerServiceUnit");
 
-                   scaleInEffectForCassandraDB.setActionEffectForMetric("latency", 1f,"DataNodeServiceUnit");
-                   scaleInEffectForCassandraDB.setActionEffectForMetric("latency", 1f,"DataNodeServiceUnit");
+                   scaleInEffectForCassandraDB.setActionEffectForMetric("latency", 1.0,"DataNodeServiceUnit");
+                   scaleInEffectForCassandraDB.setActionEffectForMetric("latency", 1.0,"DataControllerServiceUnit");
 
-			scaleInEffectForCassandraDB.setActionEffectForMetric("cost", -0.12f,"DataNodeServiceUnit");
+			scaleInEffectForCassandraDB.setActionEffectForMetric("cost", -0.12,"DataNodeServiceUnit");
 		//	scaleInEffectForCassandraDB.setActionEffectForMetric("cost", -0.12f,"CloudService");
 			
 			scaleInEffectForCassandraDB.setActionName("scaleInEffectForDataNode");
@@ -136,10 +146,10 @@ public class ActionEffects {
 
 		{
 			scaleInEffectForWebServer.setTargetedEntityID("EventProcessingServiceUnit") ; 
-			scaleInEffectForWebServer.setActionEffectForMetric("cpuUsage", 40.0f,"EventProcessingServiceUnit");
-			scaleInEffectForWebServer.setActionEffectForMetric("cost", 0.12f,"EventProcessingServiceUnit");
-			scaleInEffectForWebServer.setActionEffectForMetric("responseTime", 400.0f,"EventProcessingServiceUnit");
-			scaleInEffectForWebServer.setActionEffectForMetric("throughput", -1000.0f,"EventProcessingServiceUnit");
+			scaleInEffectForWebServer.setActionEffectForMetric("cpuUsage", 40.0,"EventProcessingServiceUnit");
+			scaleInEffectForWebServer.setActionEffectForMetric("cost", 0.12,"EventProcessingServiceUnit");
+			scaleInEffectForWebServer.setActionEffectForMetric("responseTime", 400.0,"EventProcessingServiceUnit");
+			scaleInEffectForWebServer.setActionEffectForMetric("throughput", -1000.0,"EventProcessingServiceUnit");
 			scaleInEffectForWebServer.setActionName("scaleInEffectForEventProcessingServiceUnit");
 			scaleInEffectForWebServer.setActionType("scalein");
 
@@ -208,5 +218,66 @@ public class ActionEffects {
 		}
 		return actionEffects;
 	}
-	
+	 public static HashMap<String,List<ActionEffect>> getActionEffects () {
+			HashMap<String,List<ActionEffect>> actionEffects = new HashMap<String,List<ActionEffect>>();
+
+			JSONParser parser = new JSONParser();
+		 
+			try {
+				InputStream inputStream = Configuration.class.getClassLoader().getResourceAsStream(Configuration.getEffectsPath());
+				Object obj = parser.parse(new InputStreamReader(inputStream));
+		 
+				JSONObject jsonObject = (JSONObject) obj;
+				
+				for (Object actionName:jsonObject.keySet()){
+					ActionEffect actionEffect = new ActionEffect();
+					String myaction = (String )actionName;
+					actionEffect.setActionType((String)actionName);
+					
+					JSONObject object=(JSONObject) jsonObject.get(myaction);
+				for (Object actions: object.keySet()){
+					
+					JSONObject scaleinDescription=(JSONObject) object.get(actions);
+					String targetUnit = (String) scaleinDescription.get("targetUnit");
+					actionEffect.setTargetedEntityID(targetUnit);
+					
+					JSONObject effects = (JSONObject) scaleinDescription.get("effects");
+					
+
+					for (Object effectPerUnit:effects.keySet()){
+						//System.out.println(effects.toString());
+						String affectedUnit = (String) effectPerUnit;
+						JSONObject metriceffects=(JSONObject) effects.get(affectedUnit);
+						for (Object metric:metriceffects.keySet()){
+							String metricName=(String)metric;
+							try{
+								actionEffect.setActionEffectForMetric(metricName, (Double)metriceffects.get(metricName), affectedUnit);
+							
+							//System.out.println("metricName="+metricName+" metric effect="+metriceffects.get(metricName)+"Affected unit="+affectedUnit);
+							
+							}catch(Exception e){
+								
+								actionEffect.setActionEffectForMetric(metricName, ((Long)metriceffects.get(metricName)+0.0), affectedUnit);
+								
+							//	System.out.println("metricName="+metricName+" metric effect="+metriceffects.get(metricName)+"Affected unit="+affectedUnit);
+					
+								}
+						}}
+				}
+				 List <ActionEffect > l = new ArrayList<ActionEffect>();
+				 l.add(actionEffect);
+				actionEffects.put(actionEffect.getTargetedEntityID(), l);
+				}
+		 
+				
+			} catch (FileNotFoundException e) {
+				e.printStackTrace();
+			} catch (IOException e) {
+				e.printStackTrace();
+			} catch (ParseException e) {
+				e.printStackTrace();
+			}
+	return actionEffects;	 
+		     }
+	 
 }

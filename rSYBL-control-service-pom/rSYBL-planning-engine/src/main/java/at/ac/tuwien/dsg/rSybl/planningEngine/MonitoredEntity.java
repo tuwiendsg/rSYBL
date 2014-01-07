@@ -25,9 +25,9 @@ package at.ac.tuwien.dsg.rSybl.planningEngine;
 import java.util.Collection;
 
 public abstract class MonitoredEntity {
-	public abstract void setMonitoredValue(String data, Float value);
+	public abstract void setMonitoredValue(String data, Double value);
 
-	public abstract Float getMonitoredValue(String data);
+	public abstract Double getMonitoredValue(String data);
 	public abstract String getId() ;
 	
 	public abstract void setId(String id);

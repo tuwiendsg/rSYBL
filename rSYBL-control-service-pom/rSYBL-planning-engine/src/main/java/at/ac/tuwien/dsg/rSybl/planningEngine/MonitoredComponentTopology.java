@@ -31,16 +31,16 @@ import at.ac.tuwien.dsg.rSybl.cloudInteractionUnit.utils.RuntimeLogger;
 
 public class MonitoredComponentTopology extends MonitoredEntity {
 	private String id;
-	private HashMap<String,Float> monitoredData=new HashMap<String,Float>();
+	private HashMap<String,Double> monitoredData=new HashMap<String,Double>();
 	private ArrayList<MonitoredComponent> monitoredComponents = new ArrayList<MonitoredComponent>();
 	private ArrayList<MonitoredComponentTopology> monitoredComponentTopologies= new ArrayList<MonitoredComponentTopology>();
 	private HashMap<String,String> monitoredVariables = new HashMap<String,String>();
 
 
-	public void setMonitoredValue(String data, Float value){
+	public void setMonitoredValue(String data, Double value){
 		getMonitoredData().put(data,value);
 	}
-	public Float getMonitoredValue(String data){
+	public Double getMonitoredValue(String data){
 		return getMonitoredData().get(data);
 	}	
 	public void addMonitoredTopology(MonitoredComponentTopology componentTopology){
@@ -73,9 +73,9 @@ public class MonitoredComponentTopology extends MonitoredEntity {
 	public MonitoredComponentTopology clone(){
 		MonitoredComponentTopology cloudService=new MonitoredComponentTopology();
 		cloudService.setId(id);
-		HashMap<String,Float> newMonitoredData = new HashMap<String,Float>();
+		HashMap<String,Double> newMonitoredData = new HashMap<String,Double>();
 		for (String entry:getMonitoredData().keySet()){
-			newMonitoredData.put(entry, getMonitoredData().get(entry).floatValue());
+			newMonitoredData.put(entry, getMonitoredData().get(entry).doubleValue());
 		}
 
 		ArrayList<MonitoredComponentTopology> newMonitoredTopology=new ArrayList<MonitoredComponentTopology>();
@@ -97,10 +97,10 @@ public class MonitoredComponentTopology extends MonitoredEntity {
 		cloudService.setMonitoredVariables(newMonitoredVariables);
 		return cloudService;
 	}
-	public HashMap<String,Float> getMonitoredData() {
+	public HashMap<String,Double> getMonitoredData() {
 		return monitoredData;
 	}
-	public void setMonitoredData(HashMap<String,Float> monitoredData) {
+	public void setMonitoredData(HashMap<String,Double> monitoredData) {
 		this.monitoredData = monitoredData;
 	}
 	public void setMonitoredComponents(ArrayList<MonitoredComponent> monitoredComponents) {

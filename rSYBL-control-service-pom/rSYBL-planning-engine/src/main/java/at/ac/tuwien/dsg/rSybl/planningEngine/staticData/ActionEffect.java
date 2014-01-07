@@ -43,20 +43,20 @@ public class ActionEffect {
 	private String targetedEntityID;
 	private String actionType;
 	
-	public HashMap<String,HashMap<String,Float>> effects = new HashMap<String,HashMap<String,Float>>();
+	public HashMap<String,HashMap<String,Double>> effects = new HashMap<String,HashMap<String,Double>>();
 
-	public void setActionEffectForMetric(String metricName, Float result,String entityID){
+	public void setActionEffectForMetric(String metricName, Double result,String entityID){
 		//System.out.println("Setting action effect for metric "+metricName+" entity "+entityID);
 		if (effects.get(entityID)!=null)
 		effects.get(entityID).put(metricName, result);
 		else{
-			HashMap<String, Float> metrics = new HashMap<String,Float>();
+			HashMap<String, Double> metrics = new HashMap<String,Double>();
 			metrics.put(metricName, result);
 			effects.put(entityID, metrics);
 		}
 	}
-	public Float getActionEffectForMetric(String metricName,String entityID){	
-		if (effects.get(entityID)==null)return 0.0f;
+	public Double getActionEffectForMetric(String metricName,String entityID){	
+		if (effects.get(entityID)==null)return 0.0;
 		return effects.get(entityID).get(metricName);
 	}
 	public Node getTargetedEntity() {
@@ -89,12 +89,12 @@ public class ActionEffect {
 	
 	public void aggregateMetrics(Node currentEntity,MonitoringAPIInterface monitoringAPI){
 		if (currentEntity.getNodeType()==NodeType.SERVICE_TOPOLOGY){
-			HashMap<String,Float> resultedEffectAtServiceUnitLevel = new HashMap<String,Float>();
-			HashMap<String, Float> values = new HashMap<String,Float>();
+			HashMap<String,Double> resultedEffectAtServiceUnitLevel = new HashMap<String,Double>();
+			HashMap<String, Double> values = new HashMap<String,Double>();
 			for (Node serviceUnit: currentEntity.getAllRelatedNodesOfType(RelationshipType.COMPOSITION_RELATIONSHIP,NodeType.SERVICE_UNIT)){
-				HashMap<String,Float> effect = effects.get(serviceUnit.getId());
+				HashMap<String,Double> effect = effects.get(serviceUnit.getId());
 				if (effect!=null)
-				for (Map.Entry<String, Float> entry:effect.entrySet()){
+				for (Map.Entry<String, Double> entry:effect.entrySet()){
 					if (entry.getKey().toLowerCase().contains("cost")||entry.getKey().toLowerCase().contains("size") || entry.getKey().toLowerCase().contains("throughput")){
 					 if (resultedEffectAtServiceUnitLevel.containsKey(entry.getKey())){
 						 resultedEffectAtServiceUnitLevel.put(entry.getKey(), resultedEffectAtServiceUnitLevel.get(entry.getKey())+effect.get(entry.getKey()));
@@ -106,7 +106,7 @@ public class ActionEffect {
 						     values.put(entry.getKey(), values.get(entry.getKey())+1);
 						 }else{
 							 resultedEffectAtServiceUnitLevel.put(entry.getKey(),effect.get(entry.getKey()));
-						     values.put(entry.getKey(), 1.0f);
+						     values.put(entry.getKey(), 1.0);
 
 						 } 
 					 }
@@ -115,9 +115,9 @@ public class ActionEffect {
 					}
 			if ((currentEntity.getAllRelatedNodesOfType(RelationshipType.COMPOSITION_RELATIONSHIP,NodeType.SERVICE_TOPOLOGY))!=null)
 			for (Node serviceTopology:currentEntity.getAllRelatedNodesOfType(RelationshipType.COMPOSITION_RELATIONSHIP,NodeType.SERVICE_TOPOLOGY)){
-				HashMap<String,Float> effect = effects.get(serviceTopology.getId());
+				HashMap<String,Double> effect = effects.get(serviceTopology.getId());
 				if (effect!=null)
-				for (Map.Entry<String, Float> entry:effect.entrySet()){
+				for (Map.Entry<String, Double> entry:effect.entrySet()){
 					if (entry.getKey().toLowerCase().contains("cost")||entry.getKey().toLowerCase().contains("size") || entry.getKey().toLowerCase().contains("throughput")){
 					 if (resultedEffectAtServiceUnitLevel.containsKey(entry.getKey())){
 						 resultedEffectAtServiceUnitLevel.put(entry.getKey(), resultedEffectAtServiceUnitLevel.get(entry.getKey())+effect.get(entry.getKey()));
@@ -129,14 +129,14 @@ public class ActionEffect {
 						     values.put(entry.getKey(), values.get(entry.getKey())+1);
 						 }else{
 							 resultedEffectAtServiceUnitLevel.put(entry.getKey(),effect.get(entry.getKey()));
-						     values.put(entry.getKey(), 1.0f);
+						     values.put(entry.getKey(), 1.0);
 
 						 } 
 					 }
 				}
 
 					}
-			for (Map.Entry<String, Float> entry:resultedEffectAtServiceUnitLevel.entrySet())
+			for (Map.Entry<String, Double> entry:resultedEffectAtServiceUnitLevel.entrySet())
 				if (entry.getKey().toLowerCase().contains("cost")||entry.getKey().toLowerCase().contains("size") || entry.getKey().toLowerCase().contains("throughput"))
 					{
 						setActionEffectForMetric(entry.getKey(), resultedEffectAtServiceUnitLevel.get(entry.getKey()), currentEntity.getId());
@@ -148,7 +148,7 @@ public class ActionEffect {
 				}
 		if (currentEntity.getNodeType()==NodeType.CLOUD_SERVICE){
 			Node serviceTopology = currentEntity.getAllRelatedNodesOfType(RelationshipType.COMPOSITION_RELATIONSHIP,NodeType.SERVICE_TOPOLOGY).get(0);
-			HashMap<String,Float> effect = effects.get(serviceTopology.getId());
+			HashMap<String,Double> effect = effects.get(serviceTopology.getId());
 			effects.put(currentEntity.getId(), effect);
 
 		}
@@ -176,7 +176,7 @@ public class ActionEffect {
 		}
 			if (effects.get(currentEntityID)==null)
 		{
-				HashMap<String, Float> metrics = new HashMap<String,Float>();
+				HashMap<String, Double> metrics = new HashMap<String,Double>();
 
 				effects.put(currentEntityID, metrics);
 			}
@@ -187,7 +187,7 @@ public class ActionEffect {
 		while (parent!=null){
 			//Compute metrics
 			if (!effects.containsKey(parent.getId())){
-				HashMap<String, Float> metrics = new HashMap<String,Float>();
+				HashMap<String, Double> metrics = new HashMap<String,Double>();
 
 				effects.put(parent.getId(), metrics);
 				}

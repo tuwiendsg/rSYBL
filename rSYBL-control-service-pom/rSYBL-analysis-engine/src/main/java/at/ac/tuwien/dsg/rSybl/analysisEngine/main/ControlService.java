@@ -120,6 +120,28 @@ public class ControlService {
 
 	}
 
+//	public void setApplicationDescriptionInfoTOSCA(String toscaDescr){
+//		applicationDescription = toscaDescr;
+//		TOSCAProcessing inputProcessing = new TOSCAProcessing();
+//
+//		if (planningGreedyAlgorithm != null)
+//			planningGreedyAlgorithm.stop();
+//		if (syblService != null)
+//			syblService.stopProcessingThreads();
+//		planningGreedyAlgorithm = null;
+//		syblService = null;
+//		monitoringAPI = null;
+//		enforcementAPI = null;
+//
+//		if (!applicationDescription.equalsIgnoreCase("")
+//				&& !deploymentDescription.equalsIgnoreCase("")) {
+//			dependencyGraph = inputProcessing.loadDependencyGraphFromStrings(
+//					applicationDescription, "", deploymentDescription);
+//			startSYBLProcessingAndPlanning();
+//			applicationDescription = "";
+//			deploymentDescription = "";
+//		}
+//	}
 	public void setApplicationDescriptionInfoCELAR(
 			String applicationDescriptionXML) {
 		applicationDescription = applicationDescriptionXML;

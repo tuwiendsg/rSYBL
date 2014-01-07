@@ -81,7 +81,7 @@ public class ContextRepresentation {
 			SYBLSpecification syblSpecification = SYBLDirectiveMappingFromXML.mapFromSYBLAnnotation(elasticityRequirement.getAnnotation());
 			for (Strategy strategy:syblSpecification.getStrategy()){
 					String methodName="";
-	   				Float value = 0.0f;	
+	   				Double value = 0.0;	
 
 					if (methodName.equals("") && strategy.getToEnforce().getParameter()!=null && strategy.getToEnforce().getParameter()!=""){
 						try {
@@ -105,7 +105,7 @@ public class ContextRepresentation {
 		   					metric =right;
 		   				else metric=left;
 		   				 methodName = descriptionParser.getMethod(metric);
-		   				 value = 0.0f;	
+		   				 value = 0.0;	
 		   				if (!methodName.equals("")) {
 							try {
 								Class partypes[] = new Class[1];
@@ -113,12 +113,12 @@ public class ContextRepresentation {
 								parameters[0]=entity;
 								partypes[0]= Node.class;
 								Method method = MonitoringInterface.class.getMethod(methodName,partypes);
-								value = (Float)method.invoke(monitoringAPI,parameters);
+								value = (Double)method.invoke(monitoringAPI,parameters);
 							}catch(Exception e){
 								e.printStackTrace();
 							}
 						}else{
-							 value= (Float) monitoringAPI.getMetricValue(metric, entity);
+							 value= (Double) monitoringAPI.getMetricValue(metric, entity);
 
 						}
 		   				monitoredEntity.setMonitoredValue(metric,value );	
@@ -131,7 +131,7 @@ public class ContextRepresentation {
 	   			for (Monitoring monitoring:syblSpecification.getMonitoring()){
 					monitoredEntity.setMonitoredVar(monitoring.getMonitor().getEnvVar(),monitoring.getMonitor().getMetric());
 		   			String methodName = descriptionParser.getMethod(monitoring.getMonitor().getMetric());
-					Float value = 0.0f;	
+					Double value = 0.0;	
 					if (!methodName.equals("")) {
 							try {
 								Class partypes[] = new Class[1];
@@ -141,13 +141,13 @@ public class ContextRepresentation {
 								
 								Method method = MonitoringInterface.class.getMethod(methodName,partypes);
 
-								value = (Float)method.invoke(monitoringAPI,parameters);
+								value = (Double)method.invoke(monitoringAPI,parameters);
 							}catch(Exception e){
 								e.printStackTrace();
 							}
 						}else{
 							
-						 value= (Float) monitoringAPI.getMetricValue(monitoring.getMonitor().getMetric(), entity);
+						 value= (Double) monitoringAPI.getMetricValue(monitoring.getMonitor().getMetric(), entity);
 							
 						}
 					monitoredEntity.setMonitoredValue(monitoring.getMonitor().getMetric(),value );	
@@ -164,7 +164,7 @@ public class ContextRepresentation {
 		   					metric =right;
 		   				else metric=left;
 		   				String methodName = descriptionParser.getMethod(metric);
-		   				Float value = 0.0f;	
+		   				Double value = 0.0;	
 		   				if (!methodName.equals("")) {
 							try {
 								Class partypes[] = new Class[1];
@@ -172,12 +172,12 @@ public class ContextRepresentation {
 								parameters[0]=entity;
 								partypes[0]= Node.class;
 								Method method = MonitoringInterface.class.getMethod(methodName,partypes);
-								value = (Float)method.invoke(monitoringAPI,parameters);
+								value = (Double)method.invoke(monitoringAPI,parameters);
 							}catch(Exception e){
 								e.printStackTrace();
 							}
 						}else{
-							 value= (Float) monitoringAPI.getMetricValue(metric, entity);
+							 value= (Double) monitoringAPI.getMetricValue(metric, entity);
 
 						}
 		   				monitoredEntity.setMonitoredValue(metric,value );	
@@ -194,7 +194,7 @@ public class ContextRepresentation {
 		   					metric =right;
 		   				else metric=left;
 		   				String methodName = descriptionParser.getMethod(metric);
-		   				Float value = 0.0f;	
+		   				Double value = 0.0;	
 		   				if (!methodName.equals("")) {
 							try {
 								Class partypes[] = new Class[1];
@@ -202,12 +202,12 @@ public class ContextRepresentation {
 								parameters[0]=entity;
 								partypes[0]= Node.class;
 								Method method = MonitoringInterface.class.getMethod(methodName,partypes);
-								value = (Float)method.invoke(monitoringAPI,parameters);
+								value = (Double)method.invoke(monitoringAPI,parameters);
 							}catch(Exception e){
 								e.printStackTrace();
 							}
 						}else{
-							 value= (Float) monitoringAPI.getMetricValue(metric, entity);
+							 value= (Double) monitoringAPI.getMetricValue(metric, entity);
 
 						}
 		   				monitoredEntity.setMonitoredValue(metric,value );	
@@ -224,7 +224,7 @@ public class ContextRepresentation {
 		while (!monitoredTopologies.isEmpty()){
 			Node entity = dependencyGraph.getNodeWithID(monitoredTopologies.get(0).getId());
 			for (Node n:entity.getAllRelatedNodesOfType(RelationshipType.COMPOSITION_RELATIONSHIP)){
-					float v1 = -1;
+					Double v1 = -1.0;
 					MonitoredEntity newMon = findMonitoredEntity(n.getId());
 	   				if (entity.getAllRelatedNodesOfType(RelationshipType.COMPOSITION_RELATIONSHIP)!=null)
 					for (String metric: monitoredTopologies.get(0).getMonitoredData().keySet()){
@@ -278,29 +278,29 @@ public class ContextRepresentation {
 	public void doAction(ActionEffect action){
 		for (String currentMetric:getMonitoredCloudService().getMonitoredMetrics()){
 			if (action.getActionEffectForMetric(currentMetric,getMonitoredCloudService().getId())!=null){
-                         float oldValue = monitoredCloudService.getMonitoredValue(currentMetric);   
+                         Double oldValue = monitoredCloudService.getMonitoredValue(currentMetric);   
 			getMonitoredCloudService().setMonitoredValue(currentMetric, oldValue + action.getActionEffectForMetric(currentMetric,getMonitoredCloudService().getId()) );
 		}
                 }
 		for (MonitoredComponentTopology componentTopology:getMonitoredCloudService().getMonitoredTopologies()){
 			for (String currentMetric:componentTopology.getMonitoredMetrics()){
 				if(action.getActionEffectForMetric(currentMetric,componentTopology.getId())!=null){
-                                 float oldValue = componentTopology.getMonitoredValue(currentMetric);   
+                                 Double oldValue = componentTopology.getMonitoredValue(currentMetric);   
 				componentTopology.setMonitoredValue(currentMetric, oldValue +action.getActionEffectForMetric(currentMetric,componentTopology.getId()));
 			}
                         }
 			for (MonitoredComponentTopology componentTopology2:componentTopology.getMonitoredTopologies()){
 				for (String currentMetric:componentTopology2.getMonitoredMetrics()){
 					if (action.getActionEffectForMetric(currentMetric,componentTopology2.getId())!=null){
-                                         float oldValue = componentTopology2.getMonitoredValue(currentMetric);   
+                                         Double oldValue = componentTopology2.getMonitoredValue(currentMetric);   
                                         componentTopology2.setMonitoredValue(currentMetric, oldValue +action.getActionEffectForMetric(currentMetric,componentTopology2.getId()) );
                                         }
                                         }
 				for (MonitoredComponent comp:componentTopology2.getMonitoredComponents()){
 					for (String currentMetric:comp.getMonitoredMetrics()){
 						if (action.getActionEffectForMetric(currentMetric,comp.getId())!=null){
-                                                     float oldValue = comp.getMonitoredValue(currentMetric);
-                                                      float newValue =   oldValue +action.getActionEffectForMetric(currentMetric,comp.getId());
+                                                     Double oldValue = comp.getMonitoredValue(currentMetric);
+                                                      Double newValue =   oldValue +action.getActionEffectForMetric(currentMetric,comp.getId());
 
                                                      comp.setMonitoredValue(currentMetric, newValue );
                                                 }
@@ -311,8 +311,8 @@ public class ContextRepresentation {
 				for (String currentMetric:comp.getMonitoredMetrics()){
 					if (action.getActionEffectForMetric(currentMetric,comp.getId())!=null)
                                         {
-                                             float oldValue = comp.getMonitoredValue(currentMetric);
-                                                  float newValue =   oldValue +action.getActionEffectForMetric(currentMetric,comp.getId());
+                                             Double oldValue = comp.getMonitoredValue(currentMetric);
+                                                  Double newValue =   oldValue +action.getActionEffectForMetric(currentMetric,comp.getId());
 					comp.setMonitoredValue(currentMetric, newValue );
                                         }
                                         }
@@ -322,7 +322,7 @@ public class ContextRepresentation {
 	public void undoAction(ActionEffect action){
 		for (String currentMetric:getMonitoredCloudService().getMonitoredMetrics()){
 			if (action.getActionEffectForMetric(currentMetric,getMonitoredCloudService().getId())!=null){
-                            float oldValue = monitoredCloudService.getMonitoredValue(currentMetric);
+                            Double oldValue = monitoredCloudService.getMonitoredValue(currentMetric);
                             monitoredCloudService.setMonitoredValue(currentMetric, oldValue +(-1)*action.getActionEffectForMetric(currentMetric,getMonitoredCloudService().getId()) );
                         
                         }
@@ -330,14 +330,14 @@ public class ContextRepresentation {
 		for (MonitoredComponentTopology componentTopology:getMonitoredCloudService().getMonitoredTopologies()){
 			for (String currentMetric:componentTopology.getMonitoredMetrics()){
 				if (action.getActionEffectForMetric(currentMetric,componentTopology.getId())!=null){
-                                    float oldValue = componentTopology.getMonitoredValue(currentMetric);
+                                    Double oldValue = componentTopology.getMonitoredValue(currentMetric);
                                     componentTopology.setMonitoredValue(currentMetric, oldValue +(-1)*action.getActionEffectForMetric(currentMetric,componentTopology.getId()));
 			
                                 }}
 			for (MonitoredComponentTopology componentTopology2:componentTopology.getMonitoredTopologies()){
 				for (String currentMetric:componentTopology2.getMonitoredMetrics()){
 					if (action.getActionEffectForMetric(currentMetric,componentTopology2.getId())!=null){
-					 float oldValue = componentTopology2.getMonitoredValue(currentMetric);
+					 Double oldValue = componentTopology2.getMonitoredValue(currentMetric);
                                    
                                             componentTopology2.setMonitoredValue(currentMetric, componentTopology2.getMonitoredValue(currentMetric) +(-1)*action.getActionEffectForMetric(currentMetric,componentTopology2.getId()) );
                                         }
@@ -345,7 +345,7 @@ public class ContextRepresentation {
 				for (MonitoredComponent comp:componentTopology2.getMonitoredComponents()){
 					for (String currentMetric:comp.getMonitoredMetrics()){
 						if (action.getActionEffectForMetric(currentMetric,comp.getId())!=null){
-						 float oldValue = comp.getMonitoredValue(currentMetric);
+						 Double oldValue = comp.getMonitoredValue(currentMetric);
                                    
                                                     comp.setMonitoredValue(currentMetric,oldValue +(-1)*action.getActionEffectForMetric(currentMetric,comp.getId()) );
 					}}
@@ -354,7 +354,7 @@ public class ContextRepresentation {
 			for (MonitoredComponent comp:componentTopology.getMonitoredComponents()){
 				for (String currentMetric:comp.getMonitoredMetrics()){
 					if (action.getActionEffectForMetric(currentMetric,comp.getId())!=null){
-                                         float oldValue = comp.getMonitoredValue(currentMetric);
+                                         Double oldValue = comp.getMonitoredValue(currentMetric);
 					comp.setMonitoredValue(currentMetric, oldValue +(-1)*action.getActionEffectForMetric(currentMetric,comp.getId()) );
 				}}
 			}
@@ -457,8 +457,8 @@ public class ContextRepresentation {
 	
 	public boolean evaluateBinaryRestriction(BinaryRestriction binaryRestriction,MonitoredEntity monitoredEntity){
 		boolean fulfilled=true;
-		float currentLeftValue=0;
-		float currentRightValue = 0;
+		Double currentLeftValue=0.0;
+		Double currentRightValue = 0.0;
 		if (binaryRestriction.getLeftHandSide().getMetric()!=null){
 			String metric = binaryRestriction.getLeftHandSide().getMetric();
 			//PlanningLogger.logger.info(monitoredEntity+" "+metric);
@@ -466,9 +466,9 @@ public class ContextRepresentation {
 			if (currentLeftValue<0){
 				if (monitoredEntity.getMonitoredVar(metric)!=null)
 				currentLeftValue = monitoredEntity.getMonitoredValue(monitoredEntity.getMonitoredVar(metric));
-				else currentRightValue=0;
+				else currentRightValue=0.0;
 			}
-			currentRightValue=Float.parseFloat(binaryRestriction.getRightHandSide().getNumber());
+			currentRightValue=Double.parseDouble(binaryRestriction.getRightHandSide().getNumber());
 		}else
 		if (binaryRestriction.getRightHandSide().getMetric()!=null){
 			String metric = binaryRestriction.getRightHandSide().getMetric();
@@ -477,9 +477,9 @@ public class ContextRepresentation {
 			if (currentRightValue<0){
 				if (monitoredEntity.getMonitoredVar(metric)!=null)
 				currentRightValue = monitoredEntity.getMonitoredValue(monitoredEntity.getMonitoredVar(metric));
-				else currentRightValue=0;
+				else currentRightValue=0.0;
 			}
-			currentLeftValue=Float.parseFloat(binaryRestriction.getLeftHandSide().getNumber());
+			currentLeftValue=Double.parseDouble(binaryRestriction.getLeftHandSide().getNumber());
 		}
 		switch (binaryRestriction.getType()){
 		case "lessThan":
@@ -599,7 +599,7 @@ public class ContextRepresentation {
 			else return false;
 		}
 	}
-	public float getValueForMetric(MonitoredEntity monitoredEntity,String metricName){
+	public Double getValueForMetric(MonitoredEntity monitoredEntity,String metricName){
 		return findMonitoredEntity(monitoredEntity.getId()).getMonitoredValue(metricName);
 	}
 	public int countViolatedConstraints(){

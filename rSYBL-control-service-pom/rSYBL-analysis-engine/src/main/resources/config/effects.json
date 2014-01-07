@@ -1,0 +1,57 @@
+
+{"scaleout":{
+		"scaleOutEffectForDataNode": {
+			"targetUnit":"DataNodeServiceUnit",
+			"effects":{
+				"DataNodeServiceUnit": {
+						"cpuUsage":-30.0,
+						"latency":-2.0,
+						"cost":0.12
+						},
+				"DataControllerServiceUnit": {
+						"cpuUsage":-30.0,
+						"latency":-2.0
+						}
+					}
+					},
+		"scaleOutEffectForEventProcessingServiceUnit": {
+			"targetUnit":"EventProcessingServiceUnit",
+			"effects":{
+				"EventProcessingServiceUnit": {
+						"cpuUsage":-40.0,
+						"responseTime":-1000.0,
+						"throughput":1000,
+						"cost":0.12
+						}
+					}
+						
+		}},
+"scalein":{
+		"scaleOutEffectForDataNode": {
+			"targetUnit":"DataNodeServiceUnit",
+			"effects":{
+				"DataNodeServiceUnit": {
+						"cpuUsage":30.0,
+						"latency":-1.0,
+						"cost":-0.12
+						},
+				"DataControllerServiceUnit": {
+						"cpuUsage":20.0,
+						"latency":-1.0
+						}
+					}
+					},
+		"scaleOutEffectForEventProcessingServiceUnit": {
+			"targetUnit":"EventProcessingServiceUnit",
+			"effects":{
+				"EventProcessingServiceUnit": {
+						"cpuUsage":40.0,
+						"responseTime":400.0,
+						"throughput":-500,
+						"cost":-0.12
+						}
+					}
+						
+}
+}
+}

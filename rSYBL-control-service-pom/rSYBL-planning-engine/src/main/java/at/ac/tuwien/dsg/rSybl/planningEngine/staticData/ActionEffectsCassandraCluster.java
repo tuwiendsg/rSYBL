@@ -49,10 +49,10 @@ public class ActionEffectsCassandraCluster {
 		
 		{
 			scaleOutEffectForCassandraDB.setTargetedEntityID("CassandraDB");
-			scaleOutEffectForCassandraDB.setActionEffectForMetric("cpu.usage", -40.0f,"CassandraDB");
-			scaleOutEffectForCassandraDB.setActionEffectForMetric("mem.usage", -40.0f,"CassandraDB");
-			scaleOutEffectForCassandraDB.setActionEffectForMetric("latency.average", -3.0f,"CassandraDB");
-			scaleOutEffectForCassandraDB.setActionEffectForMetric("cost", 50.0f,"CassandraDB");
+			scaleOutEffectForCassandraDB.setActionEffectForMetric("cpu.usage", -40.0,"CassandraDB");
+			scaleOutEffectForCassandraDB.setActionEffectForMetric("mem.usage", -40.0,"CassandraDB");
+			scaleOutEffectForCassandraDB.setActionEffectForMetric("latency.average", -3.0,"CassandraDB");
+			scaleOutEffectForCassandraDB.setActionEffectForMetric("cost", 50.0,"CassandraDB");
 			scaleOutEffectForCassandraDB.setActionName("scaleOutEffectForCassandraDB");
 			scaleOutEffectForCassandraDB.setActionType("scaleout");
 
@@ -61,11 +61,11 @@ public class ActionEffectsCassandraCluster {
 
 		{
 			scaleOutEffectForCassandraTopology.setTargetedEntityID("CassandraServiceTopology") ; /// different than data serving topology
-			scaleOutEffectForCassandraTopology.setActionEffectForMetric("cpu.usage", -40.0f,"CassandraDB");
-			scaleOutEffectForCassandraTopology.setActionEffectForMetric("cost", 50.0f,"CassandraDB");
-			scaleOutEffectForCassandraTopology.setActionEffectForMetric("latency.average", -3.0f,"CassandraDB");
-			scaleOutEffectForCassandraTopology.setActionEffectForMetric("cpu.usage", -30.0f,"CassandraController");
-			scaleOutEffectForCassandraTopology.setActionEffectForMetric("cost", 50.0f,"CassandraController");
+			scaleOutEffectForCassandraTopology.setActionEffectForMetric("cpu.usage", -40.0,"CassandraDB");
+			scaleOutEffectForCassandraTopology.setActionEffectForMetric("cost", 50.0,"CassandraDB");
+			scaleOutEffectForCassandraTopology.setActionEffectForMetric("latency.average", -3.0,"CassandraDB");
+			scaleOutEffectForCassandraTopology.setActionEffectForMetric("cpu.usage", -30.0,"CassandraController");
+			scaleOutEffectForCassandraTopology.setActionEffectForMetric("cost", 50.0,"CassandraController");
 			scaleOutEffectForCassandraTopology.setActionName("scaleOutEffectForCassandraTopology");
 			scaleOutEffectForCassandraTopology.setActionType("scaleout");
 
@@ -83,10 +83,10 @@ public class ActionEffectsCassandraCluster {
 
 		{
 			scaleInEffectForCassandraDB.setTargetedEntityID("CassandraDB");
-			scaleInEffectForCassandraDB.setActionEffectForMetric("cpu.usage", 40.0f,"CassandraDB");
-			scaleInEffectForCassandraDB.setActionEffectForMetric("mem.usage", 40.0f,"CassandraDB");
-			scaleInEffectForCassandraDB.setActionEffectForMetric("latency.average", 3.0f,"CassandraDB");
-			scaleInEffectForCassandraDB.setActionEffectForMetric("cost", -50.0f,"CassandraDB");
+			scaleInEffectForCassandraDB.setActionEffectForMetric("cpu.usage", 40.0,"CassandraDB");
+			scaleInEffectForCassandraDB.setActionEffectForMetric("mem.usage", 40.0,"CassandraDB");
+			scaleInEffectForCassandraDB.setActionEffectForMetric("latency.average", 3.0,"CassandraDB");
+			scaleInEffectForCassandraDB.setActionEffectForMetric("cost", -50.0,"CassandraDB");
 			scaleInEffectForCassandraDB.setActionName("scaleInEffectForCassandraDB");
 			scaleInEffectForCassandraDB.setActionType("scalein");
 
@@ -94,10 +94,10 @@ public class ActionEffectsCassandraCluster {
 
 		{
 			scaleInEffectForCassandraTopology.setTargetedEntityID("CassandraServiceTopology") ; /// different than data serving topology
-			scaleInEffectForCassandraTopology.setActionEffectForMetric("cpu.usage", 40.0f,"CassandraDB");
-			scaleInEffectForCassandraTopology.setActionEffectForMetric("cost", -50.0f,"CassandraDB");
-			scaleInEffectForCassandraTopology.setActionEffectForMetric("cpu.usage", 30.0f,"CassandraController");
-			scaleInEffectForCassandraTopology.setActionEffectForMetric("cost", -50.0f,"CassandraController");
+			scaleInEffectForCassandraTopology.setActionEffectForMetric("cpu.usage", 40.0,"CassandraDB");
+			scaleInEffectForCassandraTopology.setActionEffectForMetric("cost", -50.0,"CassandraDB");
+			scaleInEffectForCassandraTopology.setActionEffectForMetric("cpu.usage", 30.0,"CassandraController");
+			scaleInEffectForCassandraTopology.setActionEffectForMetric("cost", -50.0,"CassandraController");
 			scaleInEffectForCassandraTopology.setActionName("scaleInEffectForCassandraTopology");
 			scaleInEffectForCassandraTopology.setActionType("scalein");
 
