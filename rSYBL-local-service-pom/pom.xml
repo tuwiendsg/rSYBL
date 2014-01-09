@@ -2,19 +2,52 @@
   xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
   <modelVersion>4.0.0</modelVersion>
   <parent>
-    <groupId>rsybl</groupId>
+    <groupId>at.ac.tuwien.rSYBL</groupId>
     <artifactId>rSYBL-pom</artifactId>
     <version>0.1-SNAPSHOT</version>
   </parent>
-  <groupId>rsybl.local-service</groupId>
+  <groupId>at.ac.tuwien.rSYBL.local-service</groupId>
   <artifactId>rSYBL-local-service-pom</artifactId>
   <version>0.1-SNAPSHOT</version>
   <url>https://github.com/rsybl/rsybl-repo</url>
   <packaging>pom</packaging>
     <modules>
-    <module>rSYBL-local-monitor</module>
     <module>rSYBL-local-communication</module>
     <module>rSYBL-local-service</module>
   </modules>
+  <distributionManagement>
+                <repository>
+                        <id>infosys-repo</id>
+                        <name>infosys-repo</name>
+                        <uniqueVersion>true</uniqueVersion>
+                        <url>scp://www.infosys.tuwien.ac.at/web/website/mvn</url>
+                </repository>
+                <snapshotRepository>
+                        <id>infosys-repo</id>
+                        <name>infosys-repo</name>
+                        <url>scp://www.infosys.tuwien.ac.at/web/website/mvn</url>
+                        <uniqueVersion>true</uniqueVersion>
+                </snapshotRepository>
+        </distributionManagement>
+
+        <build>
+        <pluginManagement>
+            <plugins>  
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-deploy-plugin</artifactId>
+                    <version>2.7</version>
+                </plugin>
+            </plugins>
+        </pluginManagement>
+        <extensions>
+                        <extension>
+                                <groupId>org.apache.maven.wagon</groupId>
+                                <artifactId>wagon-ssh</artifactId>
+                                <version>2.4</version>
+                        </extension>
+                </extensions>
+  
+        </build>
 </project>
 

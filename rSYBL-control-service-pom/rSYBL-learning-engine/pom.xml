@@ -10,7 +10,7 @@
   <packaging>pom</packaging>
 
   <parent>
-    <groupId>rsybl.control-service</groupId>
+    <groupId>at.ac.tuwien.rSYBL.control-service</groupId>
     <artifactId>rSYBL-control-service-pom</artifactId>
     <version>0.1-SNAPSHOT</version>
   </parent>

@@ -10,14 +10,14 @@
   <packaging>pom</packaging>
 
   <parent>
-    <groupId>rsybl.control-service</groupId>
+    <groupId>at.ac.tuwien.rSYBL.control-service</groupId>
     <artifactId>rSYBL-control-service-pom</artifactId>
     <version>0.1-SNAPSHOT</version>
   </parent>
 
   <dependencies>
     <dependency>
-      <groupId>rsybl.control-service</groupId>
+      <groupId>at.ac.tuwien.rSYBL.control-service</groupId>
       <artifactId>rSYBL-analysis-engine</artifactId>
       <type>war</type>
       <version>0.1-SNAPSHOT</version>
@@ -41,7 +41,7 @@
               <outputDirectory>${project.build.directory}</outputDirectory>
               <artifactItems>
                 <artifactItem>
-                  <groupId>rsybl.control-service</groupId>
+                  <groupId>at.ac.tuwien.rSYBL.control-service</groupId>
                   <artifactId>rSYBL-analysis-engine</artifactId>
                   <type>war</type>
                 </artifactItem>

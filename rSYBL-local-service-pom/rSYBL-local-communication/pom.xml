@@ -2,11 +2,11 @@
   xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
   <modelVersion>4.0.0</modelVersion>
   <parent>
-    <groupId>rsybl.local-service</groupId>
+    <groupId>at.ac.tuwien.rSYBL.local-service</groupId>
     <artifactId>rSYBL-local-service-pom</artifactId>
     <version>0.1-SNAPSHOT</version>
   </parent>
-  <groupId>rsybl.local-service</groupId>
+  <groupId>at.ac.tuwien.rSYBL.local-service</groupId>
   <artifactId>rSYBL-local-communication</artifactId>
   <version>0.1-SNAPSHOT</version>
   <packaging>jar</packaging>

@@ -10,7 +10,7 @@
   <packaging>war</packaging>
 
   <parent>
-    <groupId>rsybl.control-service</groupId>
+    <groupId>at.ac.tuwien.rSYBL.control-service</groupId>
     <artifactId>rSYBL-control-service-pom</artifactId>
     <version>0.1-SNAPSHOT</version>
   </parent>
@@ -154,27 +154,27 @@
 
 
 		<dependency>
-			<groupId>rsybl.control-service</groupId>
+			<groupId>at.ac.tuwien.rSYBL.control-service</groupId>
 			<artifactId>rSYBL-cloud-application-dependency-graph</artifactId>
 			<version>0.1-SNAPSHOT</version>
 		</dependency>
 		<dependency>
-			<groupId>rsybl.control-service</groupId>
+			<groupId>at.ac.tuwien.rSYBL.control-service</groupId>
 			<artifactId>rSYBL-data-processing-unit</artifactId>
 			<version>0.1-SNAPSHOT</version>
 		</dependency>
 		<dependency>
-			<groupId>rsybl.control-service</groupId>
+			<groupId>at.ac.tuwien.rSYBL.control-service</groupId>
 			<artifactId>rSYBL-planning-engine</artifactId>
 			<version>0.1-SNAPSHOT</version>
 		</dependency>
 		<dependency>
-			<groupId>rsybl.control-service</groupId>
+			<groupId>at.ac.tuwien.rSYBL.control-service</groupId>
 			<artifactId>rSYBL-cloud-interaction-unit</artifactId>
 			<version>0.1-SNAPSHOT</version>
 		</dependency>
 		<dependency>
-			<groupId>rsybl.control-service</groupId>
+			<groupId>at.ac.tuwien.rSYBL.control-service</groupId>
 			<artifactId>rSYBL-sybl-processing-unit</artifactId>
 			<version>0.1-SNAPSHOT</version>
 		</dependency>
