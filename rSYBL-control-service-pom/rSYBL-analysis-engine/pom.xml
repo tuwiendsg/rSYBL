@@ -146,11 +146,7 @@
             <artifactId>jaxb-impl</artifactId>
             <version>2.1.12</version>
         </dependency>
-        <dependency>
-            <groupId>xerces</groupId>
-            <artifactId>xercesImpl</artifactId>
-            <version>2.11.0</version>
-        </dependency>
+
 
 
 		<dependency>
@@ -181,8 +177,22 @@
 	
 	</dependencies>
 	<build>
-	        <finalName>rSYBL-${project.version}</finalName>
+	  
+	  
     <plugins>
+    <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-source-plugin</artifactId>
+                <version>2.2.1</version>
+                <executions>
+                    <execution>
+                        <id>attach-sources</id>
+                        <goals>
+                            <goal>jar-no-fork</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
 			 <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-compiler-plugin</artifactId>

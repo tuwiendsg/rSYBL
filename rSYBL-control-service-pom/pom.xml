@@ -24,6 +24,12 @@
     <module>rSYBL-sybl-processing-unit</module>
     <module>rSYBL-client</module>
   </modules>
+            <repositories>
+		<repository>
+			<id>infosys-repo</id>
+			<url>http://www.infosys.tuwien.ac.at/mvn</url>
+		</repository>
+	</repositories>
 <distributionManagement>
                 <repository>
                         <id>infosys-repo</id>
@@ -57,5 +63,6 @@
                 </extensions>
   
         </build>
+
 </project>
 

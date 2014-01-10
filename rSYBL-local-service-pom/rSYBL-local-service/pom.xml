@@ -70,12 +70,12 @@
 		</dependency>
 
 		<dependency>
-			<groupId>rsybl.control-service</groupId>
+			<groupId>at.ac.tuwien.rSYBL.control-service</groupId>
 			<artifactId>rSYBL-cloud-application-dependency-graph</artifactId>
 			<version>0.1-SNAPSHOT</version>
 		</dependency>
 		 <dependency>
-			<groupId>rsybl.local-service</groupId>
+			<groupId>at.ac.tuwien.rSYBL.local-service</groupId>
 			<artifactId>rSYBL-local-communication</artifactId>
 			<version>0.1-SNAPSHOT</version>
 			<type>jar</type>
@@ -190,7 +190,18 @@
 <!--            </executions> -->
 <!--        </plugin> -->
      
-			
+			   <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-source-plugin</artifactId>
+                <executions>
+                    <execution>
+                        <id>attach-sources</id>
+                        <goals>
+                            <goal>jar</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
 		<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-shade-plugin</artifactId>
