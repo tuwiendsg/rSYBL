@@ -22,6 +22,9 @@
 
 package at.ac.tuwien.dsg.csdg.elasticityInformation.elasticityRequirements;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlAttribute;
@@ -90,94 +93,22 @@ import javax.xml.bind.annotation.XmlType;
  */
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "", propOrder = {
-    "leftHandSide",
-    "rightHandSide"
+    "binaryRestrictions"
 })
-public class BinaryRestriction {
+public class BinaryRestrictionsConjunction {
 
-    @XmlElement(name = "LeftHandSide", required = true)
-    protected LeftHandSide leftHandSide;
-    @XmlElement(name = "RightHandSide", required = true)
-    protected RightHandSide rightHandSide;
-    @XmlAttribute(name = "Type")
-    protected String type;
+	  @XmlElement(name = "BinaryRestriction", required = true) // the conjunction
+	private List<BinaryRestriction> binaryRestrictions = new ArrayList<BinaryRestriction>();
 
-    /**
-     * Gets the value of the leftHandSide property.
-     * 
-     * @return
-     *     possible object is
-     *     {@link SYBLSpecification.Strategy.Condition.BinaryRestriction.LeftHandSide }
-     *     
-     */
-    public LeftHandSide getLeftHandSide() {
-        return leftHandSide;
-    }
+	public List<BinaryRestriction> getBinaryRestrictions() {
+		return binaryRestrictions;
+	}
 
-    /**
-     * Sets the value of the leftHandSide property.
-     * 
-     * @param value
-     *     allowed object is
-     *     {@link SYBLSpecification.Strategy.Condition.BinaryRestriction.LeftHandSide }
-     *     
-     */
-    public void setLeftHandSide(LeftHandSide value) {
-        this.leftHandSide = value;
-    }
-
-    /**
-     * Gets the value of the rightHandSide property.
-     * 
-     * @return
-     *     possible object is
-     *     {@link BinaryRestriction.RightHandSide }
-     *     
-     */
-    public RightHandSide getRightHandSide() {
-        return rightHandSide;
-    }
-
-    /**
-     * Sets the value of the rightHandSide property.
-     * 
-     * @param value
-     *     allowed object is
-     *     {@link BinaryRestriction.RightHandSide }
-     *     
-     */
-    public void setRightHandSide(RightHandSide value) {
-        this.rightHandSide = value;
-    }
-
-    /**
-     * Gets the value of the type property.
-     * 
-     * @return
-     *     possible object is
-     *     {@link String }
-     *     
-     */
-    public String getType() {
-        return type;
-    }
-
-    /**
-     * Sets the value of the type property.
-     * 
-     * @param value
-     *     allowed object is
-     *     {@link String }
-     *     
-     */
-    public void setType(String value) {
-        this.type = value;
-    }
-
-    public String toString(){
-    	return leftHandSide.toString()+" "+ type+" "+ rightHandSide.toString();
-    }
-  
-
+	public void setBinaryRestrictions(List<BinaryRestriction> binaryRestrictions) {
+		this.binaryRestrictions = binaryRestrictions;
+	}
+	public void add(BinaryRestriction binaryRestriction){
+		binaryRestrictions.add(binaryRestriction);
+	}
    
 }

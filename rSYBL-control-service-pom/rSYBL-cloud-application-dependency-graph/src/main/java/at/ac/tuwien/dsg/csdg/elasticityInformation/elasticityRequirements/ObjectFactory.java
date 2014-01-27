@@ -87,16 +87,16 @@ public class ObjectFactory {
      * Create an instance of {@link SYBLSpecification.Priority.Condition.BinaryRestriction.RightHandSide }
      * 
      */
-    public BinaryRestriction.RightHandSide createBinaryRestrictionRightHandSide() {
-        return new BinaryRestriction.RightHandSide();
+    public RightHandSide createBinaryRestrictionRightHandSide() {
+        return new RightHandSide();
     }
 
     /**
      * Create an instance of {@link SYBLSpecification.Priority.Condition.BinaryRestriction.LeftHandSide }
      * 
      */
-    public BinaryRestriction.LeftHandSide createBinaryRestrictionLeftHandSide() {
-        return new BinaryRestriction.LeftHandSide();
+    public LeftHandSide createBinaryRestrictionLeftHandSide() {
+        return new LeftHandSide();
     }
 
     /**

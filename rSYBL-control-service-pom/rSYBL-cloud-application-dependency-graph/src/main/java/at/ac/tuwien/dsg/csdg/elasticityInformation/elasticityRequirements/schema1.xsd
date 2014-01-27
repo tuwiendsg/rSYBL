@@ -3,6 +3,49 @@
 
   <xs:element name="SYBLElasticityRequirementsDescription" type="syblElasticityRequirementsDescription"/>
 
+  <xs:complexType name="arrayList">
+    <xs:complexContent>
+      <xs:extension base="abstractList">
+        <xs:sequence/>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+
+  <xs:complexType name="abstractList" abstract="true">
+    <xs:complexContent>
+      <xs:extension base="abstractCollection">
+        <xs:sequence/>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+
+  <xs:complexType name="abstractCollection" abstract="true">
+    <xs:sequence/>
+  </xs:complexType>
+
+  <xs:complexType name="syblAnnotation">
+    <xs:sequence>
+      <xs:element name="annotationType" type="annotationType" minOccurs="0"/>
+      <xs:element name="constraints" type="xs:string" minOccurs="0"/>
+      <xs:element name="entityID" type="xs:string" minOccurs="0"/>
+      <xs:element name="monitoring" type="xs:string" minOccurs="0"/>
+      <xs:element name="priorities" type="xs:string" minOccurs="0"/>
+      <xs:element name="strategies" type="xs:string" minOccurs="0"/>
+    </xs:sequence>
+  </xs:complexType>
+
+  <xs:complexType name="mySchemaOutputResolver">
+    <xs:complexContent>
+      <xs:extension base="schemaOutputResolver">
+        <xs:sequence/>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+
+  <xs:complexType name="schemaOutputResolver" abstract="true">
+    <xs:sequence/>
+  </xs:complexType>
+
   <xs:complexType name="syblElasticityRequirementsDescription">
     <xs:sequence>
       <xs:element name="SYBLSpecification" maxOccurs="unbounded">
@@ -122,24 +165,14 @@
     </xs:sequence>
   </xs:complexType>
 
-  <xs:complexType name="arrayList">
-    <xs:complexContent>
-      <xs:extension base="abstractList">
-        <xs:sequence/>
-      </xs:extension>
-    </xs:complexContent>
-  </xs:complexType>
-
-  <xs:complexType name="abstractList" abstract="true">
-    <xs:complexContent>
-      <xs:extension base="abstractCollection">
-        <xs:sequence/>
-      </xs:extension>
-    </xs:complexContent>
-  </xs:complexType>
-
-  <xs:complexType name="abstractCollection" abstract="true">
-    <xs:sequence/>
-  </xs:complexType>
+  <xs:simpleType name="annotationType">
+    <xs:restriction base="xs:string">
+      <xs:enumeration value="CLOUD_SERVICE"/>
+      <xs:enumeration value="SERVICE_UNIT"/>
+      <xs:enumeration value="SERVICE_TOPOLOGY"/>
+      <xs:enumeration value="CODE_REGION"/>
+      <xs:enumeration value="RELATIONSHIP"/>
+    </xs:restriction>
+  </xs:simpleType>
 </xs:schema>
 

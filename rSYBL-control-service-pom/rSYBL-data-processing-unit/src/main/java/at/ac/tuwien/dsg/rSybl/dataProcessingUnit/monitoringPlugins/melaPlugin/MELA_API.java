@@ -38,6 +38,7 @@ import at.ac.tuwien.dsg.csdg.Node.NodeType;
 import at.ac.tuwien.dsg.csdg.Relationship.RelationshipType;
 import at.ac.tuwien.dsg.csdg.elasticityInformation.ElasticityRequirement;
 import at.ac.tuwien.dsg.csdg.elasticityInformation.elasticityRequirements.BinaryRestriction;
+import at.ac.tuwien.dsg.csdg.elasticityInformation.elasticityRequirements.BinaryRestrictionsConjunction;
 import at.ac.tuwien.dsg.csdg.elasticityInformation.elasticityRequirements.Constraint;
 import at.ac.tuwien.dsg.csdg.elasticityInformation.elasticityRequirements.SYBLSpecification;
 import at.ac.tuwien.dsg.csdg.inputProcessing.multiLevelModel.abstractModelXML.SYBLDirectiveMappingFromXML;
@@ -733,8 +734,8 @@ public class MELA_API implements MonitoringInterface{
     		
 	//		!!!Set all info
     		for(Constraint constraint:specification.getConstraint()){
-    			for (ArrayList<BinaryRestriction> binaryRestrictions:constraint.getToEnforce().getBinaryRestriction()){
-    				for (BinaryRestriction binaryRestriction:binaryRestrictions){
+    			for (BinaryRestrictionsConjunction  binaryRestrictions:constraint.getToEnforce().getBinaryRestriction()){
+    				for (BinaryRestriction binaryRestriction:binaryRestrictions.getBinaryRestrictions()){
 	    					Requirement req=new Requirement();
 	    					req.setId(specification.getComponentId());
 	    					ArrayList<String> targetedEls=new ArrayList<String>();

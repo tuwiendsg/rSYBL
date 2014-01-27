@@ -33,12 +33,14 @@ import at.ac.tuwien.dsg.csdg.Node.NodeType;
 import at.ac.tuwien.dsg.csdg.Relationship.RelationshipType;
 import at.ac.tuwien.dsg.csdg.elasticityInformation.ElasticityRequirement;
 import at.ac.tuwien.dsg.csdg.elasticityInformation.elasticityRequirements.BinaryRestriction;
+import at.ac.tuwien.dsg.csdg.elasticityInformation.elasticityRequirements.BinaryRestrictionsConjunction;
 import at.ac.tuwien.dsg.csdg.elasticityInformation.elasticityRequirements.Condition;
 import at.ac.tuwien.dsg.csdg.elasticityInformation.elasticityRequirements.Constraint;
 import at.ac.tuwien.dsg.csdg.elasticityInformation.elasticityRequirements.Monitoring;
 import at.ac.tuwien.dsg.csdg.elasticityInformation.elasticityRequirements.SYBLSpecification;
 import at.ac.tuwien.dsg.csdg.elasticityInformation.elasticityRequirements.Strategy;
 import at.ac.tuwien.dsg.csdg.elasticityInformation.elasticityRequirements.UnaryRestriction;
+import at.ac.tuwien.dsg.csdg.elasticityInformation.elasticityRequirements.UnaryRestrictionsConjunction;
 import at.ac.tuwien.dsg.csdg.inputProcessing.multiLevelModel.abstractModelXML.SYBLDirectiveMappingFromXML;
 import at.ac.tuwien.dsg.rSybl.dataProcessingUnit.api.MonitoringAPIInterface;
 import at.ac.tuwien.dsg.rSybl.dataProcessingUnit.monitoringPlugins.interfaces.MonitoringInterface;
@@ -96,8 +98,8 @@ public class ContextRepresentation {
 					
 	   				monitoredEntity.setMonitoredValue(strategy.getToEnforce().getParameter(),value );	
 		   			if (strategy.getCondition()!=null)
-	   				for (ArrayList<BinaryRestriction> restrictions:strategy.getCondition().getBinaryRestriction()){
-		   			for (BinaryRestriction restriction:restrictions){
+	   				for (BinaryRestrictionsConjunction restrictions:strategy.getCondition().getBinaryRestriction()){
+		   			for (BinaryRestriction restriction:restrictions.getBinaryRestrictions()){
 		   				String right = restriction.getRightHandSide().getMetric();
 		   				String left = restriction.getLeftHandSide().getMetric();
 		   				String metric="";
@@ -155,8 +157,8 @@ public class ContextRepresentation {
 	   		}
 	   			
 	   			for (Constraint constraint:syblSpecification.getConstraint()){
-		   			for (ArrayList<BinaryRestriction> restrictions:constraint.getToEnforce().getBinaryRestriction()){
-		   			for (BinaryRestriction restriction:restrictions){
+		   			for (BinaryRestrictionsConjunction restrictions:constraint.getToEnforce().getBinaryRestriction()){
+		   			for (BinaryRestriction restriction:restrictions.getBinaryRestrictions()){
 		   				String right = restriction.getRightHandSide().getMetric();
 		   				String left = restriction.getLeftHandSide().getMetric();
 		   				String metric="";
@@ -185,8 +187,8 @@ public class ContextRepresentation {
 		   			}
 		   			}
 		   			if (constraint.getCondition()!=null)
-		   			for (ArrayList<BinaryRestriction> restrictions:constraint.getCondition().getBinaryRestriction()){
-		   			for (BinaryRestriction restriction:restrictions){
+		   			for (BinaryRestrictionsConjunction restrictions:constraint.getCondition().getBinaryRestriction()){
+		   			for (BinaryRestriction restriction:restrictions.getBinaryRestrictions()){
 		   				String right = restriction.getRightHandSide().getMetric();
 		   				String left = restriction.getLeftHandSide().getMetric();
 		   				String metric="";
@@ -565,18 +567,18 @@ public class ContextRepresentation {
 		}
 			boolean oneEvaluatedToTrueFound=false;
 
-			for (ArrayList<BinaryRestriction> restrictions:c.getBinaryRestriction()){
+			for (BinaryRestrictionsConjunction restrictions:c.getBinaryRestriction()){
 				boolean value=true;
-			for (BinaryRestriction binaryRestriction:restrictions){
+			for (BinaryRestriction binaryRestriction:restrictions.getBinaryRestrictions()){
 				if (!evaluateBinaryRestriction(binaryRestriction, monitoredEntity)) value =false;
 				}
 			
 			if (value==true) oneEvaluatedToTrueFound=true;
 			}	
 			
-			for (ArrayList<UnaryRestriction> restrictions:c.getUnaryRestrictions()){
+			for (UnaryRestrictionsConjunction restrictions:c.getUnaryRestrictions()){
 				boolean value=true;
-			for (UnaryRestriction unaryRestriction:restrictions){
+			for (UnaryRestriction unaryRestriction:restrictions.getUnaryRestrictions()){
 				if (!evaluateUnaryRestriction(unaryRestriction, monitoredEntity)) value =false;
 				}
 			

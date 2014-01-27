@@ -133,15 +133,15 @@ import javax.xml.bind.annotation.XmlType;
  */
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "", propOrder = {
-    "binaryRestriction",
-    "unaryRestriction"
+    "binaryRestrictions",
+    "unaryRestrictions"
 })
 public class Condition {
 
-    @XmlElement(name = "BinaryRestriction", required = true) // in disjunctive normal form 
-    protected ArrayList<ArrayList<BinaryRestriction>> binaryRestriction = new ArrayList<ArrayList<BinaryRestriction>>();
-    @XmlElement(name = "UnaryRestriction", required = true) // in disjunctive normal form 
-    protected  ArrayList<ArrayList<UnaryRestriction>> unaryRestriction=new ArrayList<ArrayList<UnaryRestriction>>();
+    @XmlElement(name = "BinaryRestrictionsConjunction", required = true) // in disjunctive normal form 
+    protected List<BinaryRestrictionsConjunction> binaryRestrictions = new ArrayList<BinaryRestrictionsConjunction>();
+    @XmlElement(name = "BinaryRestrictionsConjunction", required = true) // in disjunctive normal form 
+    protected  List<UnaryRestrictionsConjunction> unaryRestrictions=new ArrayList<UnaryRestrictionsConjunction>();
 
     /**
      * Gets the value of the binaryRestriction property.
@@ -151,8 +151,8 @@ public class Condition {
      *     {@link SYBLSpecification.Strategy.Condition.BinaryRestriction }
      *     
      */
-    public  ArrayList<ArrayList<BinaryRestriction>> getBinaryRestriction() {
-        return binaryRestriction;
+    public  List<BinaryRestrictionsConjunction> getBinaryRestriction() {
+        return binaryRestrictions;
     }
 
     /**
@@ -163,8 +163,8 @@ public class Condition {
      *     {@link SYBLSpecification.Strategy.Condition.BinaryRestriction }
      *     
      */
-    public void addBinaryRestrictionConjunction(  ArrayList<BinaryRestriction> value) {
-        this.binaryRestriction.add(value);
+    public void addBinaryRestrictionConjunction(  BinaryRestrictionsConjunction value) {
+        this.binaryRestrictions.add(value);
     }
 
     /**
@@ -175,8 +175,8 @@ public class Condition {
      *     {@link SYBLSpecification.Strategy.Condition.UnaryRestriction }
      *     
      */
-    public  ArrayList<ArrayList<UnaryRestriction>> getUnaryRestrictions() {
-        return unaryRestriction;
+    public  List<UnaryRestrictionsConjunction> getUnaryRestrictions() {
+        return unaryRestrictions;
     }
 
     /**
@@ -187,23 +187,23 @@ public class Condition {
      *     {@link SYBLSpecification.Strategy.Condition.UnaryRestriction }
      *     
      */
-    public void addUnaryRestrictionConjunction( ArrayList<UnaryRestriction> value) {
-        this.unaryRestriction.add(value);
+    public void addUnaryRestrictionConjunction( UnaryRestrictionsConjunction value) {
+        this.unaryRestrictions.add(value);
     }
 
     public String toString(){
     	String res = "";
-    	if (binaryRestriction.size()>1)
+    	if (binaryRestrictions.size()>1)
     		res="(";
-    	for (List<BinaryRestriction> binaryRes:binaryRestriction){
+    	for (BinaryRestrictionsConjunction binaryRes:binaryRestrictions){
     		
-    	for (BinaryRestriction restriction : binaryRes){
+    	for (BinaryRestriction restriction : binaryRes.getBinaryRestrictions()){
     		res+=restriction.toString()+" ";
-    		if (binaryRes.size()>1 && (!binaryRes.get(binaryRes.size()-1).equals(restriction))){
+    		if (binaryRes.getBinaryRestrictions().size()>1 && (!binaryRes.getBinaryRestrictions().get(binaryRes.getBinaryRestrictions().size()-1).equals(restriction))){
     			res+=" AND ";
     		}
     	}
-    	if (binaryRestriction.size()>1 && (!binaryRestriction.get(binaryRes.size()-1).equals(binaryRes))){
+    	if (binaryRestrictions.size()>1 && (!binaryRestrictions.get(binaryRes.getBinaryRestrictions().size()-1).equals(binaryRes))){
     		res+= ") OR (";
     	}else
     	{

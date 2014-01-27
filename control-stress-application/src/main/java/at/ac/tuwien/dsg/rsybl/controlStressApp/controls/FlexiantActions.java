@@ -18,6 +18,8 @@ import javax.xml.namespace.QName;
 import javax.xml.ws.BindingProvider;
  
 import com.extl.jade.user.ExtilityException;
+import com.extl.jade.user.Job;
+import com.extl.jade.user.JobStatus;
 import com.extl.jade.user.Server;
 import com.extl.jade.user.Condition;
 import com.extl.jade.user.FilterCondition;
@@ -36,8 +38,56 @@ public class FlexiantActions extends ActionOnIaaSProvider{
       String customerUUID = "af809242-0ea2-3285-8bfe-708339c78fc2";
       String password = "c3larPassword";
       
-    /*
-     *   
+  public void removeServer(String serverUUID){
+	  UserService service;
+
+		 URL url = ClassLoader.getSystemClassLoader().getResource(
+              "UserAPI.wsdl");
+       
+      // Get the UserAPI
+      UserAPI api = new UserAPI(url,new QName("http://extility.flexiant.net", "UserAPI"));
+               
+      // and set the service port on the service
+      service = api.getUserServicePort();
+ 
+     GregorianCalendar gregorianCalendar = new GregorianCalendar();
+     DatatypeFactory datatypeFactory = null;
+		try {
+			datatypeFactory = DatatypeFactory.newInstance();
+		} catch (DatatypeConfigurationException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+     XMLGregorianCalendar now = datatypeFactory.newXMLGregorianCalendar(gregorianCalendar);
+     try {
+		Job job=service.deleteResource(serverUUID, true, now);
+		while (job.getStatus()!= JobStatus.FAILED && job.getStatus()!= JobStatus.SUCCESSFUL && job.getStatus()!=JobStatus.SUSPENDED){
+			try {
+				Thread.sleep(2000);
+			} catch (InterruptedException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		}
+		if (job.getStatus()==JobStatus.FAILED || job.getStatus()==JobStatus.SUSPENDED){
+			 job=service.deleteResource(serverUUID, true, now);
+			 while (job.getStatus()!= JobStatus.FAILED && job.getStatus()!= JobStatus.SUCCESSFUL && job.getStatus()!=JobStatus.SUSPENDED){
+					try {
+						Thread.sleep(2000);
+					} catch (InterruptedException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					}
+				}
+		}
+	} catch (ExtilityException e) {
+		// TODO Auto-generated catch block
+		e.printStackTrace();
+	}
+     
+  }
+      /*
+     *create new server   
      */
 	public String createNewServer(String imageUUID, int cpu, int mem){
 		Server createdServer=null;

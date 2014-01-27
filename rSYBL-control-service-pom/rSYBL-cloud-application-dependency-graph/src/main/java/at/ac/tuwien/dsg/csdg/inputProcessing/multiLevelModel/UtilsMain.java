@@ -32,6 +32,7 @@ import javax.xml.bind.Marshaller;
 
 import at.ac.tuwien.dsg.csdg.DependencyGraph;
 import at.ac.tuwien.dsg.csdg.elasticityInformation.elasticityRequirements.BinaryRestriction;
+import at.ac.tuwien.dsg.csdg.elasticityInformation.elasticityRequirements.BinaryRestrictionsConjunction;
 import at.ac.tuwien.dsg.csdg.elasticityInformation.elasticityRequirements.Condition;
 import at.ac.tuwien.dsg.csdg.elasticityInformation.elasticityRequirements.Constraint;
 import at.ac.tuwien.dsg.csdg.elasticityInformation.elasticityRequirements.Monitor;
@@ -40,8 +41,8 @@ import at.ac.tuwien.dsg.csdg.elasticityInformation.elasticityRequirements.SYBLEl
 import at.ac.tuwien.dsg.csdg.elasticityInformation.elasticityRequirements.SYBLSpecification;
 import at.ac.tuwien.dsg.csdg.elasticityInformation.elasticityRequirements.Strategy;
 import at.ac.tuwien.dsg.csdg.elasticityInformation.elasticityRequirements.ToEnforce;
-import at.ac.tuwien.dsg.csdg.elasticityInformation.elasticityRequirements.BinaryRestriction.LeftHandSide;
-import at.ac.tuwien.dsg.csdg.elasticityInformation.elasticityRequirements.BinaryRestriction.RightHandSide;
+import at.ac.tuwien.dsg.csdg.elasticityInformation.elasticityRequirements.LeftHandSide;
+import at.ac.tuwien.dsg.csdg.elasticityInformation.elasticityRequirements.RightHandSide;
 import at.ac.tuwien.dsg.csdg.inputProcessing.multiLevelModel.abstractModelXML.CloudServiceXML;
 import at.ac.tuwien.dsg.csdg.inputProcessing.multiLevelModel.abstractModelXML.RelationshipXML;
 import at.ac.tuwien.dsg.csdg.inputProcessing.multiLevelModel.abstractModelXML.SYBLAnnotationXML;
@@ -88,7 +89,7 @@ public class UtilsMain {
 		bRestriction.setLeftHandSide(leftHandSide);
 		bRestriction.setRightHandSide(rightHandSide);
 		bRestriction.setType("lessThan");
-		ArrayList<BinaryRestriction> binaryRestrictions = new ArrayList<BinaryRestriction>();
+		BinaryRestrictionsConjunction binaryRestrictions = new BinaryRestrictionsConjunction();
 		binaryRestrictions.add(bRestriction);
 		condition1.addBinaryRestrictionConjunction(binaryRestrictions);
 		constraint.setToEnforce(condition1);
@@ -105,7 +106,7 @@ public class UtilsMain {
 		bRestriction.setLeftHandSide(leftHandSide);
 		bRestriction.setRightHandSide(rightHandSide);
 		bRestriction.setType("lessThan");
-		 binaryRestrictions = new ArrayList<BinaryRestriction>();
+		 binaryRestrictions = new BinaryRestrictionsConjunction();
 		binaryRestrictions.add(bRestriction);
 	
 		condition1.addBinaryRestrictionConjunction(binaryRestrictions);
@@ -129,7 +130,7 @@ public class UtilsMain {
 		bRestriction.setLeftHandSide(leftHandSide);
 		bRestriction.setRightHandSide(rightHandSide);
 		bRestriction.setType("lessThan");
-		 binaryRestrictions = new ArrayList<BinaryRestriction>();
+		 binaryRestrictions = new BinaryRestrictionsConjunction();
 			binaryRestrictions.add(bRestriction);
 		condition1.addBinaryRestrictionConjunction(binaryRestrictions);
 		constraint.setToEnforce(condition1);
@@ -146,7 +147,7 @@ public class UtilsMain {
 			bRestriction.setLeftHandSide(leftHandSide);
 			bRestriction.setRightHandSide(rightHandSide);
 			bRestriction.setType("lessThan");
-			 binaryRestrictions = new ArrayList<BinaryRestriction>();
+			 binaryRestrictions = new BinaryRestrictionsConjunction();
 				binaryRestrictions.add(bRestriction);
 			condition1.addBinaryRestrictionConjunction(binaryRestrictions);
 			constraint.setToEnforce(condition1);
@@ -169,7 +170,7 @@ public class UtilsMain {
 			bRestriction.setLeftHandSide(leftHandSide);
 			bRestriction.setRightHandSide(rightHandSide);
 			bRestriction.setType("lessThan");
-			 binaryRestrictions = new ArrayList<BinaryRestriction>();
+			 binaryRestrictions = new BinaryRestrictionsConjunction();
 				binaryRestrictions.add(bRestriction);
 			condition1.addBinaryRestrictionConjunction(binaryRestrictions);
 			constraint.setToEnforce(condition1);
@@ -192,7 +193,7 @@ public class UtilsMain {
 			bRestriction.setLeftHandSide(leftHandSide);
 			bRestriction.setRightHandSide(rightHandSide);
 			bRestriction.setType("lessThan");
-			 binaryRestrictions = new ArrayList<BinaryRestriction>();
+			 binaryRestrictions = new BinaryRestrictionsConjunction();
 				binaryRestrictions.add(bRestriction);
 			condition1.addBinaryRestrictionConjunction(binaryRestrictions);
 			constraint.setToEnforce(condition1);
@@ -212,7 +213,7 @@ public class UtilsMain {
 			bRestriction2.setLeftHandSide(leftHandSide);
 			bRestriction2.setRightHandSide(rightHandSide);
 			bRestriction2.setType("greaterThan");
-			binaryRestrictions = new ArrayList<BinaryRestriction>();
+			binaryRestrictions = new BinaryRestrictionsConjunction();
 			binaryRestrictions.add(bRestriction);
 			condition2.addBinaryRestrictionConjunction(binaryRestrictions);
 			

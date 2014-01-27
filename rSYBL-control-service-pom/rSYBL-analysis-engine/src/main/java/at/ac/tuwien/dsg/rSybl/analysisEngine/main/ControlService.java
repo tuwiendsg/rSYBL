@@ -33,6 +33,7 @@ import at.ac.tuwien.dsg.csdg.Node.NodeType;
 import at.ac.tuwien.dsg.csdg.Relationship.RelationshipType;
 import at.ac.tuwien.dsg.csdg.elasticityInformation.ElasticityRequirement;
 import at.ac.tuwien.dsg.csdg.elasticityInformation.elasticityRequirements.BinaryRestriction;
+import at.ac.tuwien.dsg.csdg.elasticityInformation.elasticityRequirements.BinaryRestrictionsConjunction;
 import at.ac.tuwien.dsg.csdg.elasticityInformation.elasticityRequirements.Constraint;
 import at.ac.tuwien.dsg.csdg.elasticityInformation.elasticityRequirements.SYBLAnnotation;
 import at.ac.tuwien.dsg.csdg.elasticityInformation.elasticityRequirements.SYBLSpecification;
@@ -350,14 +351,14 @@ public class ControlService {
 								for (Constraint c1 : constraints) {
 									for (Constraint c2 : specification
 											.getConstraint()) {
-										for (ArrayList<BinaryRestriction> binaryRestrictionsC1 : c1
+										for (BinaryRestrictionsConjunction binaryRestrictionsC1 : c1
 												.getCondition()
 												.getBinaryRestriction()) {
-											for (BinaryRestriction binaryRestrictionC1 : binaryRestrictionsC1) {
-												for (ArrayList<BinaryRestriction> binaryRestrictionsC2 : c2
+											for (BinaryRestriction binaryRestrictionC1 : binaryRestrictionsC1.getBinaryRestrictions()) {
+												for (BinaryRestrictionsConjunction binaryRestrictionsC2 : c2
 														.getCondition()
 														.getBinaryRestriction()) {
-													for (BinaryRestriction binaryRestrictionC2 : binaryRestrictionsC2) {
+													for (BinaryRestriction binaryRestrictionC2 : binaryRestrictionsC2.getBinaryRestrictions()) {
 														if (!checkIfConstraintsAreConflicting(
 																binaryRestrictionC1,
 																binaryRestrictionC2)
@@ -399,14 +400,14 @@ public class ControlService {
 										for (Constraint c1 : constraints) {
 											for (Constraint c2 : specification
 													.getConstraint()) {
-												for (ArrayList<BinaryRestriction> binaryRestrictionsC1 : c1
+												for (BinaryRestrictionsConjunction binaryRestrictionsC1 : c1
 														.getCondition()
 														.getBinaryRestriction()) {
-													for (BinaryRestriction binaryRestrictionC1 : binaryRestrictionsC1) {
-														for (ArrayList<BinaryRestriction> binaryRestrictionsC2 : c2
+													for (BinaryRestriction binaryRestrictionC1 : binaryRestrictionsC1.getBinaryRestrictions()) {
+														for (BinaryRestrictionsConjunction binaryRestrictionsC2 : c2
 																.getCondition()
 																.getBinaryRestriction()) {
-															for (BinaryRestriction binaryRestrictionC2 : binaryRestrictionsC2) {
+															for (BinaryRestriction binaryRestrictionC2 : binaryRestrictionsC2.getBinaryRestrictions()) {
 																if (!checkIfConstraintsAreConflicting(
 																		binaryRestrictionC1,
 																		binaryRestrictionC2)
@@ -444,14 +445,14 @@ public class ControlService {
 										for (Constraint c1 : constraints) {
 											for (Constraint c2 : specification
 													.getConstraint()) {
-												for (ArrayList<BinaryRestriction> binaryRestrictionsC1 : c1
+												for (BinaryRestrictionsConjunction binaryRestrictionsC1 : c1
 														.getCondition()
 														.getBinaryRestriction()) {
-													for (BinaryRestriction binaryRestrictionC1 : binaryRestrictionsC1) {
-														for (ArrayList<BinaryRestriction> binaryRestrictionsC2 : c2
+													for (BinaryRestriction binaryRestrictionC1 : binaryRestrictionsC1.getBinaryRestrictions()) {
+														for (BinaryRestrictionsConjunction binaryRestrictionsC2 : c2
 																.getCondition()
 																.getBinaryRestriction()) {
-															for (BinaryRestriction binaryRestrictionC2 : binaryRestrictionsC2) {
+															for (BinaryRestriction binaryRestrictionC2 : binaryRestrictionsC2.getBinaryRestrictions()) {
 																if (!checkIfConstraintsAreConflicting(
 																		binaryRestrictionC1,
 																		binaryRestrictionC2)
@@ -493,14 +494,14 @@ public class ControlService {
 											for (Constraint c1 : constraints) {
 												for (Constraint c2 : specification
 														.getConstraint()) {
-													for (ArrayList<BinaryRestriction> binaryRestrictionsC1 : c1
+													for (BinaryRestrictionsConjunction binaryRestrictionsC1 : c1
 															.getCondition()
 															.getBinaryRestriction()) {
-														for (BinaryRestriction binaryRestrictionC1 : binaryRestrictionsC1) {
-															for (ArrayList<BinaryRestriction> binaryRestrictionsC2 : c2
+														for (BinaryRestriction binaryRestrictionC1 : binaryRestrictionsC1.getBinaryRestrictions()) {
+															for (BinaryRestrictionsConjunction binaryRestrictionsC2 : c2
 																	.getCondition()
 																	.getBinaryRestriction()) {
-																for (BinaryRestriction binaryRestrictionC2 : binaryRestrictionsC2) {
+																for (BinaryRestriction binaryRestrictionC2 : binaryRestrictionsC2.getBinaryRestrictions()) {
 																	if (!checkIfConstraintsAreConflicting(
 																			binaryRestrictionC1,
 																			binaryRestrictionC2)
