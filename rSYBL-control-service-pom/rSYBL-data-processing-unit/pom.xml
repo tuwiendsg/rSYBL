@@ -21,10 +21,11 @@
             <type>jar</type>
         </dependency>
 	<dependency>
-			<groupId>com.jcraft</groupId>
-			<artifactId>jsch</artifactId>
-			<version>0.1.49</version>
-		</dependency>
+	<groupId>com.jcraft</groupId>
+	<artifactId>jsch</artifactId>
+	<version>0.1.50</version>
+</dependency>
+            
 
 		<dependency>
 			<groupId>junit</groupId>
