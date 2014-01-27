@@ -49,7 +49,17 @@ public class FlexiantActions extends ActionOnIaaSProvider{
                
       // and set the service port on the service
       service = api.getUserServicePort();
- 
+      BindingProvider portBP = (BindingProvider) service;
+      
+      // and set the service endpoint
+      portBP.getRequestContext().put(BindingProvider.ENDPOINT_ADDRESS_PROPERTY,
+              "https://localhost:4442");
+       
+      // and the caller's authentication details and password
+      portBP.getRequestContext().put(BindingProvider.USERNAME_PROPERTY,
+              userEmailAddress + "/" + customerUUID);
+      portBP.getRequestContext().put(BindingProvider.PASSWORD_PROPERTY,
+              password);
      GregorianCalendar gregorianCalendar = new GregorianCalendar();
      DatatypeFactory datatypeFactory = null;
 		try {
@@ -89,7 +99,7 @@ public class FlexiantActions extends ActionOnIaaSProvider{
       /*
      *create new server   
      */
-	public String createNewServer(String imageUUID, int cpu, int mem){
+	public String createNewServer(String serverName,String imageUUID, int cpu, int mem){
 		Server createdServer=null;
    	 UserService service;
 
@@ -107,7 +117,7 @@ public class FlexiantActions extends ActionOnIaaSProvider{
           
          // and set the service endpoint
          portBP.getRequestContext().put(BindingProvider.ENDPOINT_ADDRESS_PROPERTY,
-                 "http://example.com:8080/user/");
+                 "https://localhost:4442");
           
          // and the caller's authentication details and password
          portBP.getRequestContext().put(BindingProvider.USERNAME_PROPERTY,
@@ -122,6 +132,7 @@ public class FlexiantActions extends ActionOnIaaSProvider{
         skeletonServer.setInitialPassword("c3larPassword");
         skeletonServer.setCustomerUUID("ab8c4cae-c870-34f3-b91b-476aedd0109f");
         skeletonServer.setRam(mem);
+        skeletonServer.setImageName(serverName);
         skeletonServer.setImageUUID(imageUUID);
         skeletonServer.setDeploymentInstanceUUID("9ba97cd5-28e6-342d-91db-892a4bc0914e");
         skeletonServer.setClusterUUID("1ff16f43-4a82-34bf-8f07-ea6d210548ab");
