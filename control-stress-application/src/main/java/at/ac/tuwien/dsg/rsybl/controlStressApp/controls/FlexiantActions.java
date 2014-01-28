@@ -204,14 +204,13 @@ public class FlexiantActions extends ActionOnIaaSProvider{
 		}
           
           try {
-			service.waitForJob(createServerJob.getResourceUUID(), false);
+			service.waitForJob(createServerJob.getResourceUUID(), true);
 		} catch (ExtilityException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 
-        	
-        	return skeletonServer.getResourceUUID();
+        	return createServerJob.getItemUUID();
         
 		
 		//return createdServer.getNics().get(0).getIpAddresses().get(0).getIpAddress();
