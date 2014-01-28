@@ -35,12 +35,12 @@ import com.extl.jade.user.UserService;
 
 
 public class FlexiantActions extends ActionOnIaaSProvider{
-	  String userEmailAddress = "cgeorgy1987@yahoo.com";
+	  String userEmailAddress = Configuration.getUserEMailAddress();
 	//  String apiUserName="cgeorgy1987@yahoo.com/af809242-0ea2-3285-8bfe-708339c78fc2";
-	  String apiUserName="cgeorgy1987@yahoo.com";
-      String customerUUID = "af809242-0ea2-3285-8bfe-708339c78fc2";
-      String password = "c3larPassword";
-      String ENDPOINT_ADDRESS_PROPERTY="https://api.sd1.flexiant.net:4442";
+	  String apiUserName=Configuration.getAPIUserName();
+      String customerUUID = Configuration.getCustomerUUID();
+      String password = Configuration.getPassword();
+      String ENDPOINT_ADDRESS_PROPERTY=Configuration.getEndPointAddress();
   public void removeServer(String serverUUID){
 	  UserService service;
 
