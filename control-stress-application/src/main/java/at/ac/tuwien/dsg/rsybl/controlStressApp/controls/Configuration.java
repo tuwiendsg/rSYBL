@@ -41,7 +41,7 @@ import java.util.logging.Logger;
 public class Configuration {
 
     private static  Properties configuration ;
-    private static String languageDescriptionFile="/config/languageDescription.xml";
+
     static{
         configuration = new Properties();
         try {
@@ -64,8 +64,7 @@ public class Configuration {
 //        	      }
 //        	  }
         	  try {
-        		//  DependencyGraphLogger.logger.info("Current inputStream "+Configuration.class.getClassLoader().getResourceAsStream("./config.properties"));
-                 
+        	    
              //  	  configuration.load(Configuration.class.getClassLoader().getResourceAsStream("/config.properties"));
                   configuration.load(new FileReader( new File("config.properties")));
         	  } catch (Exception ex) {
@@ -96,8 +95,7 @@ public class Configuration {
     }
     
     public static String getEndPointAddress()
-    {
-    	
+    {  	
     	return configuration.getProperty("ENDPOINT_ADDRESS_PROPERTY");
     }
 

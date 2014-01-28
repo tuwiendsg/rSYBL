@@ -40,7 +40,7 @@ public class FlexiantActions extends ActionOnIaaSProvider{
 	  String apiUserName=Configuration.getAPIUserName();
       String customerUUID = Configuration.getCustomerUUID();
       String password = Configuration.getPassword();
-      String ENDPOINT_ADDRESS_PROPERTY=Configuration.getEndPointAddress();
+      String ENDPOINT_ADDRESS_PROPERTY="https://api.sd1.flexiant.net:4442";
   public void removeServer(String serverUUID){
 	  UserService service;
 
