@@ -131,7 +131,8 @@ public class FlexiantActions extends ActionOnIaaSProvider{
                  userEmailAddress + "/" + customerUUID);
          portBP.getRequestContext().put(BindingProvider.PASSWORD_PROPERTY,
                  password);
-
+         
+        
          
         Server skeletonServer=new Server();
         skeletonServer.setVdcUUID("acbdb8d6-1a6e-3f90-9a1a-4bf4b0fdfc9f");
@@ -142,7 +143,7 @@ public class FlexiantActions extends ActionOnIaaSProvider{
         //skeletonServer.setProductOfferUUID("8a657434-b0c5-3a99-83bf-87cf4c9dedb8");
         skeletonServer.setProductOfferUUID("242a0c41-0fc7-3fab-bc09-86d13c34230e");
         //skeletonServer.setRam(mem);
-        skeletonServer.setImageName(serverName);
+        //skeletonServer.setImageName(serverName);
         skeletonServer.setImageUUID(imageUUID);
         skeletonServer.setDeploymentInstanceUUID("9ba97cd5-28e6-342d-91db-892a4bc0914e");
         skeletonServer.setClusterUUID("1ff16f43-4a82-34bf-8f07-ea6d210548ab");
@@ -167,6 +168,9 @@ public class FlexiantActions extends ActionOnIaaSProvider{
         	mins+=1;
         }
         now.setTime(date.getHours(), mins, sec);
+
+        
+        
         System.err.println("Creating server at "+now.toString());
         sshs.add("c2676e1f-2466-322e-a44e-69da67d4bc85");
           try {
@@ -175,7 +179,7 @@ public class FlexiantActions extends ActionOnIaaSProvider{
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-             
+            
 		return skeletonServer.toString();
 		
 		//return createdServer.getNics().get(0).getIpAddresses().get(0).getIpAddress();
