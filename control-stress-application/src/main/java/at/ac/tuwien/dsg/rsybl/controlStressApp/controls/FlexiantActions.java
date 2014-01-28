@@ -22,6 +22,7 @@ import com.extl.jade.user.ExtilityException;
 import com.extl.jade.user.Job;
 import com.extl.jade.user.JobStatus;
 import com.extl.jade.user.Network;
+import com.extl.jade.user.Nic;
 import com.extl.jade.user.Server;
 import com.extl.jade.user.Condition;
 import com.extl.jade.user.FilterCondition;
@@ -132,7 +133,8 @@ public class FlexiantActions extends ActionOnIaaSProvider{
                  password);
          
         
-         
+
+        
         Server skeletonServer=new Server();
         skeletonServer.setVdcUUID("acbdb8d6-1a6e-3f90-9a1a-4bf4b0fdfc9f");
         //skeletonServer.setCpu(cpu);
@@ -168,18 +170,34 @@ public class FlexiantActions extends ActionOnIaaSProvider{
         }
         now.setTime(date.getHours(), mins, sec);
 
-        
+        Nic networkInterface = new Nic();
+        networkInterface.setClusterUUID("1ff16f43-4a82-34bf-8f07-ea6d210548ab");
+        networkInterface.setCustomerUUID("ab8c4cae-c870-34f3-b91b-476aedd0109f");
+        networkInterface.setDeploymentInstanceUUID("9ba97cd5-28e6-342d-91db-892a4bc0914e");
+        networkInterface.setProductOfferUUID("");
+        networkInterface.setNetworkUUID("a1976173-86aa-316f-9cde-1338935ffefc");
+        networkInterface.setVdcUUID("acbdb8d6-1a6e-3f90-9a1a-4bf4b0fdfc9f");
+        networkInterface.setServerUUID("");
         
         System.err.println("Creating server at "+now.toString());
         sshs.add("c2676e1f-2466-322e-a44e-69da67d4bc85");
+        List<Nic> nics = new ArrayList<Nic>();
+        nics.add(networkInterface);
+        
           try {
 			service.createServer(skeletonServer, sshs, now );
 		} catch (ExtilityException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-            
-		return skeletonServer.toString();
+          networkInterface.setServerUUID(skeletonServer.getServerKey());
+        try {
+			service.createNetworkInterface(networkInterface, now);
+		} catch (ExtilityException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return skeletonServer.getServerKey();
 		
 		//return createdServer.getNics().get(0).getIpAddresses().get(0).getIpAddress();
 	}
