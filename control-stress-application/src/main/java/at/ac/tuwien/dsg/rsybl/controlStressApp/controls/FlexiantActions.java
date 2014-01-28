@@ -22,6 +22,7 @@ import com.extl.jade.user.ExtilityException;
 import com.extl.jade.user.Job;
 import com.extl.jade.user.JobStatus;
 import com.extl.jade.user.Network;
+import com.extl.jade.user.NetworkType;
 import com.extl.jade.user.Nic;
 import com.extl.jade.user.Server;
 import com.extl.jade.user.Condition;
@@ -31,6 +32,7 @@ import com.extl.jade.user.SearchFilter;
 import com.extl.jade.user.ListResult;
 import com.extl.jade.user.QueryLimit;
 import com.extl.jade.user.ServerStatus;
+import com.extl.jade.user.Subnet;
 import com.extl.jade.user.UserAPI;
 import com.extl.jade.user.UserService;
 
@@ -170,6 +172,15 @@ public class FlexiantActions extends ActionOnIaaSProvider{
         }
         now.setTime(date.getHours(), mins, sec);
 
+        Subnet subnet = new Subnet();
+        subnet.setClusterUUID("1ff16f43-4a82-34bf-8f07-ea6d210548ab");
+        subnet.setCustomerUUID("ab8c4cae-c870-34f3-b91b-476aedd0109f");
+        subnet.setDeploymentInstanceUUID("9ba97cd5-28e6-342d-91db-892a4bc0914e");
+        subnet.setProductOfferUUID("");
+        subnet.setNetworkUUID("a1976173-86aa-316f-9cde-1338935ffefc");
+        subnet.setVdcUUID("acbdb8d6-1a6e-3f90-9a1a-4bf4b0fdfc9f");
+        
+        
         Nic networkInterface = new Nic();
         networkInterface.setClusterUUID("1ff16f43-4a82-34bf-8f07-ea6d210548ab");
         networkInterface.setCustomerUUID("ab8c4cae-c870-34f3-b91b-476aedd0109f");
@@ -177,33 +188,36 @@ public class FlexiantActions extends ActionOnIaaSProvider{
         networkInterface.setProductOfferUUID("");
         networkInterface.setNetworkUUID("a1976173-86aa-316f-9cde-1338935ffefc");
         networkInterface.setVdcUUID("acbdb8d6-1a6e-3f90-9a1a-4bf4b0fdfc9f");
+        
        // networkInterface.setServerUUID("");
         networkInterface.setResourceName(serverName);
         System.err.println("Creating server at "+now.toString());
         sshs.add("c2676e1f-2466-322e-a44e-69da67d4bc85");
         skeletonServer.setResourceName(serverName);
-//        Job j=null;
-//        try {
-//     			// j=service.createNetworkInterface(networkInterface, now);
-//     			if (j.getStatus()==JobStatus.SUCCESSFUL){
-//     				System.out.println("Successful in creating the network");
-//     			}else{
-//     				System.out.println("status "+j.getStatus());
-//     				
-//     			}
-//     		} catch (ExtilityException e) {
-//     			// TODO Auto-generated catch block
-//     			e.printStackTrace();
-//     		}
-//     		 skeletonServer.getNics().add(networkInterface);
+        Job j=null;
+        try {
+        	Job subnetJob=service.createSubnet(subnet, now);
+        		networkInterface.setNetworkUUID(subnetJob.getItemUUID());
+     			 j=service.createNetworkInterface(networkInterface, now);
+     			if (j.getStatus()==JobStatus.SUCCESSFUL){
+     				System.out.println("Successful in creating the network");
+     			}else{
+     				System.out.println("status "+j.getStatus());
+     				
+     			}
+     		} catch (ExtilityException e) {
+     			// TODO Auto-generated catch block
+     			e.printStackTrace();
+     		}
+     		 skeletonServer.getNics().add(networkInterface);
      		 Job createServerJob=null;
-//
-//     		 try {
-//				service.waitForJob(j.getResourceUUID(), false);
-//			} catch (ExtilityException e1) {
-//				// TODO Auto-generated catch block
-//				e1.printStackTrace();
-//			}
+
+     		 try {
+				service.waitForJob(j.getResourceUUID(), false);
+			} catch (ExtilityException e1) {
+				// TODO Auto-generated catch block
+				e1.printStackTrace();
+			}
               date = new Date();
      		 datatypeFactory = null;
      		try {
