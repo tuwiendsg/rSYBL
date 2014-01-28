@@ -44,17 +44,18 @@ public class FlexiantActions extends ActionOnIaaSProvider{
 
 		 URL url = ClassLoader.getSystemClassLoader().getResource(
               "UserAPI.wsdl");
-       
+		  System.err.println("Instantiating USERAPI ");
       // Get the UserAPI
       UserAPI api = new UserAPI(url,new QName("http://extility.flexiant.net", "UserAPI"));
-               
+      System.err.println("User service port ");         
       // and set the service port on the service
       service = api.getUserServicePort();
+      System.err.println("Binding provider");      
       BindingProvider portBP = (BindingProvider) service;
       
       // and set the service endpoint
       //TODO{Ask}
-      System.out.println("Trying to connect to ... https://api.sd1.flexiant.net:4442 ");
+      System.err.println("Trying to connect to ... https://api.sd1.flexiant.net:4442 ");
       portBP.getRequestContext().put(BindingProvider.ENDPOINT_ADDRESS_PROPERTY,
               "https://api.sd1.flexiant.net:4442");
        
@@ -64,7 +65,7 @@ public class FlexiantActions extends ActionOnIaaSProvider{
       portBP.getRequestContext().put(BindingProvider.PASSWORD_PROPERTY,
               password);
       
-      System.out.println("Reached this.. ");
+      System.err.println("Reached this.. ");
 
      GregorianCalendar gregorianCalendar = new GregorianCalendar();
      DatatypeFactory datatypeFactory = null;
