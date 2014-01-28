@@ -154,8 +154,15 @@ public class FlexiantActions extends ActionOnIaaSProvider{
 			e.printStackTrace();
 		}
         XMLGregorianCalendar now = datatypeFactory.newXMLGregorianCalendar(gregorianCalendar);
-
-        now.setTime(date.getHours(), date.getMinutes(), date.getSeconds()+30);
+        int mins =date.getMinutes() ;
+        int sec = date.getSeconds();
+        sec+=30;
+        if (sec>=60)
+        {
+        	sec-=60;
+        	mins+=1;
+        }
+        now.setTime(date.getHours(), mins, sec);
         System.err.println("Creating server at "+now.toString());
         sshs.add("c2676e1f-2466-322e-a44e-69da67d4bc85");
           try {
