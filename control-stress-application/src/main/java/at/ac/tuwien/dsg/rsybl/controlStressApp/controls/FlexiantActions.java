@@ -52,8 +52,9 @@ public class FlexiantActions extends ActionOnIaaSProvider{
       BindingProvider portBP = (BindingProvider) service;
       
       // and set the service endpoint
+      //TODO{Ask}
       portBP.getRequestContext().put(BindingProvider.ENDPOINT_ADDRESS_PROPERTY,
-              "https://localhost:4442");
+              "https://api.sd1.flexiant.net:4442");
        
       // and the caller's authentication details and password
       portBP.getRequestContext().put(BindingProvider.USERNAME_PROPERTY,
