@@ -173,11 +173,12 @@ public class FlexiantActions extends ActionOnIaaSProvider{
         now.setTime(date.getHours(), mins, sec);
 
         Subnet subnet = new Subnet();
+        
         subnet.setClusterUUID("1ff16f43-4a82-34bf-8f07-ea6d210548ab");
         subnet.setCustomerUUID("ab8c4cae-c870-34f3-b91b-476aedd0109f");
         subnet.setDeploymentInstanceUUID("9ba97cd5-28e6-342d-91db-892a4bc0914e");
         subnet.setProductOfferUUID("");
-        subnet.setNetworkUUID("a1976173-86aa-316f-9cde-1338935ffefc");
+        subnet.setNetworkUUID("e6633091-aec1-35a5-88af-732218f27225");
         subnet.setVdcUUID("acbdb8d6-1a6e-3f90-9a1a-4bf4b0fdfc9f");
         
         
@@ -196,9 +197,10 @@ public class FlexiantActions extends ActionOnIaaSProvider{
         skeletonServer.setResourceName(serverName);
         Job j=null;
         try {
-        	Job subnetJob=service.createSubnet(subnet, now);
-        		networkInterface.setNetworkUUID(subnetJob.getItemUUID());
-     			 j=service.createNetworkInterface(networkInterface, now);
+        	Job myJob = service.createSubnet(subnet, now);
+        	networkInterface.setNetworkUUID(myJob.getItemUUID());
+        	j=service.createNetworkInterface(networkInterface, now);
+        		 
      			if (j.getStatus()==JobStatus.SUCCESSFUL){
      				System.out.println("Successful in creating the network");
      			}else{
