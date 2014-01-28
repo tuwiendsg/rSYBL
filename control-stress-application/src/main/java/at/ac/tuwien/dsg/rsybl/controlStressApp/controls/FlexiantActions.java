@@ -183,7 +183,20 @@ public class FlexiantActions extends ActionOnIaaSProvider{
         sshs.add("c2676e1f-2466-322e-a44e-69da67d4bc85");
         List<Nic> nics = new ArrayList<Nic>();
         nics.add(networkInterface);
-        
+        try {
+     			Job j=service.createNetworkInterface(networkInterface, now);
+     			if (j.getStatus()==JobStatus.SUCCESSFUL){
+     				System.out.println("Successful in creating the network");
+     			}else{
+     				System.out.println("status "+j.getStatus());
+     				
+     			}
+     		} catch (ExtilityException e) {
+     			// TODO Auto-generated catch block
+     			e.printStackTrace();
+     		}
+     		 skeletonServer.getNics().add(networkInterface);
+     		 
           try {
 			Job j=service.createServer(skeletonServer, sshs, now );
 		} catch (ExtilityException e) {
@@ -191,16 +204,7 @@ public class FlexiantActions extends ActionOnIaaSProvider{
 			e.printStackTrace();
 		}
           
-        try {
-			Job j=service.createNetworkInterface(networkInterface, now);
-			if (j.getStatus()==JobStatus.SUCCESSFUL){
-				System.out.println("Successful in creating the network");
-			}
-		} catch (ExtilityException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-		 skeletonServer.getNics().add(networkInterface);
+     
 		return skeletonServer.toString();
 		//return createdServer.getNics().get(0).getIpAddresses().get(0).getIpAddress();
 	}
