@@ -38,26 +38,24 @@ public class FlexiantActions extends ActionOnIaaSProvider{
 	  String apiUserName="cgeorgy1987@yahoo.com";
       String customerUUID = "af809242-0ea2-3285-8bfe-708339c78fc2";
       String password = "c3larPassword";
-      
+      String ENDPOINT_ADDRESS_PROPERTY="https://api.sd1.flexiant.net:4442";
   public void removeServer(String serverUUID){
 	  UserService service;
 
 		 URL url = ClassLoader.getSystemClassLoader().getResource(
               "UserAPI.wsdl");
-		  System.err.println("Instantiating USERAPI ");
+		 
       // Get the UserAPI
       UserAPI api = new UserAPI(url,new QName("http://extility.flexiant.net", "UserAPI"));
-      System.err.println("User service port ");         
       // and set the service port on the service
       service = api.getUserServicePort();
-      System.err.println("Binding provider");      
       BindingProvider portBP = (BindingProvider) service;
       
       // and set the service endpoint
       //TODO{Ask}
       System.err.println("Trying to connect to ... https://api.sd1.flexiant.net:4442 ");
       portBP.getRequestContext().put(BindingProvider.ENDPOINT_ADDRESS_PROPERTY,
-              "https://api.sd1.flexiant.net:4442");
+    		  ENDPOINT_ADDRESS_PROPERTY);
        
       // and the caller's authentication details and password
       portBP.getRequestContext().put(BindingProvider.USERNAME_PROPERTY,
@@ -65,8 +63,7 @@ public class FlexiantActions extends ActionOnIaaSProvider{
       portBP.getRequestContext().put(BindingProvider.PASSWORD_PROPERTY,
               password);
       
-      System.err.println("Reached this.. ");
-
+   
      GregorianCalendar gregorianCalendar = new GregorianCalendar();
      DatatypeFactory datatypeFactory = null;
 		try {
@@ -125,7 +122,7 @@ public class FlexiantActions extends ActionOnIaaSProvider{
           
          // and set the service endpoint
          portBP.getRequestContext().put(BindingProvider.ENDPOINT_ADDRESS_PROPERTY,
-                 "https://localhost:4442");
+        		 ENDPOINT_ADDRESS_PROPERTY);
           
          // and the caller's authentication details and password
          portBP.getRequestContext().put(BindingProvider.USERNAME_PROPERTY,
@@ -185,7 +182,7 @@ public class FlexiantActions extends ActionOnIaaSProvider{
           
          // and set the service endpoint
          portBP.getRequestContext().put(BindingProvider.ENDPOINT_ADDRESS_PROPERTY,
-                 "http://example.com:8080/user/");
+        		 ENDPOINT_ADDRESS_PROPERTY);
           
          // and the caller's authentication details and password
          portBP.getRequestContext().put(BindingProvider.USERNAME_PROPERTY,
