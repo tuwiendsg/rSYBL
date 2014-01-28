@@ -2,6 +2,7 @@ package at.ac.tuwien.dsg.rsybl.controlStressApp.controls;
 
 import java.math.BigDecimal;
 import java.math.BigInteger;
+import java.net.NetworkInterface;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.Date;
@@ -20,6 +21,7 @@ import javax.xml.ws.BindingProvider;
 import com.extl.jade.user.ExtilityException;
 import com.extl.jade.user.Job;
 import com.extl.jade.user.JobStatus;
+import com.extl.jade.user.Network;
 import com.extl.jade.user.Server;
 import com.extl.jade.user.Condition;
 import com.extl.jade.user.FilterCondition;
@@ -129,15 +131,16 @@ public class FlexiantActions extends ActionOnIaaSProvider{
                  userEmailAddress + "/" + customerUUID);
          portBP.getRequestContext().put(BindingProvider.PASSWORD_PROPERTY,
                  password);
-      
+
+         
         Server skeletonServer=new Server();
         skeletonServer.setVdcUUID("acbdb8d6-1a6e-3f90-9a1a-4bf4b0fdfc9f");
         //skeletonServer.setCpu(cpu);
         skeletonServer.setInitialUser("ubuntu");
         skeletonServer.setInitialPassword("c3larPassword");
         skeletonServer.setCustomerUUID("ab8c4cae-c870-34f3-b91b-476aedd0109f");
-        skeletonServer.setProductOfferUUID("8a657434-b0c5-3a99-83bf-87cf4c9dedb8");
-        //skeletonServer.setProductOfferUUID("242a0c41-0fc7-3fab-bc09-86d13c34230e");
+        //skeletonServer.setProductOfferUUID("8a657434-b0c5-3a99-83bf-87cf4c9dedb8");
+        skeletonServer.setProductOfferUUID("242a0c41-0fc7-3fab-bc09-86d13c34230e");
         //skeletonServer.setRam(mem);
         skeletonServer.setImageName(serverName);
         skeletonServer.setImageUUID(imageUUID);
