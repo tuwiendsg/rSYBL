@@ -202,8 +202,9 @@ public class FlexiantActions extends ActionOnIaaSProvider{
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
+          
           try {
-			service.waitForJob(createServerJob.getItemUUID(), false);
+			service.waitForJob(createServerJob.getResourceUUID(), false);
 		} catch (ExtilityException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
