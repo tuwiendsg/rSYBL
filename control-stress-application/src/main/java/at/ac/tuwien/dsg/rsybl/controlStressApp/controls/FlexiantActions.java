@@ -178,12 +178,13 @@ public class FlexiantActions extends ActionOnIaaSProvider{
         networkInterface.setNetworkUUID("a1976173-86aa-316f-9cde-1338935ffefc");
         networkInterface.setVdcUUID("acbdb8d6-1a6e-3f90-9a1a-4bf4b0fdfc9f");
         networkInterface.setServerUUID("");
-        
+        networkInterface.setResourceName("NIC-for-server"+serverName);
         System.err.println("Creating server at "+now.toString());
         sshs.add("c2676e1f-2466-322e-a44e-69da67d4bc85");
-
+        skeletonServer.setResourceName(serverName);
+        Job j=null;
         try {
-     			Job j=service.createNetworkInterface(networkInterface, now);
+     			 j=service.createNetworkInterface(networkInterface, now);
      			if (j.getStatus()==JobStatus.SUCCESSFUL){
      				System.out.println("Successful in creating the network");
      			}else{
@@ -196,6 +197,32 @@ public class FlexiantActions extends ActionOnIaaSProvider{
      		}
      		 skeletonServer.getNics().add(networkInterface);
      		 Job createServerJob=null;
+
+     		 try {
+				service.waitForJob(j.getResourceUUID(), false);
+			} catch (ExtilityException e1) {
+				// TODO Auto-generated catch block
+				e1.printStackTrace();
+			}
+              date = new Date();
+     		 datatypeFactory = null;
+     		try {
+     			datatypeFactory = DatatypeFactory.newInstance();
+     		} catch (DatatypeConfigurationException e) {
+     			// TODO Auto-generated catch block
+     			e.printStackTrace();
+     		}
+              now = datatypeFactory.newXMLGregorianCalendar(gregorianCalendar);
+              mins =date.getMinutes() ;
+              sec = date.getSeconds();
+             sec+=30;
+             if (sec>=60)
+             {
+             	sec-=60;
+             	mins+=1;
+             }
+             now.setTime(date.getHours(), mins, sec);
+     		 
           try {
         	  createServerJob=service.createServer(skeletonServer, sshs, now );
 		} catch (ExtilityException e) {
@@ -203,12 +230,12 @@ public class FlexiantActions extends ActionOnIaaSProvider{
 			e.printStackTrace();
 		}
           
-//          try {
-//			service.waitForJob(createServerJob.getResourceUUID(), true);
-//		} catch (ExtilityException e) {
-//			// TODO Auto-generated catch block
-//			e.printStackTrace();
-//		}
+          try {
+			service.waitForJob(createServerJob.getResourceUUID(), false);
+		} catch (ExtilityException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 
         	return createServerJob.getItemUUID();
         
