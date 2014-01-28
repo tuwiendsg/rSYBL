@@ -105,7 +105,7 @@ public class FlexiantActions extends ActionOnIaaSProvider{
      *create new server   
      */
 	public String createNewServer(String serverName,String imageUUID, int cpu, int mem){
-		Server createdServer=null;
+		
    	 UserService service;
 
 		 URL url = ClassLoader.getSystemClassLoader().getResource(
@@ -151,7 +151,8 @@ public class FlexiantActions extends ActionOnIaaSProvider{
 			e.printStackTrace();
 		}
         XMLGregorianCalendar now = datatypeFactory.newXMLGregorianCalendar(gregorianCalendar);
-
+        System.err.println(now.toString());
+        now.setTime(10, 25, 30);
         sshs.add("c2676e1f-2466-322e-a44e-69da67d4bc85");
           try {
 			service.createServer(skeletonServer, sshs, now );
@@ -160,7 +161,7 @@ public class FlexiantActions extends ActionOnIaaSProvider{
 			e.printStackTrace();
 		}
              
-		return createdServer.toString();
+		return skeletonServer.toString();
 		
 		//return createdServer.getNics().get(0).getIpAddresses().get(0).getIpAddress();
 	}
