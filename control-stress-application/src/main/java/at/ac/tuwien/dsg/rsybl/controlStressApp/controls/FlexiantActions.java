@@ -177,33 +177,33 @@ public class FlexiantActions extends ActionOnIaaSProvider{
         networkInterface.setProductOfferUUID("");
         networkInterface.setNetworkUUID("a1976173-86aa-316f-9cde-1338935ffefc");
         networkInterface.setVdcUUID("acbdb8d6-1a6e-3f90-9a1a-4bf4b0fdfc9f");
-        networkInterface.setServerUUID("");
-        networkInterface.setResourceName("NIC-for-server"+serverName);
+       // networkInterface.setServerUUID("");
+        networkInterface.setResourceName(serverName);
         System.err.println("Creating server at "+now.toString());
         sshs.add("c2676e1f-2466-322e-a44e-69da67d4bc85");
         skeletonServer.setResourceName(serverName);
-        Job j=null;
-        try {
-     			 j=service.createNetworkInterface(networkInterface, now);
-     			if (j.getStatus()==JobStatus.SUCCESSFUL){
-     				System.out.println("Successful in creating the network");
-     			}else{
-     				System.out.println("status "+j.getStatus());
-     				
-     			}
-     		} catch (ExtilityException e) {
-     			// TODO Auto-generated catch block
-     			e.printStackTrace();
-     		}
-     		 skeletonServer.getNics().add(networkInterface);
+//        Job j=null;
+//        try {
+//     			// j=service.createNetworkInterface(networkInterface, now);
+//     			if (j.getStatus()==JobStatus.SUCCESSFUL){
+//     				System.out.println("Successful in creating the network");
+//     			}else{
+//     				System.out.println("status "+j.getStatus());
+//     				
+//     			}
+//     		} catch (ExtilityException e) {
+//     			// TODO Auto-generated catch block
+//     			e.printStackTrace();
+//     		}
+//     		 skeletonServer.getNics().add(networkInterface);
      		 Job createServerJob=null;
-
-     		 try {
-				service.waitForJob(j.getResourceUUID(), false);
-			} catch (ExtilityException e1) {
-				// TODO Auto-generated catch block
-				e1.printStackTrace();
-			}
+//
+//     		 try {
+//				service.waitForJob(j.getResourceUUID(), false);
+//			} catch (ExtilityException e1) {
+//				// TODO Auto-generated catch block
+//				e1.printStackTrace();
+//			}
               date = new Date();
      		 datatypeFactory = null;
      		try {
