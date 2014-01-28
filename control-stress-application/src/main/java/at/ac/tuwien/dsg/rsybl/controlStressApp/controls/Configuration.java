@@ -66,8 +66,8 @@ public class Configuration {
         	  try {
         		//  DependencyGraphLogger.logger.info("Current inputStream "+Configuration.class.getClassLoader().getResourceAsStream("./config.properties"));
                  
-               	  configuration.load(Configuration.class.getClassLoader().getResourceAsStream("/config.properties"));
-             //     configuration.load(new FileReader( new File("config.properties")));
+             //  	  configuration.load(Configuration.class.getClassLoader().getResourceAsStream("/config.properties"));
+                  configuration.load(new FileReader( new File("config.properties")));
         	  } catch (Exception ex) {
                   Logger.getLogger(Configuration.class.getName()).log(Level.SEVERE, null, ex);
               }
