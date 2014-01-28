@@ -36,7 +36,6 @@ import com.extl.jade.user.UserService;
 
 public class FlexiantActions extends ActionOnIaaSProvider{
 	  String userEmailAddress = Configuration.getUserEMailAddress();
-	//  String apiUserName="cgeorgy1987@yahoo.com/af809242-0ea2-3285-8bfe-708339c78fc2";
 	  String apiUserName=Configuration.getAPIUserName();
       String customerUUID = Configuration.getCustomerUUID();
       String password = Configuration.getPassword();
@@ -138,7 +137,7 @@ public class FlexiantActions extends ActionOnIaaSProvider{
         skeletonServer.setVdcUUID("acbdb8d6-1a6e-3f90-9a1a-4bf4b0fdfc9f");
         //skeletonServer.setCpu(cpu);
         skeletonServer.setInitialUser("ubuntu");
-        skeletonServer.setInitialPassword("c3larPassword");
+
         skeletonServer.setCustomerUUID("ab8c4cae-c870-34f3-b91b-476aedd0109f");
         //skeletonServer.setProductOfferUUID("8a657434-b0c5-3a99-83bf-87cf4c9dedb8");
         skeletonServer.setProductOfferUUID("242a0c41-0fc7-3fab-bc09-86d13c34230e");
