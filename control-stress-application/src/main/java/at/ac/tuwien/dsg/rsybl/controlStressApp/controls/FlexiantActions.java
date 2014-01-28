@@ -202,20 +202,15 @@ public class FlexiantActions extends ActionOnIaaSProvider{
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-        while (createServerJob.getStatus()!= JobStatus.SUCCESSFUL || createServerJob.getStatus()!=JobStatus.FAILED){
-        	try {
-				Thread.sleep(1000);
-			} catch (InterruptedException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
-        }
-        if (createServerJob.getStatus()==JobStatus.SUCCESSFUL){
+          try {
+			service.waitForJob(createServerJob.getItemUUID(), false);
+		} catch (ExtilityException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+
         	
         	return skeletonServer.getResourceUUID();
-        }else{
-        	return createNewServer( serverName, imageUUID,  cpu,  mem);
-        }
         
 		
 		//return createdServer.getNics().get(0).getIpAddresses().get(0).getIpAddress();
