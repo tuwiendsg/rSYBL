@@ -143,6 +143,8 @@ public class FlexiantActions extends ActionOnIaaSProvider{
         skeletonServer.setClusterUUID("1ff16f43-4a82-34bf-8f07-ea6d210548ab");
         List<String> sshs=new ArrayList<String>();
         GregorianCalendar gregorianCalendar = new GregorianCalendar();
+        Date date =  new Date();
+        
         DatatypeFactory datatypeFactory = null;
 		try {
 			datatypeFactory = DatatypeFactory.newInstance();
@@ -151,8 +153,9 @@ public class FlexiantActions extends ActionOnIaaSProvider{
 			e.printStackTrace();
 		}
         XMLGregorianCalendar now = datatypeFactory.newXMLGregorianCalendar(gregorianCalendar);
+
+        now.setTime(date.getHours(), date.getMinutes(), date.getSeconds()+30);
         System.err.println(now.toString());
-        now.setTime(10, 25, 30);
         sshs.add("c2676e1f-2466-322e-a44e-69da67d4bc85");
           try {
 			service.createServer(skeletonServer, sshs, now );
