@@ -185,20 +185,23 @@ public class FlexiantActions extends ActionOnIaaSProvider{
         nics.add(networkInterface);
         
           try {
-			service.createServer(skeletonServer, sshs, now );
+			Job j=service.createServer(skeletonServer, sshs, now );
 		} catch (ExtilityException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-          networkInterface.setServerUUID(skeletonServer.getServerKey());
+          
         try {
-			service.createNetworkInterface(networkInterface, now);
+			Job j=service.createNetworkInterface(networkInterface, now);
+			if (j.getStatus()==JobStatus.SUCCESSFUL){
+				System.out.println("Successful in creating the network");
+			}
 		} catch (ExtilityException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		return skeletonServer.getServerKey();
-		
+		 skeletonServer.getNics().add(networkInterface);
+		return skeletonServer.toString();
 		//return createdServer.getNics().get(0).getIpAddresses().get(0).getIpAddress();
 	}
      public List<Server> listServers(){
