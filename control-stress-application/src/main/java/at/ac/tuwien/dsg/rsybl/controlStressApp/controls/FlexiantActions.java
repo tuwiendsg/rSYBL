@@ -34,7 +34,8 @@ import com.extl.jade.user.UserService;
 
 public class FlexiantActions extends ActionOnIaaSProvider{
 	  String userEmailAddress = "cgeorgy1987@yahoo.com";
-	  String apiUserName="cgeorgy1987@yahoo.com/af809242-0ea2-3285-8bfe-708339c78fc2";
+	//  String apiUserName="cgeorgy1987@yahoo.com/af809242-0ea2-3285-8bfe-708339c78fc2";
+	  String apiUserName="cgeorgy1987@yahoo.com";
       String customerUUID = "af809242-0ea2-3285-8bfe-708339c78fc2";
       String password = "c3larPassword";
       
@@ -53,6 +54,7 @@ public class FlexiantActions extends ActionOnIaaSProvider{
       
       // and set the service endpoint
       //TODO{Ask}
+      System.out.println("Trying to connect to ... https://api.sd1.flexiant.net:4442 ");
       portBP.getRequestContext().put(BindingProvider.ENDPOINT_ADDRESS_PROPERTY,
               "https://api.sd1.flexiant.net:4442");
        
@@ -61,6 +63,9 @@ public class FlexiantActions extends ActionOnIaaSProvider{
               userEmailAddress + "/" + customerUUID);
       portBP.getRequestContext().put(BindingProvider.PASSWORD_PROPERTY,
               password);
+      
+      System.out.println("Reached this.. ");
+
      GregorianCalendar gregorianCalendar = new GregorianCalendar();
      DatatypeFactory datatypeFactory = null;
 		try {
@@ -72,6 +77,7 @@ public class FlexiantActions extends ActionOnIaaSProvider{
      XMLGregorianCalendar now = datatypeFactory.newXMLGregorianCalendar(gregorianCalendar);
      try {
 		Job job=service.deleteResource(serverUUID, true, now);
+		
 		while (job.getStatus()!= JobStatus.FAILED && job.getStatus()!= JobStatus.SUCCESSFUL && job.getStatus()!=JobStatus.SUSPENDED){
 			try {
 				Thread.sleep(2000);
