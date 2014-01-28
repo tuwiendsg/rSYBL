@@ -136,6 +136,7 @@ public class FlexiantActions extends ActionOnIaaSProvider{
         skeletonServer.setInitialUser("ubuntu");
         skeletonServer.setInitialPassword("c3larPassword");
         skeletonServer.setCustomerUUID("ab8c4cae-c870-34f3-b91b-476aedd0109f");
+        skeletonServer.setProductOfferUUID("0d1a2798-91b5-35d4-93c2-fed5ece5aedd");
         skeletonServer.setRam(mem);
         skeletonServer.setImageName(serverName);
         skeletonServer.setImageUUID(imageUUID);
@@ -155,7 +156,7 @@ public class FlexiantActions extends ActionOnIaaSProvider{
         XMLGregorianCalendar now = datatypeFactory.newXMLGregorianCalendar(gregorianCalendar);
 
         now.setTime(date.getHours(), date.getMinutes(), date.getSeconds()+30);
-        System.err.println(now.toString());
+        System.err.println("Creating server at "+now.toString());
         sshs.add("c2676e1f-2466-322e-a44e-69da67d4bc85");
           try {
 			service.createServer(skeletonServer, sshs, now );
