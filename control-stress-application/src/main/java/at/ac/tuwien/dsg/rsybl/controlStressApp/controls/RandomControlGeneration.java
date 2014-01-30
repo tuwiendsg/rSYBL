@@ -287,7 +287,7 @@ public class RandomControlGeneration implements Runnable{
          	   try {
 					Process p = Runtime.getRuntime().exec(cmd);
 					int exitVal = p.waitFor();
-				} catch (IOException | InterruptedException e) {
+				} catch (IOException e) {
 					// TODO Auto-generated catch block
 					try {
 						executeAndExpectNothing(ip, Configuration.getCertificatePath(), scriptToRun);
@@ -297,7 +297,16 @@ public class RandomControlGeneration implements Runnable{
 					}
 					e.printStackTrace();
 					
-			}
+			} catch (InterruptedException e) {
+					// TODO Auto-generated catch block
+					try {
+						executeAndExpectNothing(ip, Configuration.getCertificatePath(), scriptToRun);
+					} catch (JSchException e1) {
+						// TODO Auto-generated catch block
+						e1.printStackTrace();
+					}
+					e.printStackTrace();
+				}
 		}
             
 		monitoringAPI.refreshServiceStructure(cloudService);
