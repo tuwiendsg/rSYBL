@@ -22,16 +22,9 @@
 
 package at.ac.tuwien.dsg.rsybl.controlStressApp.controls;
 
-import java.io.BufferedWriter;
+
 import java.io.File;
-import java.io.FileInputStream;
-import java.io.FilePermission;
 import java.io.FileReader;
-import java.io.FileWriter;
-import java.io.InputStream;
-import java.net.URL;
-import java.security.AccessController;
-import java.security.PrivilegedAction;
 import java.util.Properties;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -66,7 +59,7 @@ public class Configuration {
         	  try {
         	    
              //  	  configuration.load(Configuration.class.getClassLoader().getResourceAsStream("/config.properties"));
-                  configuration.load(new FileReader( new File("config.properties")));
+                  configuration.load(new FileReader( new File("config/config.properties")));
         	  } catch (Exception ex) {
                   Logger.getLogger(Configuration.class.getName()).log(Level.SEVERE, null, ex);
               }
@@ -98,5 +91,29 @@ public class Configuration {
     {  	
     	return configuration.getProperty("ENDPOINT_ADDRESS_PROPERTY");
     }
-
+    public static String getApplicationDescription()
+    {  	
+    	return configuration.getProperty("ApplicationDescription");
+    }  
+    
+    public static String getDeploymentDescription()
+    {  	
+    	return configuration.getProperty("DeploymentDescription");
+    }
+    
+    public static String getCertificatePath()
+    {  	
+    	return configuration.getProperty("CertificatePath");
+    }
+    public static String getMelaAPIEndpoint()
+    {  	
+    	return configuration.getProperty("MELAAPIEndpoint");
+    }
+    public static int getMinIntervalGeneration(){
+    	return Integer.parseInt(configuration.getProperty("MinIntervalGeneration"));
+    }
+    public static int getMaxIntervalGeneration(){
+    	return Integer.parseInt(configuration.getProperty("MaxIntervalGeneration"));
+    }
+    
 }
