@@ -2,22 +2,22 @@
 <DeploymentDescription CloudServiceID="CloudService" AccessIP="localhost">
 	<DeploymentUnit serviceUnitID="LoadBalancerServiceUnit" 
 		defaultFlavor="m1.tiny" defaultImage="a4fe953e-d4c8-40a5-9c73-d9fee3f00c08" >
-	<AssociatedVM IP="10.99.0.23"/>
+	<AssociatedVM IP="109.231.122.200" UUID="ef2d0c3d-ef37-30b0-b5fb-daffa0bda44a"/>
 	</DeploymentUnit>
 	<DeploymentUnit serviceUnitID="EventProcessingServiceUnit"
-		defaultFlavor="m1.tiny" defaultImage="314c76d6-9deb-4a3b-80f7-65ff97967708" >
-			<AssociatedVM IP="10.99.0.16"/>	
+		defaultFlavor="m1.tiny" defaultImage="920df1e9-5c3f-32b2-aa65-55188463e0ec" >
+			<AssociatedVM IP="109.231.122.215" UUID="78dcb6b0-fe85-3450-b342-e80ec4828901"/>	
 	<ElasticityCapability Name="scaleIn" Script="decomission.sh"/>
 
 	<ElasticityCapability Name="scaleOut"/>
 	</DeploymentUnit>
 	<DeploymentUnit serviceUnitID="DataControllerServiceUnit"
-		defaultFlavor="m1.tiny" defaultImage="31eceb21-bf20-479e-a674-fe0e400d184b" >
-	<AssociatedVM IP="10.99.0.30" UUID="c569fa37-a8fa-384a-8ab1-365efb157105"/>
+		defaultFlavor="m1.tiny" defaultImage="22ce5bdf-de2b-3154-8979-a0c426d2f7e8" >
+	<AssociatedVM IP="109.231.122.208" UUID="e65588f0-db24-3c33-a1ba-fe81028628dd"/>
 	</DeploymentUnit>
 	<DeploymentUnit serviceUnitID="DataNodeServiceUnit"
-		defaultFlavor="m1.tiny" defaultImage="851e5130-db42-48d1-a932-0f47d3979c8c" >
-	<AssociatedVM IP="10.99.0.28"/>
+		defaultFlavor="m1.tiny" defaultImage="bc925c99-5cc9-3629-bd2d-ad205e710873" >
+	<AssociatedVM IP="109.231.122.235" UUID="3deb59d1-53fb-3650-ae8a-10b72ae7fa63"/>
 	<ElasticityCapability Name="scaleIn" Script="decomission.sh"/>
 	<ElasticityCapability Name="scaleOut"/>
 	</DeploymentUnit>
