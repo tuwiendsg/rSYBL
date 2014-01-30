@@ -90,4 +90,10 @@
             </plugins>
     <finalName>control-stress-application</finalName>
   </build>
+     <repositories>
+                <repository>
+                        <id>infosys-repo</id>
+                        <url>http://www.infosys.tuwien.ac.at/mvn</url>
+                </repository>
+        </repositories>
 </project>
