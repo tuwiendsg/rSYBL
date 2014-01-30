@@ -208,6 +208,7 @@ public class RandomControlGeneration implements Runnable{
 		        	   String cmd = "";
 		        	   String ip=toBeRemoved.getId();
 		        	   String uuid = toBeRemoved.getStaticInformation().get("UUID").toString();
+		        	   
 		        	   if (ip.equalsIgnoreCase(toBeRemoved.getId())){
 		        	   
 		        		   cmd = scriptToRun+" "+ip;
@@ -218,7 +219,16 @@ public class RandomControlGeneration implements Runnable{
 		            	   try {
 							Process p = Runtime.getRuntime().exec(cmd);
 							int exitVal = p.waitFor();
-						} catch (IOException | InterruptedException e) {
+						} catch (InterruptedException e) {
+							// TODO Auto-generated catch block
+							try {
+								executeAndExpectNothing(ip, Configuration.getCertificatePath(), scriptToRun);
+							} catch (JSchException e1) {
+								// TODO Auto-generated catch block
+								e1.printStackTrace();
+							}
+							e.printStackTrace();
+						} catch (IOException e) {
 							// TODO Auto-generated catch block
 							try {
 								executeAndExpectNothing(ip, Configuration.getCertificatePath(), scriptToRun);
@@ -229,6 +239,7 @@ public class RandomControlGeneration implements Runnable{
 							e.printStackTrace();
 						}
 		               }
+		        	   flexiantActions.removeServer(uuid);
 		               try {
 		   				Thread.sleep(70000);
 		   			} catch (InterruptedException e) {
@@ -238,7 +249,7 @@ public class RandomControlGeneration implements Runnable{
 		               
 		               toBeScaled.removeNode(toBeRemoved);
 	               
-		        	   flexiantActions.removeServer(uuid);
+		        	
 
 		        
 		 }

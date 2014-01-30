@@ -17,6 +17,7 @@
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 
 import at.ac.tuwien.dsg.csdg.Node;
 import at.ac.tuwien.dsg.csdg.elasticityInformation.ElasticityRequirement;
@@ -382,6 +383,14 @@ try{
 	@Override
 	public void refreshServiceStructure(Node cloudService) {
 		offeredMonitoringMetrics.refreshServiceStructure(cloudService);
+	}
+
+
+
+
+	@Override
+	public List<String> getAvailableMetrics(Node node) {
+		return offeredMonitoringMetrics.getAvailableMetrics(node);
 	}
 
 

@@ -177,8 +177,7 @@ public class InputProcessing {
 			try {			
 				JAXBContext a = JAXBContext.newInstance( SYBLElasticityRequirementsDescription.class );
 				Unmarshaller u  = a.createUnmarshaller();
-				String directivePath = Configuration.getDirectivesPath();
-				if (directivePath!=null){
+				if (elasticityReq.equalsIgnoreCase("")){
 			     syblSpecifications = (SYBLElasticityRequirementsDescription) u.unmarshal( new StringReader(elasticityReq)) ;
 			    // syblSpecifications = (SYBLElasticityRequirementsDescription) u.unmarshal(new File(directivePath));
 				}
@@ -307,13 +306,22 @@ public class InputProcessing {
 					for (AssociatedVM associatedVM:deploymentUnit.getAssociatedVM()){
 					Node vmNode = new Node();
 					vmNode.setId(associatedVM.getIp());
+					vmNode.getStaticInformation().put("UUID",associatedVM.getUuid());
 					vmNode.setNodeType(NodeType.VIRTUAL_MACHINE);
 					Relationship vmRel = new Relationship();
 					vmRel.setSourceElement(node.getId());
 					vmRel.setTargetElement(vmNode.getId());
 					vmRel.setType(RelationshipType.HOSTED_ON_RELATIONSHIP);
+				
 					node.addNode(vmNode, vmRel);
 					}
+					for (at.ac.tuwien.dsg.csdg.inputProcessing.multiLevelModel.deploymentDescription.ElasticityCapability elasticityCapability:deploymentUnit.getElasticityCapabilities()){
+						ElasticityCapability newElasticityCapability=new ElasticityCapability();
+						newElasticityCapability.setName(elasticityCapability.getName());
+						newElasticityCapability.setScript(elasticityCapability.getScript());
+						node.addElasticityCapability(newElasticityCapability);
+					}
+					
 				}
 			}else{
 				DependencyGraphLogger.logger.error("Cannot find node "+deploymentUnit.getServiceUnitID()+". Current graph is "+graph.graphToString());
@@ -352,7 +360,12 @@ public class InputProcessing {
 		
 		return constructDependencyGraph();
 	}
-
+	public DependencyGraph loadDependencyGraphFromObjects(CloudServiceXML cloudServiceXML, SYBLElasticityRequirementsDescription description,DeploymentDescription deploymentDescription){
+		this.cloudServiceXML=cloudServiceXML;
+		this.syblSpecifications=description;
+		this.deploymentDescription=deploymentDescription;
+		return constructDependencyGraph();
+	}
 	public SYBLAnnotation mapFromXMLAnnotationToSYBLAnnotation(String entityID,SYBLAnnotationXML syblAnnotationXML,SYBLAnnotation.AnnotationType annotationType){
 		SYBLAnnotation syblannotation = new SYBLAnnotation();
 

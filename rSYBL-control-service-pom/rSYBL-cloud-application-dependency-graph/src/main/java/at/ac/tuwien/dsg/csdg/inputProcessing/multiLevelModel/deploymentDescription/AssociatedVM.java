@@ -11,13 +11,22 @@ import javax.xml.bind.annotation.XmlType;
 	public class AssociatedVM {
 	    @XmlAttribute(name = "IP")
 		private String ip="";
-
+	    @XmlAttribute(name="UUID")
+	    private String uuid="";
 		public String getIp() {
 			return ip;
 		}
 
 		public void setIp(String ip) {
 			this.ip = ip;
+		}
+
+		public String getUuid() {
+			return uuid;
+		}
+
+		public void setUuid(String uuid) {
+			this.uuid = uuid;
 		}
 
 	 

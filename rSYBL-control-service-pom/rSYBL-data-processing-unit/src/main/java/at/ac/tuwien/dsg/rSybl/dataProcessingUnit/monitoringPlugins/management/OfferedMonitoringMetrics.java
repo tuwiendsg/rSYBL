@@ -233,12 +233,12 @@ public class OfferedMonitoringMetrics implements MonitoringInterface{
 		
     	return result;
     }
-    public List<String> getAvailableMetrics(){
+    public List<String> getAvailableMetrics(Node node){
     	List<String> metricsAvailable = new ArrayList<String>();
     	Map<Method,MonitoringInterface> methods = manageMonitoringPlugins.getMethods(manageMonitoringPlugins.getAllPlugins(cloudService));
 		for (Method method:methods.keySet()){
 			if (method.getName().equalsIgnoreCase("getAvailableMetrics")){
-				metricsAvailable = methods.get(method).getAvailableMetrics();
+				metricsAvailable = methods.get(method).getAvailableMetrics(node);
 			}
 		}
     	return metricsAvailable;

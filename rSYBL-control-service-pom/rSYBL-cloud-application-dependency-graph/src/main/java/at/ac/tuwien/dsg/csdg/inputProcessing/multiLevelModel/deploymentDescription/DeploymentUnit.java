@@ -41,6 +41,8 @@ public class DeploymentUnit {
  private String serviceUnitID="";
  @XmlElement(name = "AssociatedVM")
  private List<AssociatedVM> associatedVMs=new ArrayList<AssociatedVM>();
+ @XmlElement(name = "ElasticityCapability")
+ private List<ElasticityCapability> elasticityCapabilities=new ArrayList<ElasticityCapability>();
 public String getDefaultFlavor() {
 	return defaultFlavor;
 }
@@ -67,5 +69,11 @@ public void setAssociatedVM(List<AssociatedVM> associatedVMs) {
 }
 public void addAssociatedVM(AssociatedVM associatedVMs) {
 	this.associatedVMs.add(associatedVMs);
+}
+public List<ElasticityCapability> getElasticityCapabilities() {
+	return elasticityCapabilities;
+}
+public void setElasticityCapabilities(List<ElasticityCapability> elasticityCapabilities) {
+	this.elasticityCapabilities = elasticityCapabilities;
 }
 }

@@ -16,6 +16,7 @@
 package at.ac.tuwien.dsg.rSybl.dataProcessingUnit.api;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import at.ac.tuwien.dsg.csdg.Node;
 import at.ac.tuwien.dsg.csdg.elasticityInformation.ElasticityRequirement;
@@ -71,4 +72,5 @@ public interface MonitoringAPIInterface {
 
     public Double getNumberInstances(Node e);
     public void refreshServiceStructure(Node cloudService);
+    public List<String> getAvailableMetrics(Node node);
 }

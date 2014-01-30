@@ -504,7 +504,7 @@ Double retValue = 0.0;
 
 
 	
-	public List<String> getAvailableMetrics() {
+	public List<String> getAvailableMetrics(Node node) {
 		List<String> avMetrics = new ArrayList<String>();
 		
 		return avMetrics;

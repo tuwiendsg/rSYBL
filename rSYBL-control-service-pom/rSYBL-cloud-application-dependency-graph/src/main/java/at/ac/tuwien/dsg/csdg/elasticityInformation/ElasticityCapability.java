@@ -31,6 +31,7 @@ public class ElasticityCapability{
       private String value;
       private String name;
       private String apiMethod;
+      private String script;
       private String parameter;
 		public String getValue() {
 			return value;
@@ -55,6 +56,12 @@ public class ElasticityCapability{
 		}
 		public void setParameter(String parameter) {
 			this.parameter = parameter;
+		}
+		public String getScript() {
+			return script;
+		}
+		public void setScript(String script) {
+			this.script = script;
 		}
 
 }

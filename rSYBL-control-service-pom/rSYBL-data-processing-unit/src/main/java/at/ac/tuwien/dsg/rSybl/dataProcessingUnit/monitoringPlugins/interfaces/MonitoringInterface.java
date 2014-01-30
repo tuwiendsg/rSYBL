@@ -42,7 +42,7 @@ public interface MonitoringInterface {
 	    public Double getCostPerHour(Node node);
 	    public Double getWriteCount(Node node);
 	    public Double getTotalCostSoFar(Node node);
-	    public List<String> getAvailableMetrics();
+	    public List<String> getAvailableMetrics(Node node);
 	    public void submitServiceConfiguration(Node node);
 	    public void submitElasticityRequirements(ArrayList<ElasticityRequirement> description);
 	    public void notifyControlActionStarted(String actionName, Node node);

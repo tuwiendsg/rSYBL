@@ -23,6 +23,7 @@ import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.Timer;
 import java.util.TimerTask;
 import java.util.concurrent.atomic.AtomicBoolean;
@@ -47,6 +48,7 @@ import at.ac.tuwien.dsg.mela.common.monitoringConcepts.Metric;
 import at.ac.tuwien.dsg.mela.common.monitoringConcepts.MetricValue;
 import at.ac.tuwien.dsg.mela.common.monitoringConcepts.MonitoredElement;
 import at.ac.tuwien.dsg.mela.common.monitoringConcepts.MonitoredElementMonitoringSnapshot;
+import at.ac.tuwien.dsg.mela.common.monitoringConcepts.ServiceMonitoringSnapshot;
 import at.ac.tuwien.dsg.mela.common.requirements.Condition.Type;
 import at.ac.tuwien.dsg.mela.common.requirements.Requirement;
 import at.ac.tuwien.dsg.mela.common.requirements.Requirements;
@@ -975,16 +977,23 @@ public class MELA_API implements MonitoringInterface{
      * @return currently, all metrics for the first VM that is monitored. While MELA can return metrics for different VMs belonging to different service units,
      *         it would require a Service_unit_id to be added as parameter to this call
      */
-    public List<String> getAvailableMetrics() {
-//        ServiceMonitoringSnapshot monitoringSnapshot = systemControl.getRawMonitoringData();
-//        Map<ServiceElement, ServiceElementMonitoringSnapshot> monitoringData = monitoringSnapshot.getMonitoredData(ServiceElement.ServiceElementLevel.VM);
-//
-//        Collection<Metric> metrics = monitoringData.values().iterator().next().getMonitoredData().keySet();
-        List<String> strings = new ArrayList<String>();
-//        for (Metric metric : metrics) {
-//            strings.add(metric.getName());
-//        }
-        return strings;
+    public List<String> getAvailableMetrics(Node node) {
+    	List<MonitoredElementMonitoringSnapshot> processing = new ArrayList<MonitoredElementMonitoringSnapshot>();
+    	List<String> metrics = new ArrayList<String>();
+        processing.add(latestMonitoringData);
+
+        while (!processing.isEmpty()) {
+            MonitoredElementMonitoringSnapshot currentlyUnderInspection = processing.remove(0);
+            if (currentlyUnderInspection.getMonitoredElement().getId().equals(node.getId())) {
+             for (Metric m:currentlyUnderInspection.getMetrics()){
+            	 metrics.add(m.getName());
+             }
+            
+            } else {
+                processing.addAll(currentlyUnderInspection.getChildren());
+            }
+        }
+    	return metrics;
     }
 
   
@@ -1004,7 +1013,6 @@ public class MELA_API implements MonitoringInterface{
         
         return getMetricValue(metric, entity);
     }
-
 
 
    
