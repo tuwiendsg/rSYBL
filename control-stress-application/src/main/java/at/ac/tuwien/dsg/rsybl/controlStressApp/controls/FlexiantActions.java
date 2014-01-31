@@ -10,6 +10,7 @@ import java.util.GregorianCalendar;
 import java.util.List;
 import java.util.Locale;
 import java.util.TimeZone;
+import java.util.UUID;
 
 import javax.xml.datatype.DatatypeConfigurationException;
 import javax.xml.datatype.DatatypeFactory;
@@ -24,6 +25,7 @@ import com.extl.jade.user.JobStatus;
 import com.extl.jade.user.Network;
 import com.extl.jade.user.NetworkType;
 import com.extl.jade.user.Nic;
+import com.extl.jade.user.ResourceMetadata;
 import com.extl.jade.user.Server;
 import com.extl.jade.user.Condition;
 import com.extl.jade.user.FilterCondition;
@@ -76,33 +78,55 @@ public class FlexiantActions extends ActionOnIaaSProvider{
 			e.printStackTrace();
 		}
      XMLGregorianCalendar now = datatypeFactory.newXMLGregorianCalendar(gregorianCalendar);
-     try {
-		Job job=service.deleteResource(serverUUID, true, now);
-		
-		while (job.getStatus()!= JobStatus.FAILED && job.getStatus()!= JobStatus.SUCCESSFUL && job.getStatus()!=JobStatus.SUSPENDED){
-			try {
-				Thread.sleep(2000);
-			} catch (InterruptedException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
+     
+     Date date = new Date();
+		 datatypeFactory = null;
+		try {
+			datatypeFactory = DatatypeFactory.newInstance();
+		} catch (DatatypeConfigurationException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
 		}
-		if (job.getStatus()==JobStatus.FAILED || job.getStatus()==JobStatus.SUSPENDED){
-			 job=service.deleteResource(serverUUID, true, now);
-			 while (job.getStatus()!= JobStatus.FAILED && job.getStatus()!= JobStatus.SUCCESSFUL && job.getStatus()!=JobStatus.SUSPENDED){
-					try {
-						Thread.sleep(2000);
-					} catch (InterruptedException e) {
-						// TODO Auto-generated catch block
-						e.printStackTrace();
-					}
-				}
-		}
+       now = datatypeFactory.newXMLGregorianCalendar(gregorianCalendar);
+     int  mins =date.getMinutes() ;
+     int  sec = date.getSeconds();
+      sec+=30;
+      if (sec>=60)
+      {
+      	sec-=60;
+      	mins+=1;
+      }
+      now.setTime(date.getHours(), mins, sec);
+      Job stopServer =null;
+    try {
+		 stopServer =	service.changeServerStatus(serverUUID, ServerStatus.STOPPED, true, new ResourceMetadata(), now);
 	} catch (ExtilityException e) {
 		// TODO Auto-generated catch block
 		e.printStackTrace();
 	}
-     
+    try {
+		service.waitForJob(stopServer.getResourceUUID(), false);
+	} catch (ExtilityException e) {
+		// TODO Auto-generated catch block
+		e.printStackTrace();
+	}
+    Job deleteServer=null;
+     try {
+		deleteServer=service.deleteResource(serverUUID, true, now);
+		
+		
+		} catch (ExtilityException e) {
+	 		// TODO Auto-generated catch block
+	 		e.printStackTrace();
+	 	}
+     try {
+ 		service.waitForJob(deleteServer.getResourceUUID(), false);
+ 	} catch (ExtilityException e) {
+ 		// TODO Auto-generated catch block
+ 		e.printStackTrace();
+ 	}
+		
+	
   }
       /*
      *create new server   
@@ -242,8 +266,39 @@ public class FlexiantActions extends ActionOnIaaSProvider{
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-
-        	return createServerJob.getItemUUID();
+          date = new Date();
+  		 datatypeFactory = null;
+  		try {
+  			datatypeFactory = DatatypeFactory.newInstance();
+  		} catch (DatatypeConfigurationException e) {
+  			// TODO Auto-generated catch block
+  			e.printStackTrace();
+  		}
+           now = datatypeFactory.newXMLGregorianCalendar(gregorianCalendar);
+           mins =date.getMinutes() ;
+           sec = date.getSeconds();
+          sec+=30;
+          if (sec>=60)
+          {
+          	sec-=60;
+          	mins+=1;
+          }
+          now.setTime(date.getHours(), mins, sec);
+          Job startServer=null;
+        try {
+			 startServer=	service.changeServerStatus(createServerJob.getItemUUID(), ServerStatus.RUNNING, true, skeletonServer.getResourceMetadata(), now);
+		} catch (ExtilityException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+        
+        try {
+			service.waitForJob(startServer.getResourceUUID(), false);
+		} catch (ExtilityException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+          return createServerJob.getItemUUID();
         
 		
 		//return createdServer.getNics().get(0).getIpAddresses().get(0).getIpAddress();
