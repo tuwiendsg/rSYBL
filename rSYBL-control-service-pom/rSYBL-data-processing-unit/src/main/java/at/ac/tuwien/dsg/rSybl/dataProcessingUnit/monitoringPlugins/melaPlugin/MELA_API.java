@@ -16,6 +16,9 @@
 package at.ac.tuwien.dsg.rSybl.dataProcessingUnit.monitoringPlugins.melaPlugin;
 
 import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileReader;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.OutputStream;
@@ -31,6 +34,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import javax.xml.bind.JAXBContext;
+import javax.xml.bind.JAXBException;
 import javax.xml.bind.Unmarshaller;
 
 import at.ac.tuwien.dsg.csdg.DependencyGraph;
@@ -1006,7 +1010,24 @@ public class MELA_API implements MonitoringInterface{
 
          submitMetricCompositionConfiguration(compositionRulesConfiguration);
     	} catch(Exception e){
-    	RuntimeLogger.logger.error("Error when submitting composition rules, in MELA_API");
+    		 Unmarshaller unmarshaller;
+			try {
+				unmarshaller = JAXBContext.newInstance(CompositionRulesConfiguration.class).createUnmarshaller();
+			
+ 
+    		CompositionRulesConfiguration compositionRulesConfiguration = (CompositionRulesConfiguration) unmarshaller.unmarshal(new FileReader(new File(Configuration.getCompositionRulesPath())));
+
+             submitMetricCompositionConfiguration(compositionRulesConfiguration);
+			} catch (JAXBException e1) {
+				// TODO Auto-generated catch block
+				e1.printStackTrace();
+
+	             RuntimeLogger.logger.error("Error when submitting composition rules, in MELA_API"+e.getMessage());
+	    	
+			} catch (FileNotFoundException e1) {
+				// TODO Auto-generated catch block
+				e1.printStackTrace();
+			}
     }
     	}
     public Double getMetricValue(String metricName, Node entity) {
