@@ -7,6 +7,10 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 
+
+import org.apache.log4j.Level;
+import org.apache.log4j.Logger;
+
 import at.ac.tuwien.dsg.csdg.DependencyGraph;
 import at.ac.tuwien.dsg.csdg.Node;
 import at.ac.tuwien.dsg.csdg.Node.NodeType;
@@ -58,14 +62,14 @@ public class RandomControlGeneration implements Runnable{
 	@Override
 	public void run() {
 		while (true){
-			System.out.println(elasticityCapabilities.size());
+			Logger.getLogger(RandomControlGeneration.class.getName()).log(Level.INFO, elasticityCapabilities.size());
 			int randomAction = actionGenerator.nextInt(elasticityCapabilities.size());
-		System.out.println("Randomly generated action = "+randomAction+" "+elasticityCapabilities.get(randomAction));
+			Logger.getLogger(RandomControlGeneration.class.getName()).log(Level.INFO,"Randomly generated action = "+randomAction+" "+elasticityCapabilities.get(randomAction));
 		String elString=elasticityCapabilities.get(randomAction);
 		Node currentNode = dependencyGraph.getNodeWithID(elString.substring(0,elString.indexOf('_')));
 		for (ElasticityCapability elCap:currentNode.getElasticityCapabilities()){
 			if (elCap.getName().equalsIgnoreCase(elString.substring(elString.indexOf('_')+1))){
-				System.out.println("Elasticity Capability "+elCap.getName()+" with script "+elCap.getScript());
+				Logger.getLogger(RandomControlGeneration.class.getName()).log(Level.INFO,"Elasticity Capability "+elCap.getName()+" with script "+elCap.getScript());
 				if (elCap.getName().equalsIgnoreCase("scalein")){
 					monitoringAPI.enforcingActionStarted(elString,currentNode);
 					scaleIn(currentNode,elCap.getScript());
@@ -81,7 +85,7 @@ public class RandomControlGeneration implements Runnable{
 	
 		try {
 			int sleepPeriod=sleepGenerator.nextInt(Configuration.getMaxIntervalGeneration()-Configuration.getMinIntervalGeneration())+Configuration.getMinIntervalGeneration();
-			System.out.println("Sleeping for "+sleepPeriod+" ... ");
+			Logger.getLogger(RandomControlGeneration.class.getName()).log(Level.INFO,"Sleeping for "+sleepPeriod+" ... ");
 			Thread.sleep(sleepPeriod);
 		} catch (InterruptedException e) {
 			// TODO Auto-generated catch block
