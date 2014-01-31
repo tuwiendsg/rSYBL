@@ -17,6 +17,7 @@ package at.ac.tuwien.dsg.rSybl.dataProcessingUnit.utils;
 
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
 import java.io.InputStream;
@@ -39,7 +40,15 @@ public class Configuration {
 //            configuration.load(new FileReader( new File("./config.properties")));
 
         } catch (Exception ex) {
-            Logger.getLogger(Configuration.class.getName()).log(Level.SEVERE, null, ex);
+        	try {
+				configuration.load(new FileReader("./config.properties"));
+			} catch (FileNotFoundException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
         }
     }
     public static String getRuntimeRegistryName()
