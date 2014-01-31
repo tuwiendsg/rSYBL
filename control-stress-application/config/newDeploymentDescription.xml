@@ -7,7 +7,7 @@
 	<DeploymentUnit serviceUnitID="EventProcessingServiceUnit"
 		defaultFlavor="m1.tiny" defaultImage="920df1e9-5c3f-32b2-aa65-55188463e0ec" >
 			<AssociatedVM IP="109.231.122.215" UUID="78dcb6b0-fe85-3450-b342-e80ec4828901"/>	
-	<ElasticityCapability Name="scaleIn" Script="decomission.sh"/>
+	<ElasticityCapability Name="scaleIn"/>
 
 	<ElasticityCapability Name="scaleOut"/>
 	</DeploymentUnit>
@@ -18,7 +18,7 @@
 	<DeploymentUnit serviceUnitID="DataNodeServiceUnit"
 		defaultFlavor="m1.tiny" defaultImage="bc925c99-5cc9-3629-bd2d-ad205e710873" >
 	<AssociatedVM IP="109.231.122.235" UUID="3deb59d1-53fb-3650-ae8a-10b72ae7fa63"/>
-	<ElasticityCapability Name="scaleIn" Script="decomission.sh"/>
+	<ElasticityCapability Name="scaleIn"/>
 	<ElasticityCapability Name="scaleOut"/>
 	</DeploymentUnit>
 </DeploymentDescription>

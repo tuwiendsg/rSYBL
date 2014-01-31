@@ -204,13 +204,10 @@ public class RandomControlGeneration implements Runnable{
 		        	   String ip=toBeRemoved.getId();
 		        	   String uuid = toBeRemoved.getStaticInformation().get("UUID").toString();
 		        	   
-		        	   if (ip.equalsIgnoreCase(toBeRemoved.getId())){
-		        	   
+		        	   	if (scriptToRun!=""){
+		        	   		
 		        		   cmd = scriptToRun+" "+ip;
-		        	  
-
-		              
-		               
+		        			               
 		            	   try {
 							Process p = Runtime.getRuntime().exec(cmd);
 							int exitVal = p.waitFor();
