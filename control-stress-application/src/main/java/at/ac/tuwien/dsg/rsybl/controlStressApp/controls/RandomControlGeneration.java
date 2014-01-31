@@ -44,6 +44,7 @@ public class RandomControlGeneration implements Runnable{
 		generateStress=new Thread(this);
 		monitoringAPI = new MonitoringAPI();
 		monitoringAPI.setControlledService(cloudService);
+	
 		for (Node node:dependencyGraph.getAllServiceUnits()){
 			for (ElasticityCapability capability:node.getElasticityCapabilities())
 			elasticityCapabilities.add(node.getId()+"_"+ capability.getName());

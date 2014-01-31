@@ -978,6 +978,7 @@ public class MELA_API implements MonitoringInterface{
      *         it would require a Service_unit_id to be added as parameter to this call
      */
     public List<String> getAvailableMetrics(Node node) {
+    	refreshMonitoringData();
     	List<MonitoredElementMonitoringSnapshot> processing = new ArrayList<MonitoredElementMonitoringSnapshot>();
     	List<String> metrics = new ArrayList<String>();
         processing.add(latestMonitoringData);
