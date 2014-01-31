@@ -5,7 +5,7 @@
 	<AssociatedVM IP="109.231.122.200" UUID="ef2d0c3d-ef37-30b0-b5fb-daffa0bda44a"/>
 	</DeploymentUnit>
 	<DeploymentUnit serviceUnitID="EventProcessingServiceUnit"
-		defaultFlavor="m1.tiny" defaultImage="920df1e9-5c3f-32b2-aa65-55188463e0ec" >
+		defaultFlavor="m1.tiny" defaultImage="b0cdfe3a-e2de-3d78-ab88-52a7826dbb54" >
 			<AssociatedVM IP="109.231.122.215" UUID="78dcb6b0-fe85-3450-b342-e80ec4828901"/>	
 	<ElasticityCapability Name="scaleIn"/>
 
@@ -16,7 +16,7 @@
 	<AssociatedVM IP="109.231.122.208" UUID="e65588f0-db24-3c33-a1ba-fe81028628dd"/>
 	</DeploymentUnit>
 	<DeploymentUnit serviceUnitID="DataNodeServiceUnit"
-		defaultFlavor="m1.tiny" defaultImage="bc925c99-5cc9-3629-bd2d-ad205e710873" >
+		defaultFlavor="m1.tiny" defaultImage="4cfa6d4c-dc3d-3e82-be53-a42ce47a13cd" >
 	<AssociatedVM IP="109.231.122.235" UUID="3deb59d1-53fb-3650-ae8a-10b72ae7fa63"/>
 	<ElasticityCapability Name="scaleIn"/>
 	<ElasticityCapability Name="scaleOut"/>

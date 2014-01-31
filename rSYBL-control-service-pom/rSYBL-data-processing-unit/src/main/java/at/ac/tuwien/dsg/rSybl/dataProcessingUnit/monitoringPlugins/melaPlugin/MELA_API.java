@@ -989,6 +989,8 @@ public class MELA_API implements MonitoringInterface{
 
         while (!processing.isEmpty() && processing!=null) {
             MonitoredElementMonitoringSnapshot currentlyUnderInspection = processing.remove(0);
+            System.err.println("Currently under inspection = "+currentlyUnderInspection.toString());
+            System.err.println("Monitored element "+currentlyUnderInspection.getMonitoredElement().getId());
             if (currentlyUnderInspection.getMonitoredElement().getId().equals(node.getId())) {
              for (Metric m:currentlyUnderInspection.getMetrics()){
             	 metrics.add(m.getName());
