@@ -983,7 +983,7 @@ public class MELA_API implements MonitoringInterface{
     	List<String> metrics = new ArrayList<String>();
         processing.add(latestMonitoringData);
 
-        while (!processing.isEmpty()) {
+        while (!processing.isEmpty() && processing!=null) {
             MonitoredElementMonitoringSnapshot currentlyUnderInspection = processing.remove(0);
             if (currentlyUnderInspection.getMonitoredElement().getId().equals(node.getId())) {
              for (Metric m:currentlyUnderInspection.getMetrics()){
