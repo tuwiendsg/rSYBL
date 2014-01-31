@@ -175,6 +175,20 @@ public class FlexiantActions extends ActionOnIaaSProvider{
         skeletonServer.setClusterUUID("1ff16f43-4a82-34bf-8f07-ea6d210548ab");
         List<String> sshs=new ArrayList<String>();
         GregorianCalendar gregorianCalendar = new GregorianCalendar();
+     
+      
+        
+        
+        Nic networkInterface = new Nic();
+        networkInterface.setClusterUUID("1ff16f43-4a82-34bf-8f07-ea6d210548ab");
+        networkInterface.setCustomerUUID("ab8c4cae-c870-34f3-b91b-476aedd0109f");
+        networkInterface.setDeploymentInstanceUUID("9ba97cd5-28e6-342d-91db-892a4bc0914e");
+        networkInterface.setProductOfferUUID("");
+        networkInterface.setNetworkUUID("a1976173-86aa-316f-9cde-1338935ffefc");
+        networkInterface.setVdcUUID("acbdb8d6-1a6e-3f90-9a1a-4bf4b0fdfc9f");
+        
+       // networkInterface.setServerUUID("");
+        networkInterface.setResourceName(serverName);
         Date date =  new Date();
         
         DatatypeFactory datatypeFactory = null;
@@ -195,19 +209,6 @@ public class FlexiantActions extends ActionOnIaaSProvider{
         }
         now.setTime(date.getHours(), mins, sec);
 
-      
-        
-        
-        Nic networkInterface = new Nic();
-        networkInterface.setClusterUUID("1ff16f43-4a82-34bf-8f07-ea6d210548ab");
-        networkInterface.setCustomerUUID("ab8c4cae-c870-34f3-b91b-476aedd0109f");
-        networkInterface.setDeploymentInstanceUUID("9ba97cd5-28e6-342d-91db-892a4bc0914e");
-        networkInterface.setProductOfferUUID("");
-        networkInterface.setNetworkUUID("a1976173-86aa-316f-9cde-1338935ffefc");
-        networkInterface.setVdcUUID("acbdb8d6-1a6e-3f90-9a1a-4bf4b0fdfc9f");
-        
-       // networkInterface.setServerUUID("");
-        networkInterface.setResourceName(serverName);
         System.err.println("Creating server at "+now.toString());
         sshs.add("c2676e1f-2466-322e-a44e-69da67d4bc85");
         skeletonServer.setResourceName(serverName);
