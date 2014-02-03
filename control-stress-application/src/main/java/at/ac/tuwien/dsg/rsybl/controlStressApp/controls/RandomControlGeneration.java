@@ -64,7 +64,6 @@ public class RandomControlGeneration implements Runnable{
 	@Override
 	public void run() {
 		while (true){
-			Logger.getLogger(RandomControlGeneration.class.getName()).log(Level.INFO, elasticityCapabilities.size());
 			int randomAction = actionGenerator.nextInt(elasticityCapabilities.size());
 			Logger.getLogger(RandomControlGeneration.class.getName()).log(Level.INFO,"Randomly generated action = "+randomAction+" "+elasticityCapabilities.get(randomAction));
 		String elString=elasticityCapabilities.get(randomAction);
