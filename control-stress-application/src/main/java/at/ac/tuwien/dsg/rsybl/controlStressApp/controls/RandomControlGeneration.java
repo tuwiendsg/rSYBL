@@ -20,6 +20,7 @@ import at.ac.tuwien.dsg.csdg.elasticityInformation.ElasticityCapability;
 
 import at.ac.tuwien.dsg.rSybl.dataProcessingUnit.api.MonitoringAPI;
 
+import com.extl.jade.user.Nic;
 import com.jcraft.jsch.ChannelExec;
 import com.jcraft.jsch.JSch;
 import com.jcraft.jsch.JSchException;
@@ -258,8 +259,13 @@ public class RandomControlGeneration implements Runnable{
 		List<com.extl.jade.user.Server> servers=flexiantActions.listServers();
 		String ip="";
 		for (com.extl.jade.user.Server server:servers){
-			if (server.getResourceUUID().equalsIgnoreCase(uuid))
-				ip=server.getNics().get(0).getIpAddresses().get(0).getIpAddress();
+			if (server.getResourceUUID().equalsIgnoreCase(uuid) && server.getNics()!=null && server.getNics().size()>0)
+				for (Nic nic:server.getNics())
+					if (nic.getIpAddresses()!=null && nic.getIpAddresses().size()>0){
+					ip=server.getNics().get(0).getIpAddresses().get(0).getIpAddress();
+					break;
+					}
+			
 		}
 		if (!ip.equalsIgnoreCase("err")){
 			Node newNode = new Node();
