@@ -278,7 +278,7 @@ public class RandomControlGeneration implements Runnable{
             rel.setType(RelationshipType.HOSTED_ON_RELATIONSHIP);
             
             node.addNode(newNode,rel);
-            
+            if (scriptToRun!=null&&scriptToRun.equalsIgnoreCase("")){
             String cmd = "";
      	    ip=newNode.getId();
      	    cmd = scriptToRun+" "+ip;
@@ -305,6 +305,7 @@ public class RandomControlGeneration implements Runnable{
 					}
 					e.printStackTrace();
 				}
+            }
 		}
             
 		monitoringAPI.refreshServiceStructure(cloudService);
