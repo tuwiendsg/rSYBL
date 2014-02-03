@@ -279,7 +279,7 @@ public class RandomControlGeneration implements Runnable{
             
             node.addNode(newNode,rel);
             System.err.println(scriptToRun);
-            if (scriptToRun!=null&&scriptToRun.equalsIgnoreCase("")){
+            if (scriptToRun!=null&& (!scriptToRun.equalsIgnoreCase(""))){
             String cmd = "";
      	    ip=newNode.getId();
      	    cmd = scriptToRun+" "+ip;
