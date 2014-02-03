@@ -278,11 +278,13 @@ public class RandomControlGeneration implements Runnable{
             rel.setType(RelationshipType.HOSTED_ON_RELATIONSHIP);
             
             node.addNode(newNode,rel);
+            System.err.println(scriptToRun);
             if (scriptToRun!=null&&scriptToRun.equalsIgnoreCase("")){
             String cmd = "";
      	    ip=newNode.getId();
      	    cmd = scriptToRun+" "+ip;
          	   try {
+         		    System.err.println(cmd);
 					Process p = Runtime.getRuntime().exec(cmd);
 					int exitVal = p.waitFor();
 				} catch (IOException e) {
