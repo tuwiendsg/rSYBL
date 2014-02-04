@@ -409,18 +409,8 @@ public class FlexiantActions extends ActionOnIaaSProvider{
              FilterCondition fc = new FilterCondition();
               
              // set the condition type
-             fc.setCondition(Condition.IS_EQUAL_TO);
-              
-             // the field to be matched
-             fc.setField("status");
-              
-             // and a list of values
-             fc.getValue().add(ServerStatus.RUNNING.name());
-             fc.getValue().add(ServerStatus.STARTING.name());
-              
+        
              // Add the filter condition to the query
-             sf.getFilterConditions().add(fc);
-              
              // Set a limit to the number of results
              QueryLimit lim = new QueryLimit();
              lim.setMaxRecords(20);
