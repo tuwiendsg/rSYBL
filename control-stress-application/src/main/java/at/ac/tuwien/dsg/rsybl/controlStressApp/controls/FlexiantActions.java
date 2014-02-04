@@ -312,7 +312,7 @@ public class FlexiantActions extends ActionOnIaaSProvider{
        }
        now.setTime(date.getHours(), mins, sec);
         try {
-			Job job= service.attachNetworkInterface(createServerJob.getItemUUID(), j.getResourceUUID(), 0, now);
+			Job job= service.attachNetworkInterface(createServerJob.getItemUUID(), j.getItemUUID(), 0, now);
 			service.waitForJob(job.getResourceUUID(), false);
         } catch (ExtilityException e) {
 			// TODO Auto-generated catch block
