@@ -255,24 +255,16 @@ public class RandomControlGeneration implements Runnable{
 		//TODO: return ip and uuid
 		String uuid=flexiantActions.createNewServer(node.getId()+node.getStaticInformation().get("DefaultImage"),""+node.getStaticInformation("DefaultImage"), 2, 2);
 		//TODO:
-		List<com.extl.jade.user.Server> servers=flexiantActions.listServers();
+		List<com.extl.jade.user.Nic> nics=flexiantActions.listAllNics();
 		String ip="";
 		System.err.println("Searching for server with uuid "+uuid);
-		for (com.extl.jade.user.Server server:servers){
-		
-		     System.err.println(server.toString()+server.getNics()+ server.getNics().size());
-			if (server.getResourceUUID().equalsIgnoreCase(uuid) && server.getNics()!=null && server.getNics().size()>0)
-				System.err.println("Server found with UUID "+uuid);				
-				for (Nic nic:server.getNics()){
-					if (nic.getIpAddresses()!=null && nic.getIpAddresses().size()>0){
-					
-						ip=nic.getIpAddresses().get(0).getIpAddress();
-						if (ip.equalsIgnoreCase("") && nic.getIpAddresses().size()>1)
-							ip=nic.getIpAddresses().get(1).getIpAddress();
-					break;
-					}
+		for (com.extl.jade.user.Nic nic:nics){
+			if (nic.getServerUUID().equalsIgnoreCase(uuid)){
+				if (nic.getIpAddresses()!=null && nic.getIpAddresses().size()>0){
+					ip=nic.getIpAddresses().get(0).getIpAddress();
+				break;
 				}
-			
+			}
 		}
 		if (!ip.equalsIgnoreCase("err")){
 			Node newNode = new Node();

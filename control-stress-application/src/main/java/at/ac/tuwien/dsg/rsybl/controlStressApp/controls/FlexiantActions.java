@@ -362,9 +362,10 @@ public class FlexiantActions extends ActionOnIaaSProvider{
              // Iterate through the results           
              for(Object o : result.getList()) {
                  Server s = ((Server)o);
-                 System.err.println("Server " + s.getResourceUUID() + " is in state " +
-                         s.getStatus()+" Nic "+s.getNics());
+                 System.err.println("Server " + s.getResourceUUID() );
+      
                 servers.add(s);
+                
              }
                               
          } catch (Exception e) {
@@ -373,7 +374,76 @@ public class FlexiantActions extends ActionOnIaaSProvider{
          }
          return servers;
      }
-     
+     public List<Nic> listAllNics(){
+    	 List<Nic> nics = new ArrayList<Nic>();
+    	 
+    	 URL url = ClassLoader.getSystemClassLoader().getResource(
+                 "UserAPI.wsdl");
+          
+         // Get the UserAPI
+         UserAPI api = new UserAPI(url,new QName("http://extility.flexiant.net", "UserAPI"));
+                  
+         // and set the service port on the service
+         UserService service;
+         service = api.getUserServicePort();
+          
+         // Get the binding provider
+         BindingProvider portBP = (BindingProvider) service;
+          
+         // and set the service endpoint
+         portBP.getRequestContext().put(BindingProvider.ENDPOINT_ADDRESS_PROPERTY,
+        		 ENDPOINT_ADDRESS_PROPERTY);
+          
+         // and the caller's authentication details and password
+         portBP.getRequestContext().put(BindingProvider.USERNAME_PROPERTY,
+                 userEmailAddress + "/" + customerUUID);
+         portBP.getRequestContext().put(BindingProvider.PASSWORD_PROPERTY,
+                 password);
+      
+         try {
+              
+             // List all servers in the running and starting states
+              
+             // Create an FQL filter and a filter condition
+             SearchFilter sf = new SearchFilter();
+             FilterCondition fc = new FilterCondition();
+              
+             // set the condition type
+             fc.setCondition(Condition.IS_EQUAL_TO);
+              
+             // the field to be matched
+             fc.setField("status");
+              
+             // and a list of values
+             fc.getValue().add(ServerStatus.RUNNING.name());
+             fc.getValue().add(ServerStatus.STARTING.name());
+              
+             // Add the filter condition to the query
+             sf.getFilterConditions().add(fc);
+              
+             // Set a limit to the number of results
+             QueryLimit lim = new QueryLimit();
+             lim.setMaxRecords(20);
+              
+             // Call the service to execute the query
+             ListResult result = service.listResources(sf, lim, ResourceType.NIC);
+              
+             // Iterate through the results           
+             for(Object o : result.getList()) {
+                 Nic s = ((Nic)o);
+                 System.err.println("Nic " + s.getResourceUUID() );
+      
+                nics.add(s);
+                
+             }
+                              
+         } catch (Exception e) {
+              
+             e.printStackTrace();
+         }
+    	 
+    	 return nics;
+     }
 	
 
  
