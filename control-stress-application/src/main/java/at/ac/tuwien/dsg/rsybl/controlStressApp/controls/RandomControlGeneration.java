@@ -259,7 +259,7 @@ public class RandomControlGeneration implements Runnable{
 		String ip="";
 		System.err.println("Searching for server with uuid "+uuid);
 		for (com.extl.jade.user.Nic nic:nics){
-			if (nic.getServerUUID().equalsIgnoreCase(uuid)){
+			if (nic.getServerUUID()!=null && nic.getServerUUID().equalsIgnoreCase(uuid)){
 				if (nic.getIpAddresses()!=null && nic.getIpAddresses().size()>0){
 					ip=nic.getIpAddresses().get(0).getIpAddress();
 				break;

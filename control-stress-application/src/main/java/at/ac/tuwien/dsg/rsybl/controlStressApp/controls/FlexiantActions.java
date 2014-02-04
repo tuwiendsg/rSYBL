@@ -300,6 +300,23 @@ public class FlexiantActions extends ActionOnIaaSProvider{
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
+        now = datatypeFactory.newXMLGregorianCalendar(gregorianCalendar);
+        mins =date.getMinutes() ;
+        sec = date.getSeconds();
+       sec+=30;
+       if (sec>=60)
+       {
+       	sec-=60;
+       	mins+=1;
+       }
+       now.setTime(date.getHours(), mins, sec);
+        try {
+			Job job= service.attachNetworkInterface(createServerJob.getItemUUID(), j.getResourceUUID(), 0, now);
+			service.waitForJob(job.getResourceUUID(), false);
+        } catch (ExtilityException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
           return createServerJob.getItemUUID();
         
 		
