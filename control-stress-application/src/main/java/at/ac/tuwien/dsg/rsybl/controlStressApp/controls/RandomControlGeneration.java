@@ -265,8 +265,8 @@ public class RandomControlGeneration implements Runnable{
 				for (Nic nic:server.getNics()){
 					if (nic.getIpAddresses()!=null && nic.getIpAddresses().size()>0){
 					
-						ip=server.getNics().get(0).getIpAddresses().get(0).getIpAddress();
-						if (ip.equalsIgnoreCase(""))
+						ip=nic.getIpAddresses().get(0).getIpAddress();
+						if (ip.equalsIgnoreCase("") && nic.getIpAddresses().size()>1)
 							ip=nic.getIpAddresses().get(1).getIpAddress();
 					break;
 					}
