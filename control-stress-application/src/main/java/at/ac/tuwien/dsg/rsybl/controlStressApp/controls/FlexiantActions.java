@@ -311,13 +311,13 @@ public class FlexiantActions extends ActionOnIaaSProvider{
        	mins+=1;
        }
        now.setTime(date.getHours(), mins, sec);
-        try {
-			Job job= service.attachNetworkInterface(createServerJob.getItemUUID(), j.getItemUUID(), 0, now);
-			service.waitForJob(job.getResourceUUID(), false);
-        } catch (ExtilityException e) {
+      //  try {
+			//Job job= service.attachNetworkInterface(createServerJob.getItemUUID(), j.getItemUUID(), 0, now);
+		//	service.waitForJob(job.getResourceUUID(), false);
+      //  } catch (ExtilityException e) {
 			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
+		//	e.printStackTrace();
+	//	}
           return createServerJob.getItemUUID();
         
 		
