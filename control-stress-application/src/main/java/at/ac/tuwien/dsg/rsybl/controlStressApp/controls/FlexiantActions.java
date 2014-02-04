@@ -214,28 +214,28 @@ public class FlexiantActions extends ActionOnIaaSProvider{
         sshs.add("c2676e1f-2466-322e-a44e-69da67d4bc85");
         skeletonServer.setResourceName(serverName);
         Job j=null;
-        try {
-        	j=service.createNetworkInterface(networkInterface, now);
-        		 
-     			if (j.getStatus()==JobStatus.SUCCESSFUL){
-     				System.out.println("Successful in creating the network");
-     			}else{
-     				System.out.println("status "+j.getStatus());
-     				
-     			}
-     		} catch (ExtilityException e) {
-     			// TODO Auto-generated catch block
-     			e.printStackTrace();
-     		}
+//        try {
+//        	j=service.createNetworkInterface(networkInterface, now);
+//        		 
+//     			if (j.getStatus()==JobStatus.SUCCESSFUL){
+//     				System.out.println("Successful in creating the network");
+//     			}else{
+//     				System.out.println("status "+j.getStatus());
+//     				
+//     			}
+//     		} catch (ExtilityException e) {
+//     			// TODO Auto-generated catch block
+//     			e.printStackTrace();
+//     		}
      		 skeletonServer.getNics().add(networkInterface);
      		 Job createServerJob=null;
-
-     		 try {
-				service.waitForJob(j.getResourceUUID(), false);
-			} catch (ExtilityException e1) {
-				// TODO Auto-generated catch block
-				e1.printStackTrace();
-			}
+//
+//     		 try {
+//				service.waitForJob(j.getResourceUUID(), false);
+//			} catch (ExtilityException e1) {
+//				// TODO Auto-generated catch block
+//				e1.printStackTrace();
+//			}
               date = new Date();
      		 datatypeFactory = null;
      		try {
