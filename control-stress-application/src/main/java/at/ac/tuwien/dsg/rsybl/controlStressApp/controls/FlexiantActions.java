@@ -96,6 +96,7 @@ public class FlexiantActions extends ActionOnIaaSProvider{
       	sec-=60;
       	mins+=1;
       }
+      System.err.println("Removing server at "+now.toString());
       now.setTime(date.getHours(), mins, sec);
       Job stopServer =null;
     try {
@@ -353,7 +354,7 @@ public class FlexiantActions extends ActionOnIaaSProvider{
               
              // Set a limit to the number of results
              QueryLimit lim = new QueryLimit();
-             lim.setMaxRecords(10);
+             lim.setMaxRecords(20);
               
              // Call the service to execute the query
              ListResult result = service.listResources(sf, lim, ResourceType.SERVER);
@@ -361,7 +362,7 @@ public class FlexiantActions extends ActionOnIaaSProvider{
              // Iterate through the results           
              for(Object o : result.getList()) {
                  Server s = ((Server)o);
-                 System.out.println("Server " + s.getResourceUUID() + " is in state " +
+                 System.err.println("Server " + s.getResourceUUID() + " is in state " +
                          s.getStatus());
                  servers.add(s);
              }

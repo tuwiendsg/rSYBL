@@ -67,7 +67,7 @@ public class MonitoringThread implements Runnable{
 				  String toWrite = date.toString()+",";
 				  for (String metric :api.getAvailableMetrics(entity))
 					  toWrite+=api.getMetricValue(metric, entity)+",";
-				   fstream.write(toWrite);
+				   fstream.write(toWrite+'\n');
 				  
 				  fstream.close();
 				  Thread.sleep(5000);
