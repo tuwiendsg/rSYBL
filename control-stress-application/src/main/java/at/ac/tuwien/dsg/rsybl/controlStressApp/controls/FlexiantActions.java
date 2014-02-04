@@ -363,8 +363,8 @@ public class FlexiantActions extends ActionOnIaaSProvider{
              for(Object o : result.getList()) {
                  Server s = ((Server)o);
                  System.err.println("Server " + s.getResourceUUID() + " is in state " +
-                         s.getStatus());
-                 servers.add(s);
+                         s.getStatus()+" Nic "+s.getNics());
+                servers.add(s);
              }
                               
          } catch (Exception e) {
