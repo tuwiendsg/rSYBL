@@ -257,11 +257,11 @@ public class RandomControlGeneration implements Runnable{
 		//TODO:
 		List<com.extl.jade.user.Nic> nics=flexiantActions.listAllNics();
 		String ip="";
-		System.err.println("Searching for server with uuid "+uuid);
 		for (com.extl.jade.user.Nic nic:nics){
 			if (nic.getServerUUID()!=null && nic.getServerUUID().equalsIgnoreCase(uuid)){
 				if (nic.getIpAddresses()!=null && nic.getIpAddresses().size()>0){
 					ip=nic.getIpAddresses().get(0).getIpAddress();
+					System.err.println("Found ip "+ip);
 				break;
 				}
 			}
