@@ -295,16 +295,16 @@ public class FlexiantActions extends ActionOnIaaSProvider {
 //
 //			e.printStackTrace();
 //		}
-//		date = new Date();
-//		now = datatypeFactory.newXMLGregorianCalendar(gregorianCalendar);
-//		mins = date.getMinutes();
-//		sec = date.getSeconds();
-//		sec += 30;
-//		if (sec >= 60) {
-//			sec -= 60;
-//			mins += 1;
-//		}
-//		now.setTime(date.getHours(), mins, sec);
+		date = new Date();
+		now = datatypeFactory.newXMLGregorianCalendar(gregorianCalendar);
+		mins = date.getMinutes();
+		sec = date.getSeconds();
+		sec += 30;
+		if (sec >= 60) {
+			sec -= 60;
+			mins += 1;
+		}
+		now.setTime(date.getHours(), mins, sec);
 		Job startServer = null;
 		try {
 			startServer = service.changeServerStatus(
@@ -321,10 +321,9 @@ public class FlexiantActions extends ActionOnIaaSProvider {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-
+		
 		return createServerJob.getItemUUID();
 
-		// return
 		// createdServer.getNics().get(0).getIpAddresses().get(0).getIpAddress();
 	}
 
