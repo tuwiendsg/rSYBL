@@ -218,18 +218,12 @@ public class FlexiantActions extends ActionOnIaaSProvider {
 		Job j = null;
 		try {
 			j = service.createNetworkInterface(networkInterface, now);
-
-			if (j.getStatus() == JobStatus.SUCCESSFUL) {
-				System.out.println("Successful in creating the network");
-			} else {
-				System.out.println("status " + j.getStatus());
-
-			}
 		} catch (ExtilityException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 		skeletonServer.getNics().add(networkInterface);
+		System.err.println("Nic UUID "+j.getItemUUID());
 		Job createServerJob = null;
 
 		try {
