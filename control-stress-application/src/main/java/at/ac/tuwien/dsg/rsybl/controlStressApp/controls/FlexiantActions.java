@@ -428,18 +428,18 @@ public class FlexiantActions extends ActionOnIaaSProvider {
 
 			// Create an FQL filter and a filter condition
 			SearchFilter sf = new SearchFilter();
-			FilterCondition fc = new FilterCondition();
+
 
 			// set the condition type
 
 			// Add the filter condition to the query
 			// Set a limit to the number of results
 			QueryLimit lim = new QueryLimit();
-			lim.setMaxRecords(20);
+			lim.setMaxRecords(40);
 
 			// Call the service to execute the query
 			ListResult result = service
-					.listResources(sf, lim, ResourceType.NIC);
+					.listResources(null, null, ResourceType.NIC);
 
 			// Iterate through the results
 			for (Object o : result.getList()) {
