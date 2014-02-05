@@ -445,7 +445,7 @@ public class FlexiantActions extends ActionOnIaaSProvider {
 			for (Object o : result.getList()) {
 				Nic s = ((Nic) o);
 				//System.err.println("Nic " + s.getResourceUUID()
-						+ s.getServerUUID());
+					//	+ s.getServerUUID());
 
 				nics.add(s);
 
