@@ -294,7 +294,7 @@ public class FlexiantActions extends ActionOnIaaSProvider{
 			
 			e.printStackTrace();
 		}
-  		
+  		date=new Date();
            now = datatypeFactory.newXMLGregorianCalendar(gregorianCalendar);
            mins =date.getMinutes() ;
            sec = date.getSeconds();
