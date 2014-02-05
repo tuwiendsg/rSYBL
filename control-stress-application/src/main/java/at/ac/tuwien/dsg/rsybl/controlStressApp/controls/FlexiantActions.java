@@ -113,6 +113,25 @@ public class FlexiantActions extends ActionOnIaaSProvider {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
+		
+		date = new Date();
+		datatypeFactory = null;
+		try {
+			datatypeFactory = DatatypeFactory.newInstance();
+		} catch (DatatypeConfigurationException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		now = datatypeFactory.newXMLGregorianCalendar(gregorianCalendar);
+		 mins = date.getMinutes();
+		sec = date.getSeconds();
+		sec += 30;
+		if (sec >= 60) {
+			sec -= 60;
+			mins += 1;
+		}
+
+		now.setTime(date.getHours(), mins, sec);
 		Job deleteServer = null;
 		try {
 			deleteServer = service.deleteResource(serverUUID, true, now);
@@ -249,7 +268,7 @@ public class FlexiantActions extends ActionOnIaaSProvider {
 			mins += 1;
 		}
 		now.setTime(date.getHours(), mins, sec);
-
+		skeletonServer.getNics().add(networkInterface);
 		try {
 			createServerJob = service.createServer(skeletonServer, sshs, now);
 		} catch (ExtilityException e) {
@@ -271,24 +290,24 @@ public class FlexiantActions extends ActionOnIaaSProvider {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		date = new Date();
-		now = datatypeFactory.newXMLGregorianCalendar(gregorianCalendar);
-		mins = date.getMinutes();
-		sec = date.getSeconds();
-		sec += 30;
-		if (sec >= 60) {
-			sec -= 60;
-			mins += 1;
-		}
-		now.setTime(date.getHours(), mins, sec);
-		try {
-			Job job = service.attachNetworkInterface(
-					createServerJob.getItemUUID(), j.getItemUUID(), 0, now);
-			service.waitForJob(job.getResourceUUID(), false);
-		} catch (ExtilityException e) {
-
-			e.printStackTrace();
-		}
+//		date = new Date();
+//		now = datatypeFactory.newXMLGregorianCalendar(gregorianCalendar);
+//		mins = date.getMinutes();
+//		sec = date.getSeconds();
+//		sec += 30;
+//		if (sec >= 60) {
+//			sec -= 60;
+//			mins += 1;
+//		}
+//		now.setTime(date.getHours(), mins, sec);
+//		try {
+//			Job job = service.attachNetworkInterface(
+//					createServerJob.getItemUUID(), j.getItemUUID(), 0, now);
+//			service.waitForJob(job.getResourceUUID(), false);
+//		} catch (ExtilityException e) {
+//
+//			e.printStackTrace();
+//		}
 		date = new Date();
 		now = datatypeFactory.newXMLGregorianCalendar(gregorianCalendar);
 		mins = date.getMinutes();
