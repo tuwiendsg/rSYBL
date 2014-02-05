@@ -23,6 +23,7 @@ public class Main {
 		FlexiantActions flexiantActions = new FlexiantActions();
 		System.out.println(flexiantActions.createNewServer("DataNode_new",
 				"c7ee301c-813c-34f4-827a-783f22312dcb", 2, 4));
+		flexiantActions.listAllNics();
 //		InputProcessing inputProcessing = new InputProcessing();
 //		JAXBContext jc;
 //		CloudServiceXML applicationDescription = null;
