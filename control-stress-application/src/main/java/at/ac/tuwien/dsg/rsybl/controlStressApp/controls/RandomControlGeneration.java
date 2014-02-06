@@ -20,7 +20,7 @@ import at.ac.tuwien.dsg.csdg.elasticityInformation.ElasticityCapability;
 
 import at.ac.tuwien.dsg.rSybl.dataProcessingUnit.api.MonitoringAPI;
 
-import com.extl.jade.user.Nic;
+
 import com.jcraft.jsch.ChannelExec;
 import com.jcraft.jsch.JSch;
 import com.jcraft.jsch.JSchException;
@@ -66,7 +66,8 @@ public class RandomControlGeneration implements Runnable{
 	public void run() {
 		while (true){
 			Logger.getLogger(RandomControlGeneration.class.getName()).log(Level.INFO,"Available elasticity capabilities "+elasticityCapabilities.size());
-			int randomAction = actionGenerator.nextInt(elasticityCapabilities.size());
+
+			int randomAction = (int) (Math.random() * elasticityCapabilities.size());
 			Logger.getLogger(RandomControlGeneration.class.getName()).log(Level.INFO,"Randomly generated action = "+randomAction+" "+elasticityCapabilities.get(randomAction));
 		String elString=elasticityCapabilities.get(randomAction);
 		Node currentNode = dependencyGraph.getNodeWithID(elString.substring(0,elString.indexOf('_')));
