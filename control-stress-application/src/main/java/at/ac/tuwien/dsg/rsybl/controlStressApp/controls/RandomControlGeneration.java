@@ -59,11 +59,13 @@ public class RandomControlGeneration implements Runnable{
 		MonitoringThread monitoringThread = new MonitoringThread(cloudService, monitoringAPI);
 		monitoringThread.start();
 		generateStress.start();
+		
 	}
 
 	@Override
 	public void run() {
 		while (true){
+			Logger.getLogger(RandomControlGeneration.class.getName()).log(Level.INFO,"Available elasticity capabilities "+elasticityCapabilities.size());
 			int randomAction = actionGenerator.nextInt(elasticityCapabilities.size());
 			Logger.getLogger(RandomControlGeneration.class.getName()).log(Level.INFO,"Randomly generated action = "+randomAction+" "+elasticityCapabilities.get(randomAction));
 		String elString=elasticityCapabilities.get(randomAction);
@@ -203,8 +205,8 @@ public class RandomControlGeneration implements Runnable{
 			 
 		        	   String cmd = "";
 		        	   String ip=toBeRemoved.getId();
-		        	   String uuid = toBeRemoved.getStaticInformation().get("UUID").toString();
-		        	   
+		        	   String uuid = (String) toBeRemoved.getStaticInformation().get("UUID");
+		        	   System.err.println("Removing server with UUID" + uuid);
 		        	   	if (scriptToRun!=""){
 		        	   		
 		        		   cmd = scriptToRun+" "+ip;
@@ -253,7 +255,7 @@ public class RandomControlGeneration implements Runnable{
 	
 	public void scaleOut(Node node,String scriptToRun){
 		//TODO: return ip and uuid
-		String uuid=flexiantActions.createNewServer(node.getId()+node.getStaticInformation().get("DefaultImage"),""+node.getStaticInformation("DefaultImage"), 2, 2);
+		String uuid=flexiantActions.createNewServer(node.getId(),""+node.getStaticInformation("DefaultImage"), 2, 2);
 		//TODO:
 		List<com.extl.jade.user.Nic> nics=flexiantActions.listAllNics();
 		String ip="";

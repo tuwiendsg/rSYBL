@@ -92,13 +92,19 @@ public class FlexiantActions extends ActionOnIaaSProvider {
 		now = datatypeFactory.newXMLGregorianCalendar(gregorianCalendar);
 		int mins = date.getMinutes();
 		int sec = date.getSeconds();
+		int hours = date.getHours();
 		sec += 30;
 		if (sec >= 60) {
 			sec -= 60;
 			mins += 1;
 		}
+		if (mins==60){
+			mins=59;
+		}
+		
+		now.setTime(hours, mins, sec);
 		System.err.println("Removing server at " + now.toString());
-		now.setTime(date.getHours(), mins, sec);
+
 		Job stopServer = null;
 		try {
 			stopServer = service.changeServerStatus(serverUUID,
@@ -124,14 +130,18 @@ public class FlexiantActions extends ActionOnIaaSProvider {
 		}
 		now = datatypeFactory.newXMLGregorianCalendar(gregorianCalendar);
 		 mins = date.getMinutes();
-		sec = date.getSeconds();
+		 sec = date.getSeconds();
+		 hours = date.getHours();
 		sec += 30;
 		if (sec >= 60) {
 			sec -= 60;
 			mins += 1;
 		}
-
-		now.setTime(date.getHours(), mins, sec);
+		if (mins==60){
+			mins=59;
+		}
+		
+		now.setTime(hours, mins, sec);
 		Job deleteServer = null;
 		try {
 			deleteServer = service.deleteResource(serverUUID, true, now);
@@ -210,7 +220,6 @@ public class FlexiantActions extends ActionOnIaaSProvider {
 		networkInterface.setVdcUUID("acbdb8d6-1a6e-3f90-9a1a-4bf4b0fdfc9f");
 
 		// networkInterface.setServerUUID("");
-		networkInterface.setResourceName(serverName);
 		Date date = new Date();
 
 		DatatypeFactory datatypeFactory = null;
@@ -224,12 +233,17 @@ public class FlexiantActions extends ActionOnIaaSProvider {
 				.newXMLGregorianCalendar(gregorianCalendar);
 		int mins = date.getMinutes();
 		int sec = date.getSeconds();
+		int hours = date.getHours();
 		sec += 30;
 		if (sec >= 60) {
 			sec -= 60;
 			mins += 1;
 		}
-		now.setTime(date.getHours(), mins, sec);
+		if (mins==60){
+			mins=59;
+		}
+		
+		now.setTime(hours, mins, sec);
 
 		System.err.println("Creating server at " + now.toString());
 		sshs.add("c2676e1f-2466-322e-a44e-69da67d4bc85");
@@ -260,14 +274,19 @@ public class FlexiantActions extends ActionOnIaaSProvider {
 			e.printStackTrace();
 		}
 		now = datatypeFactory.newXMLGregorianCalendar(gregorianCalendar);
-		mins = date.getMinutes();
-		sec = date.getSeconds();
+		 mins = date.getMinutes();
+		 sec = date.getSeconds();
+		 hours = date.getHours();
 		sec += 30;
 		if (sec >= 60) {
 			sec -= 60;
 			mins += 1;
 		}
-		now.setTime(date.getHours(), mins, sec);
+		if (mins==60){
+			mins=59;
+		}
+		
+		now.setTime(hours, mins, sec);
 		skeletonServer.getNics().add(networkInterface);
 		try {
 			createServerJob = service.createServer(skeletonServer, sshs, now);
@@ -310,14 +329,19 @@ public class FlexiantActions extends ActionOnIaaSProvider {
 //		}
 		date = new Date();
 		now = datatypeFactory.newXMLGregorianCalendar(gregorianCalendar);
-		mins = date.getMinutes();
-		sec = date.getSeconds();
+		 mins = date.getMinutes();
+		 sec = date.getSeconds();
+		 hours = date.getHours();
 		sec += 30;
 		if (sec >= 60) {
 			sec -= 60;
 			mins += 1;
 		}
-		now.setTime(date.getHours(), mins, sec);
+		if (mins==60){
+			mins=59;
+		}
+		
+		now.setTime(hours, mins, sec);
 		Job startServer = null;
 		try {
 			startServer = service.changeServerStatus(
