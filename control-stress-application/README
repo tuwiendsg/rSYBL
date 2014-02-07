@@ -1,0 +1,5 @@
+For running this, you need to have MELA deployed and running.
+
+Configure files from ./config -> serviceDescription.xml for describing the different parts of the application and the newDeploymentDescription.xml for the current deployment (IPs, UUIDs needed of current servers, and UUID of existent servers).
+
+Also clarify composition rules, depending on the names specified in serviceDescription.xml, and on the monitored metrics.
