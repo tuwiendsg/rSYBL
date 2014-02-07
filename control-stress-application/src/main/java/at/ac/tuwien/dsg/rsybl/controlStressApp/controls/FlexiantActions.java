@@ -76,7 +76,7 @@ public class FlexiantActions extends ActionOnIaaSProvider {
 			datatypeFactory = DatatypeFactory.newInstance();
 		} catch (DatatypeConfigurationException e) {
 			// TODO Auto-generated catch block
-			e.printStackTrace();
+			e.printStackTrace(); 
 		}
 		XMLGregorianCalendar now = datatypeFactory
 				.newXMLGregorianCalendar(gregorianCalendar);
@@ -87,7 +87,7 @@ public class FlexiantActions extends ActionOnIaaSProvider {
 			datatypeFactory = DatatypeFactory.newInstance();
 		} catch (DatatypeConfigurationException e) {
 			// TODO Auto-generated catch block
-			e.printStackTrace();
+			e.printStackTrace(); 
 		}
 		now = datatypeFactory.newXMLGregorianCalendar(gregorianCalendar);
 		int mins = date.getMinutes();
@@ -109,16 +109,7 @@ public class FlexiantActions extends ActionOnIaaSProvider {
 		try {
 			stopServer = service.changeServerStatus(serverUUID,
 					ServerStatus.STOPPED, true, new ResourceMetadata(), now);
-		} catch (ExtilityException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-		try {
 			service.waitForJob(stopServer.getResourceUUID(), false);
-		} catch (ExtilityException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
 		
 		date = new Date();
 		datatypeFactory = null;
@@ -126,7 +117,7 @@ public class FlexiantActions extends ActionOnIaaSProvider {
 			datatypeFactory = DatatypeFactory.newInstance();
 		} catch (DatatypeConfigurationException e) {
 			// TODO Auto-generated catch block
-			e.printStackTrace();
+			e.printStackTrace(); 
 		}
 		now = datatypeFactory.newXMLGregorianCalendar(gregorianCalendar);
 		 mins = date.getMinutes();
@@ -143,18 +134,14 @@ public class FlexiantActions extends ActionOnIaaSProvider {
 		
 		now.setTime(hours, mins, sec);
 		Job deleteServer = null;
-		try {
 			deleteServer = service.deleteResource(serverUUID, true, now);
 
-		} catch (ExtilityException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-		try {
+		
 			service.waitForJob(deleteServer.getResourceUUID(), false);
 		} catch (ExtilityException e) {
 			// TODO Auto-generated catch block
-			e.printStackTrace();
+			e.printStackTrace(); 
+			return;
 		}
 
 	}
@@ -227,7 +214,7 @@ public class FlexiantActions extends ActionOnIaaSProvider {
 			datatypeFactory = DatatypeFactory.newInstance();
 		} catch (DatatypeConfigurationException e) {
 			// TODO Auto-generated catch block
-			e.printStackTrace();
+			e.printStackTrace(); return "";
 		}
 		XMLGregorianCalendar now = datatypeFactory
 				.newXMLGregorianCalendar(gregorianCalendar);
@@ -253,7 +240,8 @@ public class FlexiantActions extends ActionOnIaaSProvider {
 			j = service.createNetworkInterface(networkInterface, now);
 		} catch (ExtilityException e) {
 			// TODO Auto-generated catch block
-			e.printStackTrace();
+			e.printStackTrace(); 
+			return "";
 		}
 		//skeletonServer.getNics().add(networkInterface);
 		System.err.println("Nic UUID "+j.getItemUUID());
@@ -264,6 +252,7 @@ public class FlexiantActions extends ActionOnIaaSProvider {
 		} catch (ExtilityException e1) {
 			// TODO Auto-generated catch block
 			e1.printStackTrace();
+			return "";
 		}
 		date = new Date();
 		datatypeFactory = null;
@@ -271,7 +260,7 @@ public class FlexiantActions extends ActionOnIaaSProvider {
 			datatypeFactory = DatatypeFactory.newInstance();
 		} catch (DatatypeConfigurationException e) {
 			// TODO Auto-generated catch block
-			e.printStackTrace();
+			e.printStackTrace(); return "";
 		}
 		now = datatypeFactory.newXMLGregorianCalendar(gregorianCalendar);
 		 mins = date.getMinutes();
@@ -292,14 +281,14 @@ public class FlexiantActions extends ActionOnIaaSProvider {
 			createServerJob = service.createServer(skeletonServer, sshs, now);
 		} catch (ExtilityException e) {
 			// TODO Auto-generated catch block
-			e.printStackTrace();
+			e.printStackTrace(); return "";
 		}
 
 		try {
 			service.waitForJob(createServerJob.getResourceUUID(), false);
 		} catch (ExtilityException e) {
 			// TODO Auto-generated catch block
-			e.printStackTrace();
+			e.printStackTrace(); return "";
 		}
 		date = new Date();
 		datatypeFactory = null;
@@ -307,7 +296,7 @@ public class FlexiantActions extends ActionOnIaaSProvider {
 			datatypeFactory = DatatypeFactory.newInstance();
 		} catch (DatatypeConfigurationException e) {
 			// TODO Auto-generated catch block
-			e.printStackTrace();
+			e.printStackTrace(); return "";
 		}
 //		date = new Date();
 //		now = datatypeFactory.newXMLGregorianCalendar(gregorianCalendar);
@@ -325,7 +314,7 @@ public class FlexiantActions extends ActionOnIaaSProvider {
 //			service.waitForJob(job.getResourceUUID(), false);
 //		} catch (ExtilityException e) {
 //
-//			e.printStackTrace();
+//			e.printStackTrace(); return "";
 //		}
 		date = new Date();
 		now = datatypeFactory.newXMLGregorianCalendar(gregorianCalendar);
@@ -349,14 +338,14 @@ public class FlexiantActions extends ActionOnIaaSProvider {
 					skeletonServer.getResourceMetadata(), now);
 		} catch (ExtilityException e) {
 			// TODO Auto-generated catch block
-			e.printStackTrace();
+			e.printStackTrace(); return "";
 		}
 
 		try {
 			service.waitForJob(startServer.getResourceUUID(), false);
 		} catch (ExtilityException e) {
 			// TODO Auto-generated catch block
-			e.printStackTrace();
+			e.printStackTrace(); return "";
 		}
 		
 		return createServerJob.getItemUUID();
@@ -432,7 +421,7 @@ public class FlexiantActions extends ActionOnIaaSProvider {
 
 		} catch (Exception e) {
 
-			e.printStackTrace();
+			e.printStackTrace(); 
 		}
 		return servers;
 	}
@@ -496,7 +485,7 @@ public class FlexiantActions extends ActionOnIaaSProvider {
 
 		} catch (Exception e) {
 
-			e.printStackTrace();
+			e.printStackTrace(); 
 		}
 
 		return nics;

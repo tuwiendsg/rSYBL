@@ -70,7 +70,7 @@ public class MonitoringThread implements Runnable{
 				   fstream.write(toWrite+'\n');
 				  
 				  fstream.close();
-				  Thread.sleep(5000);
+				  Thread.sleep(1000);
 			} catch (RemoteException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();

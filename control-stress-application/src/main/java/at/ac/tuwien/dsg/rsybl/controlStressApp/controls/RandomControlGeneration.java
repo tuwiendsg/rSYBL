@@ -257,7 +257,7 @@ public class RandomControlGeneration implements Runnable{
 	public void scaleOut(Node node,String scriptToRun){
 		//TODO: return ip and uuid
 		String uuid=flexiantActions.createNewServer(node.getId(),""+node.getStaticInformation("DefaultImage"), 2, 2);
-		//TODO:
+		if (!uuid.equalsIgnoreCase("")){
 		List<com.extl.jade.user.Nic> nics=flexiantActions.listAllNics();
 		String ip="";
 		for (com.extl.jade.user.Nic nic:nics){
@@ -314,6 +314,7 @@ public class RandomControlGeneration implements Runnable{
 		}
             
 		monitoringAPI.refreshServiceStructure(cloudService);
+		}
 	}
 //	 private static class MELA_ClientUtils {
 //
