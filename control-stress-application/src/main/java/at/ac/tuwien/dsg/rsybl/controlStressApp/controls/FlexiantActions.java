@@ -19,6 +19,9 @@ import javax.xml.datatype.XMLGregorianCalendar;
 import javax.xml.namespace.QName;
 import javax.xml.ws.BindingProvider;
 
+import org.apache.log4j.Level;
+import org.apache.log4j.Logger;
+
 import com.extl.jade.user.ExtilityException;
 import com.extl.jade.user.Job;
 import com.extl.jade.user.JobStatus;
@@ -103,7 +106,7 @@ public class FlexiantActions extends ActionOnIaaSProvider {
 		}
 		
 		now.setTime(hours, mins, sec);
-		System.err.println("Removing server at " + now.toString());
+		Logger.getLogger(RandomControlGeneration.class.getName()).log(Level.INFO,"Removing server at " + now.toString());
 
 		Job stopServer = null;
 		try {
@@ -232,7 +235,7 @@ public class FlexiantActions extends ActionOnIaaSProvider {
 		
 		now.setTime(hours, mins, sec);
 
-		System.err.println("Creating server at " + now.toString());
+		Logger.getLogger(RandomControlGeneration.class.getName()).log(Level.INFO,"Creating server at " + now.toString());
 		sshs.add("c2676e1f-2466-322e-a44e-69da67d4bc85");
 		skeletonServer.setResourceName(serverName);
 		Job j = null;
@@ -244,7 +247,7 @@ public class FlexiantActions extends ActionOnIaaSProvider {
 			return "";
 		}
 		//skeletonServer.getNics().add(networkInterface);
-		System.err.println("Nic UUID "+j.getItemUUID());
+		Logger.getLogger(RandomControlGeneration.class.getName()).log(Level.INFO,"Nic UUID "+j.getItemUUID());
 		Job createServerJob = null;
 
 		try {
@@ -413,7 +416,7 @@ public class FlexiantActions extends ActionOnIaaSProvider {
 			// Iterate through the results
 			for (Object o : result.getList()) {
 				Server s = ((Server) o);
-				System.err.println("Server " + s.getResourceUUID());
+				Logger.getLogger(RandomControlGeneration.class.getName()).log(Level.INFO,"Server " + s.getResourceUUID());
 
 				servers.add(s);
 
@@ -476,7 +479,7 @@ public class FlexiantActions extends ActionOnIaaSProvider {
 			// Iterate through the results
 			for (Object o : result.getList()) {
 				Nic s = ((Nic) o);
-				//System.err.println("Nic " + s.getResourceUUID()
+				//Logger.getLogger(RandomControlGeneration.class.getName()).log(Level.INFO,"Nic " + s.getResourceUUID()
 					//	+ s.getServerUUID());
 
 				nics.add(s);

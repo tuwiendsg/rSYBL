@@ -207,7 +207,7 @@ public class RandomControlGeneration implements Runnable{
 		        	   String cmd = "";
 		        	   String ip=toBeRemoved.getId();
 		        	   String uuid = (String) toBeRemoved.getStaticInformation().get("UUID");
-		        	   System.err.println("Removing server with UUID" + uuid);
+		        	   Logger.getLogger(RandomControlGeneration.class.getName()).log(Level.INFO,"Removing server with UUID" + uuid);
 		        	   	if (scriptToRun!=""){
 		        	   		
 		        		   cmd = scriptToRun+" "+ip;
@@ -264,7 +264,7 @@ public class RandomControlGeneration implements Runnable{
 			if (nic.getServerUUID()!=null && nic.getServerUUID().equalsIgnoreCase(uuid)){
 				if (nic.getIpAddresses()!=null && nic.getIpAddresses().size()>0){
 					ip=nic.getIpAddresses().get(0).getIpAddress();
-					System.err.println("Found ip "+ip);
+					Logger.getLogger(RandomControlGeneration.class.getName()).log(Level.INFO,"Found ip "+ip);
 				break;
 				}
 			}
@@ -281,13 +281,13 @@ public class RandomControlGeneration implements Runnable{
             rel.setType(RelationshipType.HOSTED_ON_RELATIONSHIP);
             
             node.addNode(newNode,rel);
-            System.err.println(scriptToRun);
+            Logger.getLogger(RandomControlGeneration.class.getName()).log(Level.INFO,scriptToRun);
             if (scriptToRun!=null&& (!scriptToRun.equalsIgnoreCase(""))){
             String cmd = "";
      	    ip=newNode.getId();
      	    cmd = scriptToRun+" "+ip;
          	   try {
-         		    System.err.println(cmd);
+         		  Logger.getLogger(RandomControlGeneration.class.getName()).log(Level.INFO,cmd);
 					Process p = Runtime.getRuntime().exec(cmd);
 					int exitVal = p.waitFor();
 				} catch (IOException e) {
