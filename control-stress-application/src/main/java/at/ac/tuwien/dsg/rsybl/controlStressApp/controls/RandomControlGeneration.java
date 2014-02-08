@@ -93,7 +93,8 @@ public class RandomControlGeneration implements Runnable{
 			Thread.sleep(sleepPeriod);
 		} catch (InterruptedException e) {
 			// TODO Auto-generated catch block
-			e.printStackTrace();
+			Logger.getLogger(RandomControlGeneration.class.getName()).log(Level.INFO,e.getMessage());
+			Logger.getLogger(RandomControlGeneration.class.getName()).log(Level.INFO,e.getMessage());
 		}
 		}
 	}
@@ -163,7 +164,7 @@ public class RandomControlGeneration implements Runnable{
 	    			prvkey = readFile(securityCertificatePath);
 	    		} catch (IOException e) {
 	    			// TODO Auto-generated catch block
-	    			e.printStackTrace();
+	    			Logger.getLogger(RandomControlGeneration.class.getName()).log(Level.INFO,e.getMessage());
 	    		} // Private key must be byte array
 	            final byte[] emptyPassPhrase = new byte[0]; // Empty passphrase for now, get real passphrase from MyUserInfo
 
@@ -223,7 +224,7 @@ public class RandomControlGeneration implements Runnable{
 								// TODO Auto-generated catch block
 								e1.printStackTrace();
 							}
-							e.printStackTrace();
+							Logger.getLogger(RandomControlGeneration.class.getName()).log(Level.INFO,e.getMessage());
 						} catch (IOException e) {
 							// TODO Auto-generated catch block
 							try {
@@ -232,7 +233,7 @@ public class RandomControlGeneration implements Runnable{
 								// TODO Auto-generated catch block
 								e1.printStackTrace();
 							}
-							e.printStackTrace();
+							Logger.getLogger(RandomControlGeneration.class.getName()).log(Level.INFO,e.getMessage());
 						}
 		               }
 		        	   flexiantActions.removeServer(uuid);
@@ -240,7 +241,7 @@ public class RandomControlGeneration implements Runnable{
 		   				Thread.sleep(70000);
 		   			} catch (InterruptedException e) {
 		   				// TODO Auto-generated catch block
-		   				e.printStackTrace();
+		   				Logger.getLogger(RandomControlGeneration.class.getName()).log(Level.INFO,e.getMessage());
 		   			}
 		               
 		               toBeScaled.removeNode(toBeRemoved);
@@ -298,7 +299,7 @@ public class RandomControlGeneration implements Runnable{
 						// TODO Auto-generated catch block
 						e1.printStackTrace();
 					}
-					e.printStackTrace();
+					Logger.getLogger(RandomControlGeneration.class.getName()).log(Level.INFO,e.getMessage());
 					
 			} catch (InterruptedException e) {
 					// TODO Auto-generated catch block
@@ -308,7 +309,7 @@ public class RandomControlGeneration implements Runnable{
 						// TODO Auto-generated catch block
 						e1.printStackTrace();
 					}
-					e.printStackTrace();
+					Logger.getLogger(RandomControlGeneration.class.getName()).log(Level.INFO,e.getMessage());
 				}
             }
 		}

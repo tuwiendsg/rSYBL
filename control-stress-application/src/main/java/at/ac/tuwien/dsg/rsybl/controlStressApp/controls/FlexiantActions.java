@@ -79,7 +79,7 @@ public class FlexiantActions extends ActionOnIaaSProvider {
 			datatypeFactory = DatatypeFactory.newInstance();
 		} catch (DatatypeConfigurationException e) {
 			// TODO Auto-generated catch block
-			e.printStackTrace(); 
+			Logger.getLogger(RandomControlGeneration.class.getName()).log(Level.INFO,e.getMessage()); 
 		}
 		XMLGregorianCalendar now = datatypeFactory
 				.newXMLGregorianCalendar(gregorianCalendar);
@@ -90,7 +90,7 @@ public class FlexiantActions extends ActionOnIaaSProvider {
 			datatypeFactory = DatatypeFactory.newInstance();
 		} catch (DatatypeConfigurationException e) {
 			// TODO Auto-generated catch block
-			e.printStackTrace(); 
+			Logger.getLogger(RandomControlGeneration.class.getName()).log(Level.INFO,e.getMessage()); 
 		}
 		now = datatypeFactory.newXMLGregorianCalendar(gregorianCalendar);
 		int mins = date.getMinutes();
@@ -120,7 +120,7 @@ public class FlexiantActions extends ActionOnIaaSProvider {
 			datatypeFactory = DatatypeFactory.newInstance();
 		} catch (DatatypeConfigurationException e) {
 			// TODO Auto-generated catch block
-			e.printStackTrace(); 
+			Logger.getLogger(RandomControlGeneration.class.getName()).log(Level.INFO,e.getMessage()); 
 		}
 		now = datatypeFactory.newXMLGregorianCalendar(gregorianCalendar);
 		 mins = date.getMinutes();
@@ -143,7 +143,7 @@ public class FlexiantActions extends ActionOnIaaSProvider {
 			service.waitForJob(deleteServer.getResourceUUID(), false);
 		} catch (ExtilityException e) {
 			// TODO Auto-generated catch block
-			e.printStackTrace(); 
+			Logger.getLogger(RandomControlGeneration.class.getName()).log(Level.INFO,e.getMessage()); 
 			return;
 		}
 
@@ -217,7 +217,7 @@ public class FlexiantActions extends ActionOnIaaSProvider {
 			datatypeFactory = DatatypeFactory.newInstance();
 		} catch (DatatypeConfigurationException e) {
 			// TODO Auto-generated catch block
-			e.printStackTrace(); return "";
+			Logger.getLogger(RandomControlGeneration.class.getName()).log(Level.INFO,e.getMessage()); return "";
 		}
 		XMLGregorianCalendar now = datatypeFactory
 				.newXMLGregorianCalendar(gregorianCalendar);
@@ -243,7 +243,7 @@ public class FlexiantActions extends ActionOnIaaSProvider {
 			j = service.createNetworkInterface(networkInterface, now);
 		} catch (ExtilityException e) {
 			// TODO Auto-generated catch block
-			e.printStackTrace(); 
+			Logger.getLogger(RandomControlGeneration.class.getName()).log(Level.INFO,e.getMessage()); 
 			return "";
 		}
 		//skeletonServer.getNics().add(networkInterface);
@@ -263,7 +263,7 @@ public class FlexiantActions extends ActionOnIaaSProvider {
 			datatypeFactory = DatatypeFactory.newInstance();
 		} catch (DatatypeConfigurationException e) {
 			// TODO Auto-generated catch block
-			e.printStackTrace(); return "";
+			Logger.getLogger(RandomControlGeneration.class.getName()).log(Level.INFO,e.getMessage()); return "";
 		}
 		now = datatypeFactory.newXMLGregorianCalendar(gregorianCalendar);
 		 mins = date.getMinutes();
@@ -284,14 +284,14 @@ public class FlexiantActions extends ActionOnIaaSProvider {
 			createServerJob = service.createServer(skeletonServer, sshs, now);
 		} catch (ExtilityException e) {
 			// TODO Auto-generated catch block
-			e.printStackTrace(); return "";
+			Logger.getLogger(RandomControlGeneration.class.getName()).log(Level.INFO,e.getMessage()); return "";
 		}
 
 		try {
 			service.waitForJob(createServerJob.getResourceUUID(), false);
 		} catch (ExtilityException e) {
 			// TODO Auto-generated catch block
-			e.printStackTrace(); return "";
+			Logger.getLogger(RandomControlGeneration.class.getName()).log(Level.INFO,e.getMessage()); return "";
 		}
 		date = new Date();
 		datatypeFactory = null;
@@ -299,7 +299,7 @@ public class FlexiantActions extends ActionOnIaaSProvider {
 			datatypeFactory = DatatypeFactory.newInstance();
 		} catch (DatatypeConfigurationException e) {
 			// TODO Auto-generated catch block
-			e.printStackTrace(); return "";
+			Logger.getLogger(RandomControlGeneration.class.getName()).log(Level.INFO,e.getMessage()); return "";
 		}
 //		date = new Date();
 //		now = datatypeFactory.newXMLGregorianCalendar(gregorianCalendar);
@@ -317,7 +317,7 @@ public class FlexiantActions extends ActionOnIaaSProvider {
 //			service.waitForJob(job.getResourceUUID(), false);
 //		} catch (ExtilityException e) {
 //
-//			e.printStackTrace(); return "";
+//			Logger.getLogger(RandomControlGeneration.class.getName()).log(Level.INFO,e.getMessage()); return "";
 //		}
 		date = new Date();
 		now = datatypeFactory.newXMLGregorianCalendar(gregorianCalendar);
@@ -341,14 +341,14 @@ public class FlexiantActions extends ActionOnIaaSProvider {
 					skeletonServer.getResourceMetadata(), now);
 		} catch (ExtilityException e) {
 			// TODO Auto-generated catch block
-			e.printStackTrace(); return "";
+			Logger.getLogger(RandomControlGeneration.class.getName()).log(Level.INFO,e.getMessage()); return "";
 		}
 
 		try {
 			service.waitForJob(startServer.getResourceUUID(), false);
 		} catch (ExtilityException e) {
 			// TODO Auto-generated catch block
-			e.printStackTrace(); return "";
+			Logger.getLogger(RandomControlGeneration.class.getName()).log(Level.INFO,e.getMessage()); return "";
 		}
 		
 		return createServerJob.getItemUUID();
@@ -424,7 +424,7 @@ public class FlexiantActions extends ActionOnIaaSProvider {
 
 		} catch (Exception e) {
 
-			e.printStackTrace(); 
+			Logger.getLogger(RandomControlGeneration.class.getName()).log(Level.INFO,e.getMessage()); 
 		}
 		return servers;
 	}
@@ -488,7 +488,7 @@ public class FlexiantActions extends ActionOnIaaSProvider {
 
 		} catch (Exception e) {
 
-			e.printStackTrace(); 
+			Logger.getLogger(RandomControlGeneration.class.getName()).log(Level.INFO,e.getMessage()); 
 		}
 
 		return nics;
