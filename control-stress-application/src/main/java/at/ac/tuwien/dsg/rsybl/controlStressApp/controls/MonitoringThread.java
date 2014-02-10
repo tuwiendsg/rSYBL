@@ -45,6 +45,7 @@ public class MonitoringThread implements Runnable{
 		  String headers = "Time ,";
 		  for (String metric :api.getAvailableMetrics(e))
 			  headers+=metric+" ,";
+		  headers +=" , ongoingAction, targetedNodeID";
 		  headers += "\n";
 		  fstream.write(headers);
 		  fstream.close();
@@ -67,10 +68,11 @@ public class MonitoringThread implements Runnable{
 				  String toWrite = date.toString()+",";
 				  for (String metric :api.getAvailableMetrics(entity))
 					  toWrite+=api.getMetricValue(metric, entity)+",";
-				   fstream.write(toWrite+'\n');
+				  toWrite+=api.getOngoingActionID()+","+api.getOngoingActionNodeID();
+				  fstream.write(toWrite+'\n');
 				  
 				  fstream.close();
-				  Thread.sleep(1000);
+				  Thread.sleep(5000);
 			} catch (RemoteException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
