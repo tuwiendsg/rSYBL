@@ -50,4 +50,6 @@ public interface MonitoringInterface {
 	    public Double getMetricValue(String metricName, Node node);
 	    public Double getNumberInstances(Node node);
 	    public void refreshServiceStructure(Node node);
+	    public String getOngoingActionID();
+	    public String getOngoingActionNodeID();
 }

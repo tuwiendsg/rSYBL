@@ -565,6 +565,16 @@ Double retValue = 0.0;
 		// TODO Auto-generated method stub
 		
 	}
+	@Override
+	public String getOngoingActionID() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+	@Override
+	public String getOngoingActionNodeID() {
+		// TODO Auto-generated method stub
+		return null;
+	}
 
 	
 

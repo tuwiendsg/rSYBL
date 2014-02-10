@@ -394,6 +394,24 @@ try{
 	}
 
 
+
+
+	@Override
+	public String getOngoingActionID() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+
+
+
+	@Override
+	public String getOngoingActionNodeID() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+
 	
 
 

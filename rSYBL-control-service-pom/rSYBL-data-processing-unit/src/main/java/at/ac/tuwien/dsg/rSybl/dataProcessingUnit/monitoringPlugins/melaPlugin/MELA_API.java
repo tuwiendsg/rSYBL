@@ -69,6 +69,8 @@ public class MELA_API implements MonitoringInterface{
     private static final int MONITORING_DATA_REFRESH_INTERVAL = 10; //in seconds
     private MonitoredElementMonitoringSnapshot latestMonitoringData;
     private AtomicBoolean monitoringDataUsed;
+    private String ongoingAction="";
+    private String actionTargetEntity="";
     private Node controlService;
 
     {
@@ -512,7 +514,9 @@ public class MELA_API implements MonitoringInterface{
         URL url = null;
         HttpURLConnection connection = null;
         try {
-            url = new URL(REST_API_URL + "/addexecutingactions");
+        	this.ongoingAction=actionName;
+        	this.actionTargetEntity=actionTargetEntity.getId();
+        	url = new URL(REST_API_URL + "/addexecutingactions");
             connection = (HttpURLConnection) url.openConnection();
             connection.setDoOutput(true);
             connection.setInstanceFollowRedirects(false);
@@ -550,6 +554,7 @@ public class MELA_API implements MonitoringInterface{
         } catch (Exception e) {
             Logger.getLogger(MELA_API.class.getName()).log(Level.SEVERE, e.getMessage(), e);
         } finally {
+        	
             if (connection != null) {
                 connection.disconnect();
             }
@@ -599,6 +604,8 @@ public class MELA_API implements MonitoringInterface{
         } catch (Exception e) {
             Logger.getLogger(MELA_API.class.getName()).log(Level.SEVERE, e.getMessage(), e);
         } finally {
+        	actionName="";
+        	this.actionTargetEntity="";
             if (connection != null) {
                 connection.disconnect();
             }
@@ -1035,6 +1042,16 @@ public class MELA_API implements MonitoringInterface{
         
         return getMetricValue(metric, entity);
     }
+
+	@Override
+	public String getOngoingActionID() {
+		return this.ongoingAction;
+	}
+
+	@Override
+	public String getOngoingActionNodeID() {
+		return this.actionTargetEntity;
+	}
 
 
    

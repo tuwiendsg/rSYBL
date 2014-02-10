@@ -73,4 +73,6 @@ public interface MonitoringAPIInterface {
     public Double getNumberInstances(Node e);
     public void refreshServiceStructure(Node cloudService);
     public List<String> getAvailableMetrics(Node node);
+    public String getOngoingActionID();
+    public String getOngoingActionNodeID();
 }

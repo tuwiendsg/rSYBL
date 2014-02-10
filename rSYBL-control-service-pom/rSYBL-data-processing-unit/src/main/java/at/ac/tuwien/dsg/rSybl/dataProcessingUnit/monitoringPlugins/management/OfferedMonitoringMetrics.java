@@ -313,5 +313,28 @@ public class OfferedMonitoringMetrics implements MonitoringInterface{
 			}
 		}
 	}
+	@Override
+	public String getOngoingActionID() {
+		String result = "";
+    	Map<Method,MonitoringInterface> methods = manageMonitoringPlugins.getMethods(manageMonitoringPlugins.getAllPlugins(cloudService));
+		for (Method method:methods.keySet()){
+			if (method.getName().equalsIgnoreCase("getNumberInstances")){
+				 result = methods.get(method).getOngoingActionID();
+			}
+		}
+		return result;
+
+	}
+	@Override
+	public String getOngoingActionNodeID() {
+		String result = "";
+    	Map<Method,MonitoringInterface> methods = manageMonitoringPlugins.getMethods(manageMonitoringPlugins.getAllPlugins(cloudService));
+		for (Method method:methods.keySet()){
+			if (method.getName().equalsIgnoreCase("getNumberInstances")){
+				 result = methods.get(method).getOngoingActionNodeID();
+			}
+		}
+		return result;
+	}
 
 }
