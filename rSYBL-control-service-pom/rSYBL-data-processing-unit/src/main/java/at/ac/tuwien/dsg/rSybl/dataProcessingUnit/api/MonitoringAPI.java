@@ -399,7 +399,7 @@ try{
 	@Override
 	public String getOngoingActionID() {
 		// TODO Auto-generated method stub
-		return null;
+		return offeredMonitoringMetrics.getOngoingActionID();
 	}
 
 
@@ -408,7 +408,7 @@ try{
 	@Override
 	public String getOngoingActionNodeID() {
 		// TODO Auto-generated method stub
-		return null;
+		return offeredMonitoringMetrics.getOngoingActionNodeID();
 	}
 
 

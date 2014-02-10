@@ -45,7 +45,7 @@ public class MonitoringThread implements Runnable{
 		  String headers = "Time ,";
 		  for (String metric :api.getAvailableMetrics(e))
 			  headers+=metric+" ,";
-		  headers +=" , ongoingAction, targetedNodeID";
+		  headers +=" ongoingAction, targetedNodeID";
 		  headers += "\n";
 		  fstream.write(headers);
 		  fstream.close();
