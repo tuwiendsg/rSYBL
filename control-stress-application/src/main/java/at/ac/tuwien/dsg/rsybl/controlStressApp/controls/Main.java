@@ -26,7 +26,10 @@ public class Main {
 		FlexiantActions flexiantActions = new FlexiantActions();
 		List<Nic> nics=flexiantActions.listAllNics();
 		System.err.println(nics.size());
-		
+		for (Nic nic:nics){
+			if (nic.getIpAddresses()!=null && nic.getIpAddresses().size()>0)
+			System.out.println(nic.getIpAddresses().get(0));
+		}
 //		System.out.println(flexiantActions.createNewServer("DataNode_new",
 //				"c7ee301c-813c-34f4-827a-783f22312dcb", 2, 4));
 //		flexiantActions.listAllNics();
