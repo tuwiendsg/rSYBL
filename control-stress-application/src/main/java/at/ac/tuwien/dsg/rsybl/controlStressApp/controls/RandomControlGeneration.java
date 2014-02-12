@@ -266,12 +266,15 @@ public class RandomControlGeneration implements Runnable{
 				if (nic.getIpAddresses()!=null && nic.getIpAddresses().size()>0){
 					ip=nic.getIpAddresses().get(0).getIpAddress();
 					Logger.getLogger(RandomControlGeneration.class.getName()).log(Level.INFO,"Found ip "+ip);
-					if (!ip.equalsIgnoreCase(""))
-						break;
+					if (!ip.equalsIgnoreCase("") && nic.getIpAddresses().size()>1){
+						ip = nic.getIpAddresses().get(1).getIpAddress();
+						if (!ip.equalsIgnoreCase(""))
+							break;
+					}
 				}
 			}
 		}
-		if (!ip.equalsIgnoreCase("err")){
+		if (!ip.equalsIgnoreCase("err") && !ip.equalsIgnoreCase("")){
 			Node newNode = new Node();
 			newNode.setId(ip);
             newNode.getStaticInformation().put("UUID", uuid);
@@ -283,7 +286,7 @@ public class RandomControlGeneration implements Runnable{
             rel.setType(RelationshipType.HOSTED_ON_RELATIONSHIP);
             
             node.addNode(newNode,rel);
-            Logger.getLogger(RandomControlGeneration.class.getName()).log(Level.INFO,scriptToRun);
+            
             if (scriptToRun!=null&& (!scriptToRun.equalsIgnoreCase(""))){
             String cmd = "";
      	    ip=newNode.getId();
@@ -313,6 +316,8 @@ public class RandomControlGeneration implements Runnable{
 					Logger.getLogger(RandomControlGeneration.class.getName()).log(Level.INFO,e.getMessage());
 				}
             }
+		}else{
+			Logger.getLogger(RandomControlGeneration.class.getName()).log(Level.INFO,"Trying to create, did not manage, uuid "+uuid);
 		}
             
 		monitoringAPI.refreshServiceStructure(cloudService);
