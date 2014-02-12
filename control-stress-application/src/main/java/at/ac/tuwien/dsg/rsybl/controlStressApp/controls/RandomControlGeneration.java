@@ -204,7 +204,7 @@ public class RandomControlGeneration implements Runnable{
 	public void scaleIn(Node toBeScaled, String scriptToRun) {	
 		 if (toBeScaled.getAllRelatedNodesOfType(RelationshipType.HOSTED_ON_RELATIONSHIP,NodeType.VIRTUAL_MACHINE).size()>1){
 			 Node toBeRemoved = toBeScaled.getAllRelatedNodesOfType(RelationshipType.HOSTED_ON_RELATIONSHIP, NodeType.VIRTUAL_MACHINE).get(0);
-			 
+			 Logger.getLogger(RandomControlGeneration.class.getName()).log(Level.INFO, "Trying to remove  "+toBeRemoved.getId()+" From "+toBeScaled.getId());
 		        	   String cmd = "";
 		        	   String ip=toBeRemoved.getId();
 		        	   String uuid = (String) toBeRemoved.getStaticInformation().get("UUID");
@@ -263,6 +263,7 @@ public class RandomControlGeneration implements Runnable{
 		String ip="";
 		for (com.extl.jade.user.Nic nic:nics){
 			if (nic.getServerUUID()!=null && nic.getServerUUID().equalsIgnoreCase(uuid)){
+				Logger.getLogger(RandomControlGeneration.class.getName()).log(Level.INFO, "Found NIC for "+nic.getResourceUUID()+" with ips "+nic.getIpAddresses());
 				if (nic.getIpAddresses()!=null && nic.getIpAddresses().size()>0){
 					ip=nic.getIpAddresses().get(0).getIpAddress();
 					Logger.getLogger(RandomControlGeneration.class.getName()).log(Level.INFO,"Found ip "+ip);
