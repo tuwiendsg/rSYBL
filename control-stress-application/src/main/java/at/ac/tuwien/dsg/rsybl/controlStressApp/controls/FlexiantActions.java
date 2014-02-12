@@ -239,26 +239,27 @@ public class FlexiantActions extends ActionOnIaaSProvider {
 		Logger.getLogger(RandomControlGeneration.class.getName()).log(Level.INFO,"Creating server at " + now.toString());
 		sshs.add("c2676e1f-2466-322e-a44e-69da67d4bc85");
 		skeletonServer.setResourceName(serverName);
-		Job j = null;
-		try {
-			j = service.createNetworkInterface(networkInterface, now);
-		} catch (ExtilityException e) {
-			// TODO Auto-generated catch block
-			Logger.getLogger(RandomControlGeneration.class.getName()).log(Level.INFO,e.getMessage()); 
-			return "";
-		}
-		//skeletonServer.getNics().add(networkInterface);
-		Logger.getLogger(RandomControlGeneration.class.getName()).log(Level.INFO,"Nic UUID "+j.getItemUUID());
-		
-
-		try {
-			service.waitForJob(j.getResourceUUID(), false);
-		} catch (ExtilityException e1) {
-			// TODO Auto-generated catch block
-			e1.printStackTrace();
-			return "";
-		}
+//		Job j = null;
+//		try {
+//			j = service.createNetworkInterface(networkInterface, now);
+//		} catch (ExtilityException e) {
+//			// TODO Auto-generated catch block
+//			Logger.getLogger(RandomControlGeneration.class.getName()).log(Level.INFO,e.getMessage()); 
+//			return "";
+//		}
+//		//skeletonServer.getNics().add(networkInterface);
+//		Logger.getLogger(RandomControlGeneration.class.getName()).log(Level.INFO,"Nic UUID "+j.getItemUUID());
+//		
+//
+//		try {
+//			service.waitForJob(j.getResourceUUID(), false);
+//		} catch (ExtilityException e1) {
+//			// TODO Auto-generated catch block
+//			e1.printStackTrace();
+//			return "";
+//		}
 		Job createServerJob = null;
+		
 		date = new Date();
 		datatypeFactory = null;
 		try {
@@ -351,7 +352,74 @@ public class FlexiantActions extends ActionOnIaaSProvider {
 
 		// createdServer.getNics().get(0).getIpAddresses().get(0).getIpAddress();
 	}
+	public void cleanNics(){
+		List<Nic> nics=listAllNics();
+		UserService service;
+		GregorianCalendar gregorianCalendar = new GregorianCalendar();
 
+		List<Server> servers = new ArrayList<Server>();
+		// Get the service WSDL from the client jar
+		URL url = ClassLoader.getSystemClassLoader()
+				.getResource("UserAPI.wsdl");
+
+		// Get the UserAPI
+		UserAPI api = new UserAPI(url, new QName(
+				"http://extility.flexiant.net", "UserAPI"));
+
+		// and set the service port on the service
+		service = api.getUserServicePort();
+
+		// Get the binding provider
+		BindingProvider portBP = (BindingProvider) service;
+
+		// and set the service endpoint
+		portBP.getRequestContext().put(
+				BindingProvider.ENDPOINT_ADDRESS_PROPERTY,
+				ENDPOINT_ADDRESS_PROPERTY);
+
+		// and the caller's authentication details and password
+		portBP.getRequestContext().put(BindingProvider.USERNAME_PROPERTY,
+				userEmailAddress + "/" + customerUUID);
+		portBP.getRequestContext().put(BindingProvider.PASSWORD_PROPERTY,
+				password);
+		Date date = new Date();
+
+		DatatypeFactory datatypeFactory = null;
+		try {
+			datatypeFactory = DatatypeFactory.newInstance();
+		} catch (DatatypeConfigurationException e) {
+			// TODO Auto-generated catch block
+			Logger.getLogger(RandomControlGeneration.class.getName()).log(Level.INFO,e.getMessage()); 
+		}
+		XMLGregorianCalendar now = datatypeFactory
+				.newXMLGregorianCalendar(gregorianCalendar);
+		int mins = date.getMinutes();
+		int sec = date.getSeconds();
+		int hours = date.getHours();
+		sec += 10;
+		if (sec >= 60) {
+			sec -= 60;
+			mins += 1;
+		}
+		if (mins==60){
+			mins=59;
+		}
+		
+		
+		now.setTime(hours, mins, sec);
+		System.err.println(nics.size());
+		for (Nic nic:nics){
+			if (nic.getIpAddresses()!=null && nic.getIpAddresses().size()>0)
+			System.out.println(nic.getIpAddresses().get(0));
+			if (nic.getServerUUID()==null)
+				try {
+					service.deleteResource(nic.getResourceUUID(), true, now);
+				} catch (ExtilityException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+		}
+	}
 	public List<Server> listServers() {
 		UserService service;
 		List<Server> servers = new ArrayList<Server>();
