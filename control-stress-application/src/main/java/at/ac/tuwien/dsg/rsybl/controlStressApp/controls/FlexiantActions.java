@@ -96,6 +96,15 @@ public class FlexiantActions extends ActionOnIaaSProvider {
 		int mins = date.getMinutes();
 		int sec = date.getSeconds();
 		int hours = date.getHours();
+		sec += 10;
+		if (sec >= 60) {
+			sec -= 60;
+			mins += 1;
+		}
+		if (mins==60){
+			mins=59;
+		}
+		
 		now.setTime(hours, mins, sec);
 		Logger.getLogger(RandomControlGeneration.class.getName()).log(Level.INFO,"Removing server at " + now.toString());
 
@@ -117,7 +126,15 @@ public class FlexiantActions extends ActionOnIaaSProvider {
 		 mins = date.getMinutes();
 		 sec = date.getSeconds();
 		 hours = date.getHours();
-		
+			sec += 10;
+			if (sec >= 60) {
+				sec -= 60;
+				mins += 1;
+			}
+			if (mins==60){
+				mins=59;
+			}
+			
 		now.setTime(hours, mins, sec);
 		Job deleteServer = null;
 			deleteServer = service.deleteResource(serverUUID, true, now);
@@ -207,7 +224,7 @@ public class FlexiantActions extends ActionOnIaaSProvider {
 		int mins = date.getMinutes();
 		int sec = date.getSeconds();
 		int hours = date.getHours();
-		sec += 30;
+		sec += 10;
 		if (sec >= 60) {
 			sec -= 60;
 			mins += 1;
@@ -215,6 +232,7 @@ public class FlexiantActions extends ActionOnIaaSProvider {
 		if (mins==60){
 			mins=59;
 		}
+		
 		
 		now.setTime(hours, mins, sec);
 
@@ -253,6 +271,16 @@ public class FlexiantActions extends ActionOnIaaSProvider {
 		 mins = date.getMinutes();
 		 sec = date.getSeconds();
 		 hours = date.getHours();
+
+			sec += 10;
+			if (sec >= 60) {
+				sec -= 60;
+				mins += 1;
+			}
+			if (mins==60){
+				mins=59;
+			}
+			
 		now.setTime(hours, mins, sec);
 		skeletonServer.getNics().add(networkInterface);
 		try {
@@ -268,14 +296,7 @@ public class FlexiantActions extends ActionOnIaaSProvider {
 			// TODO Auto-generated catch block
 			Logger.getLogger(RandomControlGeneration.class.getName()).log(Level.INFO,e.getMessage()); return "";
 		}
-		date = new Date();
-		datatypeFactory = null;
-		try {
-			datatypeFactory = DatatypeFactory.newInstance();
-		} catch (DatatypeConfigurationException e) {
-			// TODO Auto-generated catch block
-			Logger.getLogger(RandomControlGeneration.class.getName()).log(Level.INFO,e.getMessage()); return "";
-		}
+		
 //		date = new Date();
 //		now = datatypeFactory.newXMLGregorianCalendar(gregorianCalendar);
 //		mins = date.getMinutes();
@@ -299,6 +320,15 @@ public class FlexiantActions extends ActionOnIaaSProvider {
 		 mins = date.getMinutes();
 		 sec = date.getSeconds();
 		 hours = date.getHours();	
+			sec += 10;
+			if (sec >= 60) {
+				sec -= 60;
+				mins += 1;
+			}
+			if (mins==60){
+				mins=59;
+			}
+			
 		now.setTime(hours, mins, sec);
 		Job startServer = null;
 		try {
