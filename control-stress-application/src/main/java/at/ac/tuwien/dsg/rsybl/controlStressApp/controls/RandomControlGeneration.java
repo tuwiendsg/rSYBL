@@ -65,15 +65,12 @@ public class RandomControlGeneration implements Runnable{
 	@Override
 	public void run() {
 		while (true){
-			Logger.getLogger(RandomControlGeneration.class.getName()).log(Level.INFO,"Available elasticity capabilities "+elasticityCapabilities.size());
-
-			int randomAction = (int) (Math.random() * elasticityCapabilities.size());
-			Logger.getLogger(RandomControlGeneration.class.getName()).log(Level.INFO,"Randomly generated action = "+randomAction+" "+elasticityCapabilities.get(randomAction));
-		String elString=elasticityCapabilities.get(randomAction);
+				int randomAction = (int) (Math.random() * elasticityCapabilities.size());
+			String elString=elasticityCapabilities.get(randomAction);
 		Node currentNode = dependencyGraph.getNodeWithID(elString.substring(0,elString.indexOf('_')));
 		for (ElasticityCapability elCap:currentNode.getElasticityCapabilities()){
 			if (elCap.getName().equalsIgnoreCase(elString.substring(elString.indexOf('_')+1))){
-				Logger.getLogger(RandomControlGeneration.class.getName()).log(Level.INFO,"Elasticity Capability "+elCap.getName()+" with script "+elCap.getScript());
+				Logger.getLogger(RandomControlGeneration.class.getName()).log(Level.INFO,"~~~~~~~~Elasticity Capability "+elCap.getName()+" with script "+elCap.getScript());
 				if (elCap.getName().equalsIgnoreCase("scalein")){
 					monitoringAPI.enforcingActionStarted(elString,currentNode);
 					scaleIn(currentNode,elCap.getScript());
@@ -261,12 +258,13 @@ public class RandomControlGeneration implements Runnable{
 		if (!uuid.equalsIgnoreCase("")){
 		List<com.extl.jade.user.Nic> nics=flexiantActions.listAllNics();
 		String ip="";
+		Logger.getLogger(RandomControlGeneration.class.getName()).log(Level.INFO,"~~~~~~~Searching for ip for server "+uuid);
 		for (com.extl.jade.user.Nic nic:nics){
 			if (nic.getServerUUID()!=null && nic.getServerUUID().equalsIgnoreCase(uuid)){
-				Logger.getLogger(RandomControlGeneration.class.getName()).log(Level.INFO, "Found NIC for "+nic.getResourceUUID()+" with ips "+nic.getIpAddresses());
+				Logger.getLogger(RandomControlGeneration.class.getName()).log(Level.INFO, "~~~~~~~~~~~~~Found NIC for "+nic.getResourceUUID()+" with ips "+nic.getIpAddresses().size());
 				if (nic.getIpAddresses()!=null && nic.getIpAddresses().size()>0){
 					ip=nic.getIpAddresses().get(0).getIpAddress();
-					Logger.getLogger(RandomControlGeneration.class.getName()).log(Level.INFO,"Found ip "+ip);
+					Logger.getLogger(RandomControlGeneration.class.getName()).log(Level.INFO,"~~~~~~~~~~~~~~Found ip "+ip);
 					if (!ip.equalsIgnoreCase("") && nic.getIpAddresses().size()>1){
 						ip = nic.getIpAddresses().get(1).getIpAddress();
 						if (!ip.equalsIgnoreCase(""))
@@ -318,7 +316,7 @@ public class RandomControlGeneration implements Runnable{
 				}
             }
 		}else{
-			Logger.getLogger(RandomControlGeneration.class.getName()).log(Level.INFO,"Trying to create, did not manage, uuid "+uuid);
+			Logger.getLogger(RandomControlGeneration.class.getName()).log(Level.INFO,"~~~~~~~~~~~~~~~Trying to create, did not manage, uuid "+uuid);
 		}
             
 		monitoringAPI.refreshServiceStructure(cloudService);
