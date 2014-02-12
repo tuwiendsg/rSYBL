@@ -393,26 +393,28 @@ public class FlexiantActions extends ActionOnIaaSProvider {
 		}
 		XMLGregorianCalendar now = datatypeFactory
 				.newXMLGregorianCalendar(gregorianCalendar);
-		int mins = date.getMinutes();
-		int sec = date.getSeconds();
-		int hours = date.getHours();
-		sec += 10;
-		if (sec >= 60) {
-			sec -= 60;
-			mins += 1;
-		}
-		if (mins==60){
-			mins=59;
-		}
-		
-		
-		now.setTime(hours, mins, sec);
+	
 		System.err.println(nics.size());
 		for (Nic nic:nics){
 			if (nic.getIpAddresses()!=null && nic.getIpAddresses().size()>0)
 			System.out.println(nic.getIpAddresses().get(0));
 			if (nic.getServerUUID()==null)
 				try {
+					date = new Date();
+					int mins = date.getMinutes();
+					int sec = date.getSeconds();
+					int hours = date.getHours();
+					sec += 10;
+					if (sec >= 60) {
+						sec -= 60;
+						mins += 1;
+					}
+					if (mins==60){
+						mins=59;
+					}
+					
+					
+					now.setTime(hours, mins, sec);
 					service.deleteResource(nic.getResourceUUID(), true, now);
 				} catch (ExtilityException e) {
 					// TODO Auto-generated catch block
