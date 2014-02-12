@@ -266,7 +266,7 @@ public class RandomControlGeneration implements Runnable{
 				if (nic.getIpAddresses()!=null && nic.getIpAddresses().size()>0){
 					ip=nic.getIpAddresses().get(0).getIpAddress();
 					Logger.getLogger(RandomControlGeneration.class.getName()).log(Level.INFO,"~~~~~~~~~~~~~~Found ip "+ip);
-					if (!ip.equalsIgnoreCase("") && nic.getIpAddresses().size()>1){
+					if (ip.equalsIgnoreCase("") && nic.getIpAddresses().size()>1){
 						ip = nic.getIpAddresses().get(1).getIpAddress();
 						if (!ip.equalsIgnoreCase(""))
 							break;
