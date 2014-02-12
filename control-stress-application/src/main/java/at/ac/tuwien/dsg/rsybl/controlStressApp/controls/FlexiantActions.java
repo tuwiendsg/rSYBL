@@ -471,7 +471,7 @@ public class FlexiantActions extends ActionOnIaaSProvider {
 			// Add the filter condition to the query
 			// Set a limit to the number of results
 			QueryLimit lim = new QueryLimit();
-			lim.setMaxRecords(40);
+			lim.setMaxRecords(200);
 
 			// Call the service to execute the query
 			ListResult result = service
@@ -480,10 +480,9 @@ public class FlexiantActions extends ActionOnIaaSProvider {
 			// Iterate through the results
 			for (Object o : result.getList()) {
 				Nic s = ((Nic) o);
-				Logger.getLogger(RandomControlGeneration.class.getName()).log(Level.INFO,"Nic " + s.getResourceUUID()
-						+ s.getServerUUID()+"Ip addresses " +s.getIpAddresses());
-
-				nics.add(s);
+				//Logger.getLogger(RandomControlGeneration.class.getName()).log(Level.INFO,"Nic " + s.getResourceUUID()
+					//	+ "Server "+s.getServerUUID()+" Ip addresses " +s.getIpAddresses());
+        	 	nics.add(s);
 
 			}
 
