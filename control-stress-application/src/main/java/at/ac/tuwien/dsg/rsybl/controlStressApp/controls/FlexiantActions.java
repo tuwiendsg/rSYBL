@@ -96,15 +96,6 @@ public class FlexiantActions extends ActionOnIaaSProvider {
 		int mins = date.getMinutes();
 		int sec = date.getSeconds();
 		int hours = date.getHours();
-		sec += 30;
-		if (sec >= 60) {
-			sec -= 60;
-			mins += 1;
-		}
-		if (mins==60){
-			mins=59;
-		}
-		
 		now.setTime(hours, mins, sec);
 		Logger.getLogger(RandomControlGeneration.class.getName()).log(Level.INFO,"Removing server at " + now.toString());
 
@@ -126,14 +117,6 @@ public class FlexiantActions extends ActionOnIaaSProvider {
 		 mins = date.getMinutes();
 		 sec = date.getSeconds();
 		 hours = date.getHours();
-		sec += 30;
-		if (sec >= 60) {
-			sec -= 60;
-			mins += 1;
-		}
-		if (mins==60){
-			mins=59;
-		}
 		
 		now.setTime(hours, mins, sec);
 		Job deleteServer = null;
@@ -270,15 +253,6 @@ public class FlexiantActions extends ActionOnIaaSProvider {
 		 mins = date.getMinutes();
 		 sec = date.getSeconds();
 		 hours = date.getHours();
-		sec += 30;
-		if (sec >= 60) {
-			sec -= 60;
-			mins += 1;
-		}
-		if (mins==60){
-			mins=59;
-		}
-		
 		now.setTime(hours, mins, sec);
 		skeletonServer.getNics().add(networkInterface);
 		try {
@@ -324,16 +298,7 @@ public class FlexiantActions extends ActionOnIaaSProvider {
 		now = datatypeFactory.newXMLGregorianCalendar(gregorianCalendar);
 		 mins = date.getMinutes();
 		 sec = date.getSeconds();
-		 hours = date.getHours();
-		sec += 30;
-		if (sec >= 60) {
-			sec -= 60;
-			mins += 1;
-		}
-		if (mins==60){
-			mins=59;
-		}
-		
+		 hours = date.getHours();	
 		now.setTime(hours, mins, sec);
 		Job startServer = null;
 		try {
