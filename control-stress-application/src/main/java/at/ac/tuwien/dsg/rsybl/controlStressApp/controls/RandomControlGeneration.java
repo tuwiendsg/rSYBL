@@ -258,7 +258,8 @@ public class RandomControlGeneration implements Runnable{
 		if (!uuid.equalsIgnoreCase("")){
 		List<com.extl.jade.user.Nic> nics=flexiantActions.listAllNics();
 		String ip="";
-		Logger.getLogger(RandomControlGeneration.class.getName()).log(Level.INFO,"~~~~~~~Searching for ip for server "+uuid);
+	
+		Logger.getLogger(RandomControlGeneration.class.getName()).log(Level.INFO,"~~~~~~~"+nics.size()+"Searching for ip for server "+uuid);
 		for (com.extl.jade.user.Nic nic:nics){
 			if (nic.getServerUUID()!=null && nic.getServerUUID().equalsIgnoreCase(uuid)){
 				Logger.getLogger(RandomControlGeneration.class.getName()).log(Level.INFO, "~~~~~~~~~~~~~Found NIC for "+nic.getResourceUUID()+" with ips "+nic.getIpAddresses().size());

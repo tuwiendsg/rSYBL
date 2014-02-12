@@ -239,7 +239,7 @@ public class FlexiantActions extends ActionOnIaaSProvider {
 		Logger.getLogger(RandomControlGeneration.class.getName()).log(Level.INFO,"Creating server at " + now.toString());
 		sshs.add("c2676e1f-2466-322e-a44e-69da67d4bc85");
 		skeletonServer.setResourceName(serverName);
-		/*Job j = null;
+		Job j = null;
 		try {
 			j = service.createNetworkInterface(networkInterface, now);
 		} catch (ExtilityException e) {
@@ -257,7 +257,7 @@ public class FlexiantActions extends ActionOnIaaSProvider {
 			// TODO Auto-generated catch block
 			e1.printStackTrace();
 			return "";
-		}*/
+		}
 		Job createServerJob = null;
 		date = new Date();
 		datatypeFactory = null;
