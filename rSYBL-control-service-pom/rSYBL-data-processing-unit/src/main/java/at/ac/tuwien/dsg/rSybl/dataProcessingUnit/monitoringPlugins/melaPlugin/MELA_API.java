@@ -600,8 +600,9 @@ public class MELA_API implements MonitoringInterface{
                     Logger.getLogger(MELA_API.class.getName()).log(Level.SEVERE, line);
                 }
             }
-
+            actionName="";
         } catch (Exception e) {
+        	actionName="";
             Logger.getLogger(MELA_API.class.getName()).log(Level.SEVERE, e.getMessage(), e);
         } finally {
         	actionName="";
