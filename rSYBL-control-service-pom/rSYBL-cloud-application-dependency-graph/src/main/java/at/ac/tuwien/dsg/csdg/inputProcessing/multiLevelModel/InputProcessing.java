@@ -143,7 +143,6 @@ public class InputProcessing {
 				for (SYBLAnnotation syblAnnotation:parseXMLInjectedAnnotations(cloudServiceXML)){
 					if (syblSpecifications==null)
 						syblSpecifications=new SYBLElasticityRequirementsDescription();
-					//SYBLDirectivesEnforcementLogger.logger.info("FOUND HERE THE STRATEGY "+syblAnnotation.getStrategies());
 					//if (syblAnnotation.getStrategies()!=null && syblAnnotation.getStrategies()!="")
 			    	syblSpecifications.getSyblSpecifications().add(SYBLDirectiveMappingFromXML.mapFromSYBLAnnotation(syblAnnotation));
 			    }
@@ -286,9 +285,7 @@ public class InputProcessing {
 		cloudService.addNode(entry.getKey(), entry.getValue());
 		}
 		graph.setCloudService(cloudService);
-		DependencyGraphLogger.logger.info("Deployment Description "+deploymentDescription);
 		DependencyGraphLogger.logger.info("Deployment Description "+deploymentDescription.getAccessIP());
-		DependencyGraphLogger.logger.info("Static info cloud service "+cloudService.getStaticInformation());
 		cloudService.getStaticInformation().put("AccessIP",deploymentDescription.getAccessIP());
 		//
 		
@@ -333,7 +330,8 @@ public class InputProcessing {
 		
 		
 		//Populate with elasticity requirements information
-		if (syblSpecifications.getSyblSpecifications()!=null)
+		DependencyGraphLogger.logger.info("SYBL Requirements "+syblSpecifications.getSyblSpecifications().size());
+		if (syblSpecifications!=null && syblSpecifications.getSyblSpecifications()!=null)
 		for (SYBLSpecification specification: syblSpecifications.getSyblSpecifications()){
 			ElasticityRequirement elRequirement = new ElasticityRequirement();
 			elRequirement.setAnnotation(SYBLDirectiveMappingFromXML.mapFromXMLRepresentation(specification));
