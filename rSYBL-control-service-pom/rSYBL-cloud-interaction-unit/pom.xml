@@ -17,16 +17,6 @@
   
   
   <dependencies>
-   <dependency>
-    <groupId>org.jclouds</groupId>
-    <artifactId>jclouds-allcompute</artifactId>
-    <version>1.5.7</version>
-  </dependency>
-  <dependency>
-    <groupId>org.jclouds</groupId>
-    <artifactId>jclouds-allblobstore</artifactId>
-    <version>1.5.7</version>
-  </dependency>
   <dependency>
     <groupId>org.jclouds.driver</groupId>
     <artifactId>jclouds-slf4j</artifactId>
