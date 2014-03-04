@@ -180,7 +180,10 @@ public class InputProcessing {
 			     syblSpecifications = (SYBLElasticityRequirementsDescription) u.unmarshal( new StringReader(elasticityReq)) ;
 			    // syblSpecifications = (SYBLElasticityRequirementsDescription) u.unmarshal(new File(directivePath));
 				}
+				DependencyGraphLogger.logger.info(cloudServiceXML);
+				DependencyGraphLogger.logger.info(parseXMLInjectedAnnotations(cloudServiceXML).size());
 				for (SYBLAnnotation syblAnnotation:parseXMLInjectedAnnotations(cloudServiceXML)){
+					
 					if (syblSpecifications==null)
 						syblSpecifications=new SYBLElasticityRequirementsDescription();
 					//SYBLDirectivesEnforcementLogger.logger.info("FOUND HERE THE STRATEGY "+syblAnnotation.getStrategies());
@@ -330,7 +333,7 @@ public class InputProcessing {
 		
 		
 		//Populate with elasticity requirements information
-		DependencyGraphLogger.logger.info("SYBL Requirements "+syblSpecifications.getSyblSpecifications().size());
+		
 		if (syblSpecifications!=null && syblSpecifications.getSyblSpecifications()!=null)
 		for (SYBLSpecification specification: syblSpecifications.getSyblSpecifications()){
 			ElasticityRequirement elRequirement = new ElasticityRequirement();
