@@ -17,6 +17,21 @@
   
   
   <dependencies>
+   <dependency>
+    <groupId>org.jclouds</groupId>
+    <artifactId>jclouds-allcompute</artifactId>
+    <version>1.5.7</version>
+  </dependency>
+  <dependency>
+    <groupId>org.jclouds</groupId>
+    <artifactId>jclouds-allblobstore</artifactId>
+    <version>1.5.7</version>
+  </dependency>
+  <dependency>
+    <groupId>org.jclouds.driver</groupId>
+    <artifactId>jclouds-slf4j</artifactId>
+    <version>1.5.4</version>
+  </dependency>
   	<dependency>
 			<groupId>org.jclouds.api</groupId>
 			<artifactId>openstack-nova-ec2</artifactId>

@@ -40,6 +40,7 @@ import java.util.logging.Logger;
 import org.jclouds.ContextBuilder;
 import org.jclouds.compute.ComputeService;
 import org.jclouds.compute.ComputeServiceContext;
+import org.jclouds.logging.slf4j.config.SLF4JLoggingModule;
 import org.jclouds.openstack.nova.v2_0.NovaApi;
 import org.jclouds.openstack.nova.v2_0.NovaApiMetadata;
 import org.jclouds.openstack.nova.v2_0.domain.RebootType;
@@ -81,8 +82,8 @@ public class JCloudsOpenStackConnection {
 	public JCloudsOpenStackConnection(Node controlledService){
 		this.controlledService = controlledService;
 
-//		Iterable<Module> modules = ImmutableSet.<Module>of(
-//                new SLF4JLoggingModule());
+		Iterable<Module> modules = ImmutableSet.<Module>of(
+                new SLF4JLoggingModule());
 		
 		RuntimeLogger.logger.info(Configuration.getCloudAPIType()+" "+Configuration.getCloudUser()+" "+Configuration.getCloudPassword()+" "+Configuration.getCloudAPIEndpoint());
 		ComputeServiceContext context = ContextBuilder.newBuilder(Configuration.getCloudAPIType())
@@ -114,13 +115,13 @@ public class JCloudsOpenStackConnection {
 	 */
 	public void setControlledService(Node cloudService){
 		this.controlledService = controlledService;
-//		Iterable<Module> modules = ImmutableSet.<Module>of(
-//                new SLF4JLoggingModule());
+		Iterable<Module> modules = ImmutableSet.<Module>of(
+                new SLF4JLoggingModule());
 		ComputeServiceContext context = ContextBuilder.newBuilder(Configuration.getCloudAPIType())
                 .credentials(Configuration.getCloudUser(), 
                 		Configuration.getCloudPassword())
                 .endpoint(Configuration.getCloudAPIEndpoint())
-//                .modules(modules)
+                .modules(modules)
                 .buildView(ComputeServiceContext.class);
 
 
