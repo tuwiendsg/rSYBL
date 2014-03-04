@@ -176,11 +176,11 @@ public class InputProcessing {
 			try {			
 				JAXBContext a = JAXBContext.newInstance( SYBLElasticityRequirementsDescription.class );
 				Unmarshaller u  = a.createUnmarshaller();
-				if (elasticityReq.equalsIgnoreCase("")){
+				if (!elasticityReq.equalsIgnoreCase("")){
 			     syblSpecifications = (SYBLElasticityRequirementsDescription) u.unmarshal( new StringReader(elasticityReq)) ;
 			    // syblSpecifications = (SYBLElasticityRequirementsDescription) u.unmarshal(new File(directivePath));
 				}
-				DependencyGraphLogger.logger.info(cloudServiceXML);
+				DependencyGraphLogger.logger.info("AAAAAAAAAAAAAAAAAAAAAAAAAAAA Cloud Service is "+cloudServiceXML);
 				DependencyGraphLogger.logger.info(parseXMLInjectedAnnotations(cloudServiceXML).size());
 				for (SYBLAnnotation syblAnnotation:parseXMLInjectedAnnotations(cloudServiceXML)){
 					
