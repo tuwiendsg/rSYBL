@@ -233,7 +233,7 @@ public class ActionEffects {
 					ActionEffect actionEffect = new ActionEffect();
 					String myaction = (String )actionName;
 					actionEffect.setActionType((String)actionName);
-					
+					actionEffect.setActionName(myaction);
 					JSONObject object=(JSONObject) jsonObject.get(myaction);
 				for (Object actions: object.keySet()){
 					
