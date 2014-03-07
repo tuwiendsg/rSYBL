@@ -551,10 +551,10 @@ public class JCloudsOpenStackConnection {
 		        	   if (ip.equalsIgnoreCase(toBeRemoved.getId())){
 		        		   RuntimeLogger.logger.info("Removing node "+ip);
 		        	   if (toBeScaled.getId().equalsIgnoreCase("EventProcessingServiceUnit"))
-		        		   cmd = "decomissionWS " + ip;
+		        		   cmd = "decomissionWS " + ip ;
 		        	   else
 		        		   cmd = "decomissionCassandra "+ip;
-		        	  
+		        	   				
 
 		               if (!(controlledService.getStaticInformation("AccessIP").equals("localhost")))
 		           	try {

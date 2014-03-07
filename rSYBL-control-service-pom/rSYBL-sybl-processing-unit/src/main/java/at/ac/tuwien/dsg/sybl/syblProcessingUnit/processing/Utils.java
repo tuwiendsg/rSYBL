@@ -709,10 +709,10 @@ public  boolean evaluateCondition(String condition) throws NoSuchMethodException
 		}
 	}
 	//SYBLDirectivesEnforcementLogger.logger.info("Evaluating condition " +s[1]+" and terms "+s[0]+" and "+s[2]);
-	if (s[1].equalsIgnoreCase("<")){
-		if (((Double)evaluateTerm(s[0]))<((Double)evaluateTerm(s[2])))return true;
-		else return false;
-	}
+//	if (s[1].equalsIgnoreCase("<")){
+//		if (((Double)evaluateTerm(s[0]))<((Double)evaluateTerm(s[2])))return true;
+//		else return false;
+//	}
 	switch (s[1]) {
 	case ">":
 		if ((evaluateTerm(s[0]).compareTo(evaluateTerm(s[2])) <= 0))
