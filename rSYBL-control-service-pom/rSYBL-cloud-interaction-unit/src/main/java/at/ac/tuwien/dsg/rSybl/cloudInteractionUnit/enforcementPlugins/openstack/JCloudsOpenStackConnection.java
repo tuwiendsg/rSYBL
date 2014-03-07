@@ -59,6 +59,7 @@ import at.ac.tuwien.dsg.rSybl.cloudInteractionUnit.utils.Configuration;
 import at.ac.tuwien.dsg.rSybl.cloudInteractionUnit.utils.RuntimeLogger;
 import at.ac.tuwien.dsg.rSybl.dataProcessingUnit.monitoringPlugins.gangliaMonitoring.GangliaMonitor.MyUserInfo;
 
+import com.google.common.collect.FluentIterable;
 import com.google.common.collect.ImmutableSet;
 import com.google.inject.Module;
 import com.jcraft.jsch.ChannelExec;
@@ -542,12 +543,14 @@ public class JCloudsOpenStackConnection {
 			
 		 if (toBeScaled.getAllRelatedNodesOfType(RelationshipType.HOSTED_ON_RELATIONSHIP,NodeType.VIRTUAL_MACHINE).size()>1){
 			 Node toBeRemoved = toBeScaled.getAllRelatedNodesOfType(RelationshipType.HOSTED_ON_RELATIONSHIP, NodeType.VIRTUAL_MACHINE).get(0);
-			  for (Server server: serverApi.listInDetail().concat()) {
+			 FluentIterable<? extends Server> servers=serverApi.listInDetail().concat();
+			 for (Server server: servers) {
 		           if( server.getName().equalsIgnoreCase(toBeScaled.getId())){
 		        	  
 		        	   String cmd = "";
 		        	   
 		        	   String ip = server.getAddresses().get("private").iterator().next().getAddr();
+		        	   RuntimeLogger.logger.info("Trying to remove node "+toBeRemoved.getId());
 		        	   if (ip.equalsIgnoreCase(toBeRemoved.getId())){
 		        		   RuntimeLogger.logger.info("Removing node "+ip);
 		        	   if (toBeScaled.getId().equalsIgnoreCase("EventProcessingServiceUnit"))
