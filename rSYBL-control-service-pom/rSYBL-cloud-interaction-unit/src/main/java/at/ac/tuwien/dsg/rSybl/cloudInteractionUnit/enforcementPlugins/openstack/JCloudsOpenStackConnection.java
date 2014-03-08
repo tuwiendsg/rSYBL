@@ -542,10 +542,13 @@ public class JCloudsOpenStackConnection {
 	
 			
 		 if (toBeScaled.getAllRelatedNodesOfType(RelationshipType.HOSTED_ON_RELATIONSHIP,NodeType.VIRTUAL_MACHINE).size()>1){
-			 Node toBeRemoved = toBeScaled.getAllRelatedNodesOfType(RelationshipType.HOSTED_ON_RELATIONSHIP, NodeType.VIRTUAL_MACHINE).get(0);
+			 int tryRemove=0;
+			 boolean removed=false;
+			 while (!removed&&toBeScaled.getAllRelatedNodesOfType(RelationshipType.HOSTED_ON_RELATIONSHIP, NodeType.VIRTUAL_MACHINE).size()>tryRemove){
+			 Node toBeRemoved = toBeScaled.getAllRelatedNodesOfType(RelationshipType.HOSTED_ON_RELATIONSHIP, NodeType.VIRTUAL_MACHINE).get(tryRemove);
 			 FluentIterable<? extends Server> servers=serverApi.listInDetail().concat();
 			 for (Server server: servers) {
-		           if( server.getName().equalsIgnoreCase(toBeScaled.getId())){
+		         //  if( server.getName().equalsIgnoreCase(toBeScaled.getId())){
 		        	  
 		        	   String cmd = "";
 		        	   
@@ -584,17 +587,19 @@ public class JCloudsOpenStackConnection {
 		   			}
 		               
 		               toBeScaled.removeNode(toBeRemoved);
-	               
+		               
 		        	   serverApi.delete(server.getId());
-
+		        	   removed=true;
 		        	   break;
 		        	   }else{
 		        		   RuntimeLogger.logger.info("Not removing "+ip);
 
 		        	   }
 		        	   
-		           }
+		           //}
 		         }
+			 tryRemove++;
+			 }
 		 }
 		
 	}
