@@ -361,7 +361,7 @@ public class EnforcementOpenstackAPI implements EnforcementInterface{
 					monitoring.enforcingActionStarted("ScaleIn",arg0 );
 					
 					cloudsOpenStackConnection.scaleInCluster(master, slave, ip,controlledService);
-					monitoring.enforcingActionStarted("ScaleIn",arg0 );
+					monitoring.enforcingActionEnded("ScaleIn",arg0 );
 				break;
 				}
 				//scale in on the number of components of the topology
@@ -373,7 +373,7 @@ public class EnforcementOpenstackAPI implements EnforcementInterface{
 			monitoring.enforcingActionStarted("ScaleIn",arg0 );
 			
 			scaleInComponent(((Node) arg0));
-			monitoring.enforcingActionStarted("ScaleIn",arg0 );
+			monitoring.enforcingActionEnded("ScaleIn",arg0 );
 		}
 		
 
