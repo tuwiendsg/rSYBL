@@ -329,10 +329,11 @@ public class PlanningGreedyAlgorithm implements Runnable {
 			if (actionEffect.getFirst().getActionType()
 					.equalsIgnoreCase("scaleout")) {
 			//	for (int i = 0; i < actionEffect.getSecond(); i++) {
-				
+				monitoringAPI.enforcingActionStarted("ScaleOut",actionEffect.getFirst().getTargetedEntity() );
 				enforcementAPI.scaleout(actionEffect.getFirst()
 						.getTargetedEntity());
-				
+				monitoringAPI.enforcingActionEnded("ScaleOut",actionEffect.getFirst().getTargetedEntity() );
+
 					
 					try {
 						Thread.sleep(60000);
@@ -348,10 +349,11 @@ public class PlanningGreedyAlgorithm implements Runnable {
 				if (actionEffect.getFirst().getActionType()
 						.equalsIgnoreCase("scalein")) {
 //					for (int i = 0; i < actionEffect.getSecond(); i++) {
-					
+					monitoringAPI.enforcingActionStarted("ScaleOut",actionEffect.getFirst().getTargetedEntity() );
 					enforcementAPI.scalein(actionEffect.getFirst()
 							.getTargetedEntity());
-					
+					monitoringAPI.enforcingActionEnded("ScaleIn",actionEffect.getFirst().getTargetedEntity() );
+
 						
 						try {
 							Thread.sleep(60000);
