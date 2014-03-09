@@ -349,7 +349,7 @@ public class PlanningGreedyAlgorithm implements Runnable {
 				if (actionEffect.getFirst().getActionType()
 						.equalsIgnoreCase("scalein")) {
 //					for (int i = 0; i < actionEffect.getSecond(); i++) {
-					monitoringAPI.enforcingActionStarted("ScaleOut",actionEffect.getFirst().getTargetedEntity() );
+					monitoringAPI.enforcingActionStarted("ScaleIn",actionEffect.getFirst().getTargetedEntity() );
 					enforcementAPI.scalein(actionEffect.getFirst()
 							.getTargetedEntity());
 					monitoringAPI.enforcingActionEnded("ScaleIn",actionEffect.getFirst().getTargetedEntity() );
