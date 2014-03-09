@@ -326,7 +326,6 @@ public class EnforcementOpenstackAPI implements EnforcementInterface{
 	}
 	
 	public void scaleIn(Node arg0){
-		monitoring.enforcingActionStarted("ScaleIn",arg0 );
 		RuntimeLogger.logger.info("Scaling in..."+arg0.getId());
 
 		if (arg0.getNodeType()==NodeType.CODE_REGION){
@@ -359,7 +358,10 @@ public class EnforcementOpenstackAPI implements EnforcementInterface{
 			
 			for (String ip:master.getAssociatedIps()){
 				if (ip.split("\\.")[0].length()==2){
+					monitoring.enforcingActionStarted("ScaleIn",arg0 );
+					
 					cloudsOpenStackConnection.scaleInCluster(master, slave, ip,controlledService);
+					monitoring.enforcingActionStarted("ScaleIn",arg0 );
 				break;
 				}
 				//scale in on the number of components of the topology
@@ -368,9 +370,12 @@ public class EnforcementOpenstackAPI implements EnforcementInterface{
 		
 		if (arg0.getAllRelatedNodesOfType(RelationshipType.HOSTED_ON_RELATIONSHIP, NodeType.VIRTUAL_MACHINE).size()>1){
 			//RuntimeLogger.logger.info("Scaling in "+arg0.getId());
+			monitoring.enforcingActionStarted("ScaleIn",arg0 );
+			
 			scaleInComponent(((Node) arg0));
+			monitoring.enforcingActionStarted("ScaleIn",arg0 );
 		}
-		monitoring.enforcingActionStarted("ScaleIn",arg0 );
+		
 
 	}
 public List<String> getElasticityCapabilities() {
