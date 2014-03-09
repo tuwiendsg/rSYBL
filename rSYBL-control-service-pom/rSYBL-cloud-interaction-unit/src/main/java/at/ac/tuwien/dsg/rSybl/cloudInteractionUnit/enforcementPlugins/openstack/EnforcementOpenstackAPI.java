@@ -95,6 +95,8 @@ public class EnforcementOpenstackAPI implements EnforcementInterface{
 	}
 	
 	public void scaleOut(Node arg0)   {
+		monitoring.enforcingActionStarted("ScaleOut",arg0 );
+		
 		Node o = arg0;
 		RuntimeLogger.logger.info("Scaling out ... "+arg0+" "+arg0.getNodeType());
 	
@@ -146,6 +148,8 @@ public class EnforcementOpenstackAPI implements EnforcementInterface{
 		if (o.getNodeType()==NodeType.SERVICE_UNIT){
 			scaleOutComponent((Node) o);
 		}
+		monitoring.enforcingActionEnded("ScaleOut",arg0 );
+
 	}
 	private void loadDeploymentDescription(){
 //		try {			
@@ -322,6 +326,7 @@ public class EnforcementOpenstackAPI implements EnforcementInterface{
 	}
 	
 	public void scaleIn(Node arg0){
+		monitoring.enforcingActionStarted("ScaleIn",arg0 );
 		RuntimeLogger.logger.info("Scaling in..."+arg0.getId());
 
 		if (arg0.getNodeType()==NodeType.CODE_REGION){
@@ -365,6 +370,8 @@ public class EnforcementOpenstackAPI implements EnforcementInterface{
 			//RuntimeLogger.logger.info("Scaling in "+arg0.getId());
 			scaleInComponent(((Node) arg0));
 		}
+		monitoring.enforcingActionStarted("ScaleIn",arg0 );
+
 	}
 public List<String> getElasticityCapabilities() {
 	List<String> list = new ArrayList<String>();
