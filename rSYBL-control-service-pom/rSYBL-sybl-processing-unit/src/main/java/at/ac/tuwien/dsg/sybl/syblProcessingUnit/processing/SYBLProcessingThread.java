@@ -39,7 +39,7 @@ public class SYBLProcessingThread implements Runnable {
     Thread t;
 	boolean ok = true;
 	Utils utils ;
-	long REFRESH_TIME=60000;
+	long REFRESH_TIME=Configuration.getRefreshPeriod();
 	Node currentEntity ;
 	private DependencyGraph dependencyGraph;
     public SYBLProcessingThread(SYBLAnnotation syblAnnotation, Node ent, DependencyGraph dependencyGraph,MonitoringAPIInterface monitoringAPI,EnforcementAPIInterface enforcementAPI){

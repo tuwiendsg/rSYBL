@@ -63,10 +63,18 @@ public class EnforcementAPI implements EnforcementAPIInterface{
 
 
 	public void scalein(Node arg0) {
+		if (executingControlAction==false){
 		executingControlAction=true;
 		offeredCapabilities.scaleIn(arg0);
+		try {
+			Thread.sleep(30000);
+		} catch (InterruptedException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 		executingControlAction=false;
 		RuntimeLogger.logger.info("Finished scaling in "+arg0.getId()+" ...");
+		}
 
 	}
 
@@ -74,11 +82,18 @@ public class EnforcementAPI implements EnforcementAPIInterface{
 
 
 	public void scaleout(Node arg0) {
+		if (executingControlAction==false){
 		RuntimeLogger.logger.info("Scaling out "+arg0.getId()+" ...");
 		executingControlAction=true;
 		offeredCapabilities.scaleOut(arg0);
+		try {
+			Thread.sleep(30000);
+		} catch (InterruptedException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 		executingControlAction=false;
-		RuntimeLogger.logger.info("Finished scaling out "+arg0.getId()+" ...");
+		RuntimeLogger.logger.info("Finished scaling out "+arg0.getId()+" ...");}
 	}
 
 
@@ -86,14 +101,21 @@ public class EnforcementAPI implements EnforcementAPIInterface{
 
 	@Override
 	public void enforceAction(String actionName, Node e) {
+		if (executingControlAction==false){
 		RuntimeLogger.logger.info("Enforcing action "+actionName+" on the node "+e+" ...");
 
 		executingControlAction=true;
 
 		offeredCapabilities.enforceAction(actionName, e);
+		try {
+			Thread.sleep(30000);
+		} catch (InterruptedException ex) {
+			// TODO Auto-generated catch block
+			ex.printStackTrace();
+		}
 		executingControlAction=false;
 		RuntimeLogger.logger.info("Finished enforcing action "+actionName+" on the node "+e+" ...");
-
+		}
 	}
 
 
