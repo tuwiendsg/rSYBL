@@ -15,6 +15,8 @@ class Point:
     # self.reference is an object bound to this Point
     # Initialize new Points
     def __init__(self, coords, reference=None):
+        if (len(coords)==0):
+            print "Size is 000000000000000"
         self.coords = coords
         self.n = len(coords)
         self.reference = reference
@@ -56,9 +58,12 @@ class Cluster:
         for i in range(self.n):
             # Take the average across all Points
             centroid_coords.append(0.0)
+            
             for p in self.points:
                 centroid_coords[i] = centroid_coords[i]+p.coords[i]
-            centroid_coords[i] = centroid_coords[i]/len(self.points)
+            if (len(self.points)>0):
+                centroid_coords[i] = centroid_coords[i]/len(self.points)
+           
         # Return a Point object using the average coordinates
         return Point(centroid_coords)
 # -- Return Clusters of Points formed by K-means clustering
