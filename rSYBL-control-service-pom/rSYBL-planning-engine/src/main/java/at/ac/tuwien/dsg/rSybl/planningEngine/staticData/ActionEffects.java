@@ -41,7 +41,9 @@ import org.json.simple.parser.ParseException;
 import at.ac.tuwien.dsg.csdg.DependencyGraph;
 import at.ac.tuwien.dsg.rSybl.dataProcessingUnit.api.MonitoringAPIInterface;
 import at.ac.tuwien.dsg.rSybl.planningEngine.ContextRepresentation;
+import at.ac.tuwien.dsg.rSybl.planningEngine.MonitoredEntity;
 import at.ac.tuwien.dsg.rSybl.planningEngine.utils.Configuration;
+import at.ac.tuwien.dsg.rSybl.planningEngine.utils.PlanningLogger;
 
 
 
@@ -58,46 +60,40 @@ public class ActionEffects {
 	public static HashMap<String,List<ActionEffect>> getActionEffects(DependencyGraph dependencyGraph,MonitoringAPIInterface syblAPI,ContextRepresentation currentContextRepr){
 		
 		HashMap<String,List<ActionEffect>> actionEffects = new HashMap<String,List<ActionEffect>>();
-		//MonitoredEntity cassandraNode = currentContextRepr.findMonitoredEntity("CassandraNode");
+//		MonitoredEntity cassandraNode = currentContextRepr.findMonitoredEntity("CassandraNode");
 //		MonitoredEntity ycsbClient = currentContextRepr.findMonitoredEntity("YCSBClient");
 		
 
-//		{
+		{
 //			scaleOutEffectForCassandraDB.setTargetedEntityID("CassandraNode");
-//			scaleOutEffectForCassandraDB.setActionEffectForMetric("cpuUsage", -30.0f,"CassandraNode");
-////			scaleOutEffectForCassandraDB.setActionEffectForMetric("cpuUsage", -40.0f,"DataControllerServiceUnit");
+//			scaleOutEffectForCassandraDB.setActionEffectForMetric("cpuUsage", -30.0,"CassandraNode");
+			scaleOutEffectForCassandraDB.setActionEffectForMetric("cpuUsage", -40.0,"DataControllerServiceUnit");
 //			if (ycsbClient!=null){
-//                            float val = 0;
+//                            Double val = 0.0;
 //                            if (ycsbClient.getMonitoredValue("throughput")==null){
 //                               val= syblAPI.getMetricValue("throughput", dependencyGraph.getNodeWithID("YCSBClient"));
 //                            }else{
 //                                val=ycsbClient.getMonitoredValue("throughput");
 //                            }
 //			if (val>1500){
-//				scaleOutEffectForCassandraDB.setActionEffectForMetric("latency", -1000.0f,"YCSBClient");
+//				scaleOutEffectForCassandraDB.setActionEffectForMetric("latency", -1000.0,"YCSBClient");
 //				}
 //			else{
-//				scaleOutEffectForCassandraDB.setActionEffectForMetric("latency", -2.0f,"YCSBClient");
+//				scaleOutEffectForCassandraDB.setActionEffectForMetric("latency", -2.0,"YCSBClient");
 //				}
 //			}else{
 //				PlanningLogger.logger.info("YCSB Client is null as shown by the context representation ");
 //			}
-//			scaleOutEffectForCassandraDB.setActionEffectForMetric("cost", 0.12f,"CassandraNode");
-//			scaleOutEffectForCassandraDB.setActionName("scaleOutEffectForDataNode");
-//			scaleOutEffectForCassandraDB.setActionType("scaleout");
-//
-//		}
+			scaleOutEffectForCassandraDB.setActionEffectForMetric("cost", 0.12,"CassandraNode");
+			scaleOutEffectForCassandraDB.setActionName("scaleOutEffectForDataNode");
+			scaleOutEffectForCassandraDB.setActionType("scaleout");
+
+		}
 		{
 			scaleOutEffectForCassandraDB.setTargetedEntityID("DataNodeServiceUnit");
 			scaleOutEffectForCassandraDB.setActionEffectForMetric("cpuUsage", -30.0,"DataNodeServiceUnit");
 			scaleOutEffectForCassandraDB.setActionEffectForMetric("cpuUsage", -40.0,"DataControllerServiceUnit");
-//			if (ycsbClient!=null){
-//                            float val = 0;
-//                            if (ycsbClient.getMonitoredValue("throughput")==null){
-//                               val= syblAPI.getMetricValue("throughput", dependencyGraph.getNodeWithID("YCSBClient"));
-//                            }else{
-//                                val=ycsbClient.getMonitoredValue("throughput");
-//                            }
+			
 			scaleOutEffectForCassandraDB.setActionEffectForMetric("latency", -2.0,"DataNodeServiceUnit");
 		
 			scaleOutEffectForCassandraDB.setActionEffectForMetric("cost", 0.12,"DataNodeServiceUnit");
@@ -116,17 +112,21 @@ public class ActionEffects {
 			scaleOutEffectForWebServer.setActionType("scaleout");
 
 		}
-//		{
-//			scaleOutEffectForHadoopSlave.setTargetedEntityID("HadoopSlave");
-//			scaleOutEffectForHadoopSlave.setActionEffectForMetric("cpu.usage", -30.0f,"HadoopSlave");
-//			scaleOutEffectForHadoopSlave.setActionEffectForMetric("cost", 50.0f,"HadoopSlave");
-//			scaleOutEffectForHadoopSlave.setActionName("scaleOutEffectForHadoopSlave");
-//			scaleOutEffectForHadoopSlave.setActionType("scaleout");
-//
-//		}
+	
 		
 		
+		{
+		scaleInEffectForCassandraDB.setTargetedEntityID("CassandraNode");
+		scaleInEffectForCassandraDB.setActionEffectForMetric("cpuUsage", 35.0,"CassandraNode");
+        scaleInEffectForCassandraDB.setActionEffectForMetric("latency", 2.0,"YCSBClient");
+		scaleInEffectForCassandraDB.setActionEffectForMetric("cost", -0.12,"CassandraNode");
+		scaleInEffectForCassandraDB.setActionEffectForMetric("cost", -1.0,"CloudService");
+		scaleInEffectForCassandraDB.setActionName("scaleInEffectForDataNode");
+		scaleInEffectForCassandraDB.setActionType("scalein");
 
+	}
+		
+		
 		{
 			scaleInEffectForCassandraDB.setTargetedEntityID("DataNodeServiceUnit");
 			scaleInEffectForCassandraDB.setActionEffectForMetric("cpuUsage", 35.0,"DataNodeServiceUnit");
@@ -136,7 +136,7 @@ public class ActionEffects {
                    scaleInEffectForCassandraDB.setActionEffectForMetric("latency", 1.0,"DataControllerServiceUnit");
 
 			scaleInEffectForCassandraDB.setActionEffectForMetric("cost", -0.12,"DataNodeServiceUnit");
-		//	scaleInEffectForCassandraDB.setActionEffectForMetric("cost", -0.12f,"CloudService");
+			scaleInEffectForCassandraDB.setActionEffectForMetric("cost", -0.12,"CloudService");
 			
 			scaleInEffectForCassandraDB.setActionName("scaleInEffectForDataNode");
 			scaleInEffectForCassandraDB.setActionType("scalein");
@@ -154,13 +154,7 @@ public class ActionEffects {
 			scaleInEffectForWebServer.setActionType("scalein");
 
 		}
-//		{
-//			scaleInEffectForHadoopSlave.setTargetedEntityID("HadoopSlave");
-//			scaleInEffectForHadoopSlave.setActionEffectForMetric("cpu.usage", 30.0f,"HadoopSlave");
-//			scaleInEffectForHadoopSlave.setActionEffectForMetric("cost", -50.0f,"HadoopSlave");
-//			scaleInEffectForHadoopSlave.setActionName("scaleInEffectForHadoopSlave");
-//			scaleInEffectForHadoopSlave.setActionType("scalein");
-//		}
+		
 		 if (actionEffects.containsKey(scaleOutEffectForCassandraDB.getTargetedEntityID()))
 			 actionEffects.get(scaleOutEffectForCassandraDB.getTargetedEntityID()).add(scaleOutEffectForCassandraDB);
 		 else{
@@ -177,13 +171,7 @@ public class ActionEffects {
 			 actionEffects.put(scaleOutEffectForWebServer.getTargetedEntityID(), l);
 		 }
 		 
-//		 if (actionEffects.containsKey(scaleOutEffectForHadoopSlave.getTargetedEntityID()))
-//			 actionEffects.get(scaleOutEffectForHadoopSlave.getTargetedEntityID()).add(scaleOutEffectForHadoopSlave);
-//		 else{
-//			 List <ActionEffect > l = new ArrayList<ActionEffect>();
-//			 l.add(scaleOutEffectForHadoopSlave);
-//			 actionEffects.put(scaleOutEffectForHadoopSlave.getTargetedEntityID(), l);
-//		 }
+		 
 		 
 		 if (actionEffects.containsKey(scaleInEffectForCassandraDB.getTargetedEntityID()))
 			 actionEffects.get(scaleInEffectForCassandraDB.getTargetedEntityID()).add(scaleInEffectForCassandraDB);
@@ -200,13 +188,7 @@ public class ActionEffects {
 			 l.add(scaleInEffectForWebServer);
 			 actionEffects.put(scaleInEffectForWebServer.getTargetedEntityID(), l);
 		 }
-//	 if (actionEffects.containsKey(scaleInEffectForHadoopSlave.getTargetedEntityID()))
-//			 actionEffects.get(scaleInEffectForHadoopSlave.getTargetedEntityID()).add(scaleInEffectForHadoopSlave);
-//		 else{
-//			 List <ActionEffect > l = new ArrayList<ActionEffect>();
-//			 l.add(scaleInEffectForHadoopSlave);
-//			 actionEffects.put(scaleInEffectForHadoopSlave.getTargetedEntityID(), l);
-//		 }
+	
 		 
 
 		for (Entry<String, List<ActionEffect>> e:actionEffects.entrySet()){

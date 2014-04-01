@@ -27,8 +27,6 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 
-import org.junit.BeforeClass;
-
 import at.ac.tuwien.dsg.csdg.DependencyGraph;
 import at.ac.tuwien.dsg.csdg.Node;
 import at.ac.tuwien.dsg.csdg.Node.NodeType;
@@ -190,7 +188,7 @@ public class PlanningGreedyAlgorithm implements Runnable {
 			lastContextRepresentation=new ContextRepresentation(dependencyGraph, monitoringAPI);
 			lastContextRepresentation.initializeContext();
 			PlanningLogger.logger.info("Strategies that could be enforced. ... "+strategiesThatNeedToBeImproved+" Violated constraints: "+contextRepresentation.getViolatedConstraints());
-		HashMap<String, List<ActionEffect>> actionEffects = ActionEffects.getActionEffects(dependencyGraph,monitoringAPI,contextRepresentation);
+		HashMap<String, List<ActionEffect>> actionEffects = ActionEffects.getActionEffects();
 
 		int numberOfBrokenConstraints = contextRepresentation
 				.countViolatedConstraints();

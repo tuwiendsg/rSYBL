@@ -47,6 +47,43 @@ public class Configuration {
         }
 
     }
+    public static String getUserEMailAddress()
+    {
+    	return configuration.getProperty("UserEmailAddress");
+    }
+    public static String getAPIUserName(){
+    	return configuration.getProperty("ApiUserName");
+    }
+    
+    public static String getCustomerUUID(){
+        return configuration.getProperty("CustomerUUID");
+     }
+    public static String getVdcUUID(){
+        return configuration.getProperty("VdcUUID");
+     }
+    public static String getDefaultProductOfferUUID(){
+        return configuration.getProperty("DefaultProductOfferUUID");
+     }
+     public static String getDeploymentInstanceUUID(){
+         return configuration.getProperty("DeploymentInstanceUUID");
+      }
+     public static String getClusterUUID(){
+         return configuration.getProperty("ClusterUUID");
+      }
+     public static String getNetworkUUID(){
+         return configuration.getProperty("NetworkUUID");
+      }
+     public static String getSSHKey(){
+         return configuration.getProperty("SSHKey");
+      }
+    public static String getPassword(){
+    	return configuration.getProperty("Password");
+    }
+    
+    public static String getEndPointAddress()
+    {  	
+    	return configuration.getProperty("ENDPOINT_ADDRESS_PROPERTY");
+    }
     public static String getRuntimeRegistryName()
     {
     	return configuration.getProperty("SYBLRuntimeRegistryName");

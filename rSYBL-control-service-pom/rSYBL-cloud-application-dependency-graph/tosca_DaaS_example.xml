@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <tosca:Definitions xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:elasticity="http://www.example.org/NewXMLSchema" xmlns:tosca="http://docs.oasis-open.org/tosca/ns/2011/12">
-  <tosca:ServiceTemplate name="DemoApp">
+  <tosca:ServiceTemplate name="M2M_DaaS">
     <tosca:BoundaryDefinitions xsi:type="elasticity:TBoundaryDefinitionsExtension">
       <tosca:Policies>
         <tosca:Policy name="CG0: CONSTRAINT Cost &lt; 1000 $" policyType="SYBLConstraint"/>
@@ -27,7 +27,7 @@
     <tosca:TopologyTemplate>
       <tosca:NodeTemplate  id="DataControllerServiceUnit"  name="DataControllerServiceUnit">
         <tosca:DeploymentArtifacts>
-          <tosca:DeploymentArtifact artifactType="VMI" name="Ubuntu-12.04-32bit"/>
+          <tosca:DeploymentArtifact artifactType="VMI" name="Ubuntu-32bit"/>
         </tosca:DeploymentArtifacts>
       </tosca:NodeTemplate>
       <tosca:NodeTemplate id="DataNodeServiceUnit" name="DataNodeServiceUnit">
@@ -35,7 +35,7 @@
           <tosca:Policy name="St3:STRATEGY CASE cpuUsage &lt; 40 : scalein" policyType="SYBLConstraint"/>
         </tosca:Policies>       
 	   <tosca:DeploymentArtifacts>
-          <tosca:DeploymentArtifact artifactType="VMI" name="Ubuntu-11.10-BuildEsset-64bit"/>
+          <tosca:DeploymentArtifact artifactType="VMI" name="Ubuntu-64bit"/>
         </tosca:DeploymentArtifacts>
       </tosca:NodeTemplate>
       <tosca:RelationshipTemplate name="Relation">
@@ -48,7 +48,7 @@
     <tosca:TopologyTemplate>
       <tosca:NodeTemplate  id="LoadBalancerServiceUnit"  name="LoadBalancerServiceUnit">
         <tosca:DeploymentArtifacts>
-          <tosca:DeploymentArtifact artifactType="VMI" name="Ubuntu-12.04-32bit"/>
+          <tosca:DeploymentArtifact artifactType="VMI" name="Ubuntu-32bit"/>
         </tosca:DeploymentArtifacts>
       </tosca:NodeTemplate>
       <tosca:NodeTemplate id="EventProcessingServiceUnit" name="EventProcessingServiceUnit">
@@ -56,7 +56,7 @@
           <tosca:Policy name="St2:STRATEGY CASE responseTime &lt; 360 ms AND throughput &lt; 400 : scalein" policyType="SYBLConstraint"/>
         </tosca:Policies>
         <tosca:DeploymentArtifacts>
-          <tosca:DeploymentArtifact artifactType="VMI" name="Ubuntu-11.10-BuildEsset-64bit"/>
+          <tosca:DeploymentArtifact artifactType="VMI" name="Ubuntu-64bit"/>
         </tosca:DeploymentArtifacts>
       </tosca:NodeTemplate>
       <tosca:RelationshipTemplate name="Relation">
