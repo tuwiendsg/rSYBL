@@ -53,7 +53,7 @@ public class ActionEffectsCassandraCluster {
 	public static ActionEffect scaleInEffectForCassandraDB = new ActionEffect();
 	public static ActionEffect scaleInEffectForWebServer= new ActionEffect();
 
-
+	public static HashMap<String,List<ActionEffect>> actionEffects = new HashMap<String,List<ActionEffect>>();
 	public static HashMap<String,List<ActionEffect>> getActionEffects(DependencyGraph dependencyGraph,MonitoringAPIInterface syblAPI,ContextRepresentation currentContextRepr){
 		
 		HashMap<String,List<ActionEffect>> actionEffects = new HashMap<String,List<ActionEffect>>();
@@ -229,7 +229,9 @@ public class ActionEffectsCassandraCluster {
 		return actionEffects;
 	}
 	 public static HashMap<String,List<ActionEffect>> getActionEffects () {
-			HashMap<String,List<ActionEffect>> actionEffects = new HashMap<String,List<ActionEffect>>();
+			if (actionEffects.isEmpty()){
+				actionEffects = new HashMap<String,List<ActionEffect>>();
+			
 
 			JSONParser parser = new JSONParser();
 		 
@@ -245,6 +247,7 @@ public class ActionEffectsCassandraCluster {
 					actionEffect.setActionType((String)actionName);
 					actionEffect.setActionName(myaction);
 					JSONObject object=(JSONObject) jsonObject.get(myaction);
+					List <ActionEffect > l = new ArrayList<ActionEffect>();
 				for (Object actions: object.keySet()){
 					
 					JSONObject scaleinDescription=(JSONObject) object.get(actions);
@@ -274,7 +277,7 @@ public class ActionEffectsCassandraCluster {
 								}
 						}}
 				}
-				 List <ActionEffect > l = new ArrayList<ActionEffect>();
+				 
 				 l.add(actionEffect);
 				actionEffects.put(actionEffect.getTargetedEntityID(), l);
 				}
@@ -286,6 +289,7 @@ public class ActionEffectsCassandraCluster {
 				e.printStackTrace();
 			} catch (ParseException e) {
 				e.printStackTrace();
+			}
 			}
 	return actionEffects;	 
 		     }

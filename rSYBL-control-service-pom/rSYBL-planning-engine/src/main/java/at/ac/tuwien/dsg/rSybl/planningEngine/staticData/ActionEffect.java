@@ -41,22 +41,24 @@ public class ActionEffect {
 	private String actionName;
 	private Node targetedEntity;
 	private String targetedEntityID;
-	private String actionType;
-	
-	public HashMap<String,HashMap<String,Double>> effects = new HashMap<String,HashMap<String,Double>>();
+	private String actionType;	
+	private HashMap<String,HashMap<String,Double>> effects = new HashMap<String,HashMap<String,Double>>();
 
 	public void setActionEffectForMetric(String metricName, Double result,String entityID){
-		//System.out.println("Setting action effect for metric "+metricName+" entity "+entityID);
-		if (effects.get(entityID)!=null)
+		//PlanningLogger.logger.info("bbb"+entityID+"bbb");
+		if (effects.get(entityID)==null)
+			effects.put(entityID, new HashMap<String,Double>());
+		
 		effects.get(entityID).put(metricName, result);
-		else{
-			HashMap<String, Double> metrics = new HashMap<String,Double>();
-			metrics.put(metricName, result);
-			effects.put(entityID, metrics);
-		}
+		PlanningLogger.logger.info("~~~~~~~~~~ Just set "+actionName+", for entity "+entityID+" the effect "+effects.get(entityID).get(metricName)+" for metric "+metricName);
+
 	}
 	public Double getActionEffectForMetric(String metricName,String entityID){	
-		if (effects.get(entityID)==null)return 0.0;
+		//PlanningLogger.logger.info("aaa"+entityID+"aaa");
+		if (effects.get(entityID)==null){
+			PlanningLogger.logger.info("Not found entity "+entityID+" for action "+actionName);
+			return 0.0;
+		}
 		return effects.get(entityID).get(metricName);
 	}
 	public Node getTargetedEntity() {
@@ -137,11 +139,14 @@ public class ActionEffect {
 
 					}
 			for (Map.Entry<String, Double> entry:resultedEffectAtServiceUnitLevel.entrySet())
+				if (getActionEffectForMetric(entry.getKey(),currentEntity.getId())==0)
 				if (entry.getKey().toLowerCase().contains("cost")||entry.getKey().toLowerCase().contains("size") || entry.getKey().toLowerCase().contains("throughput"))
 					{
+						//PlanningLogger.logger.info("The unit is "+entry.getKey()+" resultedEffect");
 						setActionEffectForMetric(entry.getKey(), resultedEffectAtServiceUnitLevel.get(entry.getKey()), currentEntity.getId());
 					}
 					else{
+						//PlanningLogger.logger.info("The unit is "+entry.getKey()+" resultedEffect");
 						setActionEffectForMetric(entry.getKey(), resultedEffectAtServiceUnitLevel.get(entry.getKey())/values.get(entry.getKey()), currentEntity.getId());
 
 					}
@@ -168,7 +173,7 @@ public class ActionEffect {
 		
 		while (iterator.hasNext()){
 			String currentEntityID = iterator.next();
-//		PlanningLogger.logger.error("Entity id is "+currentEntityID);
+		PlanningLogger.logger.info("Entity id is "+currentEntityID);
 		Node currentEntity = dependencyGraph.getNodeWithID(currentEntityID);
 		if (currentEntity==null)
 		{
@@ -177,7 +182,7 @@ public class ActionEffect {
 			if (effects.get(currentEntityID)==null)
 		{
 				HashMap<String, Double> metrics = new HashMap<String,Double>();
-
+				
 				effects.put(currentEntityID, metrics);
 			}
 		
@@ -196,7 +201,7 @@ public class ActionEffect {
 			//Set computed metrics to effects?	
 			
 			parent = dependencyGraph.findParentNode(parent.getId());
-			//System.out.println("Parent "+parent.getId());
+			PlanningLogger.logger.info("Parent "+parent.getId());
 		}
 		
 		}

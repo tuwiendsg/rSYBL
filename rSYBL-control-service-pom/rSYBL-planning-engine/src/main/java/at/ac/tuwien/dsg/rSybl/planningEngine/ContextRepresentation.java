@@ -278,9 +278,11 @@ public class ContextRepresentation {
 	}
 	
 	public void doAction(ActionEffect action){
+		//PlanningLogger.logger.info("~~~~~~~~~~~~~~Trying action ~~~ "+action.getActionName());
 		for (String currentMetric:getMonitoredCloudService().getMonitoredMetrics()){
 			if (action.getActionEffectForMetric(currentMetric,getMonitoredCloudService().getId())!=null){
                          Double oldValue = monitoredCloudService.getMonitoredValue(currentMetric);   
+                        // PlanningLogger.logger.info("Setting effect for "+getMonitoredCloudService().getId());
 			getMonitoredCloudService().setMonitoredValue(currentMetric, oldValue + action.getActionEffectForMetric(currentMetric,getMonitoredCloudService().getId()) );
 		}
                 }
@@ -289,21 +291,23 @@ public class ContextRepresentation {
 				if(action.getActionEffectForMetric(currentMetric,componentTopology.getId())!=null){
                                  Double oldValue = componentTopology.getMonitoredValue(currentMetric);   
 				componentTopology.setMonitoredValue(currentMetric, oldValue +action.getActionEffectForMetric(currentMetric,componentTopology.getId()));
-			}
+				 //PlanningLogger.logger.info("Setting effect for "+currentMetric+componentTopology.getId()+" new value"+oldValue +action.getActionEffectForMetric(currentMetric,componentTopology.getId()));
+				}
                         }
 			for (MonitoredComponentTopology componentTopology2:componentTopology.getMonitoredTopologies()){
 				for (String currentMetric:componentTopology2.getMonitoredMetrics()){
 					if (action.getActionEffectForMetric(currentMetric,componentTopology2.getId())!=null){
                                          Double oldValue = componentTopology2.getMonitoredValue(currentMetric);   
                                         componentTopology2.setMonitoredValue(currentMetric, oldValue +action.getActionEffectForMetric(currentMetric,componentTopology2.getId()) );
-                                        }
+                                        //PlanningLogger.logger.info("Setting effect for "+currentMetric+componentTopology.getId()+" new value"+oldValue +action.getActionEffectForMetric(currentMetric,componentTopology.getId()));
+                        									}
                                         }
 				for (MonitoredComponent comp:componentTopology2.getMonitoredComponents()){
 					for (String currentMetric:comp.getMonitoredMetrics()){
 						if (action.getActionEffectForMetric(currentMetric,comp.getId())!=null){
                                                      Double oldValue = comp.getMonitoredValue(currentMetric);
                                                       Double newValue =   oldValue +action.getActionEffectForMetric(currentMetric,comp.getId());
-
+                                                     // PlanningLogger.logger.info("Setting effect for "+currentMetric+comp.getId()+" new value"+oldValue +action.getActionEffectForMetric(currentMetric,comp.getId()));
                                                      comp.setMonitoredValue(currentMetric, newValue );
                                                 }
 					}
@@ -315,6 +319,7 @@ public class ContextRepresentation {
                                         {
                                              Double oldValue = comp.getMonitoredValue(currentMetric);
                                                   Double newValue =   oldValue +action.getActionEffectForMetric(currentMetric,comp.getId());
+                                                 // PlanningLogger.logger.info("Setting effect for "+currentMetric+comp.getId()+" new value"+oldValue +action.getActionEffectForMetric(currentMetric,comp.getId()));
 					comp.setMonitoredValue(currentMetric, newValue );
                                         }
                                         }
@@ -322,6 +327,7 @@ public class ContextRepresentation {
 		}
 	}
 	public void undoAction(ActionEffect action){
+		//PlanningLogger.logger.info("~~~~~~~~~~~~~~Undoing action ~~~ "+action.getActionName());
 		for (String currentMetric:getMonitoredCloudService().getMonitoredMetrics()){
 			if (action.getActionEffectForMetric(currentMetric,getMonitoredCloudService().getId())!=null){
                             Double oldValue = monitoredCloudService.getMonitoredValue(currentMetric);

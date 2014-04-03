@@ -64,8 +64,9 @@ public class EnforcementAPI implements EnforcementAPIInterface{
 
 	public void scalein(Node arg0) {
 		if (executingControlAction==false){
-		
+			if (arg0.getAllRelatedNodes().size()>1){
 		executingControlAction=true;
+		
 		offeredCapabilities.scaleIn(arg0);
 		try {
 			Thread.sleep(30000);
@@ -75,6 +76,9 @@ public class EnforcementAPI implements EnforcementAPIInterface{
 		}
 		executingControlAction=false;
 		RuntimeLogger.logger.info("Finished scaling in "+arg0.getId()+" ...");
+			}else{
+				RuntimeLogger.logger.info("Number of nodes associated with "+arg0.getAllRelatedNodes().size());
+			}
 		}
 
 	}
@@ -83,8 +87,9 @@ public class EnforcementAPI implements EnforcementAPIInterface{
 
 
 	public void scaleout(Node arg0) {
-		if (executingControlAction==false){
-		RuntimeLogger.logger.info("Scaling out "+arg0.getId()+" ...");
+		if (executingControlAction==false && arg0!=null){
+		RuntimeLogger.logger.info("~~~~~~~~~~~~~~~!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
+		RuntimeLogger.logger.info("Scaling out "+arg0+" ...");
 		executingControlAction=true;
 		offeredCapabilities.scaleOut(arg0);
 		try {
@@ -94,7 +99,10 @@ public class EnforcementAPI implements EnforcementAPIInterface{
 			e.printStackTrace();
 		}
 		executingControlAction=false;
-		RuntimeLogger.logger.info("Finished scaling out "+arg0.getId()+" ...");}
+		RuntimeLogger.logger.info("Finished scaling out "+arg0.getId()+" ...");
+		}else{
+			RuntimeLogger.logger.info(arg0);
+		}
 	}
 
 

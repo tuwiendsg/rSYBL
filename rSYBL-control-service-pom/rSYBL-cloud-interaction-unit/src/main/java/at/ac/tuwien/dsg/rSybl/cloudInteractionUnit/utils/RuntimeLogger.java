@@ -34,6 +34,7 @@ import org.apache.log4j.SimpleLayout;
 
 
 
+
 public class RuntimeLogger {
 	   public static Logger logger ;
 	   static{
@@ -49,7 +50,7 @@ public class RuntimeLogger {
 
 				PropertyConfigurator.configure(RuntimeLogger.class.getResourceAsStream("/config/Log4j.properties"));
 				logger = Logger.getLogger("rootLogger");
-
+				logger.info("This is the runtime logger ");
 //				appender = new FileAppender(layout,"../logs/rSYBL_RuntimeLogger_"+date.getDay()+"_"+date.getMonth()+"_"+date.getHours()+"_"+date.getMinutes()+".log",false);
 //			} catch (IOException e) {
 //				// TODO Auto-generated catch block

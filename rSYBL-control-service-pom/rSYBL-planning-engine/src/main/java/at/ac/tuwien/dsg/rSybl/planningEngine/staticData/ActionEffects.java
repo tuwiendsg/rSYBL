@@ -56,10 +56,10 @@ public class ActionEffects {
 	public static ActionEffect scaleInEffectForCassandraDB = new ActionEffect();
 	public static ActionEffect scaleInEffectForWebServer= new ActionEffect();
 
-
+	public static HashMap<String,List<ActionEffect>> actionEffects = new HashMap<String,List<ActionEffect>>();
 	public static HashMap<String,List<ActionEffect>> getActionEffects(DependencyGraph dependencyGraph,MonitoringAPIInterface syblAPI,ContextRepresentation currentContextRepr){
 		
-		HashMap<String,List<ActionEffect>> actionEffects = new HashMap<String,List<ActionEffect>>();
+	        actionEffects = new HashMap<String,List<ActionEffect>>();
 //		MonitoredEntity cassandraNode = currentContextRepr.findMonitoredEntity("CassandraNode");
 //		MonitoredEntity ycsbClient = currentContextRepr.findMonitoredEntity("YCSBClient");
 		
@@ -201,8 +201,8 @@ public class ActionEffects {
 		return actionEffects;
 	}
 	 public static HashMap<String,List<ActionEffect>> getActionEffects () {
-			HashMap<String,List<ActionEffect>> actionEffects = new HashMap<String,List<ActionEffect>>();
-
+			if (actionEffects.isEmpty()){
+				PlanningLogger.logger.info("~~~~~~~~~~Action effects is empty, reading the effects ! ");
 			JSONParser parser = new JSONParser();
 		 
 			try {
@@ -212,13 +212,16 @@ public class ActionEffects {
 				JSONObject jsonObject = (JSONObject) obj;
 				
 				for (Object actionName:jsonObject.keySet()){
-					ActionEffect actionEffect = new ActionEffect();
-					String myaction = (String )actionName;
-					actionEffect.setActionType((String)actionName);
-					actionEffect.setActionName(myaction);
-					JSONObject object=(JSONObject) jsonObject.get(myaction);
-				for (Object actions: object.keySet()){
 					
+					String myaction = (String )actionName;
+					
+					
+					JSONObject object=(JSONObject) jsonObject.get(myaction);
+					
+				for (Object actions: object.keySet()){
+					ActionEffect actionEffect = new ActionEffect();
+					actionEffect.setActionType((String)myaction);
+					actionEffect.setActionName((String) actions);
 					JSONObject scaleinDescription=(JSONObject) object.get(actions);
 					String targetUnit = (String) scaleinDescription.get("targetUnit");
 					actionEffect.setTargetedEntityID(targetUnit);
@@ -234,21 +237,24 @@ public class ActionEffects {
 							String metricName=(String)metric;
 							try{
 								actionEffect.setActionEffectForMetric(metricName, (Double)metriceffects.get(metricName), affectedUnit);
-							
-							//System.out.println("metricName="+metricName+" metric effect="+metriceffects.get(metricName)+"Affected unit="+affectedUnit);
-							
 							}catch(Exception e){
-								
-								actionEffect.setActionEffectForMetric(metricName, ((Long)metriceffects.get(metricName)+0.0), affectedUnit);
-								
-							//	System.out.println("metricName="+metricName+" metric effect="+metriceffects.get(metricName)+"Affected unit="+affectedUnit);
-					
+								actionEffect.setActionEffectForMetric(metricName, ((Long)metriceffects.get(metricName)).doubleValue(), affectedUnit);
 								}
-						}}
+						}
+						 
+						}
+					
+					if (actionEffects.get(actionEffect.getTargetedEntityID())==null ){
+						List <ActionEffect > l = new ArrayList<ActionEffect>();
+						l.add(actionEffect);
+						actionEffects.put(actionEffect.getTargetedEntityID(), l);
+					
+					}else{
+						actionEffects.get(actionEffect.getTargetedEntityID()).add(actionEffect);
+					}
 				}
-				 List <ActionEffect > l = new ArrayList<ActionEffect>();
-				 l.add(actionEffect);
-				actionEffects.put(actionEffect.getTargetedEntityID(), l);
+				 
+				
 				}
 		 
 				
@@ -259,7 +265,9 @@ public class ActionEffects {
 			} catch (ParseException e) {
 				e.printStackTrace();
 			}
-	return actionEffects;	 
+			
+			}
+			return actionEffects;	 
 		     }
 	 
 }
