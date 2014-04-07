@@ -249,7 +249,7 @@ public class FlexiantActions  {
 		now.setTime(hours, mins, sec);
 		//skeletonServer.getNics().add(networkInterface);
 		try {
-			createServerJob = service.createServer(skeletonServer, sshs, now);
+			createServerJob = service.createServer(skeletonServer, sshs, now );
 		} catch (ExtilityException e) {
 			// TODO Auto-generated catch block
 			RuntimeLogger.logger.error(e.getMessage()); return "";
@@ -304,14 +304,22 @@ public class FlexiantActions  {
 		
 		date = new Date();
 		now = datatypeFactory.newXMLGregorianCalendar(gregorianCalendar);
-		mins = date.getMinutes();
-		sec = date.getSeconds();
-		sec += 30;
+		 mins = date.getMinutes();
+		 sec = date.getSeconds();
+		 hours = date.getHours();
+		sec += 10;
 		if (sec >= 60) {
 			sec -= 60;
 			mins += 1;
 		}
-		now.setTime(date.getHours(), mins, sec);
+		if (mins==60){
+			mins=59;
+		}
+		
+		
+		now.setTime(hours, mins, sec);
+
+
 		try {
 			Job job = service.attachNetworkInterface(
 					createServerJob.getItemUUID(), j.getItemUUID(), 0, now);
@@ -324,17 +332,19 @@ public class FlexiantActions  {
 		now = datatypeFactory.newXMLGregorianCalendar(gregorianCalendar);
 		 mins = date.getMinutes();
 		 sec = date.getSeconds();
-		 hours = date.getHours();	
-			sec += 10;
-			if (sec >= 60) {
-				sec -= 60;
-				mins += 1;
-			}
-			if (mins==60){
-				mins=59;
-			}
-			
+		 hours = date.getHours();
+		sec += 10;
+		if (sec >= 60) {
+			sec -= 60;
+			mins += 1;
+		}
+		if (mins==60){
+			mins=59;
+		}
+		
+		
 		now.setTime(hours, mins, sec);
+
 		Job startServer = null;
 		try {
 			startServer = service.changeServerStatus(
