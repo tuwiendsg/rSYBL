@@ -11,6 +11,10 @@
 				"DataControllerServiceUnit": {
 						"cpuUsage":-30.0,
 						"latency":-2.0
+						},
+				"DataEndServiceTopology": {
+						"cpuUsage":-30.0,
+						"latency":-2.0
 						}
 					}
 					},
@@ -22,10 +26,17 @@
 						"responseTime":-1000.0,
 						"throughput":1000,
 						"cost":0.12
+						},
+				"EventProcessingServiceTopology": {
+						"cpuUsage":-20.0,
+						"responseTime":-1000.0,
+						"throughput":1000,
+						"cost":0.12
 						}
 					}
+					}
 						
-		}},
+		},
 	"scalein":{
 		"scaleInEffectForDataNode": {
 			"targetUnit":"DataNodeServiceUnit",
@@ -38,6 +49,10 @@
 				"DataControllerServiceUnit": {
 						"cpuUsage":20.0,
 						"latency":-1.0
+						},
+				"DataEndServiceTopology": {
+						"cpuUsage":20.0,
+						"latency":-1.0
 						}
 					}
 					},
@@ -46,8 +61,14 @@
 			"effects":{
 				"EventProcessingServiceUnit": {
 						"cpuUsage":40.0,
-						"responseTime":400.0,
-						"throughput":-500,
+						"responseTime":2.0,
+						"throughput":-100,
+						"cost":-0.12
+						},
+				"EventProcessingServiceTopology": {
+						"cpuUsage":40.0,
+						"responseTime":2.0,
+						"throughput":-100,
 						"cost":-0.12
 						}
 					}
