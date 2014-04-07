@@ -196,7 +196,7 @@ public class FlexiantActions  {
 		skeletonServer.setClusterUUID(Configuration.getClusterUUID());
 		List<String> sshs = new ArrayList<String>();
 		GregorianCalendar gregorianCalendar = new GregorianCalendar();
-
+		sshs.add(Configuration.getSSHKey());
 		Nic networkInterface = new Nic();
 		//networkInterface.setClusterUUID(Configuration.getClusterUUID());
 		networkInterface
@@ -214,6 +214,7 @@ public class FlexiantActions  {
 			datatypeFactory = DatatypeFactory.newInstance();
 		} catch (DatatypeConfigurationException e) {
 			// TODO Auto-generated catch block
+			e.printStackTrace();
 			RuntimeLogger.logger.error(e.getMessage()); return "";
 		}
 		XMLGregorianCalendar now = datatypeFactory
@@ -230,6 +231,7 @@ public class FlexiantActions  {
 			datatypeFactory = DatatypeFactory.newInstance();
 		} catch (DatatypeConfigurationException e) {
 			// TODO Auto-generated catch block
+			e.printStackTrace();
 			RuntimeLogger.logger.error(e.getMessage()); return "";
 		}
 		now = datatypeFactory.newXMLGregorianCalendar(gregorianCalendar);
@@ -247,11 +249,13 @@ public class FlexiantActions  {
 			}
 			
 		now.setTime(hours, mins, sec);
+		skeletonServer.setResourceName(serverName);
 		//skeletonServer.getNics().add(networkInterface);
 		try {
 			createServerJob = service.createServer(skeletonServer, sshs, now );
 		} catch (ExtilityException e) {
 			// TODO Auto-generated catch block
+			e.printStackTrace();
 			RuntimeLogger.logger.error(e.getMessage()); return "";
 		}
 
@@ -259,34 +263,35 @@ public class FlexiantActions  {
 			service.waitForJob(createServerJob.getResourceUUID(), false);
 		} catch (ExtilityException e) {
 			// TODO Auto-generated catch block
+			e.printStackTrace();
 			RuntimeLogger.logger.error(e.getMessage()); return "";
 		}
-		
-		 now = datatypeFactory
-				.newXMLGregorianCalendar(gregorianCalendar);
+		date=new Date();
+		now = datatypeFactory.newXMLGregorianCalendar(gregorianCalendar);
 		 mins = date.getMinutes();
 		 sec = date.getSeconds();
 		 hours = date.getHours();
-		sec += 10;
-		if (sec >= 60) {
-			sec -= 60;
-			mins += 1;
-		}
-		if (mins==60){
-			mins=59;
-		}
-		
-		
+
+			sec += 20;
+			if (sec >= 60) {
+				sec -= 60;
+				mins += 1;
+			}
+			if (mins==60){
+				mins=59;
+			}
+			
 		now.setTime(hours, mins, sec);
 
-		RuntimeLogger.logger.info("Creating server at " + now.toString());
-		sshs.add(Configuration.getSSHKey());
-		skeletonServer.setResourceName(serverName);
+		RuntimeLogger.logger.info("Creating NIC at " + now.toString());
+	
+		
 		Job j = null;
 		try {
 			j = service.createNetworkInterface(networkInterface, now);
 		} catch (ExtilityException e) {
 			// TODO Auto-generated catch block
+			e.printStackTrace();
 			RuntimeLogger.logger.info(e.getMessage()); 
 			return "";
 		}
@@ -299,6 +304,7 @@ public class FlexiantActions  {
 		} catch (ExtilityException e1) {
 			// TODO Auto-generated catch block
 			e1.printStackTrace();
+
 			return "";
 		}
 		
@@ -325,7 +331,7 @@ public class FlexiantActions  {
 					createServerJob.getItemUUID(), j.getItemUUID(), 0, now);
 			service.waitForJob(job.getResourceUUID(), false);
 		} catch (ExtilityException e) {
-
+			e.printStackTrace();
 			RuntimeLogger.logger.error(e.getMessage()); return "";
 		}
 		date = new Date();
@@ -352,6 +358,7 @@ public class FlexiantActions  {
 					skeletonServer.getResourceMetadata(), now);
 		} catch (ExtilityException e) {
 			// TODO Auto-generated catch block
+			e.printStackTrace();
 			RuntimeLogger.logger.error(e.getMessage()); return "";
 		}
 
@@ -359,6 +366,7 @@ public class FlexiantActions  {
 			service.waitForJob(startServer.getResourceUUID(), false);
 		} catch (ExtilityException e) {
 			// TODO Auto-generated catch block
+			e.printStackTrace();
 			RuntimeLogger.logger.error(e.getMessage()); return "";
 		}
 		
