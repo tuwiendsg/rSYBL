@@ -198,13 +198,13 @@ public class FlexiantActions  {
 		GregorianCalendar gregorianCalendar = new GregorianCalendar();
 
 		Nic networkInterface = new Nic();
-		networkInterface.setClusterUUID(Configuration.getClusterUUID());
+		//networkInterface.setClusterUUID(Configuration.getClusterUUID());
 		networkInterface
 				.setCustomerUUID(Configuration.getCustomerUUID());
 		//networkInterface.setDeploymentInstanceUUID(Configuration.getDeploymentInstanceUUID());
-		networkInterface.setProductOfferUUID("");
+		//networkInterface.setProductOfferUUID("");
 		networkInterface.setNetworkUUID(Configuration.getNetworkUUID());
-		networkInterface.setVdcUUID(Configuration.getVdcUUID());
+		//networkInterface.setVdcUUID(Configuration.getVdcUUID());
 
 		// networkInterface.setServerUUID("");
 		Date date = new Date();
