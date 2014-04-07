@@ -192,8 +192,7 @@ public class FlexiantActions  {
 		// skeletonServer.setRam(mem);
 		// skeletonServer.setImageName(serverName);
 		skeletonServer.setImageUUID(imageUUID);
-		skeletonServer
-				.setDeploymentInstanceUUID(Configuration.getDeploymentInstanceUUID());
+		//skeletonServer.setDeploymentInstanceUUID(Configuration.getDeploymentInstanceUUID());
 		skeletonServer.setClusterUUID(Configuration.getClusterUUID());
 		List<String> sshs = new ArrayList<String>();
 		GregorianCalendar gregorianCalendar = new GregorianCalendar();
@@ -202,8 +201,7 @@ public class FlexiantActions  {
 		networkInterface.setClusterUUID(Configuration.getClusterUUID());
 		networkInterface
 				.setCustomerUUID(Configuration.getCustomerUUID());
-		networkInterface
-				.setDeploymentInstanceUUID(Configuration.getDeploymentInstanceUUID());
+		//networkInterface.setDeploymentInstanceUUID(Configuration.getDeploymentInstanceUUID());
 		networkInterface.setProductOfferUUID("");
 		networkInterface.setNetworkUUID(Configuration.getNetworkUUID());
 		networkInterface.setVdcUUID(Configuration.getVdcUUID());
@@ -282,7 +280,7 @@ public class FlexiantActions  {
 			}
 			
 		now.setTime(hours, mins, sec);
-		skeletonServer.getNics().add(networkInterface);
+		//skeletonServer.getNics().add(networkInterface);
 		try {
 			createServerJob = service.createServer(skeletonServer, sshs, now);
 		} catch (ExtilityException e) {
@@ -297,24 +295,24 @@ public class FlexiantActions  {
 			RuntimeLogger.logger.error(e.getMessage()); return "";
 		}
 		
-//		date = new Date();
-//		now = datatypeFactory.newXMLGregorianCalendar(gregorianCalendar);
-//		mins = date.getMinutes();
-//		sec = date.getSeconds();
-//		sec += 30;
-//		if (sec >= 60) {
-//			sec -= 60;
-//			mins += 1;
-//		}
-//		now.setTime(date.getHours(), mins, sec);
-//		try {
-//			Job job = service.attachNetworkInterface(
-//					createServerJob.getItemUUID(), j.getItemUUID(), 0, now);
-//			service.waitForJob(job.getResourceUUID(), false);
-//		} catch (ExtilityException e) {
-//
-//			Logger.getLogger(RandomControlGeneration.class.getName()).log(Level.INFO,e.getMessage()); return "";
-//		}
+		date = new Date();
+		now = datatypeFactory.newXMLGregorianCalendar(gregorianCalendar);
+		mins = date.getMinutes();
+		sec = date.getSeconds();
+		sec += 30;
+		if (sec >= 60) {
+			sec -= 60;
+			mins += 1;
+		}
+		now.setTime(date.getHours(), mins, sec);
+		try {
+			Job job = service.attachNetworkInterface(
+					createServerJob.getItemUUID(), createServerJob.getItemUUID(), 0, now);
+			service.waitForJob(job.getResourceUUID(), false);
+		} catch (ExtilityException e) {
+
+			RuntimeLogger.logger.error(e.getMessage()); return "";
+		}
 		date = new Date();
 		now = datatypeFactory.newXMLGregorianCalendar(gregorianCalendar);
 		 mins = date.getMinutes();
