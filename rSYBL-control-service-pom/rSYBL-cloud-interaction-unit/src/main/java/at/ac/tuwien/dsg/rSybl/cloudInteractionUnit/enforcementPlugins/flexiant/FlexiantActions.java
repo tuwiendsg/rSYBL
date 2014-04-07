@@ -221,40 +221,7 @@ public class FlexiantActions  {
 		int mins = date.getMinutes();
 		int sec = date.getSeconds();
 		int hours = date.getHours();
-		sec += 10;
-		if (sec >= 60) {
-			sec -= 60;
-			mins += 1;
-		}
-		if (mins==60){
-			mins=59;
-		}
 		
-		
-		now.setTime(hours, mins, sec);
-
-		RuntimeLogger.logger.info("Creating server at " + now.toString());
-		sshs.add(Configuration.getSSHKey());
-		skeletonServer.setResourceName(serverName);
-		Job j = null;
-		try {
-			j = service.createNetworkInterface(networkInterface, now);
-		} catch (ExtilityException e) {
-			// TODO Auto-generated catch block
-			RuntimeLogger.logger.info(e.getMessage()); 
-			return "";
-		}
-		//skeletonServer.getNics().add(networkInterface);
-		RuntimeLogger.logger.info("Nic UUID "+j.getItemUUID());
-		
-
-		try {
-			service.waitForJob(j.getResourceUUID(), false);
-		} catch (ExtilityException e1) {
-			// TODO Auto-generated catch block
-			e1.printStackTrace();
-			return "";
-		}
 		Job createServerJob = null;
 		
 		date = new Date();
@@ -293,6 +260,46 @@ public class FlexiantActions  {
 		} catch (ExtilityException e) {
 			// TODO Auto-generated catch block
 			RuntimeLogger.logger.error(e.getMessage()); return "";
+		}
+		
+		 now = datatypeFactory
+				.newXMLGregorianCalendar(gregorianCalendar);
+		 mins = date.getMinutes();
+		 sec = date.getSeconds();
+		 hours = date.getHours();
+		sec += 10;
+		if (sec >= 60) {
+			sec -= 60;
+			mins += 1;
+		}
+		if (mins==60){
+			mins=59;
+		}
+		
+		
+		now.setTime(hours, mins, sec);
+
+		RuntimeLogger.logger.info("Creating server at " + now.toString());
+		sshs.add(Configuration.getSSHKey());
+		skeletonServer.setResourceName(serverName);
+		Job j = null;
+		try {
+			j = service.createNetworkInterface(networkInterface, now);
+		} catch (ExtilityException e) {
+			// TODO Auto-generated catch block
+			RuntimeLogger.logger.info(e.getMessage()); 
+			return "";
+		}
+		//skeletonServer.getNics().add(networkInterface);
+		RuntimeLogger.logger.info("Nic UUID "+j.getItemUUID());
+		
+
+		try {
+			service.waitForJob(j.getResourceUUID(), false);
+		} catch (ExtilityException e1) {
+			// TODO Auto-generated catch block
+			e1.printStackTrace();
+			return "";
 		}
 		
 		date = new Date();
