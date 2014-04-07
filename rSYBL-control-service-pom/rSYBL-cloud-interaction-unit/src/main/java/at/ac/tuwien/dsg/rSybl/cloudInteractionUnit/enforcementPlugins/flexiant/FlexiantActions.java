@@ -181,7 +181,7 @@ public class FlexiantActions  {
 				password);
 
 		Server skeletonServer = new Server();
-		skeletonServer.setVdcUUID(Configuration.getDefaultProductOfferUUID());
+		skeletonServer.setVdcUUID(Configuration.getVdcUUID());
 		// skeletonServer.setCpu(cpu);
 		skeletonServer.setInitialUser("ubuntu");
 
