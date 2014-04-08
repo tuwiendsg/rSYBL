@@ -204,6 +204,7 @@ public class FlexiantActions  {
 				.setCustomerUUID(Configuration.getCustomerUUID());
 		//networkInterface.setDeploymentInstanceUUID(Configuration.getDeploymentInstanceUUID());
 		//networkInterface.setProductOfferUUID("");
+		RuntimeLogger.logger.info("~~~~~~~~~~~~~~~~~~~~~~~"+Configuration.getNetworkUUID());
 		networkInterface.setNetworkUUID(Configuration.getNetworkUUID());
 		//networkInterface.setVdcUUID(Configuration.getVdcUUID());
 		networkInterface.setNetworkType(NetworkType.IP);
