@@ -199,14 +199,14 @@ public class FlexiantActions  {
 		GregorianCalendar gregorianCalendar = new GregorianCalendar();
 		sshs.add(Configuration.getSSHKey());
 		Nic networkInterface = new Nic();
-		//networkInterface.setClusterUUID(Configuration.getClusterUUID());
+		networkInterface.setClusterUUID(Configuration.getClusterUUID());
 		networkInterface
 				.setCustomerUUID(Configuration.getCustomerUUID());
 		//networkInterface.setDeploymentInstanceUUID(Configuration.getDeploymentInstanceUUID());
 		//networkInterface.setProductOfferUUID("");
 		RuntimeLogger.logger.info("~~~~~~~~~~~~~~~~~~~~~~~"+Configuration.getNetworkUUID());
 		networkInterface.setNetworkUUID(Configuration.getNetworkUUID());
-		//networkInterface.setVdcUUID(Configuration.getVdcUUID());
+		networkInterface.setVdcUUID(Configuration.getVdcUUID());
 		networkInterface.setNetworkType(NetworkType.IP);
 		// networkInterface.setServerUUID("");
 		Date date = new Date();
