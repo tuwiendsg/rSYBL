@@ -27,6 +27,7 @@ import at.ac.tuwien.dsg.rSybl.cloudInteractionUnit.utils.RuntimeLogger;
 
 import com.extl.jade.user.ExtilityException;
 import com.extl.jade.user.Job;
+import com.extl.jade.user.NetworkType;
 import com.extl.jade.user.Nic;
 import com.extl.jade.user.ResourceMetadata;
 import com.extl.jade.user.Server;
@@ -205,7 +206,7 @@ public class FlexiantActions  {
 		//networkInterface.setProductOfferUUID("");
 		networkInterface.setNetworkUUID(Configuration.getNetworkUUID());
 		//networkInterface.setVdcUUID(Configuration.getVdcUUID());
-
+		networkInterface.setNetworkType(NetworkType.IP);
 		// networkInterface.setServerUUID("");
 		Date date = new Date();
 
