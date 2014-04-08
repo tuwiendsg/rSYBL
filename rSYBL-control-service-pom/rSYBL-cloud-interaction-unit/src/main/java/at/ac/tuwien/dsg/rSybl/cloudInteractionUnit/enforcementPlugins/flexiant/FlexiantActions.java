@@ -251,7 +251,7 @@ public class FlexiantActions  {
 			
 		now.setTime(hours, mins, sec);
 		skeletonServer.setResourceName(serverName);
-		//skeletonServer.getNics().add(networkInterface);
+		skeletonServer.getNics().add(networkInterface);
 		try {
 			createServerJob = service.createServer(skeletonServer, sshs, now );
 		} catch (ExtilityException e) {
@@ -267,74 +267,74 @@ public class FlexiantActions  {
 			e.printStackTrace();
 			RuntimeLogger.logger.error(e.getMessage()); return "";
 		}
-		date=new Date();
-		now = datatypeFactory.newXMLGregorianCalendar(gregorianCalendar);
-		 mins = date.getMinutes();
-		 sec = date.getSeconds();
-		 hours = date.getHours();
-
-			sec += 20;
-			if (sec >= 60) {
-				sec -= 60;
-				mins += 1;
-			}
-			if (mins==60){
-				mins=59;
-			}
-			
-		now.setTime(hours, mins, sec);
-
-		RuntimeLogger.logger.info("Creating NIC at " + now.toString());
-	
-		
-		Job j = null;
-		try {
-			j = service.createNetworkInterface(networkInterface, now);
-		} catch (ExtilityException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-			RuntimeLogger.logger.info(e.getMessage()); 
-			return "";
-		}
+//		date=new Date();
+//		now = datatypeFactory.newXMLGregorianCalendar(gregorianCalendar);
+//		 mins = date.getMinutes();
+//		 sec = date.getSeconds();
+//		 hours = date.getHours();
+//
+//			sec += 20;
+//			if (sec >= 60) {
+//				sec -= 60;
+//				mins += 1;
+//			}
+//			if (mins==60){
+//				mins=59;
+//			}
+//			
+//		now.setTime(hours, mins, sec);
+//
+//		RuntimeLogger.logger.info("Creating NIC at " + now.toString());
+//	
+//		
+//		Job j = null;
+//		try {
+//			j = service.createNetworkInterface(networkInterface, now);
+//		} catch (ExtilityException e) {
+//			// TODO Auto-generated catch block
+//			e.printStackTrace();
+//			RuntimeLogger.logger.info(e.getMessage()); 
+//			return "";
+//		}
 		//skeletonServer.getNics().add(networkInterface);
-		RuntimeLogger.logger.info("Nic UUID "+j.getItemUUID());
-		
-
-		try {
-			service.waitForJob(j.getResourceUUID(), false);
-		} catch (ExtilityException e1) {
-			// TODO Auto-generated catch block
-			e1.printStackTrace();
-
-			return "";
-		}
-		
-		date = new Date();
-		now = datatypeFactory.newXMLGregorianCalendar(gregorianCalendar);
-		 mins = date.getMinutes();
-		 sec = date.getSeconds();
-		 hours = date.getHours();
-		sec += 10;
-		if (sec >= 60) {
-			sec -= 60;
-			mins += 1;
-		}
-		if (mins==60){
-			mins=59;
-		}
-		
-		
-		now.setTime(hours, mins, sec);
-
-
-		try {
-			Job job = service.attachNetworkInterface(
-					createServerJob.getItemUUID(), j.getItemUUID(), 0, now);
-			service.waitForJob(job.getResourceUUID(), false);
-		} catch (ExtilityException e) {
-			e.printStackTrace();
-			RuntimeLogger.logger.error(e.getMessage()); return "";
-		}
+//		RuntimeLogger.logger.info("Nic UUID "+j.getItemUUID());
+//		
+//
+//		try {
+//			service.waitForJob(j.getResourceUUID(), false);
+//		} catch (ExtilityException e1) {
+//			// TODO Auto-generated catch block
+//			e1.printStackTrace();
+//
+//			return "";
+//		}
+//		
+//		date = new Date();
+//		now = datatypeFactory.newXMLGregorianCalendar(gregorianCalendar);
+//		 mins = date.getMinutes();
+//		 sec = date.getSeconds();
+//		 hours = date.getHours();
+//		sec += 10;
+//		if (sec >= 60) {
+//			sec -= 60;
+//			mins += 1;
+//		}
+//		if (mins==60){
+//			mins=59;
+//		}
+//		
+//		
+//		now.setTime(hours, mins, sec);
+//
+//
+//		try {
+//			Job job = service.attachNetworkInterface(
+//					createServerJob.getItemUUID(), j.getItemUUID(), 0, now);
+//			service.waitForJob(job.getResourceUUID(), false);
+//		} catch (ExtilityException e) {
+//			e.printStackTrace();
+//			RuntimeLogger.logger.error(e.getMessage()); return "";
+//		}
 		date = new Date();
 		now = datatypeFactory.newXMLGregorianCalendar(gregorianCalendar);
 		 mins = date.getMinutes();
