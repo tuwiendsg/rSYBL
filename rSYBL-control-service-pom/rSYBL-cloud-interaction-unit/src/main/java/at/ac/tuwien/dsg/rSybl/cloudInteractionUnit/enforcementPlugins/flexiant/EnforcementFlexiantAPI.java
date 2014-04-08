@@ -154,7 +154,7 @@ public class EnforcementFlexiantAPI  implements EnforcementInterface{
 	private void scaleOutComponent(Node o){
 				DependencyGraph graph=new DependencyGraph();
 				graph.setCloudService(controlledService);
-				String uuid=flexiantActions.createNewServer(o.getId(), (String) o.getStaticInformation("ImageUUID"), 2, 2);
+				String uuid=flexiantActions.createNewServer(o.getId(), (String) o.getStaticInformation("UUID"), 2, 2);
 				Node node = new Node();
 	         
 	    		String ip="";
