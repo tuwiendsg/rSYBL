@@ -195,6 +195,7 @@ public class FlexiantActions  {
 		skeletonServer.setImageUUID(imageUUID);
 		//skeletonServer.setDeploymentInstanceUUID(Configuration.getDeploymentInstanceUUID());
 		skeletonServer.setClusterUUID(Configuration.getClusterUUID());
+		
 		List<String> sshs = new ArrayList<String>();
 		GregorianCalendar gregorianCalendar = new GregorianCalendar();
 		sshs.add(Configuration.getSSHKey());
