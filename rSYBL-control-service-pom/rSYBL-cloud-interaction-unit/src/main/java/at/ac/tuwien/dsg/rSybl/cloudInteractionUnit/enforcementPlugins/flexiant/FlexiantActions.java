@@ -192,8 +192,9 @@ public class FlexiantActions  {
 				.setProductOfferUUID(Configuration.getDefaultProductOfferUUID());
 		// skeletonServer.setRam(mem);
 		// skeletonServer.setImageName(serverName);
+		RuntimeLogger.logger.info("~~~~~~~~~~~~~~~~~~~~~~~ Creating Server from image "+imageUUID);
 		skeletonServer.setImageUUID(imageUUID);
-		//skeletonServer.setDeploymentInstanceUUID(Configuration.getDeploymentInstanceUUID());
+		skeletonServer.setDeploymentInstanceUUID(Configuration.getDeploymentInstanceUUID());
 		skeletonServer.setClusterUUID(Configuration.getClusterUUID());
 		
 		List<String> sshs = new ArrayList<String>();
@@ -203,9 +204,9 @@ public class FlexiantActions  {
 		networkInterface.setClusterUUID(Configuration.getClusterUUID());
 		networkInterface
 				.setCustomerUUID(Configuration.getCustomerUUID());
-		//networkInterface.setDeploymentInstanceUUID(Configuration.getDeploymentInstanceUUID());
+		networkInterface.setDeploymentInstanceUUID(Configuration.getDeploymentInstanceUUID());
 		//networkInterface.setProductOfferUUID("");
-		RuntimeLogger.logger.info("~~~~~~~~~~~~~~~~~~~~~~~"+Configuration.getNetworkUUID());
+
 		networkInterface.setNetworkUUID(Configuration.getNetworkUUID());
 		networkInterface.setVdcUUID(Configuration.getVdcUUID());
 		networkInterface.setNetworkType(NetworkType.IP);
