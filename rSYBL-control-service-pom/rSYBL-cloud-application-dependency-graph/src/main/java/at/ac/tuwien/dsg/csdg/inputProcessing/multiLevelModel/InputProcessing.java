@@ -300,7 +300,7 @@ public class InputProcessing {
 				if (deploymentUnit.getDefaultFlavor()!=null)
 				node.getStaticInformation().put("DefaultFlavor", deploymentUnit.getDefaultFlavor());
 				if (deploymentUnit.getDefaultImage()!=null)
-				node.getStaticInformation().put("DefaultImage", deploymentUnit.getDefaultImage());
+					node.getStaticInformation().put("DefaultImage", deploymentUnit.getDefaultImage());
 			
 				if (deploymentUnit.getAssociatedVM()!=null && deploymentUnit.getAssociatedVM().size()>0){
 					for (AssociatedVM associatedVM:deploymentUnit.getAssociatedVM()){
