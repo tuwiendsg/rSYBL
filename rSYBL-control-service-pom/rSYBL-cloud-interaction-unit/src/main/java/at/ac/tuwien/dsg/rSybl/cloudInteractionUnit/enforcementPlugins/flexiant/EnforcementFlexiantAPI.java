@@ -197,8 +197,8 @@ public class EnforcementFlexiantAPI  implements EnforcementInterface{
 				d.setCloudService(controlledService);
 				if (d.getNodeWithID(o.getId()).getAllRelatedNodesOfType(RelationshipType.HOSTED_ON_RELATIONSHIP,NodeType.VIRTUAL_MACHINE).size()>0){
 				RuntimeLogger.logger.info(d.graphToString());
-				RuntimeLogger.logger.info("Will delete this.....: "+d.getNodeWithID(o.getId()));
-				Node tobeRemoved = d.getNodeWithID(o.getId());
+				RuntimeLogger.logger.info("Will delete this.....: "+o.getId());
+				Node tobeRemoved = d.getNodeWithID(o.getId()).getAllRelatedNodes().iterator().next();
 				flexiantActions.removeServer((String) tobeRemoved.getStaticInformation("UUID"));
 				RuntimeLogger.logger.info("The dependency graph is " +d.graphToString());
 	            monitoring.refreshServiceStructure(controlledService);
