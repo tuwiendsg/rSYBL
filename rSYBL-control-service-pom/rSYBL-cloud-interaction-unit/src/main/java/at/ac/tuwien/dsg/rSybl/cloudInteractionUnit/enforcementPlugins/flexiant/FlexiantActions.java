@@ -50,7 +50,7 @@ public class FlexiantActions  {
 
 	public void removeServer(String serverUUID) {
 		UserService service;
-
+		RuntimeLogger.logger.info("~~~~~~~~~~~~~ Removing server with UUID "+serverUUID);
 		URL url = ClassLoader.getSystemClassLoader()
 				.getResource("UserAPI.wsdl");
 
@@ -571,8 +571,8 @@ public class FlexiantActions  {
 			// Iterate through the results
 			for (Object o : result.getList()) {
 				Nic s = ((Nic) o);
-				RuntimeLogger.logger.info("Nic " + s.getResourceUUID()
-						+ "Server "+s.getServerUUID()+" Ip addresses " +s.getIpAddresses().size());
+				//RuntimeLogger.logger.info("Nic " + s.getResourceUUID()
+					//	+ "Server "+s.getServerUUID()+" Ip addresses " +s.getIpAddresses().size());
         	 	nics.add(s);
 
 			}
@@ -581,7 +581,8 @@ public class FlexiantActions  {
 
 			RuntimeLogger.logger.info(e.getMessage()); 
 		}
-
+		RuntimeLogger.logger.info("Returning "+nics.size()+"number of nics ");
+		
 		return nics;
 	}
 

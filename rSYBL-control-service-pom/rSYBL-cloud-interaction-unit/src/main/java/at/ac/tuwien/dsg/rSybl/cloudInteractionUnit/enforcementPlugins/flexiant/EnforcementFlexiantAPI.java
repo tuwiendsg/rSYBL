@@ -21,7 +21,7 @@ public class EnforcementFlexiantAPI  implements EnforcementInterface{
 	public EnforcementFlexiantAPI(Node cloudService){
 		flexiantActions= new FlexiantActions();
 		this.controlledService=cloudService;
-
+		flexiantActions.cleanNics();
 		
 	}
 	public Node findNode(String id){
@@ -200,7 +200,7 @@ public class EnforcementFlexiantAPI  implements EnforcementInterface{
 				RuntimeLogger.logger.info("Will delete this.....: "+d.getNodeWithID(o.getId()));
 				Node tobeRemoved = d.getNodeWithID(o.getId());
 				flexiantActions.removeServer((String) tobeRemoved.getStaticInformation("UUID"));
-				RuntimeLogger.logger.info(d.graphToString());
+				RuntimeLogger.logger.info("The dependency graph is " +d.graphToString());
 	            monitoring.refreshServiceStructure(controlledService);
 				}
 
