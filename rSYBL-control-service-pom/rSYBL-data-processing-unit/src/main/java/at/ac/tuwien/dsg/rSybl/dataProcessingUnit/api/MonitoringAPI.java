@@ -19,11 +19,14 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
+import at.ac.tuwien.dsg.csdg.DependencyGraph;
 import at.ac.tuwien.dsg.csdg.Node;
+import at.ac.tuwien.dsg.csdg.elasticityInformation.ElasticityCapability;
 import at.ac.tuwien.dsg.csdg.elasticityInformation.ElasticityRequirement;
 import at.ac.tuwien.dsg.rSybl.dataProcessingUnit.monitoringPlugins.OfferedMonitoredMetrics;
 import at.ac.tuwien.dsg.rSybl.dataProcessingUnit.monitoringPlugins.interfaces.MonitoringInterface;
 import at.ac.tuwien.dsg.rSybl.dataProcessingUnit.utils.RuntimeLogger;
+
 
 
 
@@ -132,7 +135,9 @@ public class MonitoringAPI implements MonitoringAPIInterface{
 	   RuntimeLogger.logger.info("Setting the service "+ controlledService.toString());
 		offeredMonitoringMetrics  = OfferedMonitoredMetrics.getInstance(this.controlledService);
 		offeredMonitoringMetrics.submitServiceConfiguration(this.controlledService);
-	    RuntimeLogger.logger.info("Set the service configuration on the monitoring api to "+ controlledService.toString());
+		DependencyGraph dependencyGraph = new DependencyGraph();
+		
+		RuntimeLogger.logger.info("Set the service configuration on the monitoring api to "+ controlledService.toString());
 
 	}
 	

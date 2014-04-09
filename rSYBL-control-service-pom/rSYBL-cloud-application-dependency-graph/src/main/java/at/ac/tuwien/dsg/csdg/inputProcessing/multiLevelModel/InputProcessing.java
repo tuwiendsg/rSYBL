@@ -65,6 +65,7 @@ import at.ac.tuwien.dsg.csdg.utils.DependencyGraphLogger;
 
 
 
+
 public class InputProcessing {
 	private  SYBLElasticityRequirementsDescription syblSpecifications;
 	private DeploymentDescription deploymentDescription;
@@ -343,6 +344,7 @@ public class InputProcessing {
 			else
 				DependencyGraphLogger.logger.error("Specification targets entity which is not found: "+specification.getComponentId());
 		}
+
 		return graph;
 	}
 	public DependencyGraph loadDependencyGraphFromFile(){

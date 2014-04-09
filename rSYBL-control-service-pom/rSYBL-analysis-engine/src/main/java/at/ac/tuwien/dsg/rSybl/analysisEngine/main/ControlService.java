@@ -40,8 +40,10 @@ import at.ac.tuwien.dsg.csdg.elasticityInformation.elasticityRequirements.SYBLSp
 import at.ac.tuwien.dsg.csdg.inputProcessing.multiLevelModel.InputProcessing;
 import at.ac.tuwien.dsg.csdg.inputProcessing.multiLevelModel.abstractModelXML.SYBLDirectiveMappingFromXML;
 import at.ac.tuwien.dsg.csdg.inputProcessing.tosca.TOSCAProcessing;
+
 import at.ac.tuwien.dsg.rSybl.analysisEngine.utils.AnalysisLogger;
 import at.ac.tuwien.dsg.rSybl.analysisEngine.utils.Configuration;
+import at.ac.tuwien.dsg.rSybl.analysisEngine.utils.MonitoringThread;
 import at.ac.tuwien.dsg.rSybl.cloudInteractionUnit.api.EnforcementAPI;
 import at.ac.tuwien.dsg.rSybl.cloudInteractionUnit.api.EnforcementAPIInterface;
 import at.ac.tuwien.dsg.rSybl.dataProcessingUnit.api.MonitoringAPI;
@@ -162,6 +164,18 @@ public class ControlService {
 			dependencyGraph = inputProcessing.loadDependencyGraphFromStrings(
 					applicationDescription, "", deploymentDescription);
 			startSYBLProcessingAndPlanning();
+			for (Node node:dependencyGraph.getAllServiceUnits()){
+				
+				MonitoringThread monitoringThread = new MonitoringThread(node, monitoringAPI);
+				monitoringThread.start();
+			}
+			for (Node node:dependencyGraph.getAllServiceTopologies()){
+				MonitoringThread monitoringThread = new MonitoringThread(node, monitoringAPI);
+				monitoringThread.start();
+			}
+			MonitoringThread monitoringThread = new MonitoringThread(dependencyGraph.getCloudService(), monitoringAPI);
+			monitoringThread.start();
+
 			applicationDescription = "";
 			deploymentDescription = "";
 		}
@@ -184,6 +198,18 @@ public class ControlService {
 				&& !deploymentDescription.equalsIgnoreCase("")) {
 			dependencyGraph = inputProcessing.loadDependencyGraphFromStrings(applicationDescription, "", deploymentDescription);
 			startSYBLProcessingAndPlanning();
+			for (Node node:dependencyGraph.getAllServiceUnits()){
+				
+				MonitoringThread monitoringThread = new MonitoringThread(node, monitoringAPI);
+				monitoringThread.start();
+			}
+			for (Node node:dependencyGraph.getAllServiceTopologies()){
+				MonitoringThread monitoringThread = new MonitoringThread(node, monitoringAPI);
+				monitoringThread.start();
+			}
+			MonitoringThread monitoringThread = new MonitoringThread(dependencyGraph.getCloudService(), monitoringAPI);
+			monitoringThread.start();
+
 			applicationDescription = "";
 			deploymentDescription = "";
 		}
