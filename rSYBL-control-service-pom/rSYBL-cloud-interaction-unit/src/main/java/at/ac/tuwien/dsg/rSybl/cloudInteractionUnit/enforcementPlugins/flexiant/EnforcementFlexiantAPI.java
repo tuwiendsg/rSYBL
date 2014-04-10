@@ -1,7 +1,13 @@
 package at.ac.tuwien.dsg.rSybl.cloudInteractionUnit.enforcementPlugins.flexiant;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+
+import org.apache.log4j.Level;
+import org.apache.log4j.Logger;
+
+import com.jcraft.jsch.JSchException;
 
 import at.ac.tuwien.dsg.csdg.DependencyGraph;
 import at.ac.tuwien.dsg.csdg.Node;
@@ -193,19 +199,34 @@ public class EnforcementFlexiantAPI  implements EnforcementInterface{
 		}
 	private void scaleInComponent(Node o){
 		
-				DependencyGraph d = new DependencyGraph();
-				d.setCloudService(controlledService);
-				if (d.getNodeWithID(o.getId()).getAllRelatedNodesOfType(RelationshipType.HOSTED_ON_RELATIONSHIP,NodeType.VIRTUAL_MACHINE).size()>0){
-				RuntimeLogger.logger.info(d.graphToString());
-				RuntimeLogger.logger.info("Will delete this.....: "+o.getId());
-				Node tobeRemoved = d.getNodeWithID(o.getId()).getAllRelatedNodes().iterator().next();
-				flexiantActions.removeServer((String) tobeRemoved.getStaticInformation("UUID"));
-				RuntimeLogger.logger.info("The dependency graph is " +d.graphToString());
-	            monitoring.refreshServiceStructure(controlledService);
+			RuntimeLogger.logger.info("AAAAAAAAAAAAAAA current nb servers "+flexiantActions.listServers().size());
+			DependencyGraph graph=new DependencyGraph();
+			graph.setCloudService(controlledService);
+			Node toBeScaled = graph.getNodeWithID(o.getId()); 
+	            Node toBeRemoved = toBeScaled.getAllRelatedNodesOfType(RelationshipType.HOSTED_ON_RELATIONSHIP, NodeType.VIRTUAL_MACHINE).get(0);
+	            RuntimeLogger.logger.info( "Trying to remove  "+toBeRemoved.getId()+" From "+toBeScaled.getId());
+			        	   String cmd = "";
+			        	   String ip=toBeRemoved.getId();
+			        	   String uuid = (String) toBeRemoved.getStaticInformation().get("UUID");
+			        	   RuntimeLogger.logger.info( "Removing server with UUID" + uuid);
+			        	
+			        			               
+			            	
+			        	   flexiantActions.removeServer(uuid);
+			               try {
+			   				Thread.sleep(30000);
+			   			} catch (InterruptedException e) {
+			   				// TODO Auto-generated catch block
+			   				RuntimeLogger.logger.info(e.getMessage());
+			   			}
+			               
+			               toBeScaled.removeNode(toBeRemoved);
+		               
+			               monitoring.refreshServiceStructure(controlledService);
 				}
 
 				
-	}
+	
 	public Node findControllerForComponent(Node c){
 		Node res = null;
 		List<Node> componentTopologies =controlledService.getAllRelatedNodesOfType(RelationshipType.COMPOSITION_RELATIONSHIP,NodeType.SERVICE_TOPOLOGY);

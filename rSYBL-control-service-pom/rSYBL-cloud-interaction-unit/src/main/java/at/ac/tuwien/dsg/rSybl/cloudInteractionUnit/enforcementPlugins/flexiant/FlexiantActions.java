@@ -373,7 +373,7 @@ public class FlexiantActions  {
 			e.printStackTrace();
 			RuntimeLogger.logger.error(e.getMessage()); return "";
 		}
-		
+		RuntimeLogger.logger.info("~~~~~~~~~~~~~~Created server with uuid "+createServerJob.getItemUUID());
 		return createServerJob.getItemUUID();
 
 		// createdServer.getNics().get(0).getIpAddresses().get(0).getIpAddress();
@@ -499,7 +499,7 @@ public class FlexiantActions  {
 
 			// Set a limit to the number of results
 			QueryLimit lim = new QueryLimit();
-			lim.setMaxRecords(20);
+			lim.setMaxRecords(40);
 
 			// Call the service to execute the query
 			ListResult result = service.listResources(sf, lim,
