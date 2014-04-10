@@ -24,6 +24,7 @@ package at.ac.tuwien.dsg.rSybl.cloudInteractionUnit.api;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 
 import at.ac.tuwien.dsg.csdg.Node;
 import at.ac.tuwien.dsg.csdg.elasticityInformation.ElasticityRequirement;
@@ -38,7 +39,7 @@ public class EnforcementAPI implements EnforcementAPIInterface{
 	private  static HashMap<Node, ArrayList<Float>> avgRunningTimes = new HashMap<Node,ArrayList<Float>>();
 	
 	private boolean executingControlAction = false;
-	
+	private MonitoringAPIInterface monitoringAPIInterface;
     private Node controlledService;
     private EnforcementInterface offeredCapabilities;
 	public EnforcementAPI(){
@@ -68,11 +69,25 @@ public class EnforcementAPI implements EnforcementAPIInterface{
 		executingControlAction=true;
 		
 		offeredCapabilities.scaleIn(arg0);
-		try {
-			Thread.sleep(30000);
-		} catch (InterruptedException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+		List<String> metrics= monitoringAPIInterface.getAvailableMetrics(arg0);
+		boolean checkIfMetrics=false;
+		while (!checkIfMetrics){
+		for (String metricName:metrics){
+			try {
+				Thread.sleep(10000);
+			} catch (InterruptedException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+			RuntimeLogger.logger.info("Waiting for action....");
+			boolean myMetrics=true;
+			if (monitoringAPIInterface.getMetricValue(metricName, arg0)<0){
+				myMetrics=false;
+			}
+			checkIfMetrics=myMetrics;
+			
+		}
+		
 		}
 		executingControlAction=false;
 		RuntimeLogger.logger.info("Finished scaling in "+arg0.getId()+" ...");
@@ -92,11 +107,26 @@ public class EnforcementAPI implements EnforcementAPIInterface{
 		RuntimeLogger.logger.info("Scaling out "+arg0+" ...");
 		executingControlAction=true;
 		offeredCapabilities.scaleOut(arg0);
-		try {
-			Thread.sleep(30000);
-		} catch (InterruptedException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+		
+		List<String> metrics= monitoringAPIInterface.getAvailableMetrics(arg0);
+		boolean checkIfMetrics=false;
+		while (!checkIfMetrics){
+		for (String metricName:metrics){
+			try {
+				Thread.sleep(10000);
+			} catch (InterruptedException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+			RuntimeLogger.logger.info("Waiting for action....");
+			boolean myMetrics=true;
+			if (monitoringAPIInterface.getMetricValue(metricName, arg0)<0){
+				myMetrics=false;
+			}
+			checkIfMetrics=myMetrics;
+			
+		}
+		
 		}
 		executingControlAction=false;
 		RuntimeLogger.logger.info("Finished scaling out "+arg0.getId()+" ...");
@@ -130,6 +160,7 @@ public class EnforcementAPI implements EnforcementAPIInterface{
 
 	@Override
 	public void setMonitoringPlugin(MonitoringAPIInterface monitoringInterface) {
+		monitoringAPIInterface=monitoringInterface;
 		offeredCapabilities.setMonitoringPlugin(monitoringInterface);
 	}
 
