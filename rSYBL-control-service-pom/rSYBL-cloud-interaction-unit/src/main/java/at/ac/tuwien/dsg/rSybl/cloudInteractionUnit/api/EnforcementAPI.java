@@ -86,7 +86,8 @@ public class EnforcementAPI implements EnforcementAPIInterface{
 			
 			
 		for (String metricName:metrics){
-			
+			RuntimeLogger.logger.info("Metric "+metricName+" has value "+monitoringAPIInterface.getMetricValue(metricName,arg0));
+
 			if (monitoringAPIInterface.getMetricValue(metricName,arg0)==null || monitoringAPIInterface.getMetricValue(metricName, arg0)<=0 ){
 				myMetrics=false;
 				RuntimeLogger.logger.info("~~~~Metric "+metricName+"smaller than 0");
@@ -137,7 +138,7 @@ public class EnforcementAPI implements EnforcementAPIInterface{
 			RuntimeLogger.logger.info("Waiting for action....");
 		for (String metricName:metrics){
 			
-			
+				RuntimeLogger.logger.info("Metric "+metricName+" has value "+monitoringAPIInterface.getMetricValue(metricName,arg0));
 			if (monitoringAPIInterface.getMetricValue(metricName,arg0)==null || monitoringAPIInterface.getMetricValue(metricName, arg0)<=0 ){
 				myMetrics=false;
 				RuntimeLogger.logger.info("~~~Metric "+metricName+"smaller than 0");
