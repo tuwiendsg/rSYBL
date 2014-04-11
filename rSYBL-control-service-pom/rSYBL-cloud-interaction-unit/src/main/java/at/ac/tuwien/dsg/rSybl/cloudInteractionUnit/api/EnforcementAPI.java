@@ -64,6 +64,8 @@ public class EnforcementAPI implements EnforcementAPIInterface{
 
 
 	public void scalein(Node arg0) {
+		RuntimeLogger.logger.info("~~~~~~~~~~~Trying to execute action executingControlaction="+executingControlAction);
+
 		if (executingControlAction==false){
 			if (arg0.getAllRelatedNodes().size()>1){
 		executingControlAction=true;
@@ -85,9 +87,9 @@ public class EnforcementAPI implements EnforcementAPIInterface{
 			
 		for (String metricName:metrics){
 			
-			if (monitoringAPIInterface.getMetricValue(metricName, arg0)<0){
+			if (monitoringAPIInterface.getMetricValue(metricName,arg0)==null || monitoringAPIInterface.getMetricValue(metricName, arg0)<=0 ){
 				myMetrics=false;
-				RuntimeLogger.logger.info("Metric "+metricName+"smaller than 0");
+				RuntimeLogger.logger.info("~~~~Metric "+metricName+"smaller than 0");
 			}
 			
 			
@@ -101,7 +103,7 @@ public class EnforcementAPI implements EnforcementAPIInterface{
 			ex.printStackTrace();
 		}
 		executingControlAction=false;
-		monitoringAPIInterface.enforcingActionEnded("ScaleIn", arg0);
+		//monitoringAPIInterface.enforcingActionEnded("ScaleIn", arg0);
 		RuntimeLogger.logger.info("Finished scaling in "+arg0.getId()+" ...");
 			}else{
 				RuntimeLogger.logger.info("Number of nodes associated with "+arg0.getAllRelatedNodes().size());
@@ -114,8 +116,9 @@ public class EnforcementAPI implements EnforcementAPIInterface{
 
 
 	public void scaleout(Node arg0) {
+		RuntimeLogger.logger.info("~~~~~~~~~~~Trying to execute action executingControlaction="+executingControlAction);
 		if (executingControlAction==false && arg0!=null){
-		RuntimeLogger.logger.info("~~~~~~~~~~~~~~~!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
+
 		RuntimeLogger.logger.info("Scaling out "+arg0+" ...");
 		executingControlAction=true;
 		offeredCapabilities.scaleOut(arg0);
@@ -135,9 +138,9 @@ public class EnforcementAPI implements EnforcementAPIInterface{
 		for (String metricName:metrics){
 			
 			
-			if (monitoringAPIInterface.getMetricValue(metricName, arg0)<0){
+			if (monitoringAPIInterface.getMetricValue(metricName,arg0)==null || monitoringAPIInterface.getMetricValue(metricName, arg0)<=0 ){
 				myMetrics=false;
-				RuntimeLogger.logger.info("Metric "+metricName+"smaller than 0");
+				RuntimeLogger.logger.info("~~~Metric "+metricName+"smaller than 0");
 			}
 			
 			
@@ -151,7 +154,7 @@ public class EnforcementAPI implements EnforcementAPIInterface{
 			ex.printStackTrace();
 		}
 		executingControlAction=false;
-		monitoringAPIInterface.enforcingActionEnded("ScaleOut", arg0);
+		//monitoringAPIInterface.enforcingActionEnded("ScaleOut", arg0);
 		RuntimeLogger.logger.info("Finished scaling out "+arg0.getId()+" ...");
 		}else{
 			RuntimeLogger.logger.info(arg0);
@@ -163,6 +166,8 @@ public class EnforcementAPI implements EnforcementAPIInterface{
 
 	@Override
 	public void enforceAction(String actionName, Node e) {
+		RuntimeLogger.logger.info("~~~~~~~~~~~Trying to execute action executingControlaction="+executingControlAction);
+
 		if (executingControlAction==false){
 		RuntimeLogger.logger.info("Enforcing action "+actionName+" on the node "+e+" ...");
 
