@@ -94,6 +94,12 @@ public class EnforcementAPI implements EnforcementAPIInterface{
 		}
 		checkIfMetrics=myMetrics;
 		}
+		try {
+			Thread.sleep(20000);
+		} catch (InterruptedException ex) {
+			// TODO Auto-generated catch block
+			ex.printStackTrace();
+		}
 		executingControlAction=false;
 		monitoringAPIInterface.enforcingActionEnded("ScaleIn", arg0);
 		RuntimeLogger.logger.info("Finished scaling in "+arg0.getId()+" ...");
@@ -137,6 +143,12 @@ public class EnforcementAPI implements EnforcementAPIInterface{
 			
 		}
 		checkIfMetrics=myMetrics;
+		}
+		try {
+			Thread.sleep(20000);
+		} catch (InterruptedException ex) {
+			// TODO Auto-generated catch block
+			ex.printStackTrace();
 		}
 		executingControlAction=false;
 		monitoringAPIInterface.enforcingActionEnded("ScaleOut", arg0);
