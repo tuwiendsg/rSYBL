@@ -71,7 +71,7 @@ public class EnforcementAPI implements EnforcementAPIInterface{
 		offeredCapabilities.scaleIn(arg0);
 		List<String> metrics= monitoringAPIInterface.getAvailableMetrics(arg0);
 		boolean checkIfMetrics=false;
-		monitoringAPIInterface.enforcingActionStarted("ScaleIn", arg0);
+		//monitoringAPIInterface.enforcingActionStarted("ScaleIn", arg0);
 		while (!checkIfMetrics){
 			boolean myMetrics=true;
 			try {
@@ -121,7 +121,7 @@ public class EnforcementAPI implements EnforcementAPIInterface{
 		offeredCapabilities.scaleOut(arg0);
 		
 		List<String> metrics= monitoringAPIInterface.getAvailableMetrics(arg0);
-		monitoringAPIInterface.enforcingActionStarted("ScaleOut", arg0);
+		//monitoringAPIInterface.enforcingActionStarted("ScaleOut", arg0);
 		boolean checkIfMetrics=false;
 		while (!checkIfMetrics){
 			boolean myMetrics=true;
