@@ -73,7 +73,7 @@ public class EnforcementAPI implements EnforcementAPIInterface{
 		boolean checkIfMetrics=false;
 		monitoringAPIInterface.enforcingActionStarted("ScaleIn", arg0);
 		while (!checkIfMetrics){
-			boolean myMetrics=false;
+			boolean myMetrics=true;
 			try {
 				Thread.sleep(10000);
 			} catch (InterruptedException e) {
@@ -86,7 +86,7 @@ public class EnforcementAPI implements EnforcementAPIInterface{
 		for (String metricName:metrics){
 			
 			if (monitoringAPIInterface.getMetricValue(metricName, arg0)<0){
-				myMetrics=true;
+				myMetrics=false;
 				RuntimeLogger.logger.info("Metric "+metricName+"smaller than 0");
 			}
 			
@@ -124,7 +124,7 @@ public class EnforcementAPI implements EnforcementAPIInterface{
 		monitoringAPIInterface.enforcingActionStarted("ScaleOut", arg0);
 		boolean checkIfMetrics=false;
 		while (!checkIfMetrics){
-			boolean myMetrics=false;
+			boolean myMetrics=true;
 			try {
 				Thread.sleep(10000);
 			} catch (InterruptedException e) {
@@ -136,7 +136,7 @@ public class EnforcementAPI implements EnforcementAPIInterface{
 			
 			
 			if (monitoringAPIInterface.getMetricValue(metricName, arg0)<0){
-				myMetrics=true;
+				myMetrics=false;
 				RuntimeLogger.logger.info("Metric "+metricName+"smaller than 0");
 			}
 			
