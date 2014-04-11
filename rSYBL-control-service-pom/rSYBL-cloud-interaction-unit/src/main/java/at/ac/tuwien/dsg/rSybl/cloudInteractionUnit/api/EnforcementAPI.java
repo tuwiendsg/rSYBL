@@ -98,7 +98,7 @@ public class EnforcementAPI implements EnforcementAPIInterface{
 		checkIfMetrics=myMetrics;
 		}
 		try {
-			Thread.sleep(20000);
+			Thread.sleep(60000);
 		} catch (InterruptedException ex) {
 			// TODO Auto-generated catch block
 			ex.printStackTrace();
@@ -149,7 +149,7 @@ public class EnforcementAPI implements EnforcementAPIInterface{
 		checkIfMetrics=myMetrics;
 		}
 		try {
-			Thread.sleep(20000);
+			Thread.sleep(60000);
 		} catch (InterruptedException ex) {
 			// TODO Auto-generated catch block
 			ex.printStackTrace();
