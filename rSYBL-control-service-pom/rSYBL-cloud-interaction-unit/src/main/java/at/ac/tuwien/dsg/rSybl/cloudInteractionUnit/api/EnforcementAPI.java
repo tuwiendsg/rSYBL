@@ -72,7 +72,7 @@ public class EnforcementAPI implements EnforcementAPIInterface{
 		List<String> metrics= monitoringAPIInterface.getAvailableMetrics(arg0);
 		boolean checkIfMetrics=false;
 		while (!checkIfMetrics){
-		for (String metricName:metrics){
+			boolean myMetrics=true;
 			try {
 				Thread.sleep(10000);
 			} catch (InterruptedException e) {
@@ -80,16 +80,20 @@ public class EnforcementAPI implements EnforcementAPIInterface{
 				e.printStackTrace();
 			}
 			RuntimeLogger.logger.info("Waiting for action....");
-			boolean myMetrics=true;
+			
+			
+		for (String metricName:metrics){
+			
 			if (monitoringAPIInterface.getMetricValue(metricName, arg0)<0){
 				myMetrics=false;
 			}
-			checkIfMetrics=myMetrics;
+			
 			
 		}
-		
+		checkIfMetrics=myMetrics;
 		}
 		executingControlAction=false;
+		monitoringAPIInterface.enforcingActionEnded("ScaleIn", arg0);
 		RuntimeLogger.logger.info("Finished scaling in "+arg0.getId()+" ...");
 			}else{
 				RuntimeLogger.logger.info("Number of nodes associated with "+arg0.getAllRelatedNodes().size());
@@ -111,7 +115,7 @@ public class EnforcementAPI implements EnforcementAPIInterface{
 		List<String> metrics= monitoringAPIInterface.getAvailableMetrics(arg0);
 		boolean checkIfMetrics=false;
 		while (!checkIfMetrics){
-		for (String metricName:metrics){
+			boolean myMetrics=true;
 			try {
 				Thread.sleep(10000);
 			} catch (InterruptedException e) {
@@ -119,16 +123,19 @@ public class EnforcementAPI implements EnforcementAPIInterface{
 				e.printStackTrace();
 			}
 			RuntimeLogger.logger.info("Waiting for action....");
-			boolean myMetrics=true;
+		for (String metricName:metrics){
+			
+			
 			if (monitoringAPIInterface.getMetricValue(metricName, arg0)<0){
 				myMetrics=false;
 			}
-			checkIfMetrics=myMetrics;
+			
 			
 		}
-		
+		checkIfMetrics=myMetrics;
 		}
 		executingControlAction=false;
+		monitoringAPIInterface.enforcingActionEnded("ScaleOut", arg0);
 		RuntimeLogger.logger.info("Finished scaling out "+arg0.getId()+" ...");
 		}else{
 			RuntimeLogger.logger.info(arg0);
