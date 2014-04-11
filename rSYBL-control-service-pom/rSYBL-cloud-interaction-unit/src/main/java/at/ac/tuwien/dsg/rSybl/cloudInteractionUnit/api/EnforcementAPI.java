@@ -72,7 +72,7 @@ public class EnforcementAPI implements EnforcementAPIInterface{
 		List<String> metrics= monitoringAPIInterface.getAvailableMetrics(arg0);
 		boolean checkIfMetrics=false;
 		while (!checkIfMetrics){
-			boolean myMetrics=true;
+			boolean myMetrics=false;
 			try {
 				Thread.sleep(10000);
 			} catch (InterruptedException e) {
@@ -85,7 +85,7 @@ public class EnforcementAPI implements EnforcementAPIInterface{
 		for (String metricName:metrics){
 			
 			if (monitoringAPIInterface.getMetricValue(metricName, arg0)<0){
-				myMetrics=false;
+				myMetrics=true;
 			}
 			
 			
