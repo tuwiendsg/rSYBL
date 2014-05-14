@@ -3,4 +3,9 @@ rsybl-repo
 
 Usage information can be found in the <a href="https://github.com/tuwiendsg/rSYBL/blob/master/userGuide.pdf">user guide</a>, in the <a href="https://github.com/tuwiendsg/rSYBL/wiki">wiki</a> and on its <a href="http://www.infosys.tuwien.ac.at/research/viecom/SYBL">webpage</a>.
 
+If using this work, please cite the papers:
+ - for the framework: Georgiana Copil, Daniel Moldovan, Hong-Linh Truong, Schahram Dustdar, "Multi-Level Elasticity Control of Cloud Services", the 11th International Conference on Service Oriented Computing. Berlin, Germany, 2-5 December, 2013. Check the presentation given at ICSOC.
+
+ - for the SYBL language: Georgiana Copil, Daniel Moldovan, Hong-Linh Truong, Schahram Dustdar, "SYBL: an Extensible Language for Controlling Elasticity in Cloud Applications", 13th IEEE/ACM International Symposium on Cluster, Cloud and Grid Computing (CCGrid), May 14-16, 2013, Delft, the Netherlands. Presentation given at CCGRID
+
 Please contact Georgiana Copil e.copil@dsg.tuwien.ac.at for any kind of issue.
