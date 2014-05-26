@@ -35,6 +35,7 @@ public class MonitoredCloudService extends MonitoredEntity{
 	private HashMap<String,Double> monitoredData=new HashMap<String,Double>();
 	private ArrayList<MonitoredComponentTopology> monitoredTopologies = new ArrayList<MonitoredComponentTopology>();
 	private HashMap<String,String> monitoredVariables = new HashMap<String,String>();
+
 	public MonitoredCloudService(){
 		
 	}
@@ -102,4 +103,5 @@ public class MonitoredCloudService extends MonitoredEntity{
 	public void setMonitoredVariables(HashMap<String,String> monitoredVariables) {
 		this.monitoredVariables = monitoredVariables;
 	}
+	
 }

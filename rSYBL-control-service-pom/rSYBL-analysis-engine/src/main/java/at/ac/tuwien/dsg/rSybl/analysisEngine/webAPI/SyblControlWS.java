@@ -38,6 +38,7 @@ import javax.ws.rs.core.UriInfo;
 import com.sun.jersey.spi.resource.Singleton;
 
 import at.ac.tuwien.dsg.csdg.elasticityInformation.elasticityRequirements.SYBLAnnotation;
+import at.ac.tuwien.dsg.rSybl.analysisEngine.main.ControlCoordination;
 import at.ac.tuwien.dsg.rSybl.analysisEngine.main.ControlService;
 import at.ac.tuwien.dsg.rSybl.analysisEngine.main.ControlServiceFactory;
 import at.ac.tuwien.dsg.rSybl.analysisEngine.utils.AnalysisLogger;
@@ -48,10 +49,10 @@ import at.ac.tuwien.dsg.rSybl.analysisEngine.utils.AnalysisLogger;
 public class SyblControlWS {
         @Context
         private UriInfo context;
-	private ControlService controlService;
+	private ControlCoordination controlCoordination;
 	
 	public SyblControlWS(){
-		setControlService(ControlServiceFactory.getControlServiceInstance());	
+		controlCoordination=new ControlCoordination();
 	}
 	@GET
 	@Path("/test")
@@ -63,49 +64,60 @@ public class SyblControlWS {
 	 @PUT
 	 @Path("/processAnotation")
 	 @Consumes("application/xml")
-	public void processAnnotation(String entity,SYBLAnnotation annotation){
-		try {
-			getControlService().processAnnotation(entity, annotation);
-		} catch (RemoteException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-	}
+	public void processAnnotation(String serviceId,String entity,SYBLAnnotation annotation){
+			controlCoordination.processAnnotation(serviceId,entity, annotation);
+		
 	}
 	 @PUT
 	 @Path("/setApplicationDescriptionInfoInternalModel")
 	 @Consumes("application/xml")
 	public void setApplicationDescriptionInfoInternalModel(String applicationDescriptionXML, String elasticityRequirementsXML, String deploymentInfoXML){
-		getControlService().setApplicationDescriptionInfoInternalModel(applicationDescriptionXML, elasticityRequirementsXML, deploymentInfoXML);
+		 controlCoordination.setApplicationDescriptionInfoInternalModel(applicationDescriptionXML, elasticityRequirementsXML, deploymentInfoXML);
 	}
 	 
 	 @PUT
-	 @Path("/setApplicationDescriptionInfoTOSCABased")
+	 @Path("/setTOSCADescriptionAndStartControl")
 	 @Consumes("application/xml")
-	public void setApplicationDescriptionInfoTOSCABased(String tosca){
-		getControlService().setApplicationDescriptionInfoTOSCABased(tosca);
+	public void setTOSCAAndStartControl(String tosca){
+		 controlCoordination.setAndStartToscaControl(tosca);
+		 
 	}
 
 	 @PUT
 	 @Path("/setApplicationDescriptionCELAR")
 	 @Consumes("application/xml")
 	public void setApplicationDescriptionInfoCELAR(String celar){
-		controlService.setApplicationDescriptionInfoCELAR(celar);
+		 controlCoordination.setApplicationDescriptionInfo(celar);
 	}
 	 
 	 @PUT
 	 @Path("/setApplicationDeploymentDescriptionCELAR")
 	 @Consumes("application/xml")
 	public void setApplicationDeploymentInfoCELAR(String celar){
-		controlService.setApplicationDeploymentDescriptionInfoCELAR(celar);
+		 controlCoordination.setApplicationDeploymentDescription(celar);
 
 	} 
-	public ControlService getControlService() {
-		return controlService;
+	 @PUT
+	 @Path("/prepareControl")
+	 @Consumes("application/xml")
+	public void prepareControl(String cloudServiceId){
+		 controlCoordination.prepareControl(cloudServiceId);
+	} 
+	 @PUT
+	 @Path("/startControl")
+	 @Consumes("application/xml")
+	public void startControl(String cloudServiceId){
+		 controlCoordination.startControl(cloudServiceId);
+	} 
+	
+	 @PUT
+	 @Path("/stopControl")
+	 @Consumes("application/xml")
+	public void stopControl(String cloudServiceId){
+		 controlCoordination.stopControl(cloudServiceId);
 	}
-
-	public void setControlService(ControlService controlService) {
-		this.controlService = controlService;
-	}
+	 
+	
 
 	public UriInfo getContext() {
 		return context;

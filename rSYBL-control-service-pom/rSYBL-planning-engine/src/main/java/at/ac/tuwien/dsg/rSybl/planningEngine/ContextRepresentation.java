@@ -57,6 +57,10 @@ public class ContextRepresentation {
 	private MonitoredCloudService monitoredCloudService = new MonitoredCloudService(); 
 	private DependencyGraph dependencyGraph;
 	private MonitoringAPIInterface monitoringAPI ;
+	
+	private List<ActionEffect> actionsAssociatedToContext=new ArrayList<ActionEffect>();
+	private double PREVIOUS_CS_UNHEALTHY_STATE =0;
+	private double CS_UNHEALTHY_STATE=0;
 	public ContextRepresentation(DependencyGraph cloudService, MonitoringAPIInterface monitoringAPI){
 		this.dependencyGraph=cloudService;
 		this.monitoringAPI=monitoringAPI;
@@ -462,7 +466,75 @@ public class ContextRepresentation {
 			}
 		}
 		return str;	}
-	
+	public double quantifyBinaryRestriction(BinaryRestriction binaryRestriction,MonitoredEntity monitoredEntity){
+		double fulfilled=0.0;
+		Double currentLeftValue=0.0;
+		Double currentRightValue = 0.0;
+		if (binaryRestriction.getLeftHandSide().getMetric()!=null){
+			String metric = binaryRestriction.getLeftHandSide().getMetric();
+			//PlanningLogger.logger.info(monitoredEntity+" "+metric);
+			currentLeftValue = monitoredEntity.getMonitoredValue(metric);
+			if (currentLeftValue<0){
+				if (monitoredEntity.getMonitoredVar(metric)!=null)
+				currentLeftValue = monitoredEntity.getMonitoredValue(monitoredEntity.getMonitoredVar(metric));
+				else currentRightValue=0.0;
+			}
+			currentRightValue=Double.parseDouble(binaryRestriction.getRightHandSide().getNumber());
+		}else
+		if (binaryRestriction.getRightHandSide().getMetric()!=null){
+			String metric = binaryRestriction.getRightHandSide().getMetric();
+			currentRightValue = monitoredEntity.getMonitoredValue(metric);
+			//System.out.println("Current value for metric is  "+ currentRightValue);
+			if (currentRightValue<0){
+				if (monitoredEntity.getMonitoredVar(metric)!=null)
+				currentRightValue = monitoredEntity.getMonitoredValue(monitoredEntity.getMonitoredVar(metric));
+				else currentRightValue=0.0;
+			}
+			currentLeftValue=Double.parseDouble(binaryRestriction.getLeftHandSide().getNumber());
+		}
+		switch (binaryRestriction.getType()){
+		case "lessThan":
+			if (currentLeftValue>=currentRightValue){
+				fulfilled=Math.abs((currentLeftValue-currentRightValue)/currentRightValue);
+			}
+			break;
+		case "greaterThan":
+			if (currentLeftValue<=currentRightValue){
+				fulfilled=Math.abs((currentLeftValue-currentRightValue)/currentRightValue);
+
+			}
+			break;
+		case "lessThanOrEqual":
+			if (currentLeftValue>currentRightValue){
+				fulfilled=Math.abs((currentLeftValue-currentRightValue)/currentRightValue);
+
+			}
+			break;
+		case "greaterThanOrEqual":
+			if (currentLeftValue<currentRightValue){
+				fulfilled=Math.abs((currentLeftValue-currentRightValue)/currentRightValue);
+			}
+			break;
+		case "differentThan":
+			if (currentLeftValue==currentRightValue){
+				fulfilled=Math.abs((currentLeftValue-currentRightValue)/currentRightValue);
+			}
+			break;
+		case "equals":
+			if (currentLeftValue!=currentRightValue){
+				//System.out.println("Violated constraint "+constraint.getId());
+				fulfilled=Math.abs((currentLeftValue-currentRightValue)/currentRightValue);
+			}
+			break;
+		default:
+			if (currentLeftValue>=currentRightValue){
+				//System.out.println("Violated constraint "+constraint.getId());
+				fulfilled=Math.abs((currentLeftValue-currentRightValue)/currentRightValue);
+			}
+			break;
+		}
+		return fulfilled;
+	}
 	public boolean evaluateBinaryRestriction(BinaryRestriction binaryRestriction,MonitoredEntity monitoredEntity){
 		boolean fulfilled=true;
 		Double currentLeftValue=0.0;
@@ -564,6 +636,40 @@ public class ContextRepresentation {
 		}
 		return nbFixedStrategies;
 	}
+	
+	public int countFixedStrategies(ContextRepresentation previousContextRepresentation){
+		int nbFixedStrategies = 0;
+		for (ElasticityRequirement elReq:dependencyGraph.getAllElasticityRequirements()){
+			SYBLSpecification syblSpecification = SYBLDirectiveMappingFromXML.mapFromSYBLAnnotation(elReq.getAnnotation());
+		//System.out.println("Searching for monitored entity "+syblSpecification.getComponentId());
+				MonitoredEntity monitoredEntity = findMonitoredEntity(syblSpecification.getComponentId());
+				if (monitoredEntity==null) PlanningLogger.logger.info("Not finding monitored entity "+monitoredEntity+ " "+syblSpecification.getComponentId());
+			for (Strategy strategy:syblSpecification.getStrategy()){
+				Condition condition = strategy.getCondition();		
+				
+				if (evaluateCondition(condition, monitoredEntity)){
+				if (strategy.getToEnforce().getActionName().toLowerCase().contains("maximize")||strategy.getToEnforce().getActionName().toLowerCase().contains("minimize")){
+					if (strategy.getToEnforce().getActionName().toLowerCase().contains("maximize")){
+						//PlanningLogger.logger.info("Current value for "+ strategy.getToEnforce().getParameter()+" is "+ monitoredEntity.getMonitoredValue(strategy.getToEnforce().getParameter())+" .Previous value was "+previousContextRepresentation.getValueForMetric(monitoredEntity,strategy.getToEnforce().getParameter()));
+						
+						if (monitoredEntity.getMonitoredValue(strategy.getToEnforce().getParameter())>previousContextRepresentation.getValueForMetric(monitoredEntity, strategy.getToEnforce().getParameter())){
+							nbFixedStrategies+=1;
+						}
+					}
+					if (strategy.getToEnforce().getActionName().toLowerCase().contains("minimize")){
+					//	PlanningLogger.logger.info("Current value for "+ strategy.getToEnforce().getParameter()+" is "+ monitoredEntity.getMonitoredValue(strategy.getToEnforce().getParameter())+" .Previous value was "+previousContextRepresentation.getValueForMetric(monitoredEntity,strategy.getToEnforce().getParameter()));
+						
+						if (monitoredEntity.getMonitoredValue(strategy.getToEnforce().getParameter())<previousContextRepresentation.getValueForMetric(monitoredEntity,strategy.getToEnforce().getParameter())){
+							nbFixedStrategies+=1;
+						}
+					}
+				}
+			}
+			}
+		}
+		return nbFixedStrategies;
+	}
+	
 	public boolean evaluateCondition(Condition c, MonitoredEntity monitoredEntity){
 		if (c==null) return true;
 		
@@ -596,6 +702,54 @@ public class ContextRepresentation {
 		else return false;
 
 	}
+	
+	public double quantifyCondition(Condition c, MonitoredEntity monitoredEntity){
+		if (c==null) return 0;
+		
+		if (monitoredEntity==null) {
+			PlanningLogger.logger.info("Monitored entity is null ");
+			return 0;
+		}
+			double evaluatedConstraints= 0;
+			double binaryRestrictionNb=0;
+			for (BinaryRestrictionsConjunction restrictions:c.getBinaryRestriction()){
+			
+			for (BinaryRestriction binaryRestriction:restrictions.getBinaryRestrictions()){
+				if (!evaluateBinaryRestriction(binaryRestriction, monitoredEntity)) {
+					evaluatedConstraints +=quantifyBinaryRestriction(binaryRestriction, monitoredEntity);
+					
+				}
+				binaryRestrictionNb++;
+				}
+			
+			}	
+			
+			for (UnaryRestrictionsConjunction restrictions:c.getUnaryRestrictions()){
+		
+			for (UnaryRestriction unaryRestriction:restrictions.getUnaryRestrictions()){
+				if (!evaluateUnaryRestriction(unaryRestriction, monitoredEntity)) {
+					evaluatedConstraints+=quantifyUnaryRestriction(unaryRestriction, monitoredEntity);
+				}
+				binaryRestrictionNb++;
+				}
+			
+
+			}
+			
+		return evaluatedConstraints;
+
+	}
+	public double quantifyUnaryRestriction(UnaryRestriction unaryRestriction, MonitoredEntity monitoredEntity){
+		if (unaryRestriction.getReferenceTo().getFunction().equalsIgnoreCase("fulfilled")){
+			if (getViolatedConstraints().contains(unaryRestriction.getReferenceTo().getName()))
+				return 1;
+			else return 0;
+		}else{
+			if (getViolatedConstraints().contains(unaryRestriction.getReferenceTo().getName()))
+				return 0;
+			else return 1;
+		}
+	}
 	public boolean evaluateUnaryRestriction(UnaryRestriction unaryRestriction, MonitoredEntity monitoredEntity){
 		if (unaryRestriction.getReferenceTo().getFunction().equalsIgnoreCase("fulfilled")){
 			if (getViolatedConstraints().contains(unaryRestriction.getReferenceTo().getName()))
@@ -627,10 +781,48 @@ public class ContextRepresentation {
 		//PlanningLogger.logger.info("Number of violated constraints"+ numberofViolatedConstraints);
 		return numberofViolatedConstraints;
 	}
+	
+	public int evaluateViolationPercentage(){
+		int numberofViolatedConstraints=0;
+		for (ElasticityRequirement elReq:dependencyGraph.getAllElasticityRequirements()){
+			SYBLSpecification syblSpecification = SYBLDirectiveMappingFromXML.mapFromSYBLAnnotation(elReq.getAnnotation());
+			//System.out.println("Searching for monitored entity "+syblSpecification.getComponentId());
+			MonitoredEntity monitoredEntity = findMonitoredEntity(syblSpecification.getComponentId());
+			if (monitoredEntity==null) PlanningLogger.logger.info("Not finding monitored entity "+monitoredEntity+ " "+syblSpecification.getComponentId());
+
+			for (Constraint constraint:syblSpecification.getConstraint()){
+				if (evaluateCondition(constraint.getCondition(), monitoredEntity) && !evaluateCondition(constraint.getToEnforce(), monitoredEntity))
+						numberofViolatedConstraints=numberofViolatedConstraints+1;
+				
+			}
+		}
+		//PlanningLogger.logger.info("Number of violated constraints"+ numberofViolatedConstraints);
+		return numberofViolatedConstraints;
+	}
+	
 	public MonitoredCloudService getMonitoredCloudService() {
 		return monitoredCloudService;
 	}
 	public void setMonitoredCloudService(MonitoredCloudService monitoredCloudService) {
 		this.monitoredCloudService = monitoredCloudService;
+	}
+	public double getPREVIOUS_CS_UNHEALTHY_STATE() {
+		return PREVIOUS_CS_UNHEALTHY_STATE;
+	}
+	public void setPREVIOUS_CS_UNHEALTHY_STATE(double pREVIOUS_CS_UNHEALTHY_STATE) {
+		PREVIOUS_CS_UNHEALTHY_STATE = pREVIOUS_CS_UNHEALTHY_STATE;
+	}
+	public double getCS_UNHEALTHY_STATE() {
+		return CS_UNHEALTHY_STATE;
+	}
+	public void setCS_UNHEALTHY_STATE(double cS_UNHEALTHY_STATE) {
+		CS_UNHEALTHY_STATE = cS_UNHEALTHY_STATE;
+	}
+	public List<ActionEffect> getActionsAssociatedToContext() {
+		return actionsAssociatedToContext;
+	}
+	public void addActionToContext(ActionEffect actionsAssociatedToContext) {
+		
+		this.actionsAssociatedToContext.add(actionsAssociatedToContext);
 	}
 }

@@ -43,7 +43,7 @@ import at.ac.tuwien.dsg.rSybl.planningEngine.staticData.ActionEffect;
 import at.ac.tuwien.dsg.rSybl.planningEngine.staticData.ActionEffects;
 import at.ac.tuwien.dsg.rSybl.planningEngine.utils.PlanningLogger;
 
-public class PlanningGreedyAlgorithm implements Runnable {
+public class PlanningGreedyAlgorithm implements PlanningAlgorithmInterface {
 	private Thread t;
 	private boolean toCleanup=true;
 	private ContextRepresentation contextRepresentation;

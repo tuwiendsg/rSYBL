@@ -48,17 +48,18 @@ import at.ac.tuwien.dsg.rSybl.cloudInteractionUnit.api.EnforcementAPI;
 import at.ac.tuwien.dsg.rSybl.cloudInteractionUnit.api.EnforcementAPIInterface;
 import at.ac.tuwien.dsg.rSybl.dataProcessingUnit.api.MonitoringAPI;
 import at.ac.tuwien.dsg.rSybl.dataProcessingUnit.api.MonitoringAPIInterface;
+import at.ac.tuwien.dsg.rSybl.planningEngine.PlanningAlgorithmInterface;
 import at.ac.tuwien.dsg.rSybl.planningEngine.PlanningGreedyAlgorithm;
 import at.ac.tuwien.dsg.sybl.syblProcessingUnit.processing.SYBLProcessingThread;
 import at.ac.tuwien.dsg.sybl.syblProcessingUnit.utils.SYBLDirectivesEnforcementLogger;
 
-public class ControlService {
+public class ControlService extends Thread{
 	private SYBLService syblService;
 	private MonitoringAPIInterface monitoringAPI;
 	private EnforcementAPIInterface enforcementAPI;
 
 	private DependencyGraph dependencyGraph;
-	private PlanningGreedyAlgorithm planningGreedyAlgorithm;
+	private PlanningAlgorithmInterface planningAlgorithm;
 	private String applicationDescription = "";
 	private String deploymentDescription = "";
 	
@@ -76,6 +77,14 @@ public class ControlService {
 			}	    }
 
 	  
+	}
+	
+	public void run(){
+		planningAlgorithm.stop();
+		
+	}
+	public void setDependencyGraph(DependencyGraph dependencyGraph){
+		this.dependencyGraph=dependencyGraph;
 	}
 	public void startSYBLProcessingAndPlanning() {
 		try {
@@ -111,9 +120,9 @@ public class ControlService {
 			// CloudService cloudService, ArrayList<SYBLSpecification>
 			// syblSpecifications
 			disableConflictingConstraints();
-			planningGreedyAlgorithm = new PlanningGreedyAlgorithm(
+			planningAlgorithm = new PlanningGreedyAlgorithm(
 					dependencyGraph, monitoringAPI, enforcementAPI);
-			planningGreedyAlgorithm.start();
+			planningAlgorithm.start();
 
 		} catch (Exception e) {
 			AnalysisLogger.logger.error("Control service Instantiation "
@@ -150,11 +159,11 @@ public class ControlService {
 		applicationDescription = applicationDescriptionXML;
 		InputProcessing inputProcessing = new InputProcessing();
 
-		if (planningGreedyAlgorithm != null)
-			planningGreedyAlgorithm.stop();
+		if (planningAlgorithm != null)
+			planningAlgorithm.stop();
 		if (syblService != null)
 			syblService.stopProcessingThreads();
-		planningGreedyAlgorithm = null;
+		planningAlgorithm = null;
 		syblService = null;
 		monitoringAPI = null;
 		enforcementAPI = null;
@@ -186,11 +195,11 @@ public class ControlService {
 		deploymentDescription = deploymentDescriptionXML;
 		InputProcessing inputProcessing = new InputProcessing();
 
-		if (planningGreedyAlgorithm != null)
-			planningGreedyAlgorithm.stop();
+		if (planningAlgorithm != null)
+			planningAlgorithm.stop();
 		if (syblService != null)
 			syblService.stopProcessingThreads();
-		planningGreedyAlgorithm = null;
+		planningAlgorithm = null;
 		syblService = null;
 		monitoringAPI = null;
 		enforcementAPI = null;
