@@ -9,9 +9,8 @@ For any research work in which MELA is used, please cite the following papers:
  - for the SYBL language: Georgiana Copil, Daniel Moldovan, Hong-Linh Truong, Schahram Dustdar, "<a href="http://ieeexplore.ieee.org/xpl/articleDetails.jsp?arnumber=6546068">SYBL: an Extensible Language for Controlling Elasticity in Cloud Applications</a>", 13th IEEE/ACM International Symposium on Cluster, Cloud and Grid Computing (CCGrid), May 14-16, 2013, Delft, the Netherlands. Presentation given at CCGRID
 
 A snapshot of user interaction with rSYBL is presented below
-***
 <figure>
-<img src="https://github.com/tuwiendsg/rSYBL/blob/master/lifecycle.jpg?raw=true" width="700px" >
+<img src="https://github.com/tuwiendsg/rSYBL/blob/master/lifecycle.jpg?raw=true" width="800px" >
  <figcaption> User interaction with rSYBL</figcaption>
 </figure>
 ***
