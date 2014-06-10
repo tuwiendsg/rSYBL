@@ -11,7 +11,7 @@ For any research work in which MELA is used, please cite the following papers:
 A snapshot of user interaction with rSYBL is presented below
 ***
 <figure>
-<img src="https://github.com/tuwiendsg/rSYBL/blob/master/lifecycle.jpg?raw=true" width="500px" >
+<img src="https://github.com/tuwiendsg/rSYBL/blob/master/lifecycle.jpg?raw=true" width="700px" >
  <figcaption> User interaction with rSYBL</figcaption>
 </figure>
 ***
