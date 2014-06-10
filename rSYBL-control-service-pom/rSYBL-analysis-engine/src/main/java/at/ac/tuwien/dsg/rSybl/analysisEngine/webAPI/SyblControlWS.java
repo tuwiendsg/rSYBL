@@ -69,7 +69,7 @@ public class SyblControlWS {
 		
 	}
 	 @PUT
-	 @Path("/setApplicationDescriptionInfoInternalModel")
+	 @Path("/setApplicationDescriptionInternalModel")
 	 @Consumes("application/xml")
 	public void setApplicationDescriptionInfoInternalModel(String applicationDescriptionXML, String elasticityRequirementsXML, String deploymentInfoXML){
 		 controlCoordination.setApplicationDescriptionInfoInternalModel(applicationDescriptionXML, elasticityRequirementsXML, deploymentInfoXML);
@@ -84,14 +84,27 @@ public class SyblControlWS {
 	}
 
 	 @PUT
-	 @Path("/setApplicationDescriptionCELAR")
+	 @Path("/setApplicationDescription")
 	 @Consumes("application/xml")
-	public void setApplicationDescriptionInfoCELAR(String celar){
+	public void setApplicationDescriptionInfo(String celar){
 		 controlCoordination.setApplicationDescriptionInfo(celar);
+	}
+	 @PUT
+	 @Path("/setECEffects")
+	 @Consumes("application/xml")
+	public void setElasticityCapabilitiesEffects(String effects){
+		 controlCoordination.setElasticityCapabilitiesEffects(effects);
 	}
 	 
 	 @PUT
-	 @Path("/setApplicationDeploymentDescriptionCELAR")
+	 @Path("/setMetricComposition")
+	 @Consumes("application/xml")
+	public void setMetricsComposition(String composition){
+		 controlCoordination.setMetricComposition(composition);
+	}
+	 
+	 @PUT
+	 @Path("/setApplicationDeployment")
 	 @Consumes("application/xml")
 	public void setApplicationDeploymentInfoCELAR(String celar){
 		 controlCoordination.setApplicationDeploymentDescription(celar);

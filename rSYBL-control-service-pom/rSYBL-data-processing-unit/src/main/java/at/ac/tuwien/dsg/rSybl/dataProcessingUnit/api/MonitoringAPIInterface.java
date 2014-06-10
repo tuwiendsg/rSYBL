@@ -24,7 +24,8 @@ import at.ac.tuwien.dsg.csdg.elasticityInformation.ElasticityRequirement;
 
 
 public interface MonitoringAPIInterface {
-    
+    public void setCompositionRules(String compositionRules);
+    public void setCompositionRules();
 	public Double getCurrentCPUSize(Node e)  ;
     
 	public Double getCostPerHour(Node e)  ;

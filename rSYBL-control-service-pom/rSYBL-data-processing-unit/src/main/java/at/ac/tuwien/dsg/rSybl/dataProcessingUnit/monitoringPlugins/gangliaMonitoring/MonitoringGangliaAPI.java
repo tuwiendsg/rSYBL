@@ -575,6 +575,16 @@ Double retValue = 0.0;
 		// TODO Auto-generated method stub
 		return null;
 	}
+	@Override
+	public void submitCompositionRules(String composition) {
+		// TODO Auto-generated method stub
+		
+	}
+	@Override
+	public void submitCompositionRules() {
+		// TODO Auto-generated method stub
+		
+	}
 
 	
 

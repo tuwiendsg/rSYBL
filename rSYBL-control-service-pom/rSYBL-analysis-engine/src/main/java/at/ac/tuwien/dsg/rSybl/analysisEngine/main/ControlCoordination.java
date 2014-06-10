@@ -21,10 +21,17 @@ public class ControlCoordination {
 		currentControls=cloudServiceId;
 	}
 	public void setApplicationDeploymentDescription(String deployment){
-		controls.get(currentControls).setApplicationDeploymentDescriptionInfoCELAR(deployment);
+		controls.get(currentControls).setApplicationDeployment(deployment);
 	}
+	public void setElasticityCapabilitiesEffects(String effects){
+		controls.get(currentControls).setEffects(effects);
+	}
+	public void setMetricComposition(String composition){
+		controls.get(currentControls).setMetricCompositionRules(composition);
+	}
+	
 	public void setApplicationDescriptionInfo(String descriptionInfo){
-		controls.get(currentControls).setApplicationDescriptionInfoCELAR(descriptionInfo);
+		controls.get(currentControls).setApplicationDescriptionInfo(descriptionInfo);
 	}
 	public void startControl(String cloudServiceId){
 		controls.get(cloudServiceId).start();

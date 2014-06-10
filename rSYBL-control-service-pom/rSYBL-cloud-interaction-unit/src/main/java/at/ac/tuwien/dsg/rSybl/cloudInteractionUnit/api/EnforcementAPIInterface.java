@@ -44,8 +44,6 @@ public interface EnforcementAPIInterface{
 	    	
 			    public void enforceAction(String actionName, Node e);
 
-
-	
-
+			
 
 }

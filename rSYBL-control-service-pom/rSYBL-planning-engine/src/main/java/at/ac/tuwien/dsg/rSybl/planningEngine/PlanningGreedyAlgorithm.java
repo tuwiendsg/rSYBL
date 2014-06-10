@@ -177,6 +177,7 @@ public class PlanningGreedyAlgorithm implements PlanningAlgorithmInterface {
 		}
 
 	}
+
 	public void findAndExecuteBestActions() {
 		
 			strategiesThatNeedToBeImproved="";
@@ -397,4 +398,11 @@ public class PlanningGreedyAlgorithm implements PlanningAlgorithmInterface {
 	public void stop() {
 		t.stop();
 	}
+
+	@Override
+	public void setEffects(String effects) {
+		// TODO Auto-generated method stub
+		ActionEffects.setActionEffects(effects);
+	}
+
 }

@@ -278,7 +278,7 @@ public class MELA_API implements MonitoringInterface{
                     Logger.getLogger(MELA_API.class.getName()).log(Level.SEVERE, line);
                 }
             }
-            submitCompositionRules();
+        
             serviceSet = true;
             notConnected=false;
         } catch (Exception e) {
@@ -1038,6 +1038,22 @@ public class MELA_API implements MonitoringInterface{
 			}
     }
     	}
+    public void submitCompositionRules (String compositionRules){
+    	try{
+        Unmarshaller unmarshaller = JAXBContext.newInstance(CompositionRulesConfiguration.class).createUnmarshaller();
+
+    	 CompositionRulesConfiguration compositionRulesConfiguration = (CompositionRulesConfiguration) unmarshaller.unmarshal(this.getClass().getClassLoader().getResourceAsStream(compositionRules));
+
+         submitMetricCompositionConfiguration(compositionRulesConfiguration);
+    	} catch(Exception e){
+    			e.printStackTrace();
+
+	             RuntimeLogger.logger.error("Error when submitting composition rules, in MELA_API"+e.getMessage());
+	    	
+			
+    }
+    	}
+
     public Double getMetricValue(String metricName, Node entity) {
         Metric metric = new Metric(metricName);
         

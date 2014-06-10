@@ -62,7 +62,8 @@ public class ControlService extends Thread{
 	private PlanningAlgorithmInterface planningAlgorithm;
 	private String applicationDescription = "";
 	private String deploymentDescription = "";
-	
+	private String metricCompositionRules ="";
+	private String effects ="";
 	
 	public ControlService() {
 		new StartThread().start();
@@ -99,6 +100,12 @@ public class ControlService extends Thread{
 			AnalysisLogger.logger.info(dependencyGraph.graphToString());
 			monitoringAPI = new MonitoringAPI();
 			monitoringAPI.setControlledService(node);
+			if (!metricCompositionRules.equalsIgnoreCase("")){
+				monitoringAPI.setCompositionRules(metricCompositionRules);
+			}else
+			{
+				monitoringAPI.setCompositionRules();
+			}
 			AnalysisLogger.logger.info("Have just set the cloud service ");
 			monitoringAPI.submitElasticityRequirements(dependencyGraph
 					.getAllElasticityRequirements());
@@ -120,8 +127,11 @@ public class ControlService extends Thread{
 			// CloudService cloudService, ArrayList<SYBLSpecification>
 			// syblSpecifications
 			disableConflictingConstraints();
+			
 			planningAlgorithm = new PlanningGreedyAlgorithm(
 					dependencyGraph, monitoringAPI, enforcementAPI);
+			planningAlgorithm.setEffects(effects);
+			
 			planningAlgorithm.start();
 
 		} catch (Exception e) {
@@ -154,8 +164,7 @@ public class ControlService extends Thread{
 //			deploymentDescription = "";
 //		}
 //	}
-	public void setApplicationDescriptionInfoCELAR(
-			String applicationDescriptionXML) {
+	public void setApplicationDescriptionInfo(String applicationDescriptionXML) {
 		applicationDescription = applicationDescriptionXML;
 		InputProcessing inputProcessing = new InputProcessing();
 
@@ -190,8 +199,7 @@ public class ControlService extends Thread{
 		}
 	}
 
-	public void setApplicationDeploymentDescriptionInfoCELAR(
-			String deploymentDescriptionXML) {
+	public void setApplicationDeployment(	String deploymentDescriptionXML) {
 		deploymentDescription = deploymentDescriptionXML;
 		InputProcessing inputProcessing = new InputProcessing();
 
@@ -581,6 +589,19 @@ public class ControlService extends Thread{
 				}
 			}
 		}
+	}
+	public String getMetricCompositionRules() {
+		return metricCompositionRules;
+	}
+	public void setMetricCompositionRules(String metricCompositionRules) {
+		this.metricCompositionRules = metricCompositionRules;
+	}
+	public String getEffects() {
+		return effects;
+	}
+	public void setEffects(String effects) {
+		this.effects = effects;
+		
 	}
 
 }

@@ -114,5 +114,9 @@ public class PlanningHeuristicSearch implements PlanningAlgorithmInterface  {
 		}
 		
 	}
-
+	@Override
+	public void setEffects(String effects) {
+		// TODO Auto-generated method stub
+		ActionEffects.setActionEffects(effects);
+	}
 }

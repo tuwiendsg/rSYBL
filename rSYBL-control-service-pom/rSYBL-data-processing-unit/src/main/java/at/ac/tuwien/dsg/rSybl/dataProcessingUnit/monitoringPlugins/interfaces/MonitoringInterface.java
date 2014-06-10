@@ -44,6 +44,7 @@ public interface MonitoringInterface {
 	    public Double getTotalCostSoFar(Node node);
 	    public List<String> getAvailableMetrics(Node node);
 	    public void submitServiceConfiguration(Node node);
+	    public void submitCompositionRules(String composition);
 	    public void submitElasticityRequirements(ArrayList<ElasticityRequirement> description);
 	    public void notifyControlActionStarted(String actionName, Node node);
 		public void notifyControlActionEnded(String actionName, Node node);
@@ -52,4 +53,6 @@ public interface MonitoringInterface {
 	    public void refreshServiceStructure(Node node);
 	    public String getOngoingActionID();
 	    public String getOngoingActionNodeID();
+	    public void submitCompositionRules();
+
 }

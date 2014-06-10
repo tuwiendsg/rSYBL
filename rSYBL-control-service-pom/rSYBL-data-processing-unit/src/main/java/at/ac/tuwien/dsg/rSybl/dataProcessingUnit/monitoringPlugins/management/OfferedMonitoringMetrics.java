@@ -282,7 +282,25 @@ public class OfferedMonitoringMetrics implements MonitoringInterface{
 		}	
 		
 	}
+	@Override
+	public void submitCompositionRules(String composition) {
+		Map<Method,MonitoringInterface> methods = manageMonitoringPlugins.getMethods(manageMonitoringPlugins.getAllPlugins(cloudService));
+		for (Method method:methods.keySet()){
+			if (method.getName().equalsIgnoreCase("submitCompositionRules")&& (method.getParameterTypes().length>0)){
+				 methods.get(method).submitCompositionRules(composition);
+			}
+		}	
+	}
 	
+	@Override
+	public void submitCompositionRules() {
+		Map<Method,MonitoringInterface> methods = manageMonitoringPlugins.getMethods(manageMonitoringPlugins.getAllPlugins(cloudService));
+		for (Method method:methods.keySet()){
+			if (method.getName().equalsIgnoreCase("submitCompositionRules")&& (method.getParameterTypes().length==0)){
+				 methods.get(method).submitCompositionRules();
+			}
+		}	
+	}
 	@Override
 	public void submitElasticityRequirements(
 			ArrayList<ElasticityRequirement> description) {
@@ -336,5 +354,6 @@ public class OfferedMonitoringMetrics implements MonitoringInterface{
 		}
 		return result;
 	}
+	
 
 }

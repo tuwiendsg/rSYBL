@@ -41,7 +41,9 @@ public class MonitoringAPI implements MonitoringAPIInterface{
 		
 	}
 	
-
+	public void setCompositionRules(String compositionRules){
+		offeredMonitoringMetrics.submitCompositionRules(compositionRules);
+	}
 	
 	
 	public Double getCurrentCPUSize(Node e)  {
@@ -414,6 +416,12 @@ try{
 	public String getOngoingActionNodeID() {
 		// TODO Auto-generated method stub
 		return offeredMonitoringMetrics.getOngoingActionNodeID();
+	}
+
+	@Override
+	public void setCompositionRules() {
+		// TODO Auto-generated method stub
+		offeredMonitoringMetrics.submitCompositionRules();
 	}
 
 
