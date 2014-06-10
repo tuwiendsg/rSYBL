@@ -37,6 +37,7 @@ import javax.ws.rs.core.UriInfo;
 
 import com.sun.jersey.spi.resource.Singleton;
 
+
 import at.ac.tuwien.dsg.csdg.elasticityInformation.elasticityRequirements.SYBLAnnotation;
 import at.ac.tuwien.dsg.rSybl.analysisEngine.main.ControlCoordination;
 import at.ac.tuwien.dsg.rSybl.analysisEngine.main.ControlService;
@@ -69,14 +70,14 @@ public class SyblControlWS {
 		
 	}
 	 @PUT
-	 @Path("/setApplicationDescriptionInternalModel")
+	 @Path("/serviceDescriptionInternalModel")
 	 @Consumes("application/xml")
 	public void setApplicationDescriptionInfoInternalModel(String applicationDescriptionXML, String elasticityRequirementsXML, String deploymentInfoXML){
 		 controlCoordination.setApplicationDescriptionInfoInternalModel(applicationDescriptionXML, elasticityRequirementsXML, deploymentInfoXML);
 	}
 	 
 	 @PUT
-	 @Path("/setTOSCADescriptionAndStartControl")
+	 @Path("/TOSCADescriptionAndStartControl")
 	 @Consumes("application/xml")
 	public void setTOSCAAndStartControl(String tosca){
 		 controlCoordination.setAndStartToscaControl(tosca);
@@ -84,27 +85,27 @@ public class SyblControlWS {
 	}
 
 	 @PUT
-	 @Path("/setApplicationDescription")
+	 @Path("/serviceDescription")
 	 @Consumes("application/xml")
 	public void setApplicationDescriptionInfo(String celar){
 		 controlCoordination.setApplicationDescriptionInfo(celar);
 	}
 	 @PUT
-	 @Path("/setECEffects")
+	 @Path("/elasticityCapabilitiesEffects")
 	 @Consumes("application/xml")
 	public void setElasticityCapabilitiesEffects(String effects){
 		 controlCoordination.setElasticityCapabilitiesEffects(effects);
 	}
 	 
 	 @PUT
-	 @Path("/setMetricComposition")
+	 @Path("/metricsCompositionRules")
 	 @Consumes("application/xml")
 	public void setMetricsComposition(String composition){
 		 controlCoordination.setMetricComposition(composition);
 	}
 	 
 	 @PUT
-	 @Path("/setApplicationDeployment")
+	 @Path("/serviceDeployment")
 	 @Consumes("application/xml")
 	public void setApplicationDeploymentInfoCELAR(String celar){
 		 controlCoordination.setApplicationDeploymentDescription(celar);
