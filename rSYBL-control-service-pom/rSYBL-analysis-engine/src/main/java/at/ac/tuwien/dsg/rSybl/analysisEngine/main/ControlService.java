@@ -130,8 +130,9 @@ public class ControlService extends Thread{
 			
 			planningAlgorithm = new PlanningGreedyAlgorithm(
 					dependencyGraph, monitoringAPI, enforcementAPI);
+			if (!effects.equalsIgnoreCase(""))
 			planningAlgorithm.setEffects(effects);
-			
+	
 			planningAlgorithm.start();
 
 		} catch (Exception e) {
