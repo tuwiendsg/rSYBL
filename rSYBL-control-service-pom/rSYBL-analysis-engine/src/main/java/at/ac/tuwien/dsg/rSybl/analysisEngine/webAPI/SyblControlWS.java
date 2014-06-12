@@ -92,7 +92,7 @@ public class SyblControlWS {
 	}
 	 @PUT
 	 @Path("/elasticityCapabilitiesEffects")
-	 @Consumes("application/xml")
+	 @Consumes("application/json")
 	public void setElasticityCapabilitiesEffects(String effects){
 		 controlCoordination.setElasticityCapabilitiesEffects(effects);
 	}
