@@ -53,7 +53,7 @@ import at.ac.tuwien.dsg.rSybl.planningEngine.PlanningGreedyAlgorithm;
 import at.ac.tuwien.dsg.sybl.syblProcessingUnit.processing.SYBLProcessingThread;
 import at.ac.tuwien.dsg.sybl.syblProcessingUnit.utils.SYBLDirectivesEnforcementLogger;
 
-public class ControlService extends Thread{
+public class ControlService {
 	private SYBLService syblService;
 	private MonitoringAPIInterface monitoringAPI;
 	private EnforcementAPIInterface enforcementAPI;
@@ -80,18 +80,36 @@ public class ControlService extends Thread{
 	  
 	}
 	
-	public void run(){
-		planningAlgorithm.stop();
-		
+
+	public void start(){
+		startSYBLProcessingAndPlanning();
+		planningAlgorithm.start();
+	}
+	
+	public void stop(){
+		if (planningAlgorithm != null)
+			planningAlgorithm.stop();
+		if (syblService != null)
+			syblService.stopProcessingThreads();
+		planningAlgorithm = null;
+		syblService = null;
+		monitoringAPI = null;
+		enforcementAPI = null;
+		effects="";
+		metricCompositionRules="";
 	}
 	public void setDependencyGraph(DependencyGraph dependencyGraph){
 		this.dependencyGraph=dependencyGraph;
 	}
 	public void startSYBLProcessingAndPlanning() {
 		try {
+			InputProcessing inputProcessing = new InputProcessing();
+
+			dependencyGraph = inputProcessing.loadDependencyGraphFromStrings(applicationDescription, "", deploymentDescription);
+			
 			AnalysisLogger.logger.info("Current graph is "
 					+ dependencyGraph.graphToString());
-
+			
 			// at.ac.tuwien.dsg.sybl.monitorandenforcement.runtimeapi.Node
 			// clService =
 			// MappingToWS.mapNodeToNode(dependencyGraph.getCloudService());
@@ -142,6 +160,19 @@ public class ControlService extends Thread{
 	
 			planningAlgorithm.start();
 			AnalysisLogger.logger.info("Planning algorithm started");
+			for (Node node1:dependencyGraph.getAllServiceUnits()){
+				
+				MonitoringThread monitoringThread = new MonitoringThread(node1, monitoringAPI);
+				monitoringThread.start();
+			}
+			for (Node node1:dependencyGraph.getAllServiceTopologies()){
+				MonitoringThread monitoringThread = new MonitoringThread(node1, monitoringAPI);
+				monitoringThread.start();
+			}
+			MonitoringThread monitoringThread = new MonitoringThread(dependencyGraph.getCloudService(), monitoringAPI);
+			monitoringThread.start();
+
+
 		} catch (Exception e) {
 			AnalysisLogger.logger.error("Control service Instantiation "
 					+ e.toString()+"with message " +e.getMessage());
@@ -174,37 +205,10 @@ public class ControlService extends Thread{
 //	}
 	public void setApplicationDescriptionInfo(String applicationDescriptionXML) {
 		applicationDescription = applicationDescriptionXML;
-		InputProcessing inputProcessing = new InputProcessing();
 
-		if (planningAlgorithm != null)
-			planningAlgorithm.stop();
-		if (syblService != null)
-			syblService.stopProcessingThreads();
-		planningAlgorithm = null;
-		syblService = null;
-		monitoringAPI = null;
-		enforcementAPI = null;
 
-		if (!applicationDescription.equalsIgnoreCase("")
-				&& !deploymentDescription.equalsIgnoreCase("")) {
-			dependencyGraph = inputProcessing.loadDependencyGraphFromStrings(
-					applicationDescription, "", deploymentDescription);
-			startSYBLProcessingAndPlanning();
-			for (Node node:dependencyGraph.getAllServiceUnits()){
-				
-				MonitoringThread monitoringThread = new MonitoringThread(node, monitoringAPI);
-				monitoringThread.start();
-			}
-			for (Node node:dependencyGraph.getAllServiceTopologies()){
-				MonitoringThread monitoringThread = new MonitoringThread(node, monitoringAPI);
-				monitoringThread.start();
-			}
-			MonitoringThread monitoringThread = new MonitoringThread(dependencyGraph.getCloudService(), monitoringAPI);
-			monitoringThread.start();
 
-			applicationDescription = "";
-			deploymentDescription = "";
-		}
+		
 	}
 
 	public void setApplicationDeployment(	String deploymentDescriptionXML) {
@@ -219,25 +223,7 @@ public class ControlService extends Thread{
 		syblService = null;
 		monitoringAPI = null;
 		enforcementAPI = null;
-		if (!applicationDescription.equalsIgnoreCase("")
-				&& !deploymentDescription.equalsIgnoreCase("")) {
-			dependencyGraph = inputProcessing.loadDependencyGraphFromStrings(applicationDescription, "", deploymentDescription);
-			startSYBLProcessingAndPlanning();
-			for (Node node:dependencyGraph.getAllServiceUnits()){
-				
-				MonitoringThread monitoringThread = new MonitoringThread(node, monitoringAPI);
-				monitoringThread.start();
-			}
-			for (Node node:dependencyGraph.getAllServiceTopologies()){
-				MonitoringThread monitoringThread = new MonitoringThread(node, monitoringAPI);
-				monitoringThread.start();
-			}
-			MonitoringThread monitoringThread = new MonitoringThread(dependencyGraph.getCloudService(), monitoringAPI);
-			monitoringThread.start();
-
-			applicationDescription = "";
-			deploymentDescription = "";
-		}
+		
 	}
 
 	public void setApplicationDescriptionInfoInternalModel(
@@ -247,7 +233,7 @@ public class ControlService extends Thread{
 		dependencyGraph = inputProcessing.loadDependencyGraphFromStrings(
 				applicationDescriptionXML, elasticityRequirementsXML,
 				deploymentInfoXML);
-		startSYBLProcessingAndPlanning();
+		//startSYBLProcessingAndPlanning();
 	}
 
 	public void setApplicationDescriptionInfoTOSCABased(String tosca) {
@@ -611,5 +597,6 @@ public class ControlService extends Thread{
 		this.effects = effects;
 		
 	}
+	
 
 }
