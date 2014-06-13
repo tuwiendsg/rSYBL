@@ -275,17 +275,17 @@ public class EnforcementAPI implements EnforcementAPIInterface{
 		                    Logger.getLogger(MELA_API.class.getName()).log(Level.SEVERE, line);
 		                }
 		            }
-		            actionName="";
-		        } catch (Exception e) {
-		        	actionName="";
-		            Logger.getLogger(MELA_API.class.getName()).log(Level.SEVERE, e.getMessage(), e);
+		        } catch (Exception ex) {
+		            Logger.getLogger(MELA_API.class.getName()).log(Level.SEVERE, ex.getMessage(), e);
 		        } finally {
-		        	actionName="";
-		        	this.actionTargetEntity="";
 		            if (connection != null) {
 		                connection.disconnect();
 		            }
 		        }
+		}else{
+			if (capability.getCallType().toLowerCase().contains("plugin")){
+				offeredCapabilities.enforceAction(capability.getEndpoint(),e);
+			}
 		}
 		
 	}
