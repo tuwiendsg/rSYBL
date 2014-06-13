@@ -22,6 +22,7 @@ import java.io.FileReader;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.OutputStream;
+import java.io.StringReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.ArrayList;
@@ -1040,10 +1041,11 @@ public class MELA_API implements MonitoringInterface{
     	}
     public void submitCompositionRules (String compositionRules){
     	try{
-    		RuntimeLogger.logger.info("In MELA_API: setting composition rules = "+compositionRules);
+    RuntimeLogger.logger.info("In MELA_API: setting composition rules = "+compositionRules);
         Unmarshaller unmarshaller = JAXBContext.newInstance(CompositionRulesConfiguration.class).createUnmarshaller();
+        StringReader reader = new StringReader(compositionRules);
 
-    	 CompositionRulesConfiguration compositionRulesConfiguration = (CompositionRulesConfiguration) unmarshaller.unmarshal(this.getClass().getClassLoader().getResourceAsStream(compositionRules));
+    	 CompositionRulesConfiguration compositionRulesConfiguration = (CompositionRulesConfiguration) unmarshaller.unmarshal(reader);
 
          submitMetricCompositionConfiguration(compositionRulesConfiguration);
     	} catch(Exception e){
