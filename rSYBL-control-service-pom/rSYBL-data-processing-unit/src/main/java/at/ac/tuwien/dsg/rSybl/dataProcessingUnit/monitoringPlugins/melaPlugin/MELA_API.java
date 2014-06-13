@@ -1030,7 +1030,7 @@ public class MELA_API implements MonitoringInterface{
 				// TODO Auto-generated catch block
 				e1.printStackTrace();
 
-	             RuntimeLogger.logger.error("Error when submitting composition rules, in MELA_API"+e.getMessage());
+	             RuntimeLogger.logger.error("Submitting file composition rules. Error when submitting composition rules, in MELA_API"+e.getMessage());
 	    	
 			} catch (FileNotFoundException e1) {
 				// TODO Auto-generated catch block
@@ -1040,6 +1040,7 @@ public class MELA_API implements MonitoringInterface{
     	}
     public void submitCompositionRules (String compositionRules){
     	try{
+    		RuntimeLogger.logger.info("In MELA_API: setting composition rules = "+compositionRules);
         Unmarshaller unmarshaller = JAXBContext.newInstance(CompositionRulesConfiguration.class).createUnmarshaller();
 
     	 CompositionRulesConfiguration compositionRulesConfiguration = (CompositionRulesConfiguration) unmarshaller.unmarshal(this.getClass().getClassLoader().getResourceAsStream(compositionRules));
@@ -1048,7 +1049,7 @@ public class MELA_API implements MonitoringInterface{
     	} catch(Exception e){
     			e.printStackTrace();
 
-	             RuntimeLogger.logger.error("Error when submitting composition rules, in MELA_API"+e.getMessage());
+	             RuntimeLogger.logger.error("Error when submitting composition rules, in MELA_API "+e.getMessage());
 	    	
 			
     }
