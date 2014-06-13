@@ -101,9 +101,11 @@ public class ControlService extends Thread{
 			monitoringAPI = new MonitoringAPI();
 			monitoringAPI.setControlledService(node);
 			if (!metricCompositionRules.equalsIgnoreCase("")){
+				AnalysisLogger.logger.info("Set the composition rules sent via WS");
 				monitoringAPI.setCompositionRules(metricCompositionRules);
 			}else
 			{
+				AnalysisLogger.logger.info("Set the read composition rules");
 				monitoringAPI.setCompositionRules();
 			}
 			AnalysisLogger.logger.info("Have just set the cloud service ");
