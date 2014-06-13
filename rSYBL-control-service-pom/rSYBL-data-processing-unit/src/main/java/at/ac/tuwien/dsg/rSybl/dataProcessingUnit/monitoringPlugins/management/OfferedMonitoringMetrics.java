@@ -23,6 +23,7 @@ import java.util.Map;
 import at.ac.tuwien.dsg.csdg.Node;
 import at.ac.tuwien.dsg.csdg.elasticityInformation.ElasticityRequirement;
 import at.ac.tuwien.dsg.rSybl.dataProcessingUnit.monitoringPlugins.interfaces.MonitoringInterface;
+import at.ac.tuwien.dsg.rSybl.dataProcessingUnit.utils.RuntimeLogger;
 
 
 
@@ -287,6 +288,7 @@ public class OfferedMonitoringMetrics implements MonitoringInterface{
 		Map<Method,MonitoringInterface> methods = manageMonitoringPlugins.getMethods(manageMonitoringPlugins.getAllPlugins(cloudService));
 		for (Method method:methods.keySet()){
 			if (method.getName().equalsIgnoreCase("submitCompositionRules")&& (method.getParameterTypes().length>0)){
+				RuntimeLogger.logger.info("Setting composition rules on MELA from WS");
 				 methods.get(method).submitCompositionRules(composition);
 			}
 		}	
@@ -297,6 +299,7 @@ public class OfferedMonitoringMetrics implements MonitoringInterface{
 		Map<Method,MonitoringInterface> methods = manageMonitoringPlugins.getMethods(manageMonitoringPlugins.getAllPlugins(cloudService));
 		for (Method method:methods.keySet()){
 			if (method.getName().equalsIgnoreCase("submitCompositionRules")&& (method.getParameterTypes().length==0)){
+				RuntimeLogger.logger.info("Setting composition rules on MELA from file");
 				 methods.get(method).submitCompositionRules();
 			}
 		}	
