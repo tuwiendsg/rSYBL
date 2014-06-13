@@ -109,12 +109,14 @@ public class ControlService extends Thread{
 			AnalysisLogger.logger.info("Have just set the cloud service ");
 			monitoringAPI.submitElasticityRequirements(dependencyGraph
 					.getAllElasticityRequirements());
-
+			AnalysisLogger.logger.info("Have set the requirements on MELA");
 			enforcementAPI = new EnforcementAPI();
 
 			enforcementAPI.setControlledService(node);
 
 			enforcementAPI.setMonitoringPlugin(monitoringAPI);
+			AnalysisLogger.logger.info("Have information on enforcement api");
+
 			syblService = new SYBLService(dependencyGraph, monitoringAPI,
 					enforcementAPI);
 			for (ElasticityRequirement syblSpecification : dependencyGraph
@@ -124,20 +126,23 @@ public class ControlService extends Thread{
 						.getAnnotation().getEntityID(), annotation);
 
 			}
+			
+			AnalysisLogger.logger.info("SYBL Service started");
 			// CloudService cloudService, ArrayList<SYBLSpecification>
 			// syblSpecifications
 			disableConflictingConstraints();
-			
+			AnalysisLogger.logger.info("Conflicting constraints disabled");
+
 			planningAlgorithm = new PlanningGreedyAlgorithm(
 					dependencyGraph, monitoringAPI, enforcementAPI);
 			if (!effects.equalsIgnoreCase(""))
 			planningAlgorithm.setEffects(effects);
 	
 			planningAlgorithm.start();
-
+			AnalysisLogger.logger.info("Planning algorithm started");
 		} catch (Exception e) {
 			AnalysisLogger.logger.error("Control service Instantiation "
-					+ e.toString());
+					+ e.toString()+"with message " +e.getMessage());
 			e.printStackTrace();
 		}
 
