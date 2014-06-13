@@ -83,7 +83,6 @@ public class ControlService {
 
 	public void start(){
 		startSYBLProcessingAndPlanning();
-		planningAlgorithm.start();
 	}
 	
 	public void stop(){
@@ -119,7 +118,7 @@ public class ControlService {
 			monitoringAPI = new MonitoringAPI();
 			monitoringAPI.setControlledService(node);
 			if (!metricCompositionRules.equalsIgnoreCase("")){
-				AnalysisLogger.logger.info("Set the composition rules sent via WS " + metricCompositionRules);
+				AnalysisLogger.logger.info("Set the composition rules sent via WS " );
 				monitoringAPI.setCompositionRules(metricCompositionRules);
 			}else
 			{
@@ -213,17 +212,6 @@ public class ControlService {
 
 	public void setApplicationDeployment(	String deploymentDescriptionXML) {
 		deploymentDescription = deploymentDescriptionXML;
-		InputProcessing inputProcessing = new InputProcessing();
-
-		if (planningAlgorithm != null)
-			planningAlgorithm.stop();
-		if (syblService != null)
-			syblService.stopProcessingThreads();
-		planningAlgorithm = null;
-		syblService = null;
-		monitoringAPI = null;
-		enforcementAPI = null;
-		
 	}
 
 	public void setApplicationDescriptionInfoInternalModel(
