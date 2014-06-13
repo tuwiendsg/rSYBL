@@ -8,6 +8,7 @@ import at.ac.tuwien.dsg.csdg.DependencyGraph;
 import at.ac.tuwien.dsg.csdg.elasticityInformation.elasticityRequirements.SYBLAnnotation;
 import at.ac.tuwien.dsg.csdg.inputProcessing.multiLevelModel.InputProcessing;
 import at.ac.tuwien.dsg.csdg.inputProcessing.tosca.TOSCAProcessing;
+import at.ac.tuwien.dsg.rSybl.analysisEngine.utils.AnalysisLogger;
 
 public class ControlCoordination {
 	private String currentControls="";
@@ -24,9 +25,11 @@ public class ControlCoordination {
 		controls.get(currentControls).setApplicationDeployment(deployment);
 	}
 	public void setElasticityCapabilitiesEffects(String effects){
+		AnalysisLogger.logger.info("Setting the effects for "+currentControls);
 		controls.get(currentControls).setEffects(effects);
 	}
 	public void setMetricComposition(String composition){
+		AnalysisLogger.logger.info("Setting the metric composition rules for "+currentControls);
 		controls.get(currentControls).setMetricCompositionRules(composition);
 	}
 	
