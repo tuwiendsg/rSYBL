@@ -119,7 +119,7 @@ public class ControlService {
 			monitoringAPI = new MonitoringAPI();
 			monitoringAPI.setControlledService(node);
 			if (!metricCompositionRules.equalsIgnoreCase("")){
-				AnalysisLogger.logger.info("Set the composition rules sent via WS");
+				AnalysisLogger.logger.info("Set the composition rules sent via WS " + metricCompositionRules);
 				monitoringAPI.setCompositionRules(metricCompositionRules);
 			}else
 			{
