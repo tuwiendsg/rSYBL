@@ -585,6 +585,11 @@ Double retValue = 0.0;
 		// TODO Auto-generated method stub
 		
 	}
+	@Override
+	public boolean checkIfMetricsValid(Node node) {
+		// TODO Auto-generated method stub
+		return false;
+	}
 
 	
 

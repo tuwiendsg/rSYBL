@@ -35,7 +35,7 @@ import javax.xml.bind.annotation.XmlType;
     "master",
     "slave"
 })
-public class RelationshipXML extends EntityXML{
+public class RelationshipXML {
 
     /**
 	 * 
@@ -120,10 +120,5 @@ public class RelationshipXML extends EntityXML{
         this.type = value;
     }
 
-	@Override
-	public List<String> getAssociatedIps() {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
+	
 }

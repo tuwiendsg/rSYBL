@@ -22,16 +22,26 @@
 package at.ac.tuwien.dsg.rSybl.cloudInteractionUnit.api;
 
 
+import java.io.BufferedReader;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.io.OutputStream;
+import java.net.HttpURLConnection;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import at.ac.tuwien.dsg.csdg.Node;
+import at.ac.tuwien.dsg.csdg.elasticityInformation.ElasticityCapability;
 import at.ac.tuwien.dsg.csdg.elasticityInformation.ElasticityRequirement;
 import at.ac.tuwien.dsg.rSybl.cloudInteractionUnit.enforcementPlugins.OfferedEnforcementCapabilities;
 import at.ac.tuwien.dsg.rSybl.cloudInteractionUnit.enforcementPlugins.interfaces.EnforcementInterface;
 import at.ac.tuwien.dsg.rSybl.cloudInteractionUnit.utils.RuntimeLogger;
 import at.ac.tuwien.dsg.rSybl.dataProcessingUnit.api.MonitoringAPIInterface;
+import at.ac.tuwien.dsg.rSybl.dataProcessingUnit.monitoringPlugins.melaPlugin.MELA_API;
 
 
 
@@ -210,6 +220,73 @@ public class EnforcementAPI implements EnforcementAPIInterface{
 	public void submitElasticityRequirements(
 			ArrayList<ElasticityRequirement> description) {
 		// TODO Auto-generated method stub
+		
+	}
+
+
+	//TODO depending on the protocol specified and the parameters, call the capability = default parameter - Service Part ID
+	@Override
+	public void enforceElasticityCapability(ElasticityCapability capability,
+			Node e) {
+		if (capability.getCallType().toLowerCase().contains("rest")){
+			 URL url = null;
+		        HttpURLConnection connection = null;
+		        try {
+		        	
+		            url = new URL(capability.getEndpoint());
+		            connection = (HttpURLConnection) url.openConnection();
+		            connection.setDoOutput(true);
+		            connection.setInstanceFollowRedirects(false);
+		            if (capability.getCallType().toLowerCase().contains("post"))
+		            connection.setRequestMethod("POST");
+		            else
+		            	connection.setRequestMethod("PUT");
+		           
+
+		            //write message body
+		            OutputStream os = connection.getOutputStream();
+
+		            if (capability.getParameter().size()==0){
+		            	 connection.setRequestProperty("Content-Type", "text/plain");
+				            connection.setRequestProperty("Accept", "text/plain");
+		            	os.write(e.getId().getBytes());
+		            }
+		            else
+		            {
+		            	//tODO: add parameters here parameter=x
+		            }
+		            os.flush();
+		            os.close();
+
+		            InputStream errorStream = connection.getErrorStream();
+		            if (errorStream != null) {
+		                BufferedReader reader = new BufferedReader(new InputStreamReader(errorStream));
+		                String line;
+		                while ((line = reader.readLine()) != null) {
+		                    Logger.getLogger(MELA_API.class.getName()).log(Level.SEVERE, line);
+		                }
+		            }
+
+		            InputStream inputStream = connection.getInputStream();
+		            if (inputStream != null) {
+		                BufferedReader reader = new BufferedReader(new InputStreamReader(inputStream));
+		                String line;
+		                while ((line = reader.readLine()) != null) {
+		                    Logger.getLogger(MELA_API.class.getName()).log(Level.SEVERE, line);
+		                }
+		            }
+		            actionName="";
+		        } catch (Exception e) {
+		        	actionName="";
+		            Logger.getLogger(MELA_API.class.getName()).log(Level.SEVERE, e.getMessage(), e);
+		        } finally {
+		        	actionName="";
+		        	this.actionTargetEntity="";
+		            if (connection != null) {
+		                connection.disconnect();
+		            }
+		        }
+		}
 		
 	}
 

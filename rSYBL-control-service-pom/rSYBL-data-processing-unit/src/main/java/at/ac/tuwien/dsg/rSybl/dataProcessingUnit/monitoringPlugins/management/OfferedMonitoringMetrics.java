@@ -357,6 +357,16 @@ public class OfferedMonitoringMetrics implements MonitoringInterface{
 		}
 		return result;
 	}
-	
+	@Override
+	public  boolean checkIfMetricsValid( Node node){
+		boolean result = true;
+    	Map<Method,MonitoringInterface> methods = manageMonitoringPlugins.getMethods(manageMonitoringPlugins.getAllPlugins(cloudService));
+		for (Method method:methods.keySet()){
+			if (method.getName().equalsIgnoreCase("checkIfMetricsValid")){
+				 result = methods.get(method).checkIfMetricsValid(node);
+			}
+		}
+		return result;
+	}
 
 }

@@ -38,6 +38,8 @@ import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlType;
 import javax.xml.bind.annotation.XmlValue;
 
+import at.ac.tuwien.dsg.csdg.elasticityInformation.elasticityRequirements.SYBLAnnotation;
+
 
 /**
  * <p>Java class for anonymous complex type.
@@ -93,13 +95,29 @@ import javax.xml.bind.annotation.XmlValue;
  */
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "ServiceUnit")
-public  class ServiceUnitXML extends EntityXML{
+public  class ServiceUnitXML {
 
     /**
 	 * 
 	 */
 	private static final long serialVersionUID = 1L;
-   
+	
+	 @XmlAttribute(name = "id")
+	private String id;
+	 @XmlElement(name = "SYBLDirective")
+		private SYBLAnnotationXML syblAnnotationXML;
+	 public SYBLAnnotationXML getXMLAnnotation(){
+		 return syblAnnotationXML;
+	 }
+	 public void setXMLAnnotation(SYBLAnnotationXML annotation){
+		 syblAnnotationXML=annotation;
+	 }
+	public String getId() {
+		return id;
+	}
+	public void setId(String id) {
+		this.id = id;
+	}
     protected String associatedInitialIp;
     protected List<String> associatedIps = new ArrayList<String>();
    @XmlElement(name = "CodeRegions")
@@ -243,9 +261,10 @@ public  class ServiceUnitXML extends EntityXML{
         protected String name;
         @XmlAttribute(name = "apiMethod")
         protected String apiMethod;
-        @XmlAttribute(name = "parameter")
-        protected String parameter;
-
+        @XmlElement(name = "parameters")
+        protected List<String> parameter;
+        @XmlAttribute(name="callType")
+		private String callType;
         /**
          * Gets the value of the value property.
          * 
@@ -326,7 +345,7 @@ public  class ServiceUnitXML extends EntityXML{
          *     {@link String }
          *     
          */
-        public String getParameter() {
+        public List<String> getParameter() {
             return parameter;
         }
 
@@ -338,9 +357,17 @@ public  class ServiceUnitXML extends EntityXML{
          *     {@link String }
          *     
          */
-        public void setParameter(String value) {
+        public void setParameters(List<String> value) {
             this.parameter = value;
         }
+
+		public String getCallType() {
+			return callType;
+		}
+
+		public void setCallType(String callType) {
+			this.callType = callType;
+		}
 
     }
 

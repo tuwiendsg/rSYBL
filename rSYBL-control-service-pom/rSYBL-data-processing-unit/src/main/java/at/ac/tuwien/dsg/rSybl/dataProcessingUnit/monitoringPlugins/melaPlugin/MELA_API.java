@@ -655,7 +655,7 @@ public class MELA_API implements MonitoringInterface{
         RuntimeLogger.logger.info( "Metric "+metric.toString()+" OR   Node "+entity.getId()+" not found");
         return -1.0;
     }
-//
+    
 
     private static class MELA_ClientUtils {
 
@@ -1009,6 +1009,25 @@ public class MELA_API implements MonitoringInterface{
         }
     	return metrics;
     }
+    public List<String> getAvailableMetrics(String id) {
+    	refreshMonitoringData();
+    	List<MonitoredElementMonitoringSnapshot> processing = new ArrayList<MonitoredElementMonitoringSnapshot>();
+    	List<String> metrics = new ArrayList<String>();
+        processing.add(latestMonitoringData);
+
+        while (!processing.isEmpty() && processing!=null) {
+            MonitoredElementMonitoringSnapshot currentlyUnderInspection = processing.remove(0);
+            if (currentlyUnderInspection.getMonitoredElement().getId().equals(id)) {
+             for (Metric m:currentlyUnderInspection.getMetrics()){
+            	 metrics.add(m.getName());
+             }
+            
+            } else {
+                processing.addAll(currentlyUnderInspection.getChildren());
+            }
+        }
+    	return metrics;
+    }
 
   
     public void submitCompositionRules (){
@@ -1062,7 +1081,15 @@ public class MELA_API implements MonitoringInterface{
         
         return getMetricValue(metric, entity);
     }
-
+    public boolean checkIfMetricsValid( Node node){
+    	boolean validity=true;
+    	for (String metric:getAvailableMetrics(node)){
+    		if (getMetricValue(metric, node)<0){
+    			validity=false;
+    		}
+    	}
+    	return validity;
+    }
 	@Override
 	public String getOngoingActionID() {
 		return this.ongoingAction;

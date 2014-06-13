@@ -76,4 +76,5 @@ public interface MonitoringAPIInterface {
     public List<String> getAvailableMetrics(Node node);
     public String getOngoingActionID();
     public String getOngoingActionNodeID();
+    public boolean checkIfMetricsValid( Node node);
 }

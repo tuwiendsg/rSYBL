@@ -30,6 +30,8 @@ import at.ac.tuwien.dsg.csdg.elasticityInformation.ElasticityRequirement;
 import at.ac.tuwien.dsg.csdg.elasticityInformation.elasticityRequirements.SYBLAnnotation;
 import at.ac.tuwien.dsg.csdg.elasticityInformation.elasticityRequirements.SYBLElasticityRequirementsDescription;
 import at.ac.tuwien.dsg.csdg.inputProcessing.multiLevelModel.InputProcessing;
+import at.ac.tuwien.dsg.csdg.inputProcessing.multiLevelModel.abstractModelXML.CloudServiceXML;
+import at.ac.tuwien.dsg.csdg.inputProcessing.multiLevelModel.deploymentDescription.DeploymentDescription;
 import at.ac.tuwien.dsg.csdg.inputProcessing.tosca.TOSCAProcessing;
 
 
@@ -135,9 +137,17 @@ public class Main {
 //		dependencyGraph.setCloudService(cloudService);
 //		
 //		System.out.println(dependencyGraph.graphToString());
-		SYBLElasticityRequirementsDescription description = new SYBLElasticityRequirementsDescription();
+//		SYBLElasticityRequirementsDescription description = new SYBLElasticityRequirementsDescription();
+//		try {
+//			description.generateXSD("sybl.xsd");
+//		} catch (Exception e) {
+//			// TODO Auto-generated catch block
+//			e.printStackTrace();
+//		}
+//		
+		DeploymentDescription description1 = new DeploymentDescription();
 		try {
-			description.generateXSD("sybl.xsd");
+			description1.generateXSD("DeploymentDescription.xsd");
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();

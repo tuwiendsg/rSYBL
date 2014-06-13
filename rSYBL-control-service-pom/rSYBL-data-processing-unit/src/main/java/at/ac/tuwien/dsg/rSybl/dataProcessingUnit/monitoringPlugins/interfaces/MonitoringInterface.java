@@ -54,5 +54,5 @@ public interface MonitoringInterface {
 	    public String getOngoingActionID();
 	    public String getOngoingActionNodeID();
 	    public void submitCompositionRules();
-
+	    public boolean checkIfMetricsValid(Node node);
 }

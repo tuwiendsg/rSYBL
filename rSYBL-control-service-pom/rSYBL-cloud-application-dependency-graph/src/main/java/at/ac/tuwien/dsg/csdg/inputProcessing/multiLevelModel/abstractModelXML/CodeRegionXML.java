@@ -30,6 +30,8 @@ import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlType;
+
+import at.ac.tuwien.dsg.csdg.elasticityInformation.elasticityRequirements.SYBLAnnotation;
 /**
  * <p>Java class for anonymous complex type.
  * 
@@ -55,9 +57,8 @@ import javax.xml.bind.annotation.XmlType;
 
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "")
-public class CodeRegionXML extends EntityXML{
+public class CodeRegionXML {
 	   protected List<String> associatedIps = new ArrayList<String>();
-	   @Override
 	public List<String> getAssociatedIps() {
 		// TODO Auto-generated method stub
 		return associatedIps;
@@ -65,6 +66,23 @@ public class CodeRegionXML extends EntityXML{
 	public void setAssociatedIps(List<String> associatedIps) {
 		this.associatedIps = associatedIps;
 	}
-
+	
+	
+	 @XmlAttribute(name = "id")
+	private String id;
+	 @XmlElement(name = "SYBLDirective")
+		private SYBLAnnotationXML syblAnnotationXML;
+	 public SYBLAnnotationXML getXMLAnnotation(){
+		 return syblAnnotationXML;
+	 }
+	 public void setXMLAnnotation(SYBLAnnotationXML annotation){
+		 syblAnnotationXML=annotation;
+	 }
+	public String getId() {
+		return id;
+	}
+	public void setId(String id) {
+		this.id = id;
+	}
 
 }

@@ -32,22 +32,44 @@ import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlType;
 
+import at.ac.tuwien.dsg.csdg.elasticityInformation.elasticityRequirements.SYBLAnnotation;
+
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "ServiceTopology", propOrder = {
 	    "componentTopology",
-	    "relationship","associatedIps","components"
+	    "relationship","associatedIps","components","syblAnnotationXML",
 	})
-public  class ServiceTopologyXML extends EntityXML{
+public  class ServiceTopologyXML {
 
 	private static final long serialVersionUID = 1L;
 	@XmlElement(name = "ServiceTopology")
     protected List<ServiceTopologyXML> componentTopology;
     @XmlElement(name = "Relationship", required = true)
     protected RelationshipXML relationship;
+    @XmlElement(name="associatedIps")
     protected List<String> associatedIps = new ArrayList<String>();
     @XmlElement(name = "ServiceUnit")
 	private List<ServiceUnitXML> components;
-    
+  
+	
+	 @XmlAttribute(name = "id")
+	private String id;
+	 
+	 @XmlElement(name = "SYBLDirective")
+	private SYBLAnnotationXML syblAnnotationXML;
+	 
+	 public SYBLAnnotationXML getXMLAnnotation(){
+		 return syblAnnotationXML;
+	 }
+	 public void setXMLAnnotation(SYBLAnnotationXML annotation){
+		 syblAnnotationXML=annotation;
+	 }
+	public String getId() {
+		return id;
+	}
+	public void setId(String id) {
+		this.id = id;
+	}
     public List<ServiceTopologyXML> getServiceTopology() {
         if (componentTopology == null) {
             componentTopology = new ArrayList<ServiceTopologyXML>();

@@ -424,6 +424,12 @@ try{
 		offeredMonitoringMetrics.submitCompositionRules();
 	}
 
+	@Override
+	public boolean checkIfMetricsValid(Node node) {
+		// TODO Auto-generated method stub
+		return  offeredMonitoringMetrics.checkIfMetricsValid(node);
+	}
+
 
 	
 

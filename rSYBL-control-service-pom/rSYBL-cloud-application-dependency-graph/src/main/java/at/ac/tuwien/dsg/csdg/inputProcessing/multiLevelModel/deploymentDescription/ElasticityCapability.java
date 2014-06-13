@@ -10,8 +10,11 @@ import javax.xml.bind.annotation.XmlType;
 public class ElasticityCapability {
 	 @XmlAttribute(name = "Name")
 		private String name="";
-	 @XmlAttribute(name = "Script")
+	 @XmlAttribute(name = "Endpoint")
 		private String script="";
+	 @XmlAttribute(name = "Type")
+		private String type=""; // REST/PluginMethod/Script
+	 
 	public String getScript() {
 		return script;
 	}
@@ -23,5 +26,11 @@ public class ElasticityCapability {
 	}
 	public void setName(String name) {
 		this.name = name;
+	}
+	public String getType() {
+		return type;
+	}
+	public void setType(String type) {
+		this.type = type;
 	}
 }

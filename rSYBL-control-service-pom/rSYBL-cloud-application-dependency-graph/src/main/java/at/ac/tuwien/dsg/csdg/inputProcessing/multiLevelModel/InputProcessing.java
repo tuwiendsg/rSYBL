@@ -47,6 +47,7 @@ import at.ac.tuwien.dsg.csdg.elasticityInformation.ElasticityRequirement;
 import at.ac.tuwien.dsg.csdg.elasticityInformation.elasticityRequirements.SYBLAnnotation;
 import at.ac.tuwien.dsg.csdg.elasticityInformation.elasticityRequirements.SYBLElasticityRequirementsDescription;
 import at.ac.tuwien.dsg.csdg.elasticityInformation.elasticityRequirements.SYBLSpecification;
+import at.ac.tuwien.dsg.csdg.elasticityInformation.elasticityRequirements.SYBLAnnotation.AnnotationType;
 import at.ac.tuwien.dsg.csdg.inputProcessing.multiLevelModel.abstractModelXML.CloudServiceXML;
 import at.ac.tuwien.dsg.csdg.inputProcessing.multiLevelModel.abstractModelXML.SYBLAnnotationXML;
 import at.ac.tuwien.dsg.csdg.inputProcessing.multiLevelModel.abstractModelXML.SYBLDirectiveMappingFromXML;
@@ -202,9 +203,9 @@ public class InputProcessing {
 		Node cloudService = new Node();
 		cloudService.setId(cloudServiceXML.getId());
 		cloudService.setNodeType(NodeType.CLOUD_SERVICE);
-		if (cloudServiceXML.getAnnotation()!=null){
+		if (cloudServiceXML.getXMLAnnotation()!=null){
 		ElasticityRequirement elReq = new ElasticityRequirement();
-		elReq.setAnnotation(mapFromXMLAnnotationToSYBLAnnotation(cloudService.getId(),cloudServiceXML.getXMLAnnotation(),cloudServiceXML.getAnnotation().getAnnotationType()));
+		elReq.setAnnotation(mapFromXMLAnnotationToSYBLAnnotation(cloudService.getId(),cloudServiceXML.getXMLAnnotation(),AnnotationType.CLOUD_SERVICE));
 		}
 		List<ServiceTopologyXML> remainingServiceTopologies = new ArrayList<ServiceTopologyXML>();
 		HashMap<String,Node> nodes = new HashMap<String,Node>();
@@ -219,9 +220,9 @@ public class InputProcessing {
 		rel.setSourceElement(cloudService.getId());
 		rel.setTargetElement(serviceTopologyFirst.getId());
 		rel.setType(RelationshipType.COMPOSITION_RELATIONSHIP);
-		if (firstServTopology.getAnnotation()!=null){
+		if (firstServTopology.getXMLAnnotation()!=null){
 			ElasticityRequirement elReq = new ElasticityRequirement();
-			elReq.setAnnotation(mapFromXMLAnnotationToSYBLAnnotation(serviceTopologyFirst.getId(),firstServTopology.getXMLAnnotation(),firstServTopology.getAnnotation().getAnnotationType()));
+			elReq.setAnnotation(mapFromXMLAnnotationToSYBLAnnotation(serviceTopologyFirst.getId(),firstServTopology.getXMLAnnotation(),AnnotationType.SERVICE_TOPOLOGY));
 			serviceTopologyFirst.getElasticityRequirements().add(elReq);
 		}
 		nodes.put(serviceTopologyFirst.getId(),serviceTopologyFirst);
@@ -243,9 +244,9 @@ public class InputProcessing {
 					rel.setSourceElement(serviceTopology.getId());
 					rel.setTargetElement(serviceUnit.getId());
 					rel.setType(RelationshipType.COMPOSITION_RELATIONSHIP);
-					if (serviceUnitXML.getAnnotation()!=null){
+					if (serviceUnitXML.getXMLAnnotation()!=null){
 						ElasticityRequirement elReq = new ElasticityRequirement();
-						elReq.setAnnotation(mapFromXMLAnnotationToSYBLAnnotation(serviceUnitXML.getId(),serviceUnitXML.getXMLAnnotation(),serviceUnitXML.getAnnotation().getAnnotationType()));
+						elReq.setAnnotation(mapFromXMLAnnotationToSYBLAnnotation(serviceUnitXML.getId(),serviceUnitXML.getXMLAnnotation(),AnnotationType.SERVICE_UNIT));
 						serviceUnit.getElasticityRequirements().add(elReq);
 					}
 					
@@ -256,6 +257,7 @@ public class InputProcessing {
 						elCapability.setName(actionXML.getName());
 						elCapability.setParameter(actionXML.getParameter());
 						elCapability.setValue(actionXML.getValue());
+						elCapability.setCallType(actionXML.getCallType());
 						serviceUnit.addElasticityCapability(elCapability);
 					}
 					
@@ -273,9 +275,9 @@ public class InputProcessing {
 					rel.setSourceElement(serviceTopology.getId());
 					rel.setTargetElement(serviceTopology2.getId());
 					rel.setType(RelationshipType.COMPOSITION_RELATIONSHIP);
-					if (serviceTopologyXML2.getAnnotation()!=null){
+					if (serviceTopologyXML2.getXMLAnnotation()!=null){
 						ElasticityRequirement elReq = new ElasticityRequirement();
-						elReq.setAnnotation(mapFromXMLAnnotationToSYBLAnnotation(serviceTopologyXML2.getId(),serviceTopologyXML2.getXMLAnnotation(),serviceTopologyXML2.getAnnotation().getAnnotationType()));
+						elReq.setAnnotation(mapFromXMLAnnotationToSYBLAnnotation(serviceTopologyXML2.getId(),serviceTopologyXML2.getXMLAnnotation(),AnnotationType.SERVICE_TOPOLOGY));
 						serviceTopology2.getElasticityRequirements().add(elReq);
 					}
 					serviceTopology.addNode(serviceTopology2, rel);
@@ -319,7 +321,8 @@ public class InputProcessing {
 					for (at.ac.tuwien.dsg.csdg.inputProcessing.multiLevelModel.deploymentDescription.ElasticityCapability elasticityCapability:deploymentUnit.getElasticityCapabilities()){
 						ElasticityCapability newElasticityCapability=new ElasticityCapability();
 						newElasticityCapability.setName(elasticityCapability.getName());
-						newElasticityCapability.setScript(elasticityCapability.getScript());
+						newElasticityCapability.setCallType(elasticityCapability.getType());
+						newElasticityCapability.setEndpoint(elasticityCapability.getScript());
 						node.addElasticityCapability(newElasticityCapability);
 					}
 					

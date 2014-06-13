@@ -23,6 +23,8 @@
 package at.ac.tuwien.dsg.csdg.elasticityInformation;
 
 import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.List;
 
 public class ElasticityCapability{
 	  public ElasticityCapability(){
@@ -30,9 +32,10 @@ public class ElasticityCapability{
       }
       private String value;
       private String name;
+      private String type;
       private String apiMethod;
       private String script;
-      private String parameter;
+      private List<String> parameters;
 		public String getValue() {
 			return value;
 		}
@@ -51,17 +54,29 @@ public class ElasticityCapability{
 		public void setApiMethod(String apiMethod) {
 			this.apiMethod = apiMethod;
 		}
-		public String getParameter() {
-			return parameter;
+		public List<String> getParameter() {
+			return parameters;
 		}
-		public void setParameter(String parameter) {
-			this.parameter = parameter;
+		public void setParameter(List<String> parameters) {
+			this.parameters = parameters;
 		}
-		public String getScript() {
+		public void addParameter(String parameter) {
+			if (parameters==null){
+				parameters=new ArrayList<String>();
+			}
+			parameters.add(parameter);
+		}
+		public String getEndpoint() {
 			return script;
 		}
-		public void setScript(String script) {
+		public void setEndpoint(String script) {
 			this.script = script;
+		}
+		public String getCallType() {
+			return type;
+		}
+		public void setCallType(String type) {
+			this.type = type;
 		}
 
 }

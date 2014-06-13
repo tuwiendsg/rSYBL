@@ -31,6 +31,7 @@ import at.ac.tuwien.dsg.csdg.DependencyGraph;
 import at.ac.tuwien.dsg.csdg.Node;
 import at.ac.tuwien.dsg.csdg.Node.NodeType;
 import at.ac.tuwien.dsg.csdg.Relationship.RelationshipType;
+import at.ac.tuwien.dsg.csdg.elasticityInformation.ElasticityCapability;
 import at.ac.tuwien.dsg.csdg.elasticityInformation.ElasticityRequirement;
 import at.ac.tuwien.dsg.csdg.elasticityInformation.elasticityRequirements.Condition;
 import at.ac.tuwien.dsg.csdg.elasticityInformation.elasticityRequirements.SYBLSpecification;
@@ -323,10 +324,23 @@ public class PlanningGreedyAlgorithm implements PlanningAlgorithmInterface {
 			numberOfRemainingConstraints-=lastFixed;
 			
 	//	}
+		
+		for (Pair<ActionEffect, Integer> actionEffect : result){
+			boolean foundCapability=false;
+			for (ElasticityCapability capability: actionEffect.getFirst().getTargetedEntity().getElasticityCapabilities()){
+				if (capability.getName()!=null && !capability.getName().equalsIgnoreCase("")){
+					if (capability.getEndpoint()!=null && !capability.getEndpoint().equalsIgnoreCase("")){
+						foundCapability=true;
+						enforcementAPI.enforceElasticityCapability(capability, actionEffect.getFirst().getTargetedEntity());
+					}
+				}
+			}
 
-		for (Pair<ActionEffect, Integer> actionEffect : result)
+			if (!foundCapability){
 			if (actionEffect.getFirst().getActionType()
-					.equalsIgnoreCase("scaleout")) {
+					.equalsIgnoreCase("scaleout") ) {
+				//default case when nothing is specified
+				
 			//	for (int i = 0; i < actionEffect.getSecond(); i++) {
 				enforcementAPI.scaleout(actionEffect.getFirst()
 						.getTargetedEntity());
@@ -341,8 +355,9 @@ public class PlanningGreedyAlgorithm implements PlanningAlgorithmInterface {
 				
 		//		}
 				//PlanningLogger.logger.info("Scale out for "+ actionEffect.getFirst().getTargetedEntity() + "  ");
-
+				}
 			} else {
+				
 				if (actionEffect.getFirst().getActionType()
 						.equalsIgnoreCase("scalein")) {
 //					for (int i = 0; i < actionEffect.getSecond(); i++) {
@@ -362,6 +377,7 @@ public class PlanningGreedyAlgorithm implements PlanningAlgorithmInterface {
 
 				}
 			}
+		}
 		}
 	}
 

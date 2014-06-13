@@ -25,6 +25,7 @@ package at.ac.tuwien.dsg.rSybl.cloudInteractionUnit.api;
 import java.util.ArrayList;
 
 import at.ac.tuwien.dsg.csdg.Node;
+import at.ac.tuwien.dsg.csdg.elasticityInformation.ElasticityCapability;
 import at.ac.tuwien.dsg.csdg.elasticityInformation.ElasticityRequirement;
 import at.ac.tuwien.dsg.rSybl.dataProcessingUnit.api.MonitoringAPIInterface;
 
@@ -44,6 +45,7 @@ public interface EnforcementAPIInterface{
 	    	
 			    public void enforceAction(String actionName, Node e);
 
-			
+			    public void enforceElasticityCapability(ElasticityCapability capability,Node e);
+
 
 }

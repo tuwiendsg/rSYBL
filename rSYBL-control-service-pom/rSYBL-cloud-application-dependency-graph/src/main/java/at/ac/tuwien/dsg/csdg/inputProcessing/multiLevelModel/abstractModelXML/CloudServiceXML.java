@@ -31,10 +31,15 @@
 
 package at.ac.tuwien.dsg.csdg.inputProcessing.multiLevelModel.abstractModelXML;
 
+import java.io.File;
+import java.io.IOException;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
+
+import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBElement;
+import javax.xml.bind.SchemaOutputResolver;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlAttribute;
@@ -43,15 +48,39 @@ import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlSchemaType;
 import javax.xml.bind.annotation.XmlType;
 import javax.xml.bind.annotation.XmlValue;
+import javax.xml.transform.Result;
+import javax.xml.transform.stream.StreamResult;
+
+import at.ac.tuwien.dsg.csdg.elasticityInformation.elasticityRequirements.SYBLAnnotation;
+import at.ac.tuwien.dsg.csdg.elasticityInformation.elasticityRequirements.SYBLElasticityRequirementsDescription;
+import at.ac.tuwien.dsg.csdg.elasticityInformation.elasticityRequirements.SYBLElasticityRequirementsDescription.MySchemaOutputResolver;
 
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlRootElement(name="CloudService", namespace="")
-public class CloudServiceXML extends EntityXML implements Serializable{
+public class CloudServiceXML implements Serializable{
 
     @XmlElement(name = "ServiceTopology", required = true)
     protected List<ServiceTopologyXML> componentTopologies;
     protected List<String> associatedIps = new ArrayList<String>();
 
+
+	
+	 @XmlAttribute(name = "id")
+	private String id;
+	 @XmlElement(name = "SYBLDirective")
+		private SYBLAnnotationXML syblAnnotationXML;
+	 public SYBLAnnotationXML getXMLAnnotation(){
+		 return syblAnnotationXML;
+	 }
+	 public void setXMLAnnotation(SYBLAnnotationXML annotation){
+		 syblAnnotationXML=annotation;
+	 }
+	public String getId() {
+		return id;
+	}
+	public void setId(String id) {
+		this.id = id;
+	}
     public CloudServiceXML(){
     	
     }
@@ -92,7 +121,22 @@ public class CloudServiceXML extends EntityXML implements Serializable{
         }
         associatedIps=ips;
     }
+    public  void generateXSD(String filename) throws Exception {
+		 JAXBContext jaxbContext = JAXBContext.newInstance(CloudServiceXML.class);
+		 SchemaOutputResolver sor = new MySchemaOutputResolver();
+		 sor.createOutput("at.ac.tuwien.dsg.serviceDescription", filename);
+		 jaxbContext.generateSchema(sor);
+		 sor.createOutput("at.ac.tuwien.dsg.serviceDescription", filename);
+	    }
+    public class MySchemaOutputResolver extends SchemaOutputResolver {
 
+	    public Result createOutput(String namespaceURI, String suggestedFileName) throws IOException {
+	        File file = new File(suggestedFileName);
+	        StreamResult result = new StreamResult(file);
+	        result.setSystemId(file.toURI().toURL().toString());
+	        return result;
+	    }
 
+	}
 
 }
