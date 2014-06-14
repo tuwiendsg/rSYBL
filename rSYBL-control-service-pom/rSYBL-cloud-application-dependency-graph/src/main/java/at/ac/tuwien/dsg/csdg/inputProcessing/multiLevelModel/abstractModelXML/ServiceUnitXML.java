@@ -123,7 +123,7 @@ public  class ServiceUnitXML {
    @XmlElement(name = "CodeRegions")
  	private List<CodeRegionXML> codeRegions = new ArrayList<CodeRegionXML>();
     
-    @XmlElement(name = "Actions")
+    @XmlElement(name = "Action")
  	private List<ActionXML> actions = new ArrayList<ActionXML>();
     
     @XmlElement(name = "InitializationSequence")
