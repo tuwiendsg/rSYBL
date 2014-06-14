@@ -63,9 +63,9 @@ public class UtilsMain {
 	public static void main(String[] args) {
 		// TODO Auto-generated method stub
 	 InputProcessing inputProc = new InputProcessing();
-	 DependencyGraph dependencyGraph=inputProc.loadDependencyGraphFromFile();
-	 System.out.println(dependencyGraph.graphToString());
-		//new UtilsMain().writeElasticityRequirementsDirectives();
+	 //DependencyGraph dependencyGraph=inputProc.loadDependencyGraphFromFile();
+	 //System.out.println(dependencyGraph.graphToString());
+		new UtilsMain().writeDefaultData();
 	}
 	
 	

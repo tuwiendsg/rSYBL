@@ -206,6 +206,7 @@ public class InputProcessing {
 		if (cloudServiceXML.getXMLAnnotation()!=null){
 		ElasticityRequirement elReq = new ElasticityRequirement();
 		elReq.setAnnotation(mapFromXMLAnnotationToSYBLAnnotation(cloudService.getId(),cloudServiceXML.getXMLAnnotation(),AnnotationType.CLOUD_SERVICE));
+		cloudService.getElasticityRequirements().add(elReq);
 		}
 		List<ServiceTopologyXML> remainingServiceTopologies = new ArrayList<ServiceTopologyXML>();
 		HashMap<String,Node> nodes = new HashMap<String,Node>();

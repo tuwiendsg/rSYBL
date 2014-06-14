@@ -361,9 +361,10 @@ try{
 	public void submitElasticityRequirements(
 			ArrayList<ElasticityRequirement> description) {
 		for (ElasticityRequirement elasticityRequirement : description){
-			RuntimeLogger.logger.info("Setting elasticity requirements " );
-			RuntimeLogger.logger.info("Constraints " +elasticityRequirement.getAnnotation().getConstraints());
-			RuntimeLogger.logger.info("Strategies" + elasticityRequirement.getAnnotation().getStrategies());
+			
+			RuntimeLogger.logger.info(elasticityRequirement.getAnnotation().getEntityID()+" Setting elasticity requirements " );
+			RuntimeLogger.logger.info(elasticityRequirement.getAnnotation().getEntityID()+" Constraints " +elasticityRequirement.getAnnotation().getConstraints());
+			RuntimeLogger.logger.info(elasticityRequirement.getAnnotation().getEntityID()+" Strategies" + elasticityRequirement.getAnnotation().getStrategies());
 			
 		}
 		offeredMonitoringMetrics.submitElasticityRequirements(description);

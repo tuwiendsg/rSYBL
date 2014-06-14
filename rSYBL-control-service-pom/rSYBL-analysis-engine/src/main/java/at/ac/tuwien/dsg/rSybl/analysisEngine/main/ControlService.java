@@ -125,7 +125,8 @@ public class ControlService {
 				AnalysisLogger.logger.info("Set the read composition rules");
 				monitoringAPI.setCompositionRules();
 			}
-			AnalysisLogger.logger.info("Have just set the cloud service ");
+			AnalysisLogger.logger.info("Have just set the cloud service. The number of elasticity requirements is "+dependencyGraph.getAllElasticityRequirements().size());
+			
 			monitoringAPI.submitElasticityRequirements(dependencyGraph
 					.getAllElasticityRequirements());
 			AnalysisLogger.logger.info("Have set the requirements on MELA");
@@ -149,7 +150,7 @@ public class ControlService {
 			AnalysisLogger.logger.info("SYBL Service started");
 			// CloudService cloudService, ArrayList<SYBLSpecification>
 			// syblSpecifications
-			disableConflictingConstraints();
+			//disableConflictingConstraints();
 			AnalysisLogger.logger.info("Conflicting constraints disabled");
 
 			planningAlgorithm = new PlanningGreedyAlgorithm(
