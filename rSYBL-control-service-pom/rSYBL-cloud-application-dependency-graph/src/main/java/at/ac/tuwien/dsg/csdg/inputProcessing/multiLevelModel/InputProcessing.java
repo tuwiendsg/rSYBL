@@ -170,7 +170,7 @@ public class InputProcessing {
 			//cloudServiceXML = (CloudServiceXML) u.unmarshal(new File(Configuration.getModelDescrFile()));
 		} catch (JAXBException e) {
 			// TODO Auto-generated catch block
-			e.printStackTrace();
+			DependencyGraphLogger.logger.info(e.getStackTrace().toString());
 		}
 		//populate ips for above levels
 		//populateIps();
@@ -256,7 +256,7 @@ public class InputProcessing {
 						elCapability.setApiMethod(actionXML.getApiMethod());
 						elCapability.setName(actionXML.getName());
 						elCapability.setParameter(actionXML.getParameter());
-						elCapability.setValue(actionXML.getValue());
+						
 						elCapability.setCallType(actionXML.getCallType());
 						serviceUnit.addElasticityCapability(elCapability);
 					}
