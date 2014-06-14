@@ -359,8 +359,10 @@ public class InputProcessing {
 		return constructDependencyGraph();
 	}
 	public DependencyGraph loadDependencyGraphFromStrings(String applicationDescription, String additionalElasticityRequirements, String deploymentInfo){
-
+		DependencyGraphLogger.logger.info("Constructing cloud service dependency graph...");
 		loadModelFromString(applicationDescription,additionalElasticityRequirements);
+		DependencyGraphLogger.logger.info("Adding deployment info to cloud service dependency graph...");
+		
 		loadDeploymentDescriptionFromString(deploymentInfo);
 		
 		
