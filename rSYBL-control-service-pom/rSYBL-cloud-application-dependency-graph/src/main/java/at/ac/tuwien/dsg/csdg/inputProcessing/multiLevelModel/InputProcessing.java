@@ -182,16 +182,15 @@ public class InputProcessing {
 			     syblSpecifications = (SYBLElasticityRequirementsDescription) u.unmarshal( new StringReader(elasticityReq)) ;
 			    // syblSpecifications = (SYBLElasticityRequirementsDescription) u.unmarshal(new File(directivePath));
 				}
-				DependencyGraphLogger.logger.info("AAAAAAAAAAAAAAAAAAAAAAAAAAAA Cloud Service is "+cloudServiceXML);
-				DependencyGraphLogger.logger.info(parseXMLInjectedAnnotations(cloudServiceXML).size());
-				for (SYBLAnnotation syblAnnotation:parseXMLInjectedAnnotations(cloudServiceXML)){
+				//DependencyGraphLogger.logger.info(parseXMLInjectedAnnotations(cloudServiceXML).size());
+				//for (SYBLAnnotation syblAnnotation:parseXMLInjectedAnnotations(cloudServiceXML)){
 					
-					if (syblSpecifications==null)
-						syblSpecifications=new SYBLElasticityRequirementsDescription();
+					//if (syblSpecifications==null)
+					//	syblSpecifications=new SYBLElasticityRequirementsDescription();
 					//SYBLDirectivesEnforcementLogger.logger.info("FOUND HERE THE STRATEGY "+syblAnnotation.getStrategies());
 					//if (syblAnnotation.getStrategies()!=null && syblAnnotation.getStrategies()!="")
-			    	syblSpecifications.getSyblSpecifications().add(SYBLDirectiveMappingFromXML.mapFromSYBLAnnotation(syblAnnotation));
-			    }
+			    //	syblSpecifications.getSyblSpecifications().add(SYBLDirectiveMappingFromXML.mapFromSYBLAnnotation(syblAnnotation));
+			   // }
 			} catch (JAXBException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
@@ -203,6 +202,7 @@ public class InputProcessing {
 		Node cloudService = new Node();
 		cloudService.setId(cloudServiceXML.getId());
 		cloudService.setNodeType(NodeType.CLOUD_SERVICE);
+		
 		if (cloudServiceXML.getXMLAnnotation()!=null){
 		ElasticityRequirement elReq = new ElasticityRequirement();
 		elReq.setAnnotation(mapFromXMLAnnotationToSYBLAnnotation(cloudService.getId(),cloudServiceXML.getXMLAnnotation(),AnnotationType.CLOUD_SERVICE));
