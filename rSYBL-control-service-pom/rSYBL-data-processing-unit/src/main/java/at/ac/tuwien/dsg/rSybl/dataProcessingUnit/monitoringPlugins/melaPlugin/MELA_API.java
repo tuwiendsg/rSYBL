@@ -745,10 +745,13 @@ public class MELA_API implements MonitoringInterface{
     	Requirements requirements = new Requirements();
         ArrayList<Requirement> requirements2= new ArrayList<Requirement>();
     	for (ElasticityRequirement elasticityRequirement:description){
+    		RuntimeLogger.logger.info("Setting elasticity requirement "+elasticityRequirement.getAnnotation().getConstraints());
     		SYBLSpecification specification=SYBLDirectiveMappingFromXML.mapFromSYBLAnnotation(elasticityRequirement.getAnnotation());
     		
 	//		!!!Set all info
     		for(Constraint constraint:specification.getConstraint()){
+        		RuntimeLogger.logger.info("Transformed constraint "+elasticityRequirement.getAnnotation().getConstraints());
+
     			for (BinaryRestrictionsConjunction  binaryRestrictions:constraint.getToEnforce().getBinaryRestriction()){
     				for (BinaryRestriction binaryRestriction:binaryRestrictions.getBinaryRestrictions()){
 	    					Requirement req=new Requirement();
@@ -838,6 +841,7 @@ public class MELA_API implements MonitoringInterface{
     				}
     						conditions.add(cond);
     						req.setConditions(conditions);
+    						RuntimeLogger.logger.info("~~~Req for MELA"+req.toString());
     						requirements2.add(req);
     			}
     		}
