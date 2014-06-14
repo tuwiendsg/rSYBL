@@ -360,6 +360,12 @@ try{
 	@Override
 	public void submitElasticityRequirements(
 			ArrayList<ElasticityRequirement> description) {
+		for (ElasticityRequirement elasticityRequirement : description){
+			RuntimeLogger.logger.info("Setting elasticity requirements " );
+			RuntimeLogger.logger.info("Constraints " +elasticityRequirement.getAnnotation().getConstraints());
+			RuntimeLogger.logger.info("Strategies" + elasticityRequirement.getAnnotation().getStrategies());
+			
+		}
 		offeredMonitoringMetrics.submitElasticityRequirements(description);
 		
 	}
