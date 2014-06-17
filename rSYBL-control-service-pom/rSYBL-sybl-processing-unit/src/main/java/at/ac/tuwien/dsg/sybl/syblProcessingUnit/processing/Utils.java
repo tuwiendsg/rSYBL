@@ -393,9 +393,9 @@ public void doEnforcement( String enf){
 		String actionName = eliminateSpaces(enf);
 		String target = "";
 		if (actionName.contains(".")){
-			SYBLDirectivesEnforcementLogger.logger.info("Action on enforcement plugin " +actionName);
-			target=actionName.split(".")[0];
-			String a  = actionName.split(".")[1];
+			SYBLDirectivesEnforcementLogger.logger.info("Action on enforcement plugin " +actionName+actionName.split("\\."));
+			target=actionName.split("\\.")[0];
+			String a  = actionName.split("\\.")[1];
 			actionName=a;
 		}
 		if (!actionName.toLowerCase().contains("minimize") &&  !actionName.toLowerCase().contains("maximize")){

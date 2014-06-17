@@ -36,7 +36,7 @@ public class ActionPlanEnforcement {
 	public void enforceAction(ActionEffect actionEffect){
 		String target="";
 		if (actionEffect.getActionName().contains(".")){
-			 target = actionEffect.getActionName().split(".")[0];
+			 target = actionEffect.getActionName().split("\\.")[0].toLowerCase();
 		}
 	if (target.equalsIgnoreCase(""))
 	{
@@ -53,7 +53,7 @@ public class ActionPlanEnforcement {
 		}
 	}
 	else{
-		switch (actionEffect.getActionName().split(".")[1]){
+		switch (actionEffect.getActionName().split("\\.")[1].toLowerCase()){
 		case "scaleout":
 			enforcementAPI.scaleout(target,actionEffect.getTargetedEntity());
 			break;
