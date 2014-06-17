@@ -69,7 +69,9 @@ public class EnforcementAPI {
 	
 	
 	
-	
+	   public void refreshControlService(Node cloudService){
+		   controlledService=cloudService;
+	   }
 
 	public boolean isExecutingControlAction() {
 		return executingControlAction;

@@ -55,5 +55,5 @@ public interface EnforcementAPIInterface{
 					    public void enforceAction(String target,String actionName, Node e);
 					    
 					    public void enforceElasticityCapability(String target,ElasticityCapability capability,Node e);
-
+					 
 }

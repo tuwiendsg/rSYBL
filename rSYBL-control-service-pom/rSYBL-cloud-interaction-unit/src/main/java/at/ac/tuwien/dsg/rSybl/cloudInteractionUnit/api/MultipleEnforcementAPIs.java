@@ -8,6 +8,7 @@ import at.ac.tuwien.dsg.csdg.elasticityInformation.ElasticityCapability;
 import at.ac.tuwien.dsg.csdg.elasticityInformation.ElasticityRequirement;
 import at.ac.tuwien.dsg.rSybl.cloudInteractionUnit.utils.Configuration;
 import at.ac.tuwien.dsg.rSybl.dataProcessingUnit.api.MonitoringAPIInterface;
+import at.ac.tuwien.dsg.rSybl.dataProcessingUnit.utils.RuntimeLogger;
 
 public class MultipleEnforcementAPIs implements EnforcementAPIInterface{
 	HashMap<String,EnforcementAPI> enforcementAPIs = new HashMap<String, EnforcementAPI>() ;
@@ -51,13 +52,18 @@ public class MultipleEnforcementAPIs implements EnforcementAPIInterface{
 
 	@Override
 	public void scalein(Node arg0) {
+		RuntimeLogger.logger.info("Scaling in without target on node "+arg0.getId());
+
 		for (EnforcementAPI enforcementAPI:enforcementAPIs.values()){
+			RuntimeLogger.logger.info("Foound api ");
 			enforcementAPI.scalein(arg0);
 			Node controlService = enforcementAPI.getControlledService();
 			for (EnforcementAPI api:enforcementAPIs.values()){
-				api.setControlledService(controlService);
+				api.refreshControlService(controlService);
 			}
 		}
+		RuntimeLogger.logger.info("Finished scaling in in without target on node "+arg0.getId());
+
 	}
 
 	@Override
@@ -74,7 +80,7 @@ public class MultipleEnforcementAPIs implements EnforcementAPIInterface{
 			enforcementAPI.scaleout(arg0);
 			Node controlService = enforcementAPI.getControlledService();
 			for (EnforcementAPI api:enforcementAPIs.values()){
-				api.setControlledService(controlService);
+				api.refreshControlService(controlService);
 			}
 		}
 	}
@@ -85,7 +91,7 @@ public class MultipleEnforcementAPIs implements EnforcementAPIInterface{
 			enforcementAPI.enforceAction(actionName,e);
 			Node controlService = enforcementAPI.getControlledService();
 			for (EnforcementAPI api:enforcementAPIs.values()){
-				api.setControlledService(controlService);
+				api.refreshControlService(controlService);
 			}
 		}
 	}
@@ -97,7 +103,7 @@ public class MultipleEnforcementAPIs implements EnforcementAPIInterface{
 			enforcementAPI.enforceElasticityCapability(capability,e);
 			Node controlService = enforcementAPI.getControlledService();
 			for (EnforcementAPI api:enforcementAPIs.values()){
-				api.setControlledService(controlService);
+				api.refreshControlService(controlService);
 			}
 		}
 	}
@@ -105,12 +111,15 @@ public class MultipleEnforcementAPIs implements EnforcementAPIInterface{
 
 	@Override
 	public void scalein(String target, Node arg0) {
+		RuntimeLogger.logger.info("Scaling in on plugin , "+target+"node "+arg0.getId());
 		EnforcementAPI enforcementAPI = enforcementAPIs.get(target);
 		enforcementAPI.scalein( arg0);	
 		Node controlService = enforcementAPI.getControlledService();
 		for (EnforcementAPI api:enforcementAPIs.values()){
-			api.setControlledService(controlService);
+			api.refreshControlService(controlService);
 		}
+		RuntimeLogger.logger.info("Finished Scaling in on plugin , "+target+"node "+arg0.getId());
+
 	}
 
 	@Override
@@ -119,7 +128,7 @@ public class MultipleEnforcementAPIs implements EnforcementAPIInterface{
 		enforcementAPI.scalein( arg0);	
 		Node controlService = enforcementAPI.getControlledService();
 		for (EnforcementAPI api:enforcementAPIs.values()){
-			api.setControlledService(controlService);
+			api.refreshControlService(controlService);
 		}
 	}
 
@@ -129,7 +138,7 @@ public class MultipleEnforcementAPIs implements EnforcementAPIInterface{
 		enforcementAPI.enforceAction(actionName, e);	
 		Node controlService = enforcementAPI.getControlledService();
 		for (EnforcementAPI api:enforcementAPIs.values()){
-			api.setControlledService(controlService);
+			api.refreshControlService(controlService);
 		}
 	}
 
@@ -140,7 +149,7 @@ public class MultipleEnforcementAPIs implements EnforcementAPIInterface{
 		enforcementAPI.enforceElasticityCapability(capability, e);	
 		Node controlService = enforcementAPI.getControlledService();
 		for (EnforcementAPI api:enforcementAPIs.values()){
-			api.setControlledService(controlService);
+			api.refreshControlService(controlService);
 		}
 	}
 
