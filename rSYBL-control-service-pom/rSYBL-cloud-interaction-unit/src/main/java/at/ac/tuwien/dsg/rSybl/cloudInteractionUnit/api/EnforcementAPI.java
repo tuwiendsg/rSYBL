@@ -110,18 +110,21 @@ public class EnforcementAPI {
 			
 		}
 		checkIfMetrics=myMetrics;
-		}
 		try {
 			Thread.sleep(20000);
 		} catch (InterruptedException ex) {
 			// TODO Auto-generated catch block
 			ex.printStackTrace();
 		}
+		
 		}
+		
+		
 		
 		executingControlAction=false;
 		//monitoringAPIInterface.enforcingActionEnded("ScaleIn", arg0);
 		RuntimeLogger.logger.info("Finished scaling in "+arg0.getId()+" ...");
+			}
 			}else{
 				RuntimeLogger.logger.info("Number of nodes associated with "+arg0.getAllRelatedNodes().size());
 			}
@@ -162,7 +165,7 @@ public class EnforcementAPI {
 			
 		}
 		checkIfMetrics=myMetrics;
-		}
+		
 		try {
 			Thread.sleep(20000);
 		} catch (InterruptedException ex) {
@@ -170,6 +173,7 @@ public class EnforcementAPI {
 			ex.printStackTrace();
 		
 			}
+		}
 		executingControlAction=false;
 		//monitoringAPIInterface.enforcingActionEnded("ScaleOut", arg0);
 		RuntimeLogger.logger.info("Finished scaling out "+arg0.getId()+" ...");
