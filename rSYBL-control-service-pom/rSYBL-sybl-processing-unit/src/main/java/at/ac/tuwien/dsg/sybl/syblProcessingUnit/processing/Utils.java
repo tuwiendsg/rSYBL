@@ -309,7 +309,133 @@ public void processStrategies(String strategies) {
 	}
 
 }
+public void doEnforcement( String enf){
+	if (!enf.contains("minimize") &&  !enf.contains("maximize")){
+	if (enf.contains("(")){
+		//SYBLDirectivesEnforcementLogger.logger.info("s[1]= " +s[1]);
+	String actionName = enf.split("[(]")[0];
 
+		
+	String parameter = eliminateSpaces(enf.split("[(]")[1].split("[)]")[0]);
+	SYBLDirectivesEnforcementLogger.logger.info("Parametor for " +actionName+" is "+ parameter+" ");
+	if (!parameter.equals("")){
+	actionName = eliminateSpaces(actionName);
+	String target = "";
+	if (actionName.contains(".")){
+		target=actionName.split(".")[0];
+		String a  = actionName.split(".")[1];
+		actionName=a;
+	}
+	try {
+		Class partypes[] = null;
+
+		Object[] parameters = null;
+		Node entity = dependencyGraph.getNodeWithID(parameter);
+		
+		
+		Method actionMethod = null;
+		if (target.equalsIgnoreCase("")){
+			partypes = new Class[1];
+
+			parameters = new Object[1];
+			parameters[0]=entity;
+			partypes[0]=Node.class;
+		actionMethod=EnforcementAPIInterface.class.getMethod(
+				actionName, partypes);
+		}
+		else{
+			partypes = new Class[2];
+
+			parameters = new Object[2];
+			parameters[0]=target;
+			partypes[0]=String.class;
+			parameters[1]=entity;
+			partypes[1]=Node.class;
+			actionMethod=EnforcementAPIInterface.class.getMethod(actionName, partypes);
+			
+		}
+		actionMethod.invoke(enforcementAPI, parameters);
+	} catch (NoSuchMethodException ex1)  {
+		Node entity = dependencyGraph.getNodeWithID(parameter);
+		
+		if (target.equalsIgnoreCase(""))
+			enforcementAPI.enforceAction(actionName, entity);
+		else
+			enforcementAPI.enforceAction(target, actionName,entity);
+		// TODO Auto-generated catch block
+		//SYBLDirectivesEnforcementLogger.logger.info("Error in processing strategy "+ex1.getMessage());
+	}catch ( SecurityException ex2){
+		 
+				// TODO Auto-generated catch block
+		SYBLDirectivesEnforcementLogger.logger.info("Error in processing strategy "+ex2.getMessage());
+			
+	}catch ( IllegalAccessException ex3){
+		SYBLDirectivesEnforcementLogger.logger.info("Error in processing strategy "+ex3.getMessage());
+
+
+	}catch (IllegalArgumentException ex4){
+		SYBLDirectivesEnforcementLogger.logger.info("Error in processing strategy "+ex4.getMessage());
+
+	}
+	catch(InvocationTargetException ex5){
+		SYBLDirectivesEnforcementLogger.logger.info("Error in processing strategy "+ex5.getMessage());
+
+	}
+	}else{
+		enf.replace("(", "");
+		enf.replace(")","");
+	}
+
+	}
+		
+		Class partypes[] = new Class[1];
+		String actionName = eliminateSpaces(enf);
+		String target = "";
+		if (actionName.contains(".")){
+			target=actionName.split(".")[0];
+			String a  = actionName.split(".")[1];
+			actionName=a;
+		}
+		if (!actionName.toLowerCase().contains("minimize") &&  !actionName.toLowerCase().contains("maximize")){
+			
+		Object[] parameters = new Object[1];
+		parameters[0]=currentEntity;
+		partypes[0]=Node.class;
+		try {
+			
+			Method actionMethod = EnforcementAPIInterface.class.getMethod(
+					actionName, partypes);
+
+			actionMethod.invoke(enforcementAPI, parameters);
+		}catch (NoSuchMethodException ex1)  {
+			
+			if (target.equalsIgnoreCase(""))
+				enforcementAPI.enforceAction(actionName, currentEntity);
+			else
+				enforcementAPI.enforceAction(target, actionName,currentEntity);
+			
+			//SYBLDirectivesEnforcementLogger.logger.info("Error in processing strategy "+ex1.getMessage());
+		}catch ( SecurityException ex2){
+			 
+					// TODO Auto-generated catch block
+			SYBLDirectivesEnforcementLogger.logger.info("Error in processing strategy "+ex2.getMessage());
+				
+		}catch ( IllegalAccessException ex3){
+			SYBLDirectivesEnforcementLogger.logger.info("Error in processing strategy "+ex3.getMessage());
+
+
+		}catch (IllegalArgumentException ex4){
+			SYBLDirectivesEnforcementLogger.logger.info("Error in processing strategy "+ex4.getMessage());
+
+		}
+		catch(InvocationTargetException ex5){
+			SYBLDirectivesEnforcementLogger.logger.info("Error in processing strategy "+ex5.getMessage());
+
+		}
+		}
+	}
+
+}
 public void processStrategy(Rule r) {
 	if (r.getText().contains("CASE")) {
 		String s[] = r.getText().split(":");
@@ -318,90 +444,7 @@ public void processStrategy(Rule r) {
 		try {
 			try {
 				if ((condition.contains("AND") && evaluateCompositeCondition(condition))||(!condition.contains("AND") &&evaluateCondition(condition)) ){
-					if (s[1].contains("(")){
-						//SYBLDirectivesEnforcementLogger.logger.info("s[1]= " +s[1]);
-					String actionName = s[1].split("[(]")[0];
-					if (!actionName.contains("minimize") &&  !actionName.contains("maximize")){
-						
-					String parameter = eliminateSpaces(s[1].split("[(]")[1].split("[)]")[0]);
-					//SYBLDirectivesEnforcementLogger.logger.info("Parametor for " +actionName+" is "+ parameter+" ");
-					if (!parameter.equals("")){
-					actionName = eliminateSpaces(actionName);
-
-					try {
-						Class partypes[] = new Class[1];
-
-						Object[] parameters = new Object[1];
-						Node entity = dependencyGraph.getNodeWithID(parameter);
-						parameters[0]=entity;
-						partypes[0]=Node.class;
-						
-						Method actionMethod = EnforcementAPIInterface.class.getMethod(
-								actionName, partypes);
-
-						actionMethod.invoke(enforcementAPI, parameters);
-					} catch (NoSuchMethodException ex1)  {
-						// TODO Auto-generated catch block
-						SYBLDirectivesEnforcementLogger.logger.info("Error in processing strategy "+ex1.getMessage());
-					}catch ( SecurityException ex2){
-						 
-								// TODO Auto-generated catch block
-						SYBLDirectivesEnforcementLogger.logger.info("Error in processing strategy "+ex2.getMessage());
-							
-					}catch ( IllegalAccessException ex3){
-						SYBLDirectivesEnforcementLogger.logger.info("Error in processing strategy "+ex3.getMessage());
-
-
-					}catch (IllegalArgumentException ex4){
-						SYBLDirectivesEnforcementLogger.logger.info("Error in processing strategy "+ex4.getMessage());
-
-					}
-					catch(InvocationTargetException ex5){
-						SYBLDirectivesEnforcementLogger.logger.info("Error in processing strategy "+ex5.getMessage());
-
-					}
-					}else{
-						
-					}
-
-				}
-					}else{
-						
-						Class partypes[] = new Class[1];
-						String actionName = eliminateSpaces(s[1]);
-						if (!actionName.toLowerCase().contains("minimize") &&  !actionName.toLowerCase().contains("maximize")){
-							
-						Object[] parameters = new Object[1];
-						parameters[0]=currentEntity;
-						partypes[0]=Node.class;
-						try {
-							
-							Method actionMethod = EnforcementAPIInterface.class.getMethod(
-									actionName, partypes);
-
-							actionMethod.invoke(enforcementAPI, parameters);
-						}catch (NoSuchMethodException ex1)  {
-							// TODO Auto-generated catch block
-							SYBLDirectivesEnforcementLogger.logger.info("Error in processing strategy "+ex1.getMessage());
-						}catch ( SecurityException ex2){
-							 
-									// TODO Auto-generated catch block
-							SYBLDirectivesEnforcementLogger.logger.info("Error in processing strategy "+ex2.getMessage());
-								
-						}catch ( IllegalAccessException ex3){
-							SYBLDirectivesEnforcementLogger.logger.info("Error in processing strategy "+ex3.getMessage());
-
-
-						}catch (IllegalArgumentException ex4){
-							SYBLDirectivesEnforcementLogger.logger.info("Error in processing strategy "+ex4.getMessage());
-
-						}
-						catch(InvocationTargetException ex5){
-							SYBLDirectivesEnforcementLogger.logger.info("Error in processing strategy "+ex5.getMessage());
-
-						}
-						}
-					}
+					doEnforcement( s[1]);
 				}else{
 					SYBLDirectivesEnforcementLogger.logger.info("Condition not true for strategy "+r.getName() );
 				}
@@ -417,39 +460,7 @@ public void processStrategy(Rule r) {
 		String[] actions = s[0].split(";");
 		
 		for (String action:actions){
-			if (!(action.toLowerCase().contains("minimize") ||  action.toLowerCase().contains("maximize")) && !action.equalsIgnoreCase("")){
-				Class partypes[] = new Class[1];
-				String actionName = eliminateSpaces(action);
-				Object[] parameters = new Object[1];
-				parameters[0]=currentEntity;
-				partypes[0]=Node.class;
-				try {
-					//System.err.println("Enforcing strategy "+action);
-					Method actionMethod = EnforcementAPIInterface.class.getMethod(
-							actionName, partypes);
-
-					actionMethod.invoke(enforcementAPI, parameters);
-				} catch (NoSuchMethodException ex1)  {
-					// TODO Auto-generated catch block
-					SYBLDirectivesEnforcementLogger.logger.info("Error in processing strategy "+ex1.getMessage());
-				}catch ( SecurityException ex2){
-					 
-							// TODO Auto-generated catch block
-					SYBLDirectivesEnforcementLogger.logger.info("Error in processing strategy "+ex2.getMessage());
-						
-				}catch ( IllegalAccessException ex3){
-					SYBLDirectivesEnforcementLogger.logger.info("Error in processing strategy "+ex3.getMessage());
-
-
-				}catch (IllegalArgumentException ex4){
-					SYBLDirectivesEnforcementLogger.logger.info("Error in processing strategy "+ex4.getMessage());
-
-				}
-				catch(InvocationTargetException ex5){
-					SYBLDirectivesEnforcementLogger.logger.info("Error in processing strategy "+ex5.getMessage());
-					
-				}
-			}
+			doEnforcement(action);
 			}
 				
 		}

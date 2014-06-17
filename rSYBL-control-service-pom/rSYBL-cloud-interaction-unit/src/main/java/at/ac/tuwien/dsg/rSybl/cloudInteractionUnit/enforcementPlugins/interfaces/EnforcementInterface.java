@@ -35,4 +35,5 @@ public void enforceAction(String actionName, Node entity);
 public void setControlledService(Node controlledService);
 public Node getControlledService();
 public void setMonitoringPlugin(MonitoringAPIInterface monitoring);
+public boolean containsElasticityCapability(Node entity, String capability);
 }

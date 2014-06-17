@@ -45,7 +45,7 @@ import at.ac.tuwien.dsg.rSybl.dataProcessingUnit.monitoringPlugins.melaPlugin.ME
 
 
 
-public class EnforcementAPI implements EnforcementAPIInterface{
+public class EnforcementAPI {
 	private  static HashMap<Node, ArrayList<Float>> avgRunningTimes = new HashMap<Node,ArrayList<Float>>();
 	
 	private boolean executingControlAction = false;
@@ -56,7 +56,11 @@ public class EnforcementAPI implements EnforcementAPIInterface{
 		
 	}
 	
-
+	public void setControlledService(Node controlledService,String className) {
+		this.controlledService = controlledService;
+		offeredCapabilities = OfferedEnforcementCapabilities.getInstance(className,this.controlledService);
+	}
+	
 	
 	public void setControlledService(Node controlledService) {
 		this.controlledService = controlledService;
@@ -75,11 +79,11 @@ public class EnforcementAPI implements EnforcementAPIInterface{
 
 	public void scalein(Node arg0) {
 		RuntimeLogger.logger.info("~~~~~~~~~~~Trying to execute action executingControlaction="+executingControlAction);
-
 		if (executingControlAction==false){
 			if (arg0.getAllRelatedNodes().size()>1){
 		executingControlAction=true;
-		
+	
+	
 		offeredCapabilities.scaleIn(arg0);
 		List<String> metrics= monitoringAPIInterface.getAvailableMetrics(arg0);
 		boolean checkIfMetrics=false;
@@ -98,7 +102,7 @@ public class EnforcementAPI implements EnforcementAPIInterface{
 		for (String metricName:metrics){
 			RuntimeLogger.logger.info("Metric "+metricName+" has value "+monitoringAPIInterface.getMetricValue(metricName,arg0));
 
-			if (monitoringAPIInterface.getMetricValue(metricName,arg0)==null || monitoringAPIInterface.getMetricValue(metricName, arg0)<=0 ){
+			if (monitoringAPIInterface.getMetricValue(metricName,arg0)==null || monitoringAPIInterface.getMetricValue(metricName, arg0)<0 ){
 				myMetrics=false;
 				RuntimeLogger.logger.info("~~~~Metric "+metricName+"smaller than 0");
 			}
@@ -108,19 +112,19 @@ public class EnforcementAPI implements EnforcementAPIInterface{
 		checkIfMetrics=myMetrics;
 		}
 		try {
-			Thread.sleep(60000);
+			Thread.sleep(20000);
 		} catch (InterruptedException ex) {
 			// TODO Auto-generated catch block
 			ex.printStackTrace();
 		}
+		}
+		
 		executingControlAction=false;
 		//monitoringAPIInterface.enforcingActionEnded("ScaleIn", arg0);
 		RuntimeLogger.logger.info("Finished scaling in "+arg0.getId()+" ...");
 			}else{
 				RuntimeLogger.logger.info("Number of nodes associated with "+arg0.getAllRelatedNodes().size());
 			}
-		}
-
 	}
 
 
@@ -129,9 +133,10 @@ public class EnforcementAPI implements EnforcementAPIInterface{
 	public void scaleout(Node arg0) {
 		RuntimeLogger.logger.info("~~~~~~~~~~~Trying to execute action executingControlaction="+executingControlAction);
 		if (executingControlAction==false && arg0!=null){
-
-		RuntimeLogger.logger.info("Scaling out "+arg0+" ...");
-		executingControlAction=true;
+			RuntimeLogger.logger.info("Scaling out "+arg0+" ...");
+			executingControlAction=true;
+		
+	
 		offeredCapabilities.scaleOut(arg0);
 		
 		List<String> metrics= monitoringAPIInterface.getAvailableMetrics(arg0);
@@ -149,7 +154,7 @@ public class EnforcementAPI implements EnforcementAPIInterface{
 		for (String metricName:metrics){
 			
 				RuntimeLogger.logger.info("Metric "+metricName+" has value "+monitoringAPIInterface.getMetricValue(metricName,arg0));
-			if (monitoringAPIInterface.getMetricValue(metricName,arg0)==null || monitoringAPIInterface.getMetricValue(metricName, arg0)<=0 ){
+			if (monitoringAPIInterface.getMetricValue(metricName,arg0)==null || monitoringAPIInterface.getMetricValue(metricName, arg0)<0 ){
 				myMetrics=false;
 				RuntimeLogger.logger.info("~~~Metric "+metricName+"smaller than 0");
 			}
@@ -159,11 +164,12 @@ public class EnforcementAPI implements EnforcementAPIInterface{
 		checkIfMetrics=myMetrics;
 		}
 		try {
-			Thread.sleep(60000);
+			Thread.sleep(20000);
 		} catch (InterruptedException ex) {
 			// TODO Auto-generated catch block
 			ex.printStackTrace();
-		}
+		
+			}
 		executingControlAction=false;
 		//monitoringAPIInterface.enforcingActionEnded("ScaleOut", arg0);
 		RuntimeLogger.logger.info("Finished scaling out "+arg0.getId()+" ...");
@@ -175,7 +181,7 @@ public class EnforcementAPI implements EnforcementAPIInterface{
 
 
 
-	@Override
+	
 	public void enforceAction(String actionName, Node e) {
 		RuntimeLogger.logger.info("~~~~~~~~~~~Trying to execute action executingControlaction="+executingControlAction);
 
@@ -197,7 +203,7 @@ public class EnforcementAPI implements EnforcementAPIInterface{
 	}
 
 
-	@Override
+	
 	public void setMonitoringPlugin(MonitoringAPIInterface monitoringInterface) {
 		monitoringAPIInterface=monitoringInterface;
 		offeredCapabilities.setMonitoringPlugin(monitoringInterface);
@@ -208,7 +214,7 @@ public class EnforcementAPI implements EnforcementAPIInterface{
 	
 	
 
-	@Override
+	
 	public Node getControlledService() {
 		// TODO Auto-generated method stub
 		return offeredCapabilities.getControlledService();
@@ -216,7 +222,7 @@ public class EnforcementAPI implements EnforcementAPIInterface{
 
 
 
-	@Override
+	
 	public void submitElasticityRequirements(
 			ArrayList<ElasticityRequirement> description) {
 		// TODO Auto-generated method stub
@@ -225,9 +231,13 @@ public class EnforcementAPI implements EnforcementAPIInterface{
 
 
 	//TODO depending on the protocol specified and the parameters, call the capability = default parameter - Service Part ID
-	@Override
+	
 	public void enforceElasticityCapability(ElasticityCapability capability,
 			Node e) {
+		if (executingControlAction==false && e!=null){
+			RuntimeLogger.logger.info("Enforcing "+capability.getApiMethod()+" ...");
+			executingControlAction=true;
+		
 		if (capability.getCallType().toLowerCase().contains("rest")){
 			 URL url = null;
 		        HttpURLConnection connection = null;
@@ -287,7 +297,9 @@ public class EnforcementAPI implements EnforcementAPIInterface{
 				offeredCapabilities.enforceAction(capability.getEndpoint(),e);
 			}
 		}
-		
+		executingControlAction=false;
+		RuntimeLogger.logger.info("Finished enforcing action "+capability.getName()+" on the node "+e+" ...");
+		}
 	}
 
 

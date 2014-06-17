@@ -410,7 +410,12 @@ public void enforceAction(String actionName, Node entity) {
 	
 }
 
-
+@Override
+public boolean containsElasticityCapability(Node entity, String capability) {
+	for (String cap : getElasticityCapabilities())
+		if (cap.equalsIgnoreCase(capability)) return true;
+	return false;
+}
 
 
 }

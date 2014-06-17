@@ -79,20 +79,6 @@ public class PlanningHeuristicSearch implements PlanningAlgorithmInterface  {
 		recursiveBranchAndBoundEvaluation();
 		}
 	}
-	public void enforceFoundActions(ContextRepresentation contextRepresentation){
-		for (ActionEffect actionEffect:contextRepresentation.getActionsAssociatedToContext()){
-			if (actionEffect.getActionType().equalsIgnoreCase("scaleout")) {
-				enforcementAPI.scaleout(actionEffect.getTargetedEntity());
-			} else {
-				if (actionEffect.getActionType().equalsIgnoreCase("scalein")) {
-					enforcementAPI.scalein(actionEffect.getTargetedEntity());	
-				}else{
-					enforcementAPI.enforceAction(actionEffect.getActionName(), actionEffect.getTargetedEntity());
-				}
-		}
-			
-		}
-	}
 	@Override
 	public void run() {
 		while (true){
@@ -104,7 +90,8 @@ public class PlanningHeuristicSearch implements PlanningAlgorithmInterface  {
 			SortedMap<Double, ContextRepresentation> searchContext = new TreeMap();
 			searchContext.put(contextRepresentation.getCS_UNHEALTHY_STATE(), contextRepresentation);
 			recursiveBranchAndBoundEvaluation();
-			enforceFoundActions(searchContext.get(searchContext.firstKey()));
+			ActionPlanEnforcement actionPlanEnforcement = new ActionPlanEnforcement(enforcementAPI);
+			actionPlanEnforcement.enforceFoundActions(searchContext.get(searchContext.firstKey()));
 		    try {
 				currentThread.sleep(REFRESH_PERIOD);
 			} catch (InterruptedException e) {

@@ -131,7 +131,31 @@ public class SyblControlWS {
 		 controlCoordination.stopControl(cloudServiceId);
 	}
 	 
-	
+	 @PUT
+	 @Path("/replaceCloudService")
+	 @Consumes("application/xml")
+	public void replaceCloudService(String cloudServiceId, String cloudService){
+		 controlCoordination.replaceCloudServiceWithRequirements(cloudServiceId, cloudService);
+	}
+	 @PUT
+	 @Path("/replaceRequirements")
+	 @Consumes("application/xml")
+	public void replaceRequirements(String cloudServiceId, String requirements){
+		 controlCoordination.replaceRequirements(cloudServiceId, requirements);
+	}
+	 @PUT
+	 @Path("/replaceCloudServiceFromCurrentCloudService")
+	 @Consumes("application/xml")
+	public void replaceCloudService(String cloudService){
+		 controlCoordination.replaceCloudServiceWithRequirements(cloudService);
+	}
+	 
+	 @PUT
+	 @Path("/replaceCloudServiceFromCurrentCloudService")
+	 @Consumes("application/xml")
+	public void replaceRequirements(String requirements){
+		 controlCoordination.replaceRequirements(requirements);
+	}
 
 	public UriInfo getContext() {
 		return context;

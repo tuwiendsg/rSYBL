@@ -44,8 +44,16 @@ public interface EnforcementAPIInterface{
 		public void scaleout(Node arg0);
 	    	
 			    public void enforceAction(String actionName, Node e);
-
+			    
 			    public void enforceElasticityCapability(ElasticityCapability capability,Node e);
+			    
+				public void scalein(String target,Node arg0);
 
+
+				public void scaleout(String target,Node arg0);
+			    	
+					    public void enforceAction(String target,String actionName, Node e);
+					    
+					    public void enforceElasticityCapability(String target,ElasticityCapability capability,Node e);
 
 }

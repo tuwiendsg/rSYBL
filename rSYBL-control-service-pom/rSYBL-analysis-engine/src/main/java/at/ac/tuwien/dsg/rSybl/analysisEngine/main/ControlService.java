@@ -46,6 +46,7 @@ import at.ac.tuwien.dsg.rSybl.analysisEngine.utils.Configuration;
 import at.ac.tuwien.dsg.rSybl.analysisEngine.utils.MonitoringThread;
 import at.ac.tuwien.dsg.rSybl.cloudInteractionUnit.api.EnforcementAPI;
 import at.ac.tuwien.dsg.rSybl.cloudInteractionUnit.api.EnforcementAPIInterface;
+import at.ac.tuwien.dsg.rSybl.cloudInteractionUnit.api.MultipleEnforcementAPIs;
 import at.ac.tuwien.dsg.rSybl.dataProcessingUnit.api.MonitoringAPI;
 import at.ac.tuwien.dsg.rSybl.dataProcessingUnit.api.MonitoringAPIInterface;
 import at.ac.tuwien.dsg.rSybl.planningEngine.PlanningAlgorithmInterface;
@@ -130,7 +131,7 @@ public class ControlService {
 			monitoringAPI.submitElasticityRequirements(dependencyGraph
 					.getAllElasticityRequirements());
 			AnalysisLogger.logger.info("Have set the requirements on MELA");
-			enforcementAPI = new EnforcementAPI();
+			enforcementAPI = new MultipleEnforcementAPIs();
 
 			enforcementAPI.setControlledService(node);
 
@@ -572,6 +573,14 @@ public class ControlService {
 				}
 			}
 		}
+	}
+	public void replaceCloudServiceRequirements(String newCloudServiceDescription){
+		InputProcessing inputProcessing=new InputProcessing();
+		inputProcessing.replaceCloudServiceRequirements(dependencyGraph, newCloudServiceDescription);
+	}
+	public void replaceElasticityRequirements(String requirements){
+		InputProcessing inputProcessing=new InputProcessing();
+		inputProcessing.replaceRequirements(dependencyGraph, requirements);
 	}
 	public String getMetricCompositionRules() {
 		return metricCompositionRules;

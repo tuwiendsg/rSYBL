@@ -71,6 +71,7 @@ public class InputProcessing {
 	private  SYBLElasticityRequirementsDescription syblSpecifications;
 	private DeploymentDescription deploymentDescription;
 	private CloudServiceXML cloudServiceXML;
+	private DependencyGraph graph;
 	private void loadDeploymentDescriptionFromFile(){
 		try {		
 			//load deployment description and populate the dependency graph
@@ -172,8 +173,7 @@ public class InputProcessing {
 			// TODO Auto-generated catch block
 			DependencyGraphLogger.logger.info(e.getStackTrace().toString());
 		}
-		//populate ips for above levels
-		//populateIps();
+
 		
 			try {			
 				JAXBContext a = JAXBContext.newInstance( SYBLElasticityRequirementsDescription.class );
@@ -192,13 +192,109 @@ public class InputProcessing {
 			    //	syblSpecifications.getSyblSpecifications().add(SYBLDirectiveMappingFromXML.mapFromSYBLAnnotation(syblAnnotation));
 			   // }
 			} catch (JAXBException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
+				DependencyGraphLogger.logger.error(e.getStackTrace().toString());
 			}
 			
 	}
+	public DependencyGraph replaceRequirements(DependencyGraph graph,String xmlRequirements){
+		for (Node n: graph.getAllServiceUnits()){
+			n.setElasticityRequirements(new ArrayList<ElasticityRequirement>());
+		}
+		for (Node n: graph.getAllServiceTopologies()){
+			n.setElasticityRequirements(new ArrayList<ElasticityRequirement>());
+		}
+		graph.getCloudService().setElasticityRequirements(new ArrayList<ElasticityRequirement>());
+		try{
+		JAXBContext a = JAXBContext.newInstance( SYBLElasticityRequirementsDescription.class );
+		Unmarshaller u  = a.createUnmarshaller();
+		
+	     syblSpecifications = (SYBLElasticityRequirementsDescription) u.unmarshal( new StringReader(xmlRequirements)) ;
+	     if (syblSpecifications!=null && syblSpecifications.getSyblSpecifications()!=null)
+	 		for (SYBLSpecification specification: syblSpecifications.getSyblSpecifications()){
+	 			ElasticityRequirement elRequirement = new ElasticityRequirement();
+	 			elRequirement.setAnnotation(SYBLDirectiveMappingFromXML.mapFromXMLRepresentation(specification));
+	 			if (graph.getNodeWithID(specification.getComponentId())!=null)
+	 			graph.getNodeWithID(specification.getComponentId()).addElasticityRequirement(elRequirement);
+	 			else
+	 				DependencyGraphLogger.logger.error("Specification targets entity which is not found: "+specification.getComponentId());
+	 		}
+
+		}catch(Exception e){
+			DependencyGraphLogger.logger.error(e.getStackTrace().toString());
+		}
+		return graph;
+	}
+	public DependencyGraph replaceCloudServiceRequirements(DependencyGraph graph,String cloudService){
+		JAXBContext jc;
+	    cloudServiceXML = null;
+	    for (Node n: graph.getAllServiceUnits()){
+			n.setElasticityRequirements(new ArrayList<ElasticityRequirement>());
+		}
+		for (Node n: graph.getAllServiceTopologies()){
+			n.setElasticityRequirements(new ArrayList<ElasticityRequirement>());
+		}
+		graph.getCloudService().setElasticityRequirements(new ArrayList<ElasticityRequirement>());
+		
+	try {			
+		jc = JAXBContext.newInstance( CloudServiceXML.class );
+		Unmarshaller u = jc.createUnmarshaller();
+		
+
+
+		//JAXBElement element=  u.unmarshal( new File(Configuration.getModelDescrFile()));
+		// cloudS = (CloudServiceXML) element.getValue();
+		 cloudServiceXML = (CloudServiceXML) u.unmarshal(new StringReader(cloudService));
+		//File f = new File(Configuration.getModelDescrFile());
+		//cloudServiceXML = (CloudServiceXML) u.unmarshal(new File(Configuration.getModelDescrFile()));
+	} catch (JAXBException e) {
+		// TODO Auto-generated catch block
+		DependencyGraphLogger.logger.info(e.getStackTrace().toString());
+	}
+	if (cloudServiceXML.getXMLAnnotation()!=null){
+		ElasticityRequirement elReq = new ElasticityRequirement();
+		elReq.setAnnotation(mapFromXMLAnnotationToSYBLAnnotation(graph.getCloudService().getId(),cloudServiceXML.getXMLAnnotation(),AnnotationType.CLOUD_SERVICE));
+		graph.getCloudService().getElasticityRequirements().add(elReq);
+		}
+	
+	List<ServiceTopologyXML> remainingServiceTopologies = new ArrayList<ServiceTopologyXML>();
+	for (ServiceTopologyXML serviceTopologyXML:cloudServiceXML.getServiceTopologies()){
+	remainingServiceTopologies.add(serviceTopologyXML);
+	ServiceTopologyXML firstServTopology = serviceTopologyXML;
+	if (firstServTopology.getXMLAnnotation()!=null){
+		ElasticityRequirement elReq = new ElasticityRequirement();
+		elReq.setAnnotation(mapFromXMLAnnotationToSYBLAnnotation(serviceTopologyXML.getId(),firstServTopology.getXMLAnnotation(),AnnotationType.SERVICE_TOPOLOGY));
+		graph.getNodeWithID(serviceTopologyXML.getId()).getElasticityRequirements().add(elReq);
+	}
+	}
+	
+	while (!remainingServiceTopologies.isEmpty()){
+		ServiceTopologyXML serviceTopologyXML=remainingServiceTopologies.get(0);
+		if (serviceTopologyXML.getServiceUnits()!=null && !serviceTopologyXML.getServiceUnits().isEmpty())
+			for (ServiceUnitXML serviceUnitXML:serviceTopologyXML.getServiceUnits()){
+				if (serviceUnitXML.getXMLAnnotation()!=null){
+					ElasticityRequirement elReq = new ElasticityRequirement();
+					elReq.setAnnotation(mapFromXMLAnnotationToSYBLAnnotation(serviceUnitXML.getId(),serviceUnitXML.getXMLAnnotation(),AnnotationType.SERVICE_UNIT));
+					graph.getNodeWithID(serviceUnitXML.getId()).getElasticityRequirements().add(elReq);
+				}
+					}
+		
+		if (serviceTopologyXML.getServiceTopology()!=null && !serviceTopologyXML.getServiceTopology().isEmpty())
+			for (ServiceTopologyXML serviceTopologyXML2:serviceTopologyXML.getServiceTopology()){
+				
+				if (serviceTopologyXML2.getXMLAnnotation()!=null){
+					ElasticityRequirement elReq = new ElasticityRequirement();
+					elReq.setAnnotation(mapFromXMLAnnotationToSYBLAnnotation(serviceTopologyXML2.getId(),serviceTopologyXML2.getXMLAnnotation(),AnnotationType.SERVICE_TOPOLOGY));
+					graph.getNodeWithID(serviceTopologyXML2.getId()).getElasticityRequirements().add(elReq);
+				}
+				
+				remainingServiceTopologies.add(serviceTopologyXML2);
+			}
+		remainingServiceTopologies.remove(0);
+	}
+		return graph;
+	}
 	public DependencyGraph constructDependencyGraph(){
-		DependencyGraph graph = new DependencyGraph();
+		graph = new DependencyGraph();
 		Node cloudService = new Node();
 		cloudService.setId(cloudServiceXML.getId());
 		cloudService.setNodeType(NodeType.CLOUD_SERVICE);

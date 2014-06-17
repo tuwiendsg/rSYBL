@@ -78,8 +78,12 @@ public class DryRunEnforcementAPI implements EnforcementInterface{
 		// TODO Auto-generated method stub
 		
 	}
-
-
+	@Override
+	public boolean containsElasticityCapability(Node entity, String capability) {
+		for (String cap : getElasticityCapabilities())
+			if (cap.equalsIgnoreCase(capability)) return true;
+		return false;
+	}
 
 
 

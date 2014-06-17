@@ -51,7 +51,20 @@ public class ControlCoordination {
 			e.printStackTrace();
 		}
 	}
-	
+	public void replaceCloudServiceWithRequirements(String cloudServiceId,String cloudService){
+		controls.get(cloudServiceId).replaceCloudServiceRequirements(cloudService);
+	}
+	public void replaceCloudServiceWithRequirements(String cloudService){
+		controls.get(currentControls).replaceCloudServiceRequirements(cloudService);
+	}
+	public void replaceRequirements(String cloudServiceId,String requirements){
+		controls.get(cloudServiceId).replaceElasticityRequirements(requirements);
+
+	}
+	public void replaceRequirements(String requirements){
+		
+		controls.get(currentControls).replaceElasticityRequirements(requirements);
+	}
 	public void setApplicationDescriptionInfoInternalModel(String applicationDescriptionXML, String elasticityRequirementsXML, String deploymentInfoXML){
 		InputProcessing inputProcessing=new InputProcessing();
 		DependencyGraph dependencyGraph=inputProcessing.loadDependencyGraphFromStrings(applicationDescriptionXML, elasticityRequirementsXML, deploymentInfoXML);

@@ -322,67 +322,14 @@ public class PlanningGreedyAlgorithm implements PlanningAlgorithmInterface {
 				lastFixed = 0;
 			}
 			numberOfRemainingConstraints-=lastFixed;
-			
-	//	}
+	
 		
-		for (Pair<ActionEffect, Integer> actionEffect : result){
-			boolean foundCapability=false;
-			for (ElasticityCapability capability: actionEffect.getFirst().getTargetedEntity().getElasticityCapabilities()){
-				if (capability.getName()!=null && !capability.getName().equalsIgnoreCase("")){
-					if (capability.getEndpoint()!=null && !capability.getEndpoint().equalsIgnoreCase("")){
-						foundCapability=true;
-						enforcementAPI.enforceElasticityCapability(capability, actionEffect.getFirst().getTargetedEntity());
-					}
-				}
-			}
-
-			if (!foundCapability){
-			if (actionEffect.getFirst().getActionType()
-					.equalsIgnoreCase("scaleout") ) {
-				//default case when nothing is specified
-				
-			//	for (int i = 0; i < actionEffect.getSecond(); i++) {
-				enforcementAPI.scaleout(actionEffect.getFirst()
-						.getTargetedEntity());
-				
-					
-					try {
-						Thread.sleep(60000);
-					} catch (InterruptedException e) {
-						// TODO Auto-generated catch block
-						PlanningLogger.logger.error(e.toString());
-					}
-				
-		//		}
-				//PlanningLogger.logger.info("Scale out for "+ actionEffect.getFirst().getTargetedEntity() + "  ");
-				}
-			} else {
-				
-				if (actionEffect.getFirst().getActionType()
-						.equalsIgnoreCase("scalein")) {
-//					for (int i = 0; i < actionEffect.getSecond(); i++) {
-					enforcementAPI.scalein(actionEffect.getFirst()
-							.getTargetedEntity());
-				
-						
-						try {
-							Thread.sleep(60000);
-						} catch (InterruptedException e) {
-							// TODO Auto-generated catch block
-							PlanningLogger.logger.error(e.toString());
-						}
-					
-//					}
-				//	PlanningLogger.logger.info("Scale in for "+ actionEffect.getFirst().getTargetedEntity());
-
-				}
-			}
 		}
-		}
+		ActionPlanEnforcement actionPlanEnforcement = new ActionPlanEnforcement(enforcementAPI);
+		actionPlanEnforcement.enforceResult(result);
 	}
 
 	
-
 	public void run() {
 		while (true) {
 			try {

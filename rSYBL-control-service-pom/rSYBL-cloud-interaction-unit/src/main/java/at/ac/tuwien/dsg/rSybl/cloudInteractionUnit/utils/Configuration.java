@@ -25,9 +25,13 @@ package at.ac.tuwien.dsg.rSybl.cloudInteractionUnit.utils;
 import java.io.File;
 import java.io.FileReader;
 import java.io.InputStream;
+import java.util.HashMap;
+import java.util.List;
 import java.util.Properties;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+
+import at.ac.tuwien.dsg.rSybl.cloudInteractionUnit.enforcementPlugins.OfferedEnforcementCapabilities;
 
 public class Configuration {
 
@@ -95,6 +99,22 @@ public class Configuration {
     public static String getEnforcementPlugin()
     {
     	return configuration.getProperty("EnforcementPlugin");
+    } 
+    //PluginName:Class
+    public static HashMap<String,String> getEnforcementPlugins()
+    {
+    	String [] enforcements ;
+    	HashMap<String, String> enfPlugins = new HashMap<String,String>();
+    	enforcements= configuration.getProperty("MultipleEnforcementPlugins").split(",");
+    	for (String enf: enforcements){
+    		String[] splits=enf.split(":");
+    		if (splits.length>1){
+    			enfPlugins.put(splits[0], splits[1].replace(" ",""));
+    		}else{
+    			enfPlugins.put(enf,enf.replace(" ", ""));
+    		}
+    	}
+    	return enfPlugins;
     } 
     public static String getRuntimeRegistryPort()
     {
