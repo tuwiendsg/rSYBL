@@ -92,7 +92,9 @@ public class EnforcementFlexiantAPI  implements EnforcementInterface{
 		
 		//TODO : enable just ComponentTopology level 
 		
-		
+		if (o.getNodeType()==NodeType.SERVICE_UNIT){
+			scaleOutComponent(o);
+		}
 		if (o.getNodeType()==NodeType.SERVICE_TOPOLOGY){
 			//TODO: make it possible to scale a set of component topologies
 			
@@ -352,7 +354,9 @@ public class EnforcementFlexiantAPI  implements EnforcementInterface{
 		}
 		
 		//TODO : enable just ComponentTopology level 
-		
+		if (arg0.getNodeType()==NodeType.SERVICE_UNIT){
+			scaleInComponent(arg0);
+		}
 		
 		if (arg0.getNodeType()==NodeType.SERVICE_TOPOLOGY){
 			ArrayList<Node> comps = (ArrayList<Node>)  arg0.getAllRelatedNodesOfType(RelationshipType.COMPOSITION_RELATIONSHIP);
