@@ -33,6 +33,7 @@ import at.ac.tuwien.dsg.csdg.DependencyGraph;
 import at.ac.tuwien.dsg.csdg.Node;
 import at.ac.tuwien.dsg.rSybl.cloudInteractionUnit.api.EnforcementAPIInterface;
 import at.ac.tuwien.dsg.rSybl.dataProcessingUnit.api.MonitoringAPIInterface;
+import at.ac.tuwien.dsg.rSybl.dataProcessingUnit.utils.RuntimeLogger;
 import at.ac.tuwien.dsg.sybl.syblProcessingUnit.exceptions.ConstraintViolationException;
 import at.ac.tuwien.dsg.sybl.syblProcessingUnit.exceptions.MethodNotFoundException;
 import at.ac.tuwien.dsg.sybl.syblProcessingUnit.languageDescription.SYBLDescriptionParser;
@@ -392,6 +393,7 @@ public void doEnforcement( String enf){
 		String actionName = eliminateSpaces(enf);
 		String target = "";
 		if (actionName.contains(".")){
+			SYBLDirectivesEnforcementLogger.logger.info("Action on enforcement plugin " +actionName);
 			target=actionName.split(".")[0];
 			String a  = actionName.split(".")[1];
 			actionName=a;
