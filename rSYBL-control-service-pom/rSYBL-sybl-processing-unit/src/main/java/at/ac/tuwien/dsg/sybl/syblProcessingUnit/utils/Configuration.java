@@ -28,6 +28,7 @@ import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.HashMap;
 import java.util.Properties;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -66,7 +67,22 @@ public class Configuration {
     	return languageDescriptionFile;
         //return configuration.getProperty("SYBLLanguageDescription");
      }
-    
+    //PluginName:Class
+    public static HashMap<String,String> getEnforcementPlugins()
+    {
+    	String [] enforcements ;
+    	HashMap<String, String> enfPlugins = new HashMap<String,String>();
+    	enforcements= configuration.getProperty("MultipleEnforcementPlugins").split(",");
+    	for (String enf: enforcements){
+    		String[] splits=enf.split(":");
+    		if (splits.length>1){
+    			enfPlugins.put(splits[0].replace(" ", ""), splits[1].replace(" ",""));
+    		}else{
+    			enfPlugins.put(enf.replace(" ", ""),enf.replace(" ", ""));
+    		}
+    	}
+    	return enfPlugins;
+    } 
  
     public static String getDirectivesPath(){
     	return configuration.getProperty("SYBLDirectives");

@@ -31,7 +31,9 @@ import org.jclouds.openstack.nova.v2_0.compute.functions.RemoveFloatingIpFromNod
 
 import at.ac.tuwien.dsg.csdg.DependencyGraph;
 import at.ac.tuwien.dsg.csdg.Node;
+import at.ac.tuwien.dsg.csdg.elasticityInformation.ElasticityCapability;
 import at.ac.tuwien.dsg.rSybl.cloudInteractionUnit.api.EnforcementAPIInterface;
+import at.ac.tuwien.dsg.rSybl.cloudInteractionUnit.utils.Configuration;
 import at.ac.tuwien.dsg.rSybl.dataProcessingUnit.api.MonitoringAPIInterface;
 import at.ac.tuwien.dsg.rSybl.dataProcessingUnit.utils.RuntimeLogger;
 import at.ac.tuwien.dsg.sybl.syblProcessingUnit.exceptions.ConstraintViolationException;
@@ -335,20 +337,29 @@ public void doEnforcement( String enf){
 		Object[] parameters = null;
 		Node entity = dependencyGraph.getNodeWithID(parameter);
 		
-		
+
 		Method actionMethod = null;
 		if (target.equalsIgnoreCase("")){
+			if (!Configuration.getEnforcementPlugins().isEmpty()){
+				for (ElasticityCapability elasticityCapability:entity.getElasticityCapabilities())
+					if (elasticityCapability.getName().toLowerCase().contains(actionName.toLowerCase())){
+						if (elasticityCapability.getName().contains("."))
+							target=elasticityCapability.getName().split("\\.")[0];
+					}
+			}
+		}
+		if (target.equalsIgnoreCase("")){
 			partypes = new Class[1];
-
 			parameters = new Object[1];
 			parameters[0]=entity;
 			partypes[0]=Node.class;
-		actionMethod=EnforcementAPIInterface.class.getMethod(
+			actionMethod=EnforcementAPIInterface.class.getMethod(
 				actionName, partypes);
 		}
 		else{
+			
+			
 			partypes = new Class[2];
-
 			parameters = new Object[2];
 			parameters[0]=eliminateSpaces(target);
 			partypes[0]=String.class;
@@ -357,6 +368,7 @@ public void doEnforcement( String enf){
 			actionMethod=EnforcementAPIInterface.class.getMethod(actionName, partypes);
 			
 		}
+		
 		actionMethod.invoke(enforcementAPI, parameters);
 	} catch (NoSuchMethodException ex1)  {
 		Node entity = dependencyGraph.getNodeWithID(parameter);
@@ -400,6 +412,16 @@ public void doEnforcement( String enf){
 			SYBLDirectivesEnforcementLogger.logger.info("Found plugin " +target+" for "+actionName);
 
 		}
+		if (target.equalsIgnoreCase("")){
+			if (!Configuration.getEnforcementPlugins().isEmpty()){
+				for (ElasticityCapability elasticityCapability:currentEntity.getElasticityCapabilities())
+					if (elasticityCapability.getName().toLowerCase().contains(actionName.toLowerCase())){
+						if (elasticityCapability.getName().contains("."))
+							target=elasticityCapability.getName().split("\\.")[0];
+					}
+			}
+		}
+		
 		if (!actionName.toLowerCase().contains("minimize") &&  !actionName.toLowerCase().contains("maximize")){
 			Class partypes[] = null;
 
