@@ -325,8 +325,8 @@ public void doEnforcement( String enf){
 	if (actionName.contains(".")){
 		target=actionName.split("\\.")[0];
 		String a  = actionName.split("\\.")[1];
-		actionName=a;
-		SYBLDirectivesEnforcementLogger.logger.info("Found plugin " +target+" "+actionName);
+		actionName=eliminateSpaces(a);
+		SYBLDirectivesEnforcementLogger.logger.info("Found plugin " +target+" for action "+actionName);
 
 	}
 	try {
@@ -350,7 +350,7 @@ public void doEnforcement( String enf){
 			partypes = new Class[2];
 
 			parameters = new Object[2];
-			parameters[0]=target;
+			parameters[0]=eliminateSpaces(target);
 			partypes[0]=String.class;
 			parameters[1]=entity;
 			partypes[1]=Node.class;
@@ -370,18 +370,18 @@ public void doEnforcement( String enf){
 	}catch ( SecurityException ex2){
 		 
 				// TODO Auto-generated catch block
-		SYBLDirectivesEnforcementLogger.logger.info("Error in processing strategy "+ex2.getMessage());
+		SYBLDirectivesEnforcementLogger.logger.info("Error in processing strategy "+ex2.getStackTrace().toString());
 			
 	}catch ( IllegalAccessException ex3){
-		SYBLDirectivesEnforcementLogger.logger.info("Error in processing strategy "+ex3.getMessage());
+		SYBLDirectivesEnforcementLogger.logger.info("Error in processing strategy "+ex3.getStackTrace().toString());
 
 
 	}catch (IllegalArgumentException ex4){
-		SYBLDirectivesEnforcementLogger.logger.info("Error in processing strategy "+ex4.getMessage());
+		SYBLDirectivesEnforcementLogger.logger.info("Error in processing strategy "+ex4.getStackTrace().toString());
 
 	}
 	catch(InvocationTargetException ex5){
-		SYBLDirectivesEnforcementLogger.logger.info("Error in processing strategy "+ex5.getMessage());
+		SYBLDirectivesEnforcementLogger.logger.info("Error in processing strategy "+ex5.getStackTrace().toString());
 
 	}
 	}else{
@@ -394,11 +394,10 @@ public void doEnforcement( String enf){
 		String actionName = eliminateSpaces(enf);
 		String target = "";
 		if (actionName.contains(".")){
-			SYBLDirectivesEnforcementLogger.logger.info("Action on enforcement plugin " +actionName+actionName.split("\\."));
 			target=actionName.split("\\.")[0];
 			String a  = actionName.split("\\.")[1];
-			actionName=a;
-			SYBLDirectivesEnforcementLogger.logger.info("Found plugin " +target+" "+actionName);
+			actionName=eliminateSpaces(a);
+			SYBLDirectivesEnforcementLogger.logger.info("Found plugin " +target+" for "+actionName);
 
 		}
 		if (!actionName.toLowerCase().contains("minimize") &&  !actionName.toLowerCase().contains("maximize")){
@@ -418,7 +417,7 @@ public void doEnforcement( String enf){
 				partypes = new Class[2];
 
 				parameters = new Object[2];
-				parameters[0]=target;
+				parameters[0]=eliminateSpaces(target);
 				partypes[0]=String.class;
 				parameters[1]=currentEntity;
 				partypes[1]=Node.class;
@@ -426,7 +425,7 @@ public void doEnforcement( String enf){
 			}
 		
 		try {
-			
+			SYBLDirectivesEnforcementLogger.logger.info("Enforcing action due to strategy : "+target+"."+actionName);
 			Method actionMethod = EnforcementAPIInterface.class.getMethod(
 					actionName, partypes);
 
@@ -442,18 +441,18 @@ public void doEnforcement( String enf){
 		}catch ( SecurityException ex2){
 			 
 					// TODO Auto-generated catch block
-			SYBLDirectivesEnforcementLogger.logger.info("Error in processing strategy "+ex2.getMessage());
+			SYBLDirectivesEnforcementLogger.logger.error("Error in processing strategy "+ex2.getStackTrace().toString());
 				
 		}catch ( IllegalAccessException ex3){
-			SYBLDirectivesEnforcementLogger.logger.info("Error in processing strategy "+ex3.getMessage());
+			SYBLDirectivesEnforcementLogger.logger.info("Error in processing strategy "+ex3.getStackTrace().toString());
 
 
 		}catch (IllegalArgumentException ex4){
-			SYBLDirectivesEnforcementLogger.logger.info("Error in processing strategy "+ex4.getMessage());
+			SYBLDirectivesEnforcementLogger.logger.info("Error in processing strategy "+ex4.getStackTrace().toString());
 
 		}
 		catch(InvocationTargetException ex5){
-			SYBLDirectivesEnforcementLogger.logger.info("Error in processing strategy "+ex5.getMessage());
+			SYBLDirectivesEnforcementLogger.logger.info("Error in processing strategy "+ex5.getStackTrace().toString());
 
 		}
 		}
