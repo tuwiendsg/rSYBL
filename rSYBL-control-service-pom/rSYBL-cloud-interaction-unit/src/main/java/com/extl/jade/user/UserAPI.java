@@ -35,7 +35,7 @@ public class UserAPI
         try {
             URL baseUrl;
             
-            baseUrl = Configuration.class.getClassLoader().getResource("/");
+            baseUrl = Configuration.class.getClassLoader().getResource("/config/");
             RuntimeLogger.logger.info("Get url get url get url "+baseUrl);
             url = new URL(baseUrl, "UserAPI.wsdl");
         } catch (MalformedURLException e) {
