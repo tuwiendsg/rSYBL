@@ -10,6 +10,9 @@ import javax.xml.ws.WebEndpoint;
 import javax.xml.ws.WebServiceClient;
 import javax.xml.ws.WebServiceFeature;
 
+import at.ac.tuwien.dsg.rSybl.cloudInteractionUnit.utils.Configuration;
+import at.ac.tuwien.dsg.rSybl.dataProcessingUnit.utils.RuntimeLogger;
+
 
 /**
  * This is the API for the Extility user service. You need to be a authenticated as a valid user to use this service.
@@ -31,7 +34,9 @@ public class UserAPI
         URL url = null;
         try {
             URL baseUrl;
+            
             baseUrl = com.extl.jade.user.UserAPI.class.getResource(".");
+            RuntimeLogger.logger.info("Get url get url get url "+baseUrl);
             url = new URL(baseUrl, "UserAPI.wsdl");
         } catch (MalformedURLException e) {
             logger.warning("Failed to create URL for the wsdl Location: 'UserAPI.wsdl', retrying as a local file");
