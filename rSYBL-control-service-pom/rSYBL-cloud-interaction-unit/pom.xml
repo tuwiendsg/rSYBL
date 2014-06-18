@@ -89,27 +89,27 @@
     <target>1.7</target>
   </configuration>
 </plugin>
-<!-- <plugin>  -->
-<!--                 <groupId>org.jvnet.jax-ws-commons</groupId>  -->
-<!--                 <artifactId>jaxws-maven-plugin</artifactId>  -->
-<!--                 <version>2.1</version>  -->
-<!--                 <executions> -->
-<!--                     <execution>  -->
-<!--                         <id>jadeclient</id> -->
-<!--                         <phase>generate-sources</phase> -->
-<!--                         <configuration>  -->
-<!--                             <packageName>com.extl.jade.user</packageName>  -->
-<!--                             <sourceDestDir>src/main/java</sourceDestDir> -->
-<!--                             <wsdlFiles> -->
-<!--                                 <wsdlFile>${basedir}/src/main/resources/UserAPI.wsdl</wsdlFile>             -->
-<!--                             </wsdlFiles> -->
-<!--                         </configuration> -->
-<!--                         <goals>  -->
-<!--                             <goal>wsimport</goal>  -->
-<!--                         </goals>             -->
-<!--                     </execution>  -->
-<!--                 </executions> -->
-<!--             </plugin> -->
+<plugin> 
+                <groupId>org.jvnet.jax-ws-commons</groupId> 
+                <artifactId>jaxws-maven-plugin</artifactId> 
+                <version>2.1</version> 
+                <executions>
+                    <execution> 
+                        <id>jadeclient</id>
+                        <phase>generate-sources</phase>
+                        <configuration> 
+                            <packageName>com.extl.jade.user</packageName> 
+                            <sourceDestDir>src/main/java</sourceDestDir>
+                            <wsdlFiles>
+                                <wsdlFile>${basedir}/src/main/resources/UserAPI.wsdl</wsdlFile>            
+                            </wsdlFiles>
+                        </configuration>
+                        <goals> 
+                            <goal>wsimport</goal> 
+                        </goals>            
+                    </execution> 
+                </executions>
+            </plugin>
 			
         </plugins>
     </build>
