@@ -19,7 +19,7 @@ import javax.xml.ws.WebServiceFeature;
  * Generated source version: 2.1
  * 
  */
-@WebServiceClient(name = "UserAPI", targetNamespace = "http://extility.flexiant.net", wsdlLocation = "file:/C:/Users/Georgiana/Desktop/TUWIEN_DSG_Github/rSYBL/rSYBL-control-service-pom/rSYBL-cloud-interaction-unit/src/main/resources/UserAPI.wsdl")
+@WebServiceClient(name = "UserAPI", targetNamespace = "http://extility.flexiant.net", wsdlLocation = "UserAPI.wsdl")
 public class UserAPI
     extends Service
 {
@@ -32,9 +32,9 @@ public class UserAPI
         try {
             URL baseUrl;
             baseUrl = com.extl.jade.user.UserAPI.class.getResource(".");
-            url = new URL(baseUrl, "file:/C:/Users/Georgiana/Desktop/TUWIEN_DSG_Github/rSYBL/rSYBL-control-service-pom/rSYBL-cloud-interaction-unit/src/main/resources/UserAPI.wsdl");
+            url = new URL(baseUrl, "UserAPI.wsdl");
         } catch (MalformedURLException e) {
-            logger.warning("Failed to create URL for the wsdl Location: 'file:/C:/Users/Georgiana/Desktop/TUWIEN_DSG_Github/rSYBL/rSYBL-control-service-pom/rSYBL-cloud-interaction-unit/src/main/resources/UserAPI.wsdl', retrying as a local file");
+            logger.warning("Failed to create URL for the wsdl Location: 'UserAPI.wsdl', retrying as a local file");
             logger.warning(e.getMessage());
         }
         USERAPI_WSDL_LOCATION = url;
@@ -43,7 +43,7 @@ public class UserAPI
     public UserAPI(URL wsdlLocation, QName serviceName) {
         super(wsdlLocation, serviceName);
     }
-
+   
     public UserAPI() {
         super(USERAPI_WSDL_LOCATION, new QName("http://extility.flexiant.net", "UserAPI"));
     }
