@@ -90,7 +90,7 @@ public class JCloudsOpenStackConnection {
 		ComputeServiceContext context = ContextBuilder.newBuilder(Configuration.getCloudAPIType())
                 .credentials(Configuration.getCloudUser(), Configuration.getCloudPassword())
                 .endpoint(Configuration.getCloudAPIEndpoint())
-                .modules(modules)
+                //.modules(modules)
                 .buildView(ComputeServiceContext.class);
 
 
