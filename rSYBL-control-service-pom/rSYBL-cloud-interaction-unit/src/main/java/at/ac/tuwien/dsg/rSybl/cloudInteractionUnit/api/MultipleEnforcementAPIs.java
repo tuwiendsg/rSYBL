@@ -12,7 +12,7 @@ import at.ac.tuwien.dsg.rSybl.dataProcessingUnit.utils.RuntimeLogger;
 
 public class MultipleEnforcementAPIs implements EnforcementAPIInterface{
 	HashMap<String,EnforcementAPI> enforcementAPIs = new HashMap<String, EnforcementAPI>() ;
-	
+	MonitoringAPIInterface monitoringAPIInterface ;
 	//todo populate hashmap & use this in planning & sybl
 	
 	
@@ -52,6 +52,9 @@ public class MultipleEnforcementAPIs implements EnforcementAPIInterface{
 
 	@Override
 	public void scalein(Node arg0) {
+		if (arg0.getAllRelatedNodes().size()>1){
+			monitoringAPIInterface.enforcingActionStarted("ScaleIn",arg0 );
+
 		RuntimeLogger.logger.info("Scaling in without target on node "+arg0.getId());
 
 		for (EnforcementAPI enforcementAPI:enforcementAPIs.values()){
@@ -63,11 +66,14 @@ public class MultipleEnforcementAPIs implements EnforcementAPIInterface{
 			}
 		}
 		RuntimeLogger.logger.info("Finished scaling in in without target on node "+arg0.getId());
+		monitoringAPIInterface.enforcingActionEnded("ScaleIn",arg0 );
 
+		}
 	}
 
 	@Override
 	public void setMonitoringPlugin(MonitoringAPIInterface monitoringInterface) {
+		monitoringAPIInterface=monitoringInterface;
 		for (EnforcementAPI api:enforcementAPIs.values()){
 			api.setMonitoringPlugin(monitoringInterface);
 		}
@@ -76,6 +82,8 @@ public class MultipleEnforcementAPIs implements EnforcementAPIInterface{
 
 	@Override
 	public void scaleout(Node arg0) {
+		monitoringAPIInterface.enforcingActionStarted("ScaleOut",arg0 );
+
 		for (EnforcementAPI enforcementAPI:enforcementAPIs.values()){
 			enforcementAPI.scaleout(arg0);
 			Node controlService = enforcementAPI.getControlledService();
@@ -83,10 +91,14 @@ public class MultipleEnforcementAPIs implements EnforcementAPIInterface{
 				api.refreshControlService(controlService);
 			}
 		}
+		monitoringAPIInterface.enforcingActionEnded("ScaleOut",arg0 );
+
 	}
 
 	@Override
 	public void enforceAction(String actionName, Node e) {
+		monitoringAPIInterface.enforcingActionStarted(actionName,e );
+
 		for (EnforcementAPI enforcementAPI:enforcementAPIs.values()){
 			enforcementAPI.enforceAction(actionName,e);
 			Node controlService = enforcementAPI.getControlledService();
@@ -94,11 +106,14 @@ public class MultipleEnforcementAPIs implements EnforcementAPIInterface{
 				api.refreshControlService(controlService);
 			}
 		}
+		monitoringAPIInterface.enforcingActionEnded(actionName,e );
+
 	}
 
 	@Override
 	public void enforceElasticityCapability(ElasticityCapability capability,
 			Node e) {
+		monitoringAPIInterface.enforcingActionStarted(capability.getName(),e );
 		for (EnforcementAPI enforcementAPI:enforcementAPIs.values()){
 			enforcementAPI.enforceElasticityCapability(capability,e);
 			Node controlService = enforcementAPI.getControlledService();
@@ -106,12 +121,15 @@ public class MultipleEnforcementAPIs implements EnforcementAPIInterface{
 				api.refreshControlService(controlService);
 			}
 		}
+		monitoringAPIInterface.enforcingActionEnded(capability.getName(),e );
+
 	}
 	
 
 	@Override
 	public void scalein(String target, Node arg0) {
 		if (arg0.getAllRelatedNodes().size()>1){
+			monitoringAPIInterface.enforcingActionStarted("ScaleIn - "+target,arg0 );
 		RuntimeLogger.logger.info("Scaling in on plugin , "+target+" node "+arg0.getId());
 		EnforcementAPI enforcementAPI = enforcementAPIs.get(target);
 		enforcementAPI.scalein(arg0);	
@@ -120,38 +138,51 @@ public class MultipleEnforcementAPIs implements EnforcementAPIInterface{
 			api.refreshControlService(controlService);
 		}
 		RuntimeLogger.logger.info("Finished Scaling in on plugin , "+target+" node "+arg0.getId());
+		monitoringAPIInterface.enforcingActionEnded("ScaleIn - "+target,arg0 );
+
 		}
 	}
 
 	@Override
 	public void scaleout(String target, Node arg0) {
+		monitoringAPIInterface.enforcingActionStarted("ScaleOut - "+target, arg0);
 		EnforcementAPI enforcementAPI = enforcementAPIs.get(target);
 		enforcementAPI.scalein( arg0);	
 		Node controlService = enforcementAPI.getControlledService();
 		for (EnforcementAPI api:enforcementAPIs.values()){
 			api.refreshControlService(controlService);
 		}
+		monitoringAPIInterface.enforcingActionEnded("ScaleOut - "+target, arg0);
+
 	}
 
 	@Override
 	public void enforceAction(String target, String actionName, Node e) {
+		monitoringAPIInterface.enforcingActionStarted(actionName+" - "+target, e);
+
 		EnforcementAPI enforcementAPI = enforcementAPIs.get(target);
 		enforcementAPI.enforceAction(actionName, e);	
 		Node controlService = enforcementAPI.getControlledService();
 		for (EnforcementAPI api:enforcementAPIs.values()){
 			api.refreshControlService(controlService);
 		}
+		monitoringAPIInterface.enforcingActionEnded(actionName+" - "+target, e);
+
 	}
 
 	@Override
 	public void enforceElasticityCapability(String target,
 			ElasticityCapability capability, Node e) {
+		monitoringAPIInterface.enforcingActionStarted(capability.getName()+" - "+target, e);
+
 		EnforcementAPI enforcementAPI = enforcementAPIs.get(target);
 		enforcementAPI.enforceElasticityCapability(capability, e);	
 		Node controlService = enforcementAPI.getControlledService();
 		for (EnforcementAPI api:enforcementAPIs.values()){
 			api.refreshControlService(controlService);
 		}
+		monitoringAPIInterface.enforcingActionEnded(capability.getName()+" - "+target, e);
+
 	}
 
 }
