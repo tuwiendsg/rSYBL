@@ -391,7 +391,6 @@ public void doEnforcement( String enf){
 
 	}
 		
-		Class partypes[] = new Class[1];
 		String actionName = eliminateSpaces(enf);
 		String target = "";
 		if (actionName.contains(".")){
@@ -403,10 +402,29 @@ public void doEnforcement( String enf){
 
 		}
 		if (!actionName.toLowerCase().contains("minimize") &&  !actionName.toLowerCase().contains("maximize")){
+			Class partypes[] = null;
+
+			Object[] parameters = null;
 			
-		Object[] parameters = new Object[1];
-		parameters[0]=currentEntity;
-		partypes[0]=Node.class;
+			if (target.equalsIgnoreCase("")){
+				partypes = new Class[1];
+
+				parameters = new Object[1];
+				parameters[0]=currentEntity;
+				partypes[0]=Node.class;
+
+			}
+			else{
+				partypes = new Class[2];
+
+				parameters = new Object[2];
+				parameters[0]=target;
+				partypes[0]=String.class;
+				parameters[1]=currentEntity;
+				partypes[1]=Node.class;
+				
+			}
+		
 		try {
 			
 			Method actionMethod = EnforcementAPIInterface.class.getMethod(
