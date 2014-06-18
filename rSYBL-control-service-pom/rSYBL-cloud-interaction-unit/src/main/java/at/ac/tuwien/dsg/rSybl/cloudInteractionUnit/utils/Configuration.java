@@ -109,9 +109,9 @@ public class Configuration {
     	for (String enf: enforcements){
     		String[] splits=enf.split(":");
     		if (splits.length>1){
-    			enfPlugins.put(splits[0], splits[1].replace(" ",""));
+    			enfPlugins.put(splits[0].replace(" ", ""), splits[1].replace(" ",""));
     		}else{
-    			enfPlugins.put(enf,enf.replace(" ", ""));
+    			enfPlugins.put(enf.replace(" ", ""),enf.replace(" ", ""));
     		}
     	}
     	return enfPlugins;

@@ -80,11 +80,11 @@ public class EnforcementAPI {
 
 
 	public void scalein(Node arg0) {
-		RuntimeLogger.logger.info("~~~~~~~~~~~Trying to execute action executingControlaction="+executingControlAction);
 		if (executingControlAction==false){
 			if (arg0.getAllRelatedNodes().size()>1){
 		executingControlAction=true;
-	
+		RuntimeLogger.logger.info("~~~~~~~~~~~Trying to execute action executingControlaction="+executingControlAction);
+
 	
 		offeredCapabilities.scaleIn(arg0);
 		List<String> metrics= monitoringAPIInterface.getAvailableMetrics(arg0);
@@ -136,11 +136,11 @@ public class EnforcementAPI {
 
 
 	public void scaleout(Node arg0) {
-		RuntimeLogger.logger.info("~~~~~~~~~~~Trying to execute action executingControlaction="+executingControlAction);
 		if (executingControlAction==false && arg0!=null){
 			RuntimeLogger.logger.info("Scaling out "+arg0+" ...");
 			executingControlAction=true;
-		
+			RuntimeLogger.logger.info("~~~~~~~~~~~Trying to execute action executingControlaction="+executingControlAction);
+
 	
 		offeredCapabilities.scaleOut(arg0);
 		

@@ -326,7 +326,7 @@ public class EnforcementOpenstackAPI implements EnforcementInterface{
 	}
 	
 	public void scaleIn(Node arg0){
-		RuntimeLogger.logger.info("Scaling in..."+arg0.getId());
+		RuntimeLogger.logger.info("Scaling in on openstack ..."+arg0.getId());
 
 		if (arg0.getNodeType()==NodeType.CODE_REGION){
 			scaleIn(findComponentOfCodeRegion(arg0));

@@ -111,15 +111,16 @@ public class MultipleEnforcementAPIs implements EnforcementAPIInterface{
 
 	@Override
 	public void scalein(String target, Node arg0) {
-		RuntimeLogger.logger.info("Scaling in on plugin , "+target+"node "+arg0.getId());
+		if (arg0.getAllRelatedNodes().size()>1){
+		RuntimeLogger.logger.info("Scaling in on plugin , "+target+" node "+arg0.getId());
 		EnforcementAPI enforcementAPI = enforcementAPIs.get(target);
-		enforcementAPI.scalein( arg0);	
+		enforcementAPI.scalein(arg0);	
 		Node controlService = enforcementAPI.getControlledService();
 		for (EnforcementAPI api:enforcementAPIs.values()){
 			api.refreshControlService(controlService);
 		}
-		RuntimeLogger.logger.info("Finished Scaling in on plugin , "+target+"node "+arg0.getId());
-
+		RuntimeLogger.logger.info("Finished Scaling in on plugin , "+target+" node "+arg0.getId());
+		}
 	}
 
 	@Override

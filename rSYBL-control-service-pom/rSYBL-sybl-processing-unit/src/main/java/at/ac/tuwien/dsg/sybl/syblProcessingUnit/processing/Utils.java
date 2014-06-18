@@ -370,18 +370,18 @@ public void doEnforcement( String enf){
 	}catch ( SecurityException ex2){
 		 
 				// TODO Auto-generated catch block
-		SYBLDirectivesEnforcementLogger.logger.info("Error in processing strategy "+ex2.getStackTrace().toString());
+		SYBLDirectivesEnforcementLogger.logger.info("Security Ecception. Error in processing strategy "+ex2.getMessage());
 			
 	}catch ( IllegalAccessException ex3){
-		SYBLDirectivesEnforcementLogger.logger.info("Error in processing strategy "+ex3.getStackTrace().toString());
+		SYBLDirectivesEnforcementLogger.logger.info("Illegal access exception. Error in processing strategy "+ex3.getMessage());
 
 
 	}catch (IllegalArgumentException ex4){
-		SYBLDirectivesEnforcementLogger.logger.info("Error in processing strategy "+ex4.getStackTrace().toString());
+		SYBLDirectivesEnforcementLogger.logger.info("Illegal argument exception. Error in processing strategy "+ex4.getMessage());
 
 	}
 	catch(InvocationTargetException ex5){
-		SYBLDirectivesEnforcementLogger.logger.info("Error in processing strategy "+ex5.getStackTrace().toString());
+		SYBLDirectivesEnforcementLogger.logger.info("Invocation target exception. Error in processing strategy "+ex5.getMessage());
 
 	}
 	}else{
@@ -441,18 +441,18 @@ public void doEnforcement( String enf){
 		}catch ( SecurityException ex2){
 			 
 					// TODO Auto-generated catch block
-			SYBLDirectivesEnforcementLogger.logger.error("Error in processing strategy "+ex2.getStackTrace().toString());
+			SYBLDirectivesEnforcementLogger.logger.error("Security exception. Error in processing strategy "+ex2.getMessage());
 				
 		}catch ( IllegalAccessException ex3){
-			SYBLDirectivesEnforcementLogger.logger.info("Error in processing strategy "+ex3.getStackTrace().toString());
+			SYBLDirectivesEnforcementLogger.logger.info("Illegal access exception. Error in processing strategy "+ex3.getMessage());
 
 
 		}catch (IllegalArgumentException ex4){
-			SYBLDirectivesEnforcementLogger.logger.info("Error in processing strategy "+ex4.getStackTrace().toString());
+			SYBLDirectivesEnforcementLogger.logger.info("Illegal argument exception. Error in processing strategy "+ex4.getMessage());
 
 		}
 		catch(InvocationTargetException ex5){
-			SYBLDirectivesEnforcementLogger.logger.info("Error in processing strategy "+ex5.getStackTrace().toString());
+			SYBLDirectivesEnforcementLogger.logger.info("Invocation target exception. Error in processing strategy "+ex5.getMessage());
 
 		}
 		}
