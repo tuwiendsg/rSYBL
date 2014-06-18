@@ -323,9 +323,11 @@ public void doEnforcement( String enf){
 	actionName = eliminateSpaces(actionName);
 	String target = "";
 	if (actionName.contains(".")){
-		target=actionName.split(".")[0];
-		String a  = actionName.split(".")[1];
+		target=actionName.split("\\.")[0];
+		String a  = actionName.split("\\.")[1];
 		actionName=a;
+		SYBLDirectivesEnforcementLogger.logger.info("Found plugin " +actionName.split("\\.")[0]+" "+actionName.split("\\.")[1]);
+
 	}
 	try {
 		Class partypes[] = null;
@@ -397,6 +399,8 @@ public void doEnforcement( String enf){
 			target=actionName.split("\\.")[0];
 			String a  = actionName.split("\\.")[1];
 			actionName=a;
+			SYBLDirectivesEnforcementLogger.logger.info("Found plugin " +actionName.split("\\.")[0]+" "+actionName.split("\\.")[1]);
+
 		}
 		if (!actionName.toLowerCase().contains("minimize") &&  !actionName.toLowerCase().contains("maximize")){
 			
