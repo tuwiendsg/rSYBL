@@ -326,7 +326,7 @@ public void doEnforcement( String enf){
 		target=actionName.split("\\.")[0];
 		String a  = actionName.split("\\.")[1];
 		actionName=a;
-		SYBLDirectivesEnforcementLogger.logger.info("Found plugin " +actionName.split("\\.")[0]+" "+actionName.split("\\.")[1]);
+		SYBLDirectivesEnforcementLogger.logger.info("Found plugin " +target+" "+actionName);
 
 	}
 	try {
@@ -399,7 +399,7 @@ public void doEnforcement( String enf){
 			target=actionName.split("\\.")[0];
 			String a  = actionName.split("\\.")[1];
 			actionName=a;
-			SYBLDirectivesEnforcementLogger.logger.info("Found plugin " +actionName.split("\\.")[0]+" "+actionName.split("\\.")[1]);
+			SYBLDirectivesEnforcementLogger.logger.info("Found plugin " +target+" "+actionName);
 
 		}
 		if (!actionName.toLowerCase().contains("minimize") &&  !actionName.toLowerCase().contains("maximize")){
