@@ -35,13 +35,23 @@ public class ActionPlanEnforcement {
 	}
 	public void enforceAction(ActionEffect actionEffect){
 		String target="";
+		String actionName=actionEffect.getActionName().toLowerCase();
 		if (actionEffect.getActionName().contains(".")){
 			 target = actionEffect.getActionName().split("\\.")[0].toLowerCase();
+			 actionName=actionEffect.getActionName().split("\\.")[1].toLowerCase();
 		}
 	if (target.equalsIgnoreCase(""))
 	{
+		for (ElasticityCapability capability:actionEffect.getTargetedEntity().getElasticityCapabilities()){
+			if (capability.getName().toLowerCase().contains(actionName.toLowerCase())){
+				target = capability.getName().split("\\.")[0].toLowerCase();
+			}
+		}
+	}
+	if (target.equalsIgnoreCase("")){
 		switch (actionEffect.getActionName().toLowerCase()){
 		case "scaleout":
+			
 			enforcementAPI.scaleout(actionEffect.getTargetedEntity());
 			break;
 		case "scalein":
