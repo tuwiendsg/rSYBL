@@ -35,7 +35,7 @@ public class UserAPI
         try {
             URL baseUrl;
             
-            baseUrl = com.extl.jade.user.UserAPI.class.getResource(".");
+            baseUrl = com.extl.jade.user.UserAPI.class.getClassLoader().getResource(".");
             RuntimeLogger.logger.info("Get url get url get url "+baseUrl);
             url = new URL(baseUrl, "UserAPI.wsdl");
         } catch (MalformedURLException e) {
