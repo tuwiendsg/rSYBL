@@ -11,15 +11,15 @@ HOST_IP="83.212.117.112"
 if __name__=='__main__':
 	connection =  httplib.HTTPConnection(HOST_IP)
         #read composition rules file
-        composition_file = open("./cassandraDeploymentDescription.xml", "r")
+        composition_file = open("./effects.json", "r")
         body_content =  composition_file.read()
        
         headers={
-	        'Content-Type':'application/xml; charset=utf-8',
-                'Accept':'application/xml, multipart/related'
+	        'Content-Type':'application/json; charset=utf-8',
+                'Accept':'application/json, multipart/related'
 	}
  
-	connection.request('PUT', url+'/setApplicationDeploymentDescriptionCELAR', body=body_content,headers=headers,)
+	connection.request('PUT', url+'/elasticityCapabilitiesEffects', body=body_content,headers=headers,)
 	result = connection.getresponse()
         print result.read()
  

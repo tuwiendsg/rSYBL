@@ -1,0 +1,72 @@
+
+{"scaleout":{
+		"openstack.scaleOutEffectForDataNode": {
+			"targetUnit":"DataNodeServiceUnit",
+			"effects":{
+				"DataNodeServiceUnit": {
+						"cpuUsage":-30.0,
+						"cost":0.12
+						},
+				"DataControllerServiceUnit": {
+						"cpuUsage":-30.0
+						},
+				"DataEndServiceTopology": {
+						"cpuUsage":-30.0
+						}
+					}
+					},
+		"flexiant.scaleOutEffectForEventProcessingServiceUnit": {
+			"targetUnit":"EventProcessingServiceUnit",
+			"effects":{
+				"EventProcessingServiceUnit": {
+						"cpuUsage":-40.0,
+						"responseTime":-1000.0,
+						"throughput":200,
+						"cost":0.12
+						},
+				"EventProcessingServiceTopology": {
+						"cpuUsage":-20.0,
+						"responseTime":-1000.0,
+						"throughput":200,
+						"cost":0.12
+						}
+					}
+					}
+						
+		},
+	"scalein":{
+		"openstack.scaleInEffectForDataNode": {
+			"targetUnit":"DataNodeServiceUnit",
+			"effects":{
+				"DataNodeServiceUnit": {
+						"cpuUsage":30.0,
+						"cost":-0.12
+						},
+				"DataControllerServiceUnit": {
+						"cpuUsage":20.0
+						},
+				"DataEndServiceTopology": {
+						"cpuUsage":20.0
+						}
+					}
+					},
+		"flexiant.scaleInEffectForEventProcessingServiceUnit": {
+			"targetUnit":"EventProcessingServiceUnit",
+			"effects":{
+				"EventProcessingServiceUnit": {
+						"cpuUsage":40.0,
+						"responseTime":500.0,
+						"throughput":-100,
+						"cost":-0.12
+						},
+				"EventProcessingServiceTopology": {
+						"cpuUsage":40.0,
+						"responseTime":500.0,
+						"throughput":-100,
+						"cost":-0.12
+						}
+					}
+						
+}
+}
+}

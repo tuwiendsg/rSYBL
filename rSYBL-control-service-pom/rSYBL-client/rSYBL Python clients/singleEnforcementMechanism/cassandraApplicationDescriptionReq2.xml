@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<CloudService id="PilotApplication">
+	<ServiceTopology id="MainTopology">
+	<SYBLDirective Constraints="Co1:CONSTRAINT cost &lt; 1.8 $;" Strategies="St1:STRATEGY CASE fulfilled(Co1): minimize(latency);" />
+		<Relationship>
+			<Master>YCSBClient</Master>
+			<Slave>CassandraNode</Slave>
+		</Relationship>
+		<ServiceUnit id="YCSBClient" />
+		<ServiceUnit id="CassandraNode" />	
+	</ServiceTopology>
+</CloudService>
+
+
+

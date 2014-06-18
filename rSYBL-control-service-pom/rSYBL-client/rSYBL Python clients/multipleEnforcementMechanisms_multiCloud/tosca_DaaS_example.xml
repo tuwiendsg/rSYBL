@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<tosca:Definitions xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:elasticity="http://www.example.org/NewXMLSchema" xmlns:tosca="http://docs.oasis-open.org/tosca/ns/2011/12">
+  <tosca:ServiceTemplate name="DemoApp">
+    <tosca:BoundaryDefinitions xsi:type="elasticity:TBoundaryDefinitionsExtension">
+      <tosca:Policies>
+        <tosca:Policy name="CG0: CONSTRAINT Cost &lt; 1000 $" policyType="SYBLConstraint"/>
+      </tosca:Policies>
+    </tosca:BoundaryDefinitions>
+    <tosca:TopologyTemplate>
+      <tosca:NodeTemplate  id="DataEndServiceTopology" type="DataEndServiceTopology">
+        <tosca:Policies>
+          <tosca:Policy name="Co1:CONSTRAINT latency &lt; 0.5 ms;Co2:CONSTRAINT cpuUsage &lt; 83 %" policyType="SYBLConstraint"/>
+        </tosca:Policies>
+      </tosca:NodeTemplate>
+	    <tosca:NodeTemplate  id="EventProcessingServiceTopology" type="EventProcessingServiceTopology">
+        <tosca:Policies>
+          <tosca:Policy name="Co3:CONSTRAINT responseTime &lt; 350 ms" policyType="SYBLConstraint"/>
+       </tosca:Policies>
+      </tosca:NodeTemplate>
+      <tosca:RelationshipTemplate name="Directed Relation">
+        <tosca:SourceElement ref="EventProcessingServiceTopology"/>
+        <tosca:TargetElement ref="DataEndServiceTopology"/>
+      </tosca:RelationshipTemplate>
+    </tosca:TopologyTemplate>
+  </tosca:ServiceTemplate>
+  <tosca:ServiceTemplate substitutableNodeType="DataEndServiceTopology">
+    <tosca:TopologyTemplate>
+      <tosca:NodeTemplate  id="DataControllerServiceUnit"  name="DataControllerServiceUnit">
+        <tosca:DeploymentArtifacts>
+          <tosca:DeploymentArtifact artifactType="VMI" name="Ubuntu-12.04-32bit"/>
+        </tosca:DeploymentArtifacts>
+      </tosca:NodeTemplate>
+      <tosca:NodeTemplate id="DataNodeServiceUnit" name="DataNodeServiceUnit">
+		<tosca:Policies>
+          <tosca:Policy name="St3:STRATEGY CASE cpuUsage &lt; 40 : scalein" policyType="SYBLConstraint"/>
+        </tosca:Policies>       
+	   <tosca:DeploymentArtifacts>
+          <tosca:DeploymentArtifact artifactType="VMI" name="Ubuntu-11.10-BuildEsset-64bit"/>
+        </tosca:DeploymentArtifacts>
+      </tosca:NodeTemplate>
+      <tosca:RelationshipTemplate name="Relation">
+        <tosca:SourceElement ref="DataControllerServiceUnit"/>
+        <tosca:TargetElement ref="DataNodeServiceUnit"/>
+      </tosca:RelationshipTemplate>
+    </tosca:TopologyTemplate>
+  </tosca:ServiceTemplate>
+    <tosca:ServiceTemplate substitutableNodeType="EventProcessingServiceTopology">
+    <tosca:TopologyTemplate>
+      <tosca:NodeTemplate  id="LoadBalancerServiceUnit"  name="LoadBalancerServiceUnit">
+        <tosca:DeploymentArtifacts>
+          <tosca:DeploymentArtifact artifactType="VMI" name="Ubuntu-12.04-32bit"/>
+        </tosca:DeploymentArtifacts>
+      </tosca:NodeTemplate>
+      <tosca:NodeTemplate id="EventProcessingServiceUnit" name="EventProcessingServiceUnit">
+	  <tosca:Policies>
+          <tosca:Policy name="St2:STRATEGY CASE responseTime &lt; 360 ms AND throughput &lt; 400 : scalein" policyType="SYBLConstraint"/>
+        </tosca:Policies>
+        <tosca:DeploymentArtifacts>
+          <tosca:DeploymentArtifact artifactType="VMI" name="Ubuntu-11.10-BuildEsset-64bit"/>
+        </tosca:DeploymentArtifacts>
+      </tosca:NodeTemplate>
+      <tosca:RelationshipTemplate name="Relation">
+        <tosca:SourceElement ref="LoadBalancerServiceUnit"/>
+        <tosca:TargetElement ref="EventProcessingServiceUnit"/>
+      </tosca:RelationshipTemplate>
+    </tosca:TopologyTemplate>
+  </tosca:ServiceTemplate>
+</tosca:Definitions>
