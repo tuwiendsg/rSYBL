@@ -81,7 +81,9 @@ public class ControlService {
 	  
 	}
 	
-
+	public void refreshApplicationDeploymentDescription(String deployment){
+		//TODO implement this, have to replace deployment conf 
+	}
 	public void start(){
 		startSYBLProcessingAndPlanning();
 	}
@@ -576,11 +578,50 @@ public class ControlService {
 	}
 	public void replaceCloudServiceRequirements(String newCloudServiceDescription){
 		InputProcessing inputProcessing=new InputProcessing();
-		inputProcessing.replaceCloudServiceRequirements(dependencyGraph, newCloudServiceDescription);
+		dependencyGraph=inputProcessing.replaceCloudServiceRequirements(dependencyGraph, newCloudServiceDescription);
+		monitoringAPI.submitElasticityRequirements(dependencyGraph.getAllElasticityRequirements());
+		
+		planningAlgorithm.stop();
+		planningAlgorithm= new PlanningGreedyAlgorithm(
+				dependencyGraph, monitoringAPI, enforcementAPI);
+		if (!effects.equalsIgnoreCase(""))
+			planningAlgorithm.setEffects(effects);
+		planningAlgorithm.start();
+		syblService.stopProcessingThreads();
+		syblService = new SYBLService(dependencyGraph, monitoringAPI,
+				enforcementAPI);
+		for (ElasticityRequirement syblSpecification : dependencyGraph
+				.getAllElasticityRequirements()) {
+			SYBLAnnotation annotation = syblSpecification.getAnnotation();
+			syblService.processAnnotations(syblSpecification
+					.getAnnotation().getEntityID(), annotation);
+
+		}
+		enforcementAPI.setControlledService(dependencyGraph.getCloudService());
+
 	}
 	public void replaceElasticityRequirements(String requirements){
 		InputProcessing inputProcessing=new InputProcessing();
-		inputProcessing.replaceRequirements(dependencyGraph, requirements);
+		dependencyGraph=inputProcessing.replaceRequirements(dependencyGraph, requirements);
+		monitoringAPI.submitElasticityRequirements(dependencyGraph.getAllElasticityRequirements());
+		planningAlgorithm.stop();
+		planningAlgorithm= new PlanningGreedyAlgorithm(
+				dependencyGraph, monitoringAPI, enforcementAPI);
+		if (!effects.equalsIgnoreCase(""))
+			planningAlgorithm.setEffects(effects);
+		planningAlgorithm.start();
+		syblService.stopProcessingThreads();
+
+		syblService = new SYBLService(dependencyGraph, monitoringAPI,
+				enforcementAPI);
+		for (ElasticityRequirement syblSpecification : dependencyGraph
+				.getAllElasticityRequirements()) {
+			SYBLAnnotation annotation = syblSpecification.getAnnotation();
+			syblService.processAnnotations(syblSpecification
+					.getAnnotation().getEntityID(), annotation);
+
+		}
+		enforcementAPI.setControlledService(dependencyGraph.getCloudService());
 	}
 	public String getMetricCompositionRules() {
 		return metricCompositionRules;

@@ -111,6 +111,16 @@ public class SyblControlWS {
 		 controlCoordination.setApplicationDeploymentDescription(celar);
 
 	} 
+	 
+	 
+	 @PUT
+	 @Path("/serviceDeploymentRefresh")
+	 @Consumes("application/xml")
+	public void setApplicationRefreshDeploymentInfo(String celar){
+		 controlCoordination.refreshApplicationDeploymentDescription(celar);
+
+	} 
+	 
 	 @PUT
 	 @Path("/prepareControl")
 	 @Consumes("application/xml")

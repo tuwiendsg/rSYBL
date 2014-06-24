@@ -16,6 +16,9 @@ public class ControlCoordination {
 	public ControlCoordination(){
 		
 	}
+	public void refreshApplicationDeploymentDescription(String deploymentNew){
+		
+	}
 	public void prepareControl(String cloudServiceId){
 		ControlService controlService=new ControlService();
 		controls.put(cloudServiceId, controlService);
