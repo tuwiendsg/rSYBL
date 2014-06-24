@@ -1,0 +1,7 @@
+reaction(
+    out(sampleMetrics(NodeId)),
+    (operation, success),
+    (
+        spawn('it_at.unibo_tuwien.tucson_rSybl.SyblMonitoringSpawnActivity.class')
+    )
+).

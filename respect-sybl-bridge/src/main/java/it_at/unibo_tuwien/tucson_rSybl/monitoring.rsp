@@ -1,0 +1,9 @@
+reaction(
+    out(sampleMetrics(NodeId)),
+    (operation, invocation),
+    (
+        out(metricToCheck(NodeId, cpuUsage)),
+        out(metricToCheck(NodeId, latency)),
+        out(monitoringTime(10000))
+    )
+).

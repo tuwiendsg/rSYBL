@@ -1,57 +1,58 @@
- <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
-  <modelVersion>4.0.0</modelVersion>
-  <version>0.1-SNAPSHOT</version>
-  <name>Cloud Interaction Unit</name>
-  <description>Cloud Interaction Unit</description>
 
-  <packaging>jar</packaging>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+	<version>0.1-SNAPSHOT</version>
+	<name>Cloud Interaction Unit</name>
+	<description>Cloud Interaction Unit</description>
 
-    <parent>
-    <groupId>at.ac.tuwien.rSYBL.control-service</groupId>
-    <artifactId>rSYBL-control-service-pom</artifactId>
-    <version>0.1-SNAPSHOT</version>
-  </parent>
-  
-  <artifactId>rSYBL-cloud-interaction-unit</artifactId>
-  
-  
-  <dependencies>
-  <dependency>
-    <groupId>org.jclouds.driver</groupId>
-    <artifactId>jclouds-slf4j</artifactId>
-    <version>1.6.0</version>
-  </dependency>
-  	<dependency>
+	<packaging>jar</packaging>
+
+	<parent>
+		<groupId>at.ac.tuwien.rSYBL.control-service</groupId>
+		<artifactId>rSYBL-control-service-pom</artifactId>
+		<version>0.1-SNAPSHOT</version>
+	</parent>
+
+	<artifactId>rSYBL-cloud-interaction-unit</artifactId>
+
+
+	<dependencies>
+		<dependency>
+			<groupId>org.jclouds.driver</groupId>
+			<artifactId>jclouds-slf4j</artifactId>
+			<version>1.6.0</version>
+		</dependency>
+		<dependency>
 			<groupId>org.jclouds.api</groupId>
 			<artifactId>openstack-nova-ec2</artifactId>
 			<version>1.6.0</version>
 		</dependency>
 
-		        <dependency>
-            <groupId>org.json</groupId>
-            <artifactId>json</artifactId>
-            <version>20090211</version>
-        </dependency>
-	<dependency>
-	<groupId>com.jcraft</groupId>
-	<artifactId>jsch</artifactId>
-	<version>0.1.50</version>
-</dependency>
-            
+		<dependency>
+			<groupId>org.json</groupId>
+			<artifactId>json</artifactId>
+			<version>20090211</version>
+		</dependency>
+		<dependency>
+			<groupId>com.jcraft</groupId>
+			<artifactId>jsch</artifactId>
+			<version>0.1.50</version>
+		</dependency>
+
 
 		<dependency>
 			<groupId>junit</groupId>
 			<artifactId>junit</artifactId>
 			<version>4.4</version>
 		</dependency>
-	 <dependency>
-            <groupId>log4j</groupId>
-            <artifactId>log4j</artifactId>
-            <version>1.2.17</version>
-        </dependency>
+		<dependency>
+			<groupId>log4j</groupId>
+			<artifactId>log4j</artifactId>
+			<version>1.2.17</version>
+		</dependency>
 
-			<dependency>
+		<dependency>
 			<groupId>at.ac.tuwien.rSYBL.control-service</groupId>
 			<artifactId>rSYBL-cloud-application-dependency-graph</artifactId>
 			<version>0.1-SNAPSHOT</version>
@@ -65,52 +66,64 @@
 			<type>jar</type>
 			<scope>compile</scope>
 		</dependency>
-		</dependencies>
-     <build>
-        <plugins>
-     <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-source-plugin</artifactId>
-                <executions>
-                    <execution>
-                        <id>attach-sources</id>
-                        <goals>
-                            <goal>jar</goal>
-                        </goals>
-                    </execution>
-                </executions>
-            </plugin>
-        <plugin>
-  <groupId>org.apache.maven.plugins</groupId>
-  <artifactId>maven-compiler-plugin</artifactId>
-  <version>2.1</version>
-  <configuration>
-    <source>1.7</source>
-    <target>1.7</target>
-  </configuration>
-</plugin>
-<plugin> 
-                <groupId>org.jvnet.jax-ws-commons</groupId> 
-                <artifactId>jaxws-maven-plugin</artifactId> 
-                <version>2.1</version> 
-                <executions>
-                    <execution> 
-                        <id>jadeclient</id>
-                        <phase>generate-sources</phase>
-                        <configuration> 
-                            <packageName>com.extl.jade.user</packageName> 
-                            <sourceDestDir>src/main/java</sourceDestDir>
-                            <wsdlFiles>
-                                <wsdlFile>${basedir}/src/main/resources/UserAPI.wsdl</wsdlFile>            
-                            </wsdlFiles>
-                        </configuration>
-                        <goals> 
-                            <goal>wsimport</goal> 
-                        </goals>            
-                    </execution> 
-                </executions>
-            </plugin>
-			
-        </plugins>
-    </build>
+		<!-- s.mariani@unibo.it CODE begins -->
+		<dependency>
+			<groupId>it-at.unibo-tuwien.tucson-rSybl</groupId>
+			<artifactId>respect-sybl-bridge</artifactId>
+			<version>0.0.1-SNAPSHOT</version>
+		</dependency>
+		<dependency>
+			<groupId>at.ac.tuwien.rSYBL.control-service</groupId>
+			<artifactId>rSYBL-cloud-api-lowlevel</artifactId>
+			<version>0.1-SNAPSHOT</version>
+		</dependency>
+		<!-- s.mariani@unibo.it CODE ends -->
+	</dependencies>
+	<build>
+		<plugins>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-source-plugin</artifactId>
+				<executions>
+					<execution>
+						<id>attach-sources</id>
+						<goals>
+							<goal>jar</goal>
+						</goals>
+					</execution>
+				</executions>
+			</plugin>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-compiler-plugin</artifactId>
+				<version>2.1</version>
+				<configuration>
+					<source>1.7</source>
+					<target>1.7</target>
+				</configuration>
+			</plugin>
+			<!-- <plugin> -->
+			<!-- <groupId>org.jvnet.jax-ws-commons</groupId> -->
+			<!-- <artifactId>jaxws-maven-plugin</artifactId> -->
+			<!-- <version>2.1</version> -->
+			<!-- <executions> -->
+			<!-- <execution> -->
+			<!-- <id>jadeclient</id> -->
+			<!-- <phase>generate-sources</phase> -->
+			<!-- <configuration> -->
+			<!-- <packageName>com.extl.jade.user</packageName> -->
+			<!-- <sourceDestDir>src/main/java</sourceDestDir> -->
+			<!-- <wsdlFiles> -->
+			<!-- <wsdlFile>${basedir}/src/main/resources/UserAPI.wsdl</wsdlFile> -->
+			<!-- </wsdlFiles> -->
+			<!-- </configuration> -->
+			<!-- <goals> -->
+			<!-- <goal>wsimport</goal> -->
+			<!-- </goals> -->
+			<!-- </execution> -->
+			<!-- </executions> -->
+			<!-- </plugin> -->
+
+		</plugins>
+	</build>
 </project>

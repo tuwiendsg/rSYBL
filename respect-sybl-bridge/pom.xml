@@ -1,0 +1,56 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+	<groupId>it-at.unibo-tuwien.tucson-rSybl</groupId>
+	<artifactId>respect-sybl-bridge</artifactId>
+	<version>0.0.1-SNAPSHOT</version>
+	<name>ReSpecT-SYBL Integration API</name>
+	<description>Bridge component integrating SYBL elasticity control functionalities with ReSpecT programmable coordination services</description>
+	<parent>
+    <groupId>at.ac.tuwien.rSYBL.control-service</groupId>
+    <artifactId>rSYBL-control-service-pom</artifactId>
+    <version>0.1-SNAPSHOT</version>
+  </parent>
+	
+	<build>
+		<plugins>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-compiler-plugin</artifactId>
+				<version>3.0</version>
+				<inherited>true</inherited>
+				<configuration>
+					<source>1.7</source>
+					<target>1.7</target>
+					<encoding>UTF-8</encoding>
+				</configuration>
+			</plugin>
+		</plugins>
+	</build>
+	<dependencies>
+		<dependency>
+			<groupId>TuCSoN-1.10.8.0208</groupId>
+			<artifactId>TuCSoN-1.10.8.0208</artifactId>
+			<version>TuCSoN-1.10.8.0208</version>
+			<scope>system</scope>
+			<systemPath>${project.basedir}/src/main/resources/TuCSoN-1.10.8.0208.jar</systemPath>
+		</dependency>
+		<dependency>
+			<groupId>at.ac.tuwien.rSYBL.control-service</groupId>
+			<artifactId>
+				rSYBL-cloud-application-dependency-graph
+			</artifactId>
+			<version>0.1-SNAPSHOT</version>
+		</dependency>
+		<dependency>
+			<groupId>at.ac.tuwien.rSYBL.control-service</groupId>
+			<artifactId>rSYBL-data-processing-unit</artifactId>
+			<version>0.1-SNAPSHOT</version>
+		</dependency>
+		<dependency>
+			<groupId>at.ac.tuwien.rSYBL.control-service</groupId>
+			<artifactId>rSYBL-cloud-api-lowlevel</artifactId>
+			<version>0.1-SNAPSHOT</version>
+		</dependency>
+	</dependencies>
+</project>

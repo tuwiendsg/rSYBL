@@ -1,0 +1,17 @@
+reaction(
+    out(doScaleOut(NodeId)),
+    (operation, invocation),
+    (
+        out(scaleOutTries(10)),
+        out(scaleOutTime(10000))
+    )
+).
+reaction(
+    out(sampleMetrics(NodeId)),
+    (operation, invocation),
+    (
+        out(metricToCheck(NodeId, cpuUsage)),
+        out(metricToCheck(NodeId, latency)),
+        out(monitoringTime(10000))
+    )
+).
