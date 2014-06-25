@@ -66,12 +66,12 @@ public class Configuration {
         	  try {
         		//  DependencyGraphLogger.logger.info("Current inputStream "+Configuration.class.getClassLoader().getResourceAsStream("./config.properties"));
                  
-                 System.err.println("The path is " +Configuration.class.getClassLoader().getResource("./config.properties").getPath());
-                 		
-        		  configuration.load(Configuration.class.getClassLoader().getResourceAsStream("./config.properties"));
-             //     configuration.load(new FileReader( new File("config.properties")));
+             
+                 configuration.load(new FileReader( new File("config.properties")));
         	  } catch (Exception ex) {
-        		  
+        		    System.err.println("The path is " +Configuration.class.getClassLoader().getResource("./config.properties").getPath());
+             		
+          		  configuration.load(Configuration.class.getClassLoader().getResourceAsStream("./config.properties"));
                   Logger.getLogger(Configuration.class.getName()).log(Level.SEVERE, null, ex);
               }
         	  

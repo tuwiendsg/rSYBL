@@ -24,6 +24,7 @@ package at.ac.tuwien.dsg.rSybl.analysisEngine.utils;
 
 import java.io.File;
 import java.io.FileReader;
+import java.io.IOException;
 import java.io.InputStream;
 import java.util.Properties;
 
@@ -34,12 +35,18 @@ public class Configuration {
     static{
         configuration = new Properties();
         try {
-            //configuration.load(new FileReader( new File("./config.properties")));
+            configuration.load(new FileReader( new File("./config.properties")));
 
-			InputStream is = Configuration.class.getClassLoader().getResourceAsStream("/config.properties");
-			configuration.load(is);
+			
         } catch (Exception ex) {
-        	ex.printStackTrace();
+        	InputStream is = Configuration.class.getClassLoader().getResourceAsStream("/config.properties");
+			try {
+				configuration.load(is);
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+
         }
     }
 

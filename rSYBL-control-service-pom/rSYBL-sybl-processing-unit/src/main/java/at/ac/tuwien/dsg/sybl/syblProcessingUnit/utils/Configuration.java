@@ -41,9 +41,9 @@ public class Configuration {
         configuration = new Properties();
         try {
 //
-			InputStream is = Configuration.class.getClassLoader().getResourceAsStream("/config.properties");
-			configuration.load(is);
-//			configuration.load(new FileReader("./config.properties"));
+//			InputStream is = Configuration.class.getClassLoader().getResourceAsStream("/config.properties");
+//			configuration.load(is);
+			configuration.load(new FileReader("./config.properties"));
 
         } catch (Exception ex) {
         	try {

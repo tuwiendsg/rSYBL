@@ -34,14 +34,14 @@ public class Configuration {
     	
         configuration = new Properties();
         try {
-        	InputStream is = Configuration.class.getClassLoader().getResourceAsStream("/config.properties");
-
-            configuration.load(is);
-//            configuration.load(new FileReader( new File("./config.properties")));
+           configuration.load(new FileReader( new File("./config.properties")));
 
         } catch (Exception ex) {
         	try {
-				configuration.load(new FileReader("./config.properties"));
+           	InputStream is = Configuration.class.getClassLoader().getResourceAsStream("/config.properties");
+        		//
+        		            configuration.load(is);
+
 			} catch (FileNotFoundException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
