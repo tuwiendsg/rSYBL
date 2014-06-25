@@ -23,7 +23,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 public class DefaultSalsaClient  {
-	private String REST_API_URL="http://128.130.172.215:8080/salsa-engine/rest/services/";
+	private String REST_API_URL="http://128.130.172.215:8080/salsa-engine/rest/services";
 	private Node service;
 	public DefaultSalsaClient(Node cloudService){
 		REST_API_URL=Configuration.getEnforcementServiceURL();

@@ -105,6 +105,7 @@ public class Configuration {
     {
     	String [] enforcements ;
     	HashMap<String, String> enfPlugins = new HashMap<String,String>();
+    	if (!configuration.getProperty("MultipleEnforcementPlugins").isEmpty()){
     	enforcements= configuration.getProperty("MultipleEnforcementPlugins").split(",");
     	for (String enf: enforcements){
     		String[] splits=enf.split(":");
@@ -113,6 +114,7 @@ public class Configuration {
     		}else{
     			enfPlugins.put(enf.replace(" ", ""),enf.replace(" ", ""));
     		}
+    	}
     	}
     	return enfPlugins;
     } 
