@@ -447,7 +447,7 @@ public void doEnforcement( String enf){
 			}
 		
 		try {
-			SYBLDirectivesEnforcementLogger.logger.info("Enforcing action due to strategy : "+actionName);
+			SYBLDirectivesEnforcementLogger.logger.info("Enforcing action "+actionName+" due to strategy. ");
 			Method actionMethod = EnforcementAPIInterface.class.getMethod(
 					actionName, partypes);
 
