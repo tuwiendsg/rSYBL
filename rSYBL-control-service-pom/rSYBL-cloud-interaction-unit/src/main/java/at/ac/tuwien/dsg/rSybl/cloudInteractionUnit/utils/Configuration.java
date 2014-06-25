@@ -105,7 +105,7 @@ public class Configuration {
     {
     	String [] enforcements ;
     	HashMap<String, String> enfPlugins = new HashMap<String,String>();
-    	if (!configuration.getProperty("MultipleEnforcementPlugins").isEmpty()){
+    	if (!configuration.getProperty("MultipleEnforcementPlugins").equalsIgnoreCase("")){
     	enforcements= configuration.getProperty("MultipleEnforcementPlugins").split(",");
     	for (String enf: enforcements){
     		String[] splits=enf.split(":");
