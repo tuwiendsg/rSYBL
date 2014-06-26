@@ -1,18 +1,20 @@
-/** 
-   Copyright 2013 Technische Universitat Wien (TUW), Distributed SystemsGroup E184.                 This work was partially supported by the European Commission in terms of the CELAR FP7 project (FP7-ICT-2011-8 #317790).
-
-   Licensed under the Apache License, Version 2.0 (the "License");
-   you may not use this file except in compliance with the License.
-   You may obtain a copy of the License at
-
-       http://www.apache.org/licenses/LICENSE-2.0
-
-   Unless required by applicable law or agreed to in writing, software
-   distributed under the License is distributed on an "AS IS" BASIS,
-   WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-   See the License for the specific language governing permissions and
-   limitations under the License.
-*/
+/**
+ * Copyright 2013 Technische Universitat Wien (TUW), Distributed SystemsGroup
+ * E184. This work was partially supported by the European Commission in terms
+ * of the CELAR FP7 project (FP7-ICT-2011-8 #317790).
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License"); you may not
+ * use this file except in compliance with the License. You may obtain a copy of
+ * the License at
+ *
+ * http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
+ * WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
+ * License for the specific language governing permissions and limitations under
+ * the License.
+ */
 package at.ac.tuwien.dsg.rSybl.dataProcessingUnit.monitoringPlugins.melaPlugin;
 
 import java.io.BufferedReader;
@@ -61,33 +63,37 @@ import at.ac.tuwien.dsg.rSybl.dataProcessingUnit.monitoringPlugins.interfaces.Mo
 import at.ac.tuwien.dsg.rSybl.dataProcessingUnit.utils.Configuration;
 import at.ac.tuwien.dsg.rSybl.dataProcessingUnit.utils.RuntimeLogger;
 
-public class MELA_API implements MonitoringInterface{
+public class MELA_API implements MonitoringInterface {
+
     private boolean existsStructureData = false;
     private boolean serviceSet = false;
-    private static final String REST_API_URL=Configuration.getMonitoringServiceURL();
+    private static final String REST_API_URL = Configuration.getMonitoringServiceURL();
    //private static final String REST_API_URL = "http://localhost:8080/MELA-AnalysisService-0.1-SNAPSHOT/REST_WS";
-   // private static final String REST_API_URL="http://localhost:8080/MELA-AnalysisService-1.0/REST_WS";
+    // private static final String REST_API_URL="http://localhost:8080/MELA-AnalysisService-1.0/REST_WS";
     private static final int MONITORING_DATA_REFRESH_INTERVAL = 10; //in seconds
     private MonitoredElementMonitoringSnapshot latestMonitoringData;
     private AtomicBoolean monitoringDataUsed;
-    private String ongoingAction="";
-    private String actionTargetEntity="";
+    private String ongoingAction = "";
+    private String actionTargetEntity = "";
     private Node controlService;
 
     {
         latestMonitoringData = new MonitoredElementMonitoringSnapshot();
         monitoringDataUsed = new AtomicBoolean(false);
     }
-    public MELA_API(){
-    	
+
+    public MELA_API() {
+
     }
 //todo: Continuous refresh data with a semaphore like mechanism to synchronzie resource access
+
     {
         TimerTask task = new TimerTask() {
             @Override
             public void run() {
-            	if (serviceSet)
-                   refreshMonitoringData();
+                if (serviceSet) {
+                    refreshMonitoringData();
+                }
             }
         };
 
@@ -205,10 +211,10 @@ public class MELA_API implements MonitoringInterface{
             }
 
         } catch (Exception e) {
-           // Logger.getLogger(MELA_API.class.getName()).log(Level.SEVERE, e.getMessage(), e);
-        	Logger.getLogger(MELA_API.class.getName()).log(Level.WARNING, "Trying to connect to MELA - failing ... . Retrying later");
-        	RuntimeLogger.logger.error("Failing to connect to MELA");
-        	
+            // Logger.getLogger(MELA_API.class.getName()).log(Level.SEVERE, e.getMessage(), e);
+            Logger.getLogger(MELA_API.class.getName()).log(Level.WARNING, "Trying to connect to MELA - failing ... . Retrying later");
+            RuntimeLogger.logger.error("Failing to connect to MELA");
+
         } finally {
             if (connection != null) {
                 connection.disconnect();
@@ -234,7 +240,7 @@ public class MELA_API implements MonitoringInterface{
     }
 
     public void submitServiceConfiguration(Node cloudService) {
-    	controlService=cloudService;
+        controlService = cloudService;
         MonitoredElement element = new MonitoredElement();
         element.setId(cloudService.getId());
         element.setLevel(MonitoredElement.MonitoredElementLevel.SERVICE);
@@ -244,62 +250,62 @@ public class MELA_API implements MonitoringInterface{
         URL url = null;
         HttpURLConnection connection = null;
         boolean notConnected = true;
-        while (notConnected){
-        try {
-        	RuntimeLogger.logger.info("Trying to connect to MELA ...");
-            url = new URL(REST_API_URL + "/servicedescription");
-            connection = (HttpURLConnection) url.openConnection();
-            connection.setDoOutput(true);
-            connection.setInstanceFollowRedirects(false);
-            connection.setRequestMethod("PUT");
-            connection.setRequestProperty("Content-Type", "application/xml");
-            connection.setRequestProperty("Accept", "application/json");
+        while (notConnected) {
+            try {
+                RuntimeLogger.logger.info("Trying to connect to MELA ...");
+                url = new URL(REST_API_URL + "/servicedescription");
+                connection = (HttpURLConnection) url.openConnection();
+                connection.setDoOutput(true);
+                connection.setInstanceFollowRedirects(false);
+                connection.setRequestMethod("PUT");
+                connection.setRequestProperty("Content-Type", "application/xml");
+                connection.setRequestProperty("Accept", "application/json");
 
-            //write message body
-            OutputStream os = connection.getOutputStream();
-            JAXBContext jaxbContext = JAXBContext.newInstance(MonitoredElement.class);
-            jaxbContext.createMarshaller().marshal(element, os);
-            os.flush();
-            os.close();
+                //write message body
+                OutputStream os = connection.getOutputStream();
+                JAXBContext jaxbContext = JAXBContext.newInstance(MonitoredElement.class);
+                jaxbContext.createMarshaller().marshal(element, os);
+                os.flush();
+                os.close();
 
-            InputStream errorStream = connection.getErrorStream();
-            if (errorStream != null) {
-                BufferedReader reader = new BufferedReader(new InputStreamReader(errorStream));
-                String line;
-                while ((line = reader.readLine()) != null) {
-                    Logger.getLogger(MELA_API.class.getName()).log(Level.SEVERE, line);
+                InputStream errorStream = connection.getErrorStream();
+                if (errorStream != null) {
+                    BufferedReader reader = new BufferedReader(new InputStreamReader(errorStream));
+                    String line;
+                    while ((line = reader.readLine()) != null) {
+                        Logger.getLogger(MELA_API.class.getName()).log(Level.SEVERE, line);
+                    }
+                }
+
+                InputStream inputStream = connection.getInputStream();
+                if (inputStream != null) {
+                    BufferedReader reader = new BufferedReader(new InputStreamReader(inputStream));
+                    String line;
+                    while ((line = reader.readLine()) != null) {
+                        Logger.getLogger(MELA_API.class.getName()).log(Level.SEVERE, line);
+                    }
+                }
+
+                serviceSet = true;
+                notConnected = false;
+            } catch (Exception e) {
+                //Logger.getLogger(MELA_API.class.getName()).log(Level.WARNING, "Trying to connect to MELA - failing ... . Retrying later");
+                RuntimeLogger.logger.error("Failing to connect to MELA" + e.getMessage());
+                try {
+                    Thread.sleep(MONITORING_DATA_REFRESH_INTERVAL * 1000);
+                } catch (InterruptedException e1) {
+                    // TODO Auto-generated catch block
+                    e1.printStackTrace();
+                }
+            } finally {
+                if (connection != null) {
+                    connection.disconnect();
                 }
             }
+        }
 
-            InputStream inputStream = connection.getInputStream();
-            if (inputStream != null) {
-                BufferedReader reader = new BufferedReader(new InputStreamReader(inputStream));
-                String line;
-                while ((line = reader.readLine()) != null) {
-                    Logger.getLogger(MELA_API.class.getName()).log(Level.SEVERE, line);
-                }
-            }
-        
-            serviceSet = true;
-            notConnected=false;
-        } catch (Exception e) {
-        	//Logger.getLogger(MELA_API.class.getName()).log(Level.WARNING, "Trying to connect to MELA - failing ... . Retrying later");
-        	RuntimeLogger.logger.error("Failing to connect to MELA"+e.getMessage());
-        	try {
-				Thread.sleep(MONITORING_DATA_REFRESH_INTERVAL * 1000);
-			} catch (InterruptedException e1) {
-				// TODO Auto-generated catch block
-				e1.printStackTrace();
-			}
-        	} finally {
-            if (connection != null) {
-                connection.disconnect();
-            }
-        }
-        }
-        
-     
     }
+
     public void refreshServiceStructure(Node cloudService) {
         MonitoredElement element = new MonitoredElement();
         element.setId(cloudService.getId());
@@ -352,8 +358,9 @@ public class MELA_API implements MonitoringInterface{
         }
         submitCompositionRules();
         serviceSet = true;
-     
+
     }
+
     public void submitMetricCompositionConfiguration(CompositionRulesConfiguration compositionRulesConfiguration) {
 
         URL url = null;
@@ -515,9 +522,9 @@ public class MELA_API implements MonitoringInterface{
         URL url = null;
         HttpURLConnection connection = null;
         try {
-        	this.ongoingAction=actionName;
-        	this.actionTargetEntity=actionTargetEntity.getId();
-        	url = new URL(REST_API_URL + "/addexecutingactions");
+            this.ongoingAction = actionName;
+            this.actionTargetEntity = actionTargetEntity.getId();
+            url = new URL(REST_API_URL + "/addexecutingactions");
             connection = (HttpURLConnection) url.openConnection();
             connection.setDoOutput(true);
             connection.setInstanceFollowRedirects(false);
@@ -555,7 +562,7 @@ public class MELA_API implements MonitoringInterface{
         } catch (Exception e) {
             Logger.getLogger(MELA_API.class.getName()).log(Level.SEVERE, e.getMessage(), e);
         } finally {
-        	
+
             if (connection != null) {
                 connection.disconnect();
             }
@@ -601,13 +608,13 @@ public class MELA_API implements MonitoringInterface{
                     Logger.getLogger(MELA_API.class.getName()).log(Level.SEVERE, line);
                 }
             }
-            actionName="";
+            actionName = "";
         } catch (Exception e) {
-        	actionName="";
+            actionName = "";
             Logger.getLogger(MELA_API.class.getName()).log(Level.SEVERE, e.getMessage(), e);
         } finally {
-        	actionName="";
-        	this.actionTargetEntity="";
+            actionName = "";
+            this.actionTargetEntity = "";
             if (connection != null) {
                 connection.disconnect();
             }
@@ -652,10 +659,9 @@ public class MELA_API implements MonitoringInterface{
         }
 
         //if we have reached this point, either the monitored element was not found, either the metric
-        RuntimeLogger.logger.info( "Metric "+metric.toString()+" OR   Node "+entity.getId()+" not found");
+        RuntimeLogger.logger.info("Metric " + metric.toString() + " OR   Node " + entity.getId() + " not found");
         return -1.0;
     }
-    
 
     private static class MELA_ClientUtils {
 
@@ -663,61 +669,61 @@ public class MELA_API implements MonitoringInterface{
         public static void convertServiceTopology(MonitoredElement serviceElement, Node cloudService) {
             //RuntimeLogger.logger.info("Related nodes for node "+ cloudService +" are "+ cloudService.getAllRelatedNodesOfType(RelationshipType.COMPOSITION_RELATIONSHIP));
             List<Node> serviceTopologies = new ArrayList<Node>();
-            		
-            		serviceTopologies.addAll(cloudService.getAllRelatedNodesOfType(RelationshipType.COMPOSITION_RELATIONSHIP));
-            while (!serviceTopologies.isEmpty()){
+
+            serviceTopologies.addAll(cloudService.getAllRelatedNodesOfType(RelationshipType.COMPOSITION_RELATIONSHIP));
+            while (!serviceTopologies.isEmpty()) {
                 MonitoredElement serviceTopologyElement = new MonitoredElement();
 
-            Node serviceTopology = serviceTopologies.get(0);
-            serviceTopologyElement.setId(serviceTopology.getId());
-            serviceTopologyElement.setLevel(MonitoredElement.MonitoredElementLevel.SERVICE_TOPOLOGY);
+                Node serviceTopology = serviceTopologies.get(0);
+                serviceTopologyElement.setId(serviceTopology.getId());
+                serviceTopologyElement.setLevel(MonitoredElement.MonitoredElementLevel.SERVICE_TOPOLOGY);
 
-            if (serviceTopology.getAllRelatedNodesOfType(RelationshipType.COMPOSITION_RELATIONSHIP) != null) {
+                if (serviceTopology.getAllRelatedNodesOfType(RelationshipType.COMPOSITION_RELATIONSHIP) != null) {
 
-                for (Node serviceUnit : serviceTopology.getAllRelatedNodesOfType(RelationshipType.COMPOSITION_RELATIONSHIP)) {
-                    if (serviceUnit.getNodeType() == NodeType.SERVICE_UNIT) {
-                        MonitoredElement serviceUnitElement = new MonitoredElement();
-                        serviceUnitElement.setId(serviceUnit.getId());
-                        serviceUnitElement.setLevel(MonitoredElement.MonitoredElementLevel.SERVICE_UNIT);
-                        for (Node vm: serviceUnit.getAllRelatedNodesOfType(RelationshipType.HOSTED_ON_RELATIONSHIP,NodeType.VIRTUAL_MACHINE)){
-                        	// RuntimeLogger.logger.info("Translating hosted on "+vm.getId()+" for node "+serviceUnitElement.getId());
-                        	 MonitoredElement virtualMachine = new MonitoredElement();
-                        	 virtualMachine.setId(vm.getId());
-                        	 virtualMachine.setLevel(MonitoredElement.MonitoredElementLevel.VM);
-                        	 serviceUnitElement.addElement(virtualMachine);
+                    for (Node serviceUnit : serviceTopology.getAllRelatedNodesOfType(RelationshipType.COMPOSITION_RELATIONSHIP)) {
+                        if (serviceUnit.getNodeType() == NodeType.SERVICE_UNIT) {
+                            MonitoredElement serviceUnitElement = new MonitoredElement();
+                            serviceUnitElement.setId(serviceUnit.getId());
+                            serviceUnitElement.setLevel(MonitoredElement.MonitoredElementLevel.SERVICE_UNIT);
+                            for (Node vm : serviceUnit.getAllRelatedNodesOfType(RelationshipType.HOSTED_ON_RELATIONSHIP, NodeType.VIRTUAL_MACHINE)) {
+                                // RuntimeLogger.logger.info("Translating hosted on "+vm.getId()+" for node "+serviceUnitElement.getId());
+                                MonitoredElement virtualMachine = new MonitoredElement();
+                                virtualMachine.setId(vm.getId());
+                                virtualMachine.setLevel(MonitoredElement.MonitoredElementLevel.VM);
+                                serviceUnitElement.addElement(virtualMachine);
+                            }
+                            for (Node vm : serviceUnit.getAllRelatedNodesOfType(RelationshipType.ASSOCIATED_AT_RUNTIME_RELATIONSHIP, NodeType.VIRTUAL_MACHINE)) {
+                                MonitoredElement virtualMachine = new MonitoredElement();
+                                virtualMachine.setId(vm.getId());
+                                boolean alreadyContained = false;
+                                virtualMachine.setLevel(MonitoredElement.MonitoredElementLevel.VM);
+                                for (MonitoredElement el : serviceUnitElement.getContainedElements()) {
+                                    if (el.getId().equalsIgnoreCase(vm.getId())) {
+                                        alreadyContained = true;
+                                    }
+                                }
+                                if (!alreadyContained) {
+                                    serviceUnitElement.addElement(virtualMachine);
+                                }
+                            }
+                            serviceTopologyElement.addElement(serviceUnitElement);
+
                         }
-                        for (Node vm: serviceUnit.getAllRelatedNodesOfType(RelationshipType.ASSOCIATED_AT_RUNTIME_RELATIONSHIP,NodeType.VIRTUAL_MACHINE)){
-                        	 MonitoredElement virtualMachine = new MonitoredElement();
-	                       	 virtualMachine.setId(vm.getId());
-	                       	 boolean alreadyContained=false;
-	                       	 virtualMachine.setLevel(MonitoredElement.MonitoredElementLevel.VM);
-	                       	 for (MonitoredElement el:serviceUnitElement.getContainedElements())
-	                       	 { 
-	                       		 if (el.getId().equalsIgnoreCase(vm.getId())){
-	                       			alreadyContained=true;
-	                       		 }
-	                       	 }
-	                       	 if (!alreadyContained)
-	                       		 serviceUnitElement.addElement(virtualMachine);
-                        }
-                        serviceTopologyElement.addElement(serviceUnitElement);
-
                     }
                 }
-            }
 
-            serviceElement.addElement(serviceTopologyElement);
+                serviceElement.addElement(serviceTopologyElement);
 
-            if (serviceTopology.getAllRelatedNodesOfType(RelationshipType.COMPOSITION_RELATIONSHIP) != null) {
-                for (Node subTopology : serviceTopology.getAllRelatedNodesOfType(RelationshipType.COMPOSITION_RELATIONSHIP)) {
-                    if (subTopology.getNodeType() == NodeType.SERVICE_TOPOLOGY) {
-                    	serviceTopologies.add(subTopology);
+                if (serviceTopology.getAllRelatedNodesOfType(RelationshipType.COMPOSITION_RELATIONSHIP) != null) {
+                    for (Node subTopology : serviceTopology.getAllRelatedNodesOfType(RelationshipType.COMPOSITION_RELATIONSHIP)) {
+                        if (subTopology.getNodeType() == NodeType.SERVICE_TOPOLOGY) {
+                            serviceTopologies.add(subTopology);
+                        }
                     }
                 }
+                serviceTopologies.remove(0);
             }
-            serviceTopologies.remove(0);
-            }
-            
+
         }
 
         public static MonitoredElement.MonitoredElementLevel getElementLevelFromEntity(Node entity) {
@@ -736,163 +742,162 @@ public class MELA_API implements MonitoringInterface{
 
     public static void main(String[] args) throws Exception {
 
-       
-
     }
+
     @Override
     public void submitElasticityRequirements(
             ArrayList<ElasticityRequirement> description) {
-    	Requirements requirements = new Requirements();
-        ArrayList<Requirement> requirements2= new ArrayList<Requirement>();
-    	for (ElasticityRequirement elasticityRequirement:description){
-    		RuntimeLogger.logger.info("Setting elasticity requirement "+elasticityRequirement.getAnnotation().getConstraints());
-    		SYBLSpecification specification=SYBLDirectiveMappingFromXML.mapFromSYBLAnnotation(elasticityRequirement.getAnnotation());
-    		
-	//		!!!Set all info
-    		for(Constraint constraint:specification.getConstraint()){
-        		RuntimeLogger.logger.info("Transformed constraint "+elasticityRequirement.getAnnotation().getConstraints());
+        Requirements requirements = new Requirements();
+        ArrayList<Requirement> requirements2 = new ArrayList<Requirement>();
+        for (ElasticityRequirement elasticityRequirement : description) {
+            RuntimeLogger.logger.info("Setting elasticity requirement " + elasticityRequirement.getAnnotation().getConstraints());
+            SYBLSpecification specification = SYBLDirectiveMappingFromXML.mapFromSYBLAnnotation(elasticityRequirement.getAnnotation());
 
-    			for (BinaryRestrictionsConjunction  binaryRestrictions:constraint.getToEnforce().getBinaryRestriction()){
-    				for (BinaryRestriction binaryRestriction:binaryRestrictions.getBinaryRestrictions()){
-	    					Requirement req=new Requirement();
-	    					req.setId(specification.getComponentId());
-	    					ArrayList<String> targetedEls=new ArrayList<String>();
-	    					targetedEls.add(specification.getComponentId());
-	    					req.setTargetMonitoredElementIDs(targetedEls);
-	    					List<at.ac.tuwien.dsg.mela.common.requirements.Condition> conditions = new ArrayList<at.ac.tuwien.dsg.mela.common.requirements.Condition>();
-    						at.ac.tuwien.dsg.mela.common.requirements.Condition cond = new at.ac.tuwien.dsg.mela.common.requirements.Condition();
-    						DependencyGraph dep = new DependencyGraph();
-    						dep.setCloudService(controlService);
-    						
-    						req.setTargetMonitoredElementLevel(MELA_ClientUtils.getElementLevelFromEntity(dep.getNodeWithID(specification.getComponentId())));
-    						if (binaryRestriction.getLeftHandSide().getMetric()!=null){
-    						String metric = binaryRestriction.getLeftHandSide().getMetric();
-    						Metric m = new Metric();
-    						m.setName(metric);
-    						m.setMeasurementUnit(null);
-    						req.setMetric(m);
-    						
-    						MetricValue metricValue = new MetricValue();
-    						metricValue.setValue(Double.parseDouble(binaryRestriction.getRightHandSide().getNumber()));
-    						cond.addValue(metricValue);
-    					switch (binaryRestriction.getType()){
-    					case "lessThan":
-    						cond.setType(Type.LESS_THAN);   						
-    						break;
-    					case "greaterThan":
-    						cond.setType(Type.GREATER_THAN);   		
-    						break;
-    					case "lessThanOrEqual":
-    						cond.setType(Type.LESS_EQUAL);   		
+            //		!!!Set all info
+            for (Constraint constraint : specification.getConstraint()) {
+                RuntimeLogger.logger.info("Transformed constraint " + elasticityRequirement.getAnnotation().getConstraints());
 
-    						break;
-    					case "greaterThanOrEqual":
-    						cond.setType(Type.GREATER_EQUAL);   		
+                for (BinaryRestrictionsConjunction binaryRestrictions : constraint.getToEnforce().getBinaryRestriction()) {
+                    for (BinaryRestriction binaryRestriction : binaryRestrictions.getBinaryRestrictions()) {
+                        Requirement req = new Requirement();
+                        req.setId(specification.getComponentId());
+                        ArrayList<String> targetedEls = new ArrayList<String>();
+                        targetedEls.add(specification.getComponentId());
+                        req.setTargetMonitoredElementIDs(targetedEls);
+                        List<at.ac.tuwien.dsg.mela.common.requirements.Condition> conditions = new ArrayList<at.ac.tuwien.dsg.mela.common.requirements.Condition>();
+                        at.ac.tuwien.dsg.mela.common.requirements.Condition cond = new at.ac.tuwien.dsg.mela.common.requirements.Condition();
+                        DependencyGraph dep = new DependencyGraph();
+                        dep.setCloudService(controlService);
 
-    						break;
-    					case "differentThan":
-    						//cond.setType(Type.)
-    						break;
-    					case "equals":
-    						cond.setType(Type.EQUAL);
-    						break;
-    					default:
-    						cond.setType(Type.LESS_THAN);   						
-    						
-    						break;
-    					}	
-    						}else{
-    							if (binaryRestriction.getRightHandSide().getMetric()!=null){
-    	    						String metric = binaryRestriction.getRightHandSide().getMetric();
-    	    						Metric m = new Metric();
-    	    						m.setName(metric);
-    	    						m.setMeasurementUnit(null);
-    	    						req.setMetric(m);
-    	    						switch (binaryRestriction.getType()){
-    	        					case "lessThan":
-    	        						cond.setType(Type.GREATER_THAN);   						
-    	        						break;
-    	        					case "greaterThan":
-    	        						cond.setType(Type.LESS_THAN);   		
-    	        						break;
-    	        					case "lessThanOrEqual":
-    	        						cond.setType(Type.GREATER_EQUAL);   		
+                        req.setTargetMonitoredElementLevel(MELA_ClientUtils.getElementLevelFromEntity(dep.getNodeWithID(specification.getComponentId())));
+                        if (binaryRestriction.getLeftHandSide().getMetric() != null) {
+                            String metric = binaryRestriction.getLeftHandSide().getMetric();
+                            Metric m = new Metric();
+                            m.setName(metric);
+                            m.setMeasurementUnit(null);
+                            req.setMetric(m);
 
-    	        						break;
-    	        					case "greaterThanOrEqual":
-    	        						cond.setType(Type.LESS_EQUAL);   		
+                            MetricValue metricValue = new MetricValue();
+                            metricValue.setValue(Double.parseDouble(binaryRestriction.getRightHandSide().getNumber()));
+                            cond.addValue(metricValue);
+                            switch (binaryRestriction.getType()) {
+                                case "lessThan":
+                                    cond.setType(Type.LESS_THAN);
+                                    break;
+                                case "greaterThan":
+                                    cond.setType(Type.GREATER_THAN);
+                                    break;
+                                case "lessThanOrEqual":
+                                    cond.setType(Type.LESS_EQUAL);
 
-    	        						break;
-    	        					case "differentThan":
-    	        						//cond.setType(Type.)
-    	        						break;
-    	        					case "equals":
-    	        						cond.setType(Type.EQUAL);
-    	        						break;
-    	        					default:
-    	        						cond.setType(Type.LESS_THAN);   						
-    	        						
-    	        						break;
-    	        					}	
-    	    						MetricValue metricValue = new MetricValue();
-    	    						metricValue.setValue(Double.parseDouble(binaryRestriction.getRightHandSide().getNumber()));
-    	    						cond.addValue(metricValue);
-    							}
-    				}
-    						conditions.add(cond);
-    						req.setConditions(conditions);
-    						RuntimeLogger.logger.info("~~~Req for MELA"+req.toString());
-    						requirements2.add(req);
-    			}
-    		}
-    	}
-    	}    
-    	requirements.setRequirements(requirements2);
-    	 URL url = null;
-         HttpURLConnection connection = null;
-         try {
-             url = new URL(REST_API_URL + "/servicerequirements");
-             connection = (HttpURLConnection) url.openConnection();
-             connection.setDoOutput(true);
-             connection.setInstanceFollowRedirects(false);
-             connection.setRequestMethod("PUT");
-             connection.setRequestProperty("Content-Type", "application/xml");
-             connection.setRequestProperty("Accept", "application/json");
+                                    break;
+                                case "greaterThanOrEqual":
+                                    cond.setType(Type.GREATER_EQUAL);
 
-             //write message body
-             OutputStream os = connection.getOutputStream();
-             JAXBContext jaxbContext = JAXBContext.newInstance(Requirements.class);
-             
-             jaxbContext.createMarshaller().marshal(requirements, os);
-             os.flush();
-             os.close();
-             
-             InputStream errorStream = connection.getErrorStream();
-             if (errorStream != null) {
-                 BufferedReader reader = new BufferedReader(new InputStreamReader(errorStream));
-                 String line;
-                 while ((line = reader.readLine()) != null) {
-                     Logger.getLogger(MELA_API.class.getName()).log(Level.SEVERE, line);
-                 }
-             }
+                                    break;
+                                case "differentThan":
+                                    //cond.setType(Type.)
+                                    break;
+                                case "equals":
+                                    cond.setType(Type.EQUAL);
+                                    break;
+                                default:
+                                    cond.setType(Type.LESS_THAN);
 
-             InputStream inputStream = connection.getInputStream();
-             if (inputStream != null) {
-                 BufferedReader reader = new BufferedReader(new InputStreamReader(inputStream));
-                 String line;
-                 while ((line = reader.readLine()) != null) {
-                     Logger.getLogger(MELA_API.class.getName()).log(Level.SEVERE, line);
-                 }
-             }
+                                    break;
+                            }
+                        } else {
+                            if (binaryRestriction.getRightHandSide().getMetric() != null) {
+                                String metric = binaryRestriction.getRightHandSide().getMetric();
+                                Metric m = new Metric();
+                                m.setName(metric);
+                                m.setMeasurementUnit(null);
+                                req.setMetric(m);
+                                switch (binaryRestriction.getType()) {
+                                    case "lessThan":
+                                        cond.setType(Type.GREATER_THAN);
+                                        break;
+                                    case "greaterThan":
+                                        cond.setType(Type.LESS_THAN);
+                                        break;
+                                    case "lessThanOrEqual":
+                                        cond.setType(Type.GREATER_EQUAL);
 
-         } catch (Exception e) {
-             Logger.getLogger(MELA_API.class.getName()).log(Level.SEVERE, e.getMessage(), e);
-         } finally {
-             if (connection != null) {
-                 connection.disconnect();
-             }
-         }
-  
+                                        break;
+                                    case "greaterThanOrEqual":
+                                        cond.setType(Type.LESS_EQUAL);
+
+                                        break;
+                                    case "differentThan":
+                                        //cond.setType(Type.)
+                                        break;
+                                    case "equals":
+                                        cond.setType(Type.EQUAL);
+                                        break;
+                                    default:
+                                        cond.setType(Type.LESS_THAN);
+
+                                        break;
+                                }
+                                MetricValue metricValue = new MetricValue();
+                                metricValue.setValue(Double.parseDouble(binaryRestriction.getRightHandSide().getNumber()));
+                                cond.addValue(metricValue);
+                            }
+                        }
+                        conditions.add(cond);
+                        req.setConditions(conditions);
+                        RuntimeLogger.logger.info("~~~Req for MELA" + req.toString());
+                        requirements2.add(req);
+                    }
+                }
+            }
+        }
+        requirements.setRequirements(requirements2);
+        URL url = null;
+        HttpURLConnection connection = null;
+        try {
+            url = new URL(REST_API_URL + "/servicerequirements");
+            connection = (HttpURLConnection) url.openConnection();
+            connection.setDoOutput(true);
+            connection.setInstanceFollowRedirects(false);
+            connection.setRequestMethod("PUT");
+            connection.setRequestProperty("Content-Type", "application/xml");
+            connection.setRequestProperty("Accept", "application/json");
+
+            //write message body
+            OutputStream os = connection.getOutputStream();
+            JAXBContext jaxbContext = JAXBContext.newInstance(Requirements.class);
+
+            jaxbContext.createMarshaller().marshal(requirements, os);
+            os.flush();
+            os.close();
+
+            InputStream errorStream = connection.getErrorStream();
+            if (errorStream != null) {
+                BufferedReader reader = new BufferedReader(new InputStreamReader(errorStream));
+                String line;
+                while ((line = reader.readLine()) != null) {
+                    Logger.getLogger(MELA_API.class.getName()).log(Level.SEVERE, line);
+                }
+            }
+
+            InputStream inputStream = connection.getInputStream();
+            if (inputStream != null) {
+                BufferedReader reader = new BufferedReader(new InputStreamReader(inputStream));
+                String line;
+                while ((line = reader.readLine()) != null) {
+                    Logger.getLogger(MELA_API.class.getName()).log(Level.SEVERE, line);
+                }
+            }
+
+        } catch (Exception e) {
+            Logger.getLogger(MELA_API.class.getName()).log(Level.SEVERE, e.getMessage(), e);
+        } finally {
+            if (connection != null) {
+                connection.disconnect();
+            }
+        }
+
     }
 
     @Override
@@ -900,9 +905,10 @@ public class MELA_API implements MonitoringInterface{
         Metric metric = new Metric("vmCount");
         return getMetricValue(metric, entity);
     }
+
     public Double getCpuUsage(Node entity) {
         Metric metric = new Metric("cpu_usage");
-        RuntimeLogger.logger.info("For entity "+entity.getId()+" Cpu usage is "+getMetricValue(metric,entity)+"cpu idle is" + getMetricValue(new Metric("cpu_idle"), entity));
+        RuntimeLogger.logger.info("For entity " + entity.getId() + " Cpu usage is " + getMetricValue(metric, entity) + "cpu idle is" + getMetricValue(new Metric("cpu_idle"), entity));
         return getMetricValue(metric, entity);
     }
 
@@ -991,122 +997,121 @@ public class MELA_API implements MonitoringInterface{
     }
 
     /**
-     * @return currently, all metrics for the first VM that is monitored. While MELA can return metrics for different VMs belonging to different service units,
-     *         it would require a Service_unit_id to be added as parameter to this call
+     * @return currently, all metrics for the first VM that is monitored. While
+     * MELA can return metrics for different VMs belonging to different service
+     * units, it would require a Service_unit_id to be added as parameter to
+     * this call
      */
     public List<String> getAvailableMetrics(Node node) {
-    	refreshMonitoringData();
-    	List<MonitoredElementMonitoringSnapshot> processing = new ArrayList<MonitoredElementMonitoringSnapshot>();
-    	List<String> metrics = new ArrayList<String>();
+        refreshMonitoringData();
+        List<MonitoredElementMonitoringSnapshot> processing = new ArrayList<MonitoredElementMonitoringSnapshot>();
+        List<String> metrics = new ArrayList<String>();
         processing.add(latestMonitoringData);
 
-        while (!processing.isEmpty() && processing!=null) {
+        while (!processing.isEmpty() && processing != null) {
             MonitoredElementMonitoringSnapshot currentlyUnderInspection = processing.remove(0);
             if (currentlyUnderInspection.getMonitoredElement().getId().equalsIgnoreCase(node.getId())) {
-             for (Metric m:currentlyUnderInspection.getMetrics()){
-            	 
-            	 metrics.add(m.getName());
-             }
-            
+                for (Metric m : currentlyUnderInspection.getMetrics()) {
+
+                    metrics.add(m.getName());
+                }
+
             } else {
                 processing.addAll(currentlyUnderInspection.getChildren());
             }
         }
-    	return metrics;
+        return metrics;
     }
+
     public List<String> getAvailableMetrics(String id) {
-    	refreshMonitoringData();
-    	List<MonitoredElementMonitoringSnapshot> processing = new ArrayList<MonitoredElementMonitoringSnapshot>();
-    	List<String> metrics = new ArrayList<String>();
+        refreshMonitoringData();
+        List<MonitoredElementMonitoringSnapshot> processing = new ArrayList<MonitoredElementMonitoringSnapshot>();
+        List<String> metrics = new ArrayList<String>();
         processing.add(latestMonitoringData);
 
-        while (!processing.isEmpty() && processing!=null) {
+        while (!processing.isEmpty() && processing != null) {
             MonitoredElementMonitoringSnapshot currentlyUnderInspection = processing.remove(0);
             if (currentlyUnderInspection.getMonitoredElement().getId().equals(id)) {
-             for (Metric m:currentlyUnderInspection.getMetrics()){
-            	 metrics.add(m.getName());
-             }
-            
+                for (Metric m : currentlyUnderInspection.getMetrics()) {
+                    metrics.add(m.getName());
+                }
+
             } else {
                 processing.addAll(currentlyUnderInspection.getChildren());
             }
         }
-    	return metrics;
+        return metrics;
     }
 
-  
-    public void submitCompositionRules (){
-    	try{
-        Unmarshaller unmarshaller = JAXBContext.newInstance(CompositionRulesConfiguration.class).createUnmarshaller();
+    public void submitCompositionRules() {
+        try {
+            Unmarshaller unmarshaller = JAXBContext.newInstance(CompositionRulesConfiguration.class).createUnmarshaller();
 
-    	 CompositionRulesConfiguration compositionRulesConfiguration = (CompositionRulesConfiguration) unmarshaller.unmarshal(this.getClass().getClassLoader().getResourceAsStream(Configuration.getCompositionRulesPath()));
+            CompositionRulesConfiguration compositionRulesConfiguration = (CompositionRulesConfiguration) unmarshaller.unmarshal(this.getClass().getClassLoader().getResourceAsStream(Configuration.getCompositionRulesPath()));
 
-         submitMetricCompositionConfiguration(compositionRulesConfiguration);
-    	} catch(Exception e){
-    		 Unmarshaller unmarshaller;
-			try {
-				unmarshaller = JAXBContext.newInstance(CompositionRulesConfiguration.class).createUnmarshaller();
-			
- 
-    		CompositionRulesConfiguration compositionRulesConfiguration = (CompositionRulesConfiguration) unmarshaller.unmarshal(new FileReader(new File(Configuration.getCompositionRulesPath())));
+            submitMetricCompositionConfiguration(compositionRulesConfiguration);
+        } catch (Exception e) {
+            Unmarshaller unmarshaller;
+            try {
+                unmarshaller = JAXBContext.newInstance(CompositionRulesConfiguration.class).createUnmarshaller();
 
-             submitMetricCompositionConfiguration(compositionRulesConfiguration);
-			} catch (JAXBException e1) {
-				// TODO Auto-generated catch block
-				e1.printStackTrace();
+                CompositionRulesConfiguration compositionRulesConfiguration = (CompositionRulesConfiguration) unmarshaller.unmarshal(new FileReader(new File(Configuration.getCompositionRulesPath())));
 
-	             RuntimeLogger.logger.error("Submitting file composition rules. Error when submitting composition rules, in MELA_API"+e.getMessage());
-	    	
-			} catch (FileNotFoundException e1) {
-				// TODO Auto-generated catch block
-				e1.printStackTrace();
-			}
+                submitMetricCompositionConfiguration(compositionRulesConfiguration);
+            } catch (JAXBException e1) {
+                // TODO Auto-generated catch block
+                e1.printStackTrace();
+
+                RuntimeLogger.logger.error("Submitting file composition rules. Error when submitting composition rules, in MELA_API" + e.getMessage());
+
+            } catch (FileNotFoundException e1) {
+                // TODO Auto-generated catch block
+                e1.printStackTrace();
+            }
+        }
     }
-    	}
-    public void submitCompositionRules (String compositionRules){
-    	try{
-    RuntimeLogger.logger.info("In MELA_API: setting composition rules = "+compositionRules);
-        Unmarshaller unmarshaller = JAXBContext.newInstance(CompositionRulesConfiguration.class).createUnmarshaller();
-        StringReader reader = new StringReader(compositionRules);
 
-    	 CompositionRulesConfiguration compositionRulesConfiguration = (CompositionRulesConfiguration) unmarshaller.unmarshal(reader);
+    public void submitCompositionRules(String compositionRules) {
+        try {
+            RuntimeLogger.logger.info("In MELA_API: setting composition rules = " + compositionRules);
+            Unmarshaller unmarshaller = JAXBContext.newInstance(CompositionRulesConfiguration.class).createUnmarshaller();
+            StringReader reader = new StringReader(compositionRules);
 
-         submitMetricCompositionConfiguration(compositionRulesConfiguration);
-    	} catch(Exception e){
-    			e.printStackTrace();
+            CompositionRulesConfiguration compositionRulesConfiguration = (CompositionRulesConfiguration) unmarshaller.unmarshal(reader);
 
-	             RuntimeLogger.logger.error("Error when submitting composition rules, in MELA_API "+e.getMessage());
-	    	
-			
+            submitMetricCompositionConfiguration(compositionRulesConfiguration);
+        } catch (Exception e) {
+            e.printStackTrace();
+
+            RuntimeLogger.logger.error("Error when submitting composition rules, in MELA_API " + e.getMessage());
+
+        }
     }
-    	}
 
     public Double getMetricValue(String metricName, Node entity) {
         Metric metric = new Metric(metricName);
-        
+
         return getMetricValue(metric, entity);
     }
-    public boolean checkIfMetricsValid( Node node){
-    	boolean validity=true;
-    	for (String metric:getAvailableMetrics(node)){
-    		if (getMetricValue(metric, node)<0){
-    			validity=false;
-    		}
-    	}
-    	return validity;
+
+    public boolean checkIfMetricsValid(Node node) {
+        boolean validity = true;
+        for (String metric : getAvailableMetrics(node)) {
+            if (getMetricValue(metric, node) < 0) {
+                validity = false;
+            }
+        }
+        return validity;
     }
-	@Override
-	public String getOngoingActionID() {
-		return this.ongoingAction;
-	}
 
-	@Override
-	public String getOngoingActionNodeID() {
-		return this.actionTargetEntity;
-	}
+    @Override
+    public String getOngoingActionID() {
+        return this.ongoingAction;
+    }
 
+    @Override
+    public String getOngoingActionNodeID() {
+        return this.actionTargetEntity;
+    }
 
-   
-
-	
 }
