@@ -75,14 +75,34 @@ public class Utils {
 	public void processSyblSpecifications(){
 		if (!monitoring.equalsIgnoreCase("")) {
 			//SYBLDirectivesEnforcementLogger.logger.info("=============================================");
-			SYBLDirectivesEnforcementLogger.logger.info("Monitoring " + monitoring);
+			SYBLDirectivesEnforcementLogger.logger.info("Monitoring requirements are: " + monitoring);
 
 			processMonitoring(monitoring);
 		}
 
+	
+		
+		try {
+			if (!constraints.equalsIgnoreCase("")){
+			//	SYBLDirectivesEnforcementLogger.logger.info("=============================================");
+			SYBLDirectivesEnforcementLogger.logger.info("Constraints are: " + constraints);
+
+			processConstraints(constraints);
+			}
+
+		} catch (Exception e) {
+			SYBLDirectivesEnforcementLogger.logger.error("Utils,Processing constraints"+e.toString());
+		}
+
+		if (!strategies.equals("")) {
+			//SYBLDirectivesEnforcementLogger.logger.info("=============================================");
+			SYBLDirectivesEnforcementLogger.logger.info("Strategies are: " + strategies);
+			processStrategies(strategies);
+
+		}
 		if (!priorities.equalsIgnoreCase("")) {
 			//SYBLDirectivesEnforcementLogger.logger.info("=============================================");
-			SYBLDirectivesEnforcementLogger.logger.info("Priorities " + priorities);
+			SYBLDirectivesEnforcementLogger.logger.info("Priorities set by the user are: " + priorities);
 			ArrayList<Rule> rules = new ArrayList<Rule>();
 			if (!monitoring.equals(""))
 			for (String m : monitoring.split(";")) {
@@ -113,25 +133,6 @@ public class Utils {
 
 		}
 
-		
-		try {
-			if (!constraints.equalsIgnoreCase("")){
-			//	SYBLDirectivesEnforcementLogger.logger.info("=============================================");
-			SYBLDirectivesEnforcementLogger.logger.info("Constraints " + constraints);
-
-			processConstraints(constraints);
-			}
-
-		} catch (Exception e) {
-			SYBLDirectivesEnforcementLogger.logger.error("Utils,Processing constraints"+e.toString());
-		}
-
-		if (!strategies.equals("")) {
-			//SYBLDirectivesEnforcementLogger.logger.info("=============================================");
-			SYBLDirectivesEnforcementLogger.logger.info("Strategies " + strategies);
-			processStrategies(strategies);
-
-		}
 
 	}
 // ==========================processing code========================================//
@@ -222,7 +223,7 @@ public void processConstraints(String constraints)
 		
 		Rule r = new Rule();
 		try{
-		SYBLDirectivesEnforcementLogger.logger.info("Constraint " + x[0] + " is " + x[1]);
+		SYBLDirectivesEnforcementLogger.logger.info("Constraint " + x[0] + " has the following body: " + x[1]);
 		}catch(Exception e){
 			SYBLDirectivesEnforcementLogger.logger.info("Error when splitting on : the constraint "+c);
 		}
@@ -272,7 +273,7 @@ public void processMonitoring(String monitoring) {
 	String[] s = monitoring.split(";");
 	for (String c : s) {
 		String[] x = c.split(":");
-		SYBLDirectivesEnforcementLogger.logger.info("Monitoring rule " + x[0] + " is " + x[1]);
+		SYBLDirectivesEnforcementLogger.logger.info("Monitoring requirement " + x[0] + " has the following body: " + x[1]);
 		Rule r = new Rule();
 		r.setName(x[0]);
 		r.setText(x[1]);
@@ -304,7 +305,7 @@ public void processStrategies(String strategies) {
 		r.setName(x[0]);
 
 		r.setText(c.substring(c.indexOf(":") + 1));
-		SYBLDirectivesEnforcementLogger.logger.info("Strategy " + x[0] + " is " + r.getText());
+		SYBLDirectivesEnforcementLogger.logger.info("Strategy requirement " + x[0] + " has the following body: " + r.getText());
 		if (r.getText().contains("WHERE "))
 			processComplexStrategy(r);
 		else
@@ -320,7 +321,7 @@ public void doEnforcement( String enf){
 
 		
 	String parameter = eliminateSpaces(enf.split("[(]")[1].split("[)]")[0]);
-	SYBLDirectivesEnforcementLogger.logger.info("Parametor for " +actionName+" is "+ parameter+" ");
+	SYBLDirectivesEnforcementLogger.logger.info("Parametor for " +actionName+" to be enforced is "+ parameter+" ");
 	if (!parameter.equals("")){
 	actionName = eliminateSpaces(actionName);
 	String target = "";
@@ -447,7 +448,7 @@ public void doEnforcement( String enf){
 			}
 		
 		try {
-			SYBLDirectivesEnforcementLogger.logger.info("Enforcing action "+actionName+" due to strategy. ");
+			SYBLDirectivesEnforcementLogger.logger.info("Enforcing action "+actionName+" as a result of enforcing a strategy. ");
 			Method actionMethod = EnforcementAPIInterface.class.getMethod(
 					actionName, partypes);
 
@@ -716,7 +717,7 @@ public Comparable evaluateTerm(String term) throws NoSuchMethodException, Securi
 			result= Double.parseDouble(term);
 		}
 	}
-	SYBLDirectivesEnforcementLogger.logger.info("The value of "+term+" is "+result+ " for node "+currentEntity.getId());
+	SYBLDirectivesEnforcementLogger.logger.info("We evaluate term "+term+" discovered in the requirement. Its value is "+result+ " for node "+currentEntity.getId());
 	return result;
 }
 
@@ -744,7 +745,7 @@ public  boolean evaluateCondition(String condition) throws NoSuchMethodException
 //			SYBLDirectivesEnforcementLogger.logger.info("The constraint  "+current+" "+cons.get(current));
 //
 //		}
-		SYBLDirectivesEnforcementLogger.logger.info("The constraint is "+eliminateSpaces(name.toLowerCase())+" "+cons.get(eliminateSpaces(name.toLowerCase())));
+		//SYBLDirectivesEnforcementLogger.logger.info("The constraint is "+eliminateSpaces(name.toLowerCase())+" "+cons.get(eliminateSpaces(name.toLowerCase())));
 		if (!cons.containsKey(eliminateSpaces(name.toLowerCase())))
 		return true;
 		else return cons.get(eliminateSpaces(name.toLowerCase()));
