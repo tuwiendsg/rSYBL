@@ -13,6 +13,7 @@ import at.ac.tuwien.dsg.csdg.Node;
 import at.ac.tuwien.dsg.csdg.Node.NodeType;
 import at.ac.tuwien.dsg.csdg.Relationship.RelationshipType;
 import at.ac.tuwien.dsg.rSybl.cloudInteractionUnit.utils.Configuration;
+import at.ac.tuwien.dsg.rSybl.cloudInteractionUnit.utils.RuntimeLogger;
 import at.ac.tuwien.dsg.rSybl.dataProcessingUnit.monitoringPlugins.gangliaMonitoring.GangliaMonitor.MyUserInfo;
 
 import com.jcraft.jsch.ChannelExec;
@@ -48,7 +49,7 @@ public class M2MApplicationControl {
 	   	   
 	   		   cmd = "decomissionCassandra "+ip1+" "+ip;
 	   	   }				
-
+		RuntimeLogger.logger.info("~~~~~~~~~~~~~~~Appl level enforcement~~~~~~~~ Enforcing command "+cmd);
 	          if (!(controlledService.getStaticInformation("AccessIP").equals("localhost")))
 	      	try {
 	      		 executeAndExpectNothing((String)controlledService.getStaticInformation("AccessIP"), Configuration.getCertificatePath(), cmd);
