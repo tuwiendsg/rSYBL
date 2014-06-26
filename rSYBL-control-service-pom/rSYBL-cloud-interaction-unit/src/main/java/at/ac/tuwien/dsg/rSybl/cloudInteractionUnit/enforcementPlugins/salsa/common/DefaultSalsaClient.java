@@ -63,8 +63,9 @@ public class DefaultSalsaClient {
                 String line;
                 while ((line = reader.readLine()) != null) {
                     RuntimeLogger.logger.info(line);
+                    return line;
                 }
-                return line;
+                
             }
 
         } catch (Exception e) {
@@ -112,8 +113,9 @@ public class DefaultSalsaClient {
                 String line;
                 while ((line = reader.readLine()) != null) {
                     RuntimeLogger.logger.info(line);
+                    return line;
                 }
-                return line;
+                
             }
 
         } catch (Exception e) {

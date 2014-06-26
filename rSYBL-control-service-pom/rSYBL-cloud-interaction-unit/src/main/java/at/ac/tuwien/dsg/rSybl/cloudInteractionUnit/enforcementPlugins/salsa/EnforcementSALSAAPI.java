@@ -215,6 +215,8 @@ public class EnforcementSALSAAPI implements EnforcementInterface {
 					+ ip);
 
 			o.addNode(node, rel);
+		}else {
+			RuntimeLogger.logger.info("IP is empty");
 		}
 		RuntimeLogger.logger.info("The controlled service is now "
 				+ controlledService.toString());
