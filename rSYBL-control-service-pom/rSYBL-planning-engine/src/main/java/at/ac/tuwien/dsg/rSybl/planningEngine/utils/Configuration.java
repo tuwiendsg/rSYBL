@@ -41,21 +41,18 @@ public class Configuration {
     static{
         configuration = new Properties();
         try {
+            configuration.load(new FileReader( new File("./config.properties")));
 
-//			InputStream is = Configuration.class.getClassLoader().getResourceAsStream("/config.properties");
-//			configuration.load(is);
-			configuration.load(new FileReader("./config.properties"));
-
+			
         } catch (Exception ex) {
-        	try {
-				configuration.load(new FileReader("./config.properties"));
-			} catch (FileNotFoundException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
+        	InputStream is = Configuration.class.getClassLoader().getResourceAsStream("/config.properties");
+			try {
+				configuration.load(is);
 			} catch (IOException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
+
         }
     }
 

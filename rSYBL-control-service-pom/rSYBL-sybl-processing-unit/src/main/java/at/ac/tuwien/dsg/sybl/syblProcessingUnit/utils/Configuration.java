@@ -33,6 +33,7 @@ import java.util.Properties;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+
 public class Configuration {
 
     private static  Properties configuration ;
@@ -40,25 +41,20 @@ public class Configuration {
     static{
         configuration = new Properties();
         try {
-//
-//			InputStream is = Configuration.class.getClassLoader().getResourceAsStream("/config.properties");
-//			configuration.load(is);
-			configuration.load(new FileReader("./config.properties"));
+            configuration.load(new FileReader( new File("./config.properties")));
 
+			
         } catch (Exception ex) {
-        	try {
-				configuration.load(new FileReader("./config.properties"));
-			} catch (FileNotFoundException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
+        	InputStream is = Configuration.class.getClassLoader().getResourceAsStream("/config.properties");
+			try {
+				configuration.load(is);
 			} catch (IOException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
-        	//ex.printStackTrace();
+
         }
     }
-
     public static String getModelDescrFile(){
     	return configuration.getProperty("CloudServiceModelDescription");
     }

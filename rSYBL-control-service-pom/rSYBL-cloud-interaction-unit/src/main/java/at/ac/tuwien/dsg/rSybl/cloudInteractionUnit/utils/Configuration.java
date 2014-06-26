@@ -24,6 +24,7 @@ package at.ac.tuwien.dsg.rSybl.cloudInteractionUnit.utils;
 
 import java.io.File;
 import java.io.FileReader;
+import java.io.IOException;
 import java.io.InputStream;
 import java.util.HashMap;
 import java.util.List;
@@ -38,18 +39,21 @@ public class Configuration {
     private static  Properties configuration ;
 
     static{
-    	
-    	
         configuration = new Properties();
         try {
-//        	InputStream is = Configuration.class.getClassLoader().getResourceAsStream("/config.properties");
-//            configuration.load(is);
-           configuration.load(new FileReader( new File("./config.properties")));
+            configuration.load(new FileReader( new File("./config.properties")));
 
+			
         } catch (Exception ex) {
-            Logger.getLogger(Configuration.class.getName()).log(Level.SEVERE, null, ex);
-        }
+        	InputStream is = Configuration.class.getClassLoader().getResourceAsStream("/config.properties");
+			try {
+				configuration.load(is);
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
 
+        }
     }
     public static String getUserEMailAddress()
     {

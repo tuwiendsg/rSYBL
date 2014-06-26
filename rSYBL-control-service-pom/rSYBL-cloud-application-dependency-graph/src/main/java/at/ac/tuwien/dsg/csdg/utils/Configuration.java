@@ -28,6 +28,7 @@ import java.io.FileInputStream;
 import java.io.FilePermission;
 import java.io.FileReader;
 import java.io.FileWriter;
+import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
 import java.security.AccessController;
@@ -45,42 +46,21 @@ public class Configuration {
     static{
         configuration = new Properties();
         try {
-//        	 String current = new java.io.File( "." ).getCanonicalPath();
-//        	 
-//             System.err.println("Current dir:"+current);
-//             String currentDir = System.getProperty("user.dir");
-//             System.err.println("Current dir using System:" +currentDir);
-//
-//        	 File folder = new File(".");
-//        	  File[] listOfFiles = folder.listFiles(); 
-//        	  String files;
-//        	  for (int i = 0; i < listOfFiles.length; i++) 
-//        	  {
-//        	 
-//        	   if (listOfFiles[i].isFile()) 
-//        	   {
-//        	   files = listOfFiles[i].getName();
-//        	       System.err.println(files);
-//        	      }
-//        	  }
-        	  try {
-        		//  DependencyGraphLogger.logger.info("Current inputStream "+Configuration.class.getClassLoader().getResourceAsStream("./config.properties"));
-                 
-             
-                 configuration.load(new FileReader( new File("config.properties")));
-        	  } catch (Exception ex) {
-        		    System.err.println("The path is " +Configuration.class.getClassLoader().getResource("./config.properties").getPath());
-             		
-          		  configuration.load(Configuration.class.getClassLoader().getResourceAsStream("./config.properties"));
-                  Logger.getLogger(Configuration.class.getName()).log(Level.SEVERE, null, ex);
-              }
-        	  
-			//InputStream is = Configuration.class.getClassLoader().getResourceAsStream("./config.properties");
-            //configuration.load(is);
+            configuration.load(new FileReader( new File("./config.properties")));
+
+			
         } catch (Exception ex) {
-            Logger.getLogger(Configuration.class.getName()).log(Level.SEVERE, null, ex);
+        	InputStream is = Configuration.class.getClassLoader().getResourceAsStream("/config.properties");
+			try {
+				configuration.load(is);
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+
         }
     }
+    
     public static String getDeploymentDescriptionPath()
     {
     	return configuration.getProperty("DeploymentDescriptionPath");

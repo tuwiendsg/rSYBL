@@ -26,29 +26,26 @@ import java.util.Properties;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+
 public class Configuration {
 
     private static  Properties configuration ;
 
     static{
-    	
         configuration = new Properties();
         try {
-           configuration.load(new FileReader( new File("./config.properties")));
+            configuration.load(new FileReader( new File("./config.properties")));
 
+			
         } catch (Exception ex) {
-        	try {
-           	InputStream is = Configuration.class.getClassLoader().getResourceAsStream("/config.properties");
-        		//
-        		            configuration.load(is);
-
-			} catch (FileNotFoundException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
+        	InputStream is = Configuration.class.getClassLoader().getResourceAsStream("/config.properties");
+			try {
+				configuration.load(is);
 			} catch (IOException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
+
         }
     }
     public static String getRuntimeRegistryName()
