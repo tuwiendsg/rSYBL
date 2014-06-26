@@ -163,17 +163,17 @@ public class ControlService {
 	
 			planningAlgorithm.start();
 			AnalysisLogger.logger.info("Planning algorithm started");
-			for (Node node1:dependencyGraph.getAllServiceUnits()){
-				
-				MonitoringThread monitoringThread = new MonitoringThread(node1, monitoringAPI);
-				monitoringThread.start();
-			}
-			for (Node node1:dependencyGraph.getAllServiceTopologies()){
-				MonitoringThread monitoringThread = new MonitoringThread(node1, monitoringAPI);
-				monitoringThread.start();
-			}
-			MonitoringThread monitoringThread = new MonitoringThread(dependencyGraph.getCloudService(), monitoringAPI);
-			monitoringThread.start();
+//			for (Node node1:dependencyGraph.getAllServiceUnits()){
+//				
+//				MonitoringThread monitoringThread = new MonitoringThread(node1, monitoringAPI);
+//				monitoringThread.start();
+//			}
+//			for (Node node1:dependencyGraph.getAllServiceTopologies()){
+//				MonitoringThread monitoringThread = new MonitoringThread(node1, monitoringAPI);
+//				monitoringThread.start();
+//			}
+//			MonitoringThread monitoringThread = new MonitoringThread(dependencyGraph.getCloudService(), monitoringAPI);
+//			monitoringThread.start();
 
 
 		} catch (Exception e) {
