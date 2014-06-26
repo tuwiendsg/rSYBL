@@ -154,7 +154,7 @@ public class SyblControlWS {
 		 controlCoordination.replaceRequirements(cloudServiceId, requirements);
 	}
 	 @PUT
-	 @Path("/replaceCloudServiceFromCurrentCloudService")
+	 @Path("/replaceCloudServiceRequirementsFromCurrentCloudService")
 	 @Consumes("application/xml")
 	public void replaceCloudService(String cloudService){
 		 controlCoordination.replaceCloudServiceWithRequirements(cloudService);

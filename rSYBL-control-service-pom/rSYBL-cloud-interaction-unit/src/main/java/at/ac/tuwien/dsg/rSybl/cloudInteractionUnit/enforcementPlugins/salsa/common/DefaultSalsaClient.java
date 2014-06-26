@@ -18,7 +18,7 @@ import java.net.URI;
 import java.net.URL;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-
+ 
 public class DefaultSalsaClient {
 
     private String REST_API_URL = "http://128.130.172.215:8080/salsa-engine/rest/services";
@@ -126,4 +126,5 @@ public class DefaultSalsaClient {
         }
         return "";
     }
+ 
 }
