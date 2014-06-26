@@ -95,7 +95,7 @@ public class EnforcementOpenstackAPI implements EnforcementInterface{
 	}
 	
 	public void scaleOut(Node arg0)   {
-		monitoring.enforcingActionStarted("ScaleOut",arg0 );
+		//monitoring.enforcingActionStarted("ScaleOut",arg0 );
 		
 		Node o = arg0;
 		RuntimeLogger.logger.info("Scaling out ... "+arg0+" "+arg0.getNodeType());
@@ -148,7 +148,7 @@ public class EnforcementOpenstackAPI implements EnforcementInterface{
 		if (o.getNodeType()==NodeType.SERVICE_UNIT){
 			scaleOutComponent((Node) o);
 		}
-		monitoring.enforcingActionEnded("ScaleOut",arg0 );
+		//monitoring.enforcingActionEnded("ScaleOut",arg0 );
 
 	}
 	private void loadDeploymentDescription(){
@@ -358,10 +358,10 @@ public class EnforcementOpenstackAPI implements EnforcementInterface{
 			
 			for (String ip:master.getAssociatedIps()){
 				if (ip.split("\\.")[0].length()==2){
-					monitoring.enforcingActionStarted("ScaleIn",arg0 );
+					//monitoring.enforcingActionStarted("ScaleIn",arg0 );
 					
 					cloudsOpenStackConnection.scaleInCluster(master, slave, ip,controlledService);
-					monitoring.enforcingActionEnded("ScaleIn",arg0 );
+					//monitoring.enforcingActionEnded("ScaleIn",arg0 );
 				break;
 				}
 				//scale in on the number of components of the topology
@@ -370,10 +370,10 @@ public class EnforcementOpenstackAPI implements EnforcementInterface{
 		
 		if (arg0.getAllRelatedNodesOfType(RelationshipType.HOSTED_ON_RELATIONSHIP, NodeType.VIRTUAL_MACHINE).size()>1){
 			//RuntimeLogger.logger.info("Scaling in "+arg0.getId());
-			monitoring.enforcingActionStarted("ScaleIn",arg0 );
+			//monitoring.enforcingActionStarted("ScaleIn",arg0 );
 			
 			scaleInComponent(((Node) arg0));
-			monitoring.enforcingActionEnded("ScaleIn",arg0 );
+			//monitoring.enforcingActionEnded("ScaleIn",arg0 );
 		}
 		
 

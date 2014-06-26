@@ -107,7 +107,7 @@ public class EnforcementSALSAAPI implements EnforcementInterface {
 	}
 
 	public void scaleOut(Node arg0) {
-		monitoring.enforcingActionStarted("ScaleOut", arg0);
+		//monitoring.enforcingActionStarted("ScaleOut", arg0);
 
 		Node o = arg0;
 		RuntimeLogger.logger.info("Scaling out ... " + arg0 + " "
@@ -165,7 +165,7 @@ public class EnforcementSALSAAPI implements EnforcementInterface {
 		if (o.getNodeType() == NodeType.SERVICE_UNIT) {
 			scaleOutComponent((Node) o);
 		}
-		monitoring.enforcingActionEnded("ScaleOut", arg0);
+		//monitoring.enforcingActionEnded("ScaleOut", arg0);
 
 	}
 
@@ -453,10 +453,10 @@ public class EnforcementSALSAAPI implements EnforcementInterface {
 				RelationshipType.HOSTED_ON_RELATIONSHIP,
 				NodeType.VIRTUAL_MACHINE).size() > 1) {
 			// RuntimeLogger.logger.info("Scaling in "+arg0.getId());
-			monitoring.enforcingActionStarted("ScaleIn", arg0);
+			//monitoring.enforcingActionStarted("ScaleIn", arg0);
 
 			scaleInComponent(((Node) arg0));
-			monitoring.enforcingActionEnded("ScaleIn", arg0);
+			//monitoring.enforcingActionEnded("ScaleIn", arg0);
 		}
 
 	}
