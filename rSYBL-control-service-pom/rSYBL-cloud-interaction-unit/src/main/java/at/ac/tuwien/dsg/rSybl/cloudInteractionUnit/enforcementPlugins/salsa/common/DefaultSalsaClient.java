@@ -64,6 +64,8 @@ public class DefaultSalsaClient  {
 	                while ((line = reader.readLine()) != null) {
 	                    RuntimeLogger.logger.info( line);
 	                }
+	                RuntimeLogger.logger.info("The node with IP  " +line + " was removed, while "+toScale+" should have been removed.");
+
 	                return line;
 	            }
 
@@ -112,6 +114,7 @@ public class DefaultSalsaClient  {
 	                while ((line = reader.readLine()) != null) {
 	                    RuntimeLogger.logger.info( line);
 	                }
+	                RuntimeLogger.logger.info("The node with IP  " +line + " was added ");
 	                return line;
 	            }
 
