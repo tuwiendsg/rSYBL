@@ -2,175 +2,128 @@
 <CompositionRulesConfiguration>
     <MetricsCompositionRules>
         <CompositionRule TargetMonitoredElementLevel="SERVICE_UNIT">
-            <TargetMonitoredElementID>LoadBalancerServiceUnit</TargetMonitoredElementID>
-            <ResultingMetric type="RESOURCE" measurementUnit="no" name="numberOfClients"/>
-            <Operation MetricSourceMonitoredElementLevel="VM" type="AVG">
-                <ReferenceMetric type="RESOURCE" name="activeConnections"/>
+            <ResultingMetric name="connectionRate" measurementUnit="no" type="RESOURCE"/>
+            <Operation type="AVG" MetricSourceMonitoredElementLevel="VM">
+                <ReferenceMetric name="connectionRate" type="RESOURCE"/>
             </Operation>
         </CompositionRule>
         <CompositionRule TargetMonitoredElementLevel="SERVICE_UNIT">
-            <TargetMonitoredElementID>DataNodeServiceUnit</TargetMonitoredElementID>
-            <ResultingMetric type="RESOURCE" measurementUnit="%" name="cpuUsage"/>
-            <Operation value="100" type="ADD">
-                  <Operation value="-1" type="MUL">
-                         <Operation MetricSourceMonitoredElementLevel="VM" type="AVG">
-                   		 <ReferenceMetric type="RESOURCE" measurementUnit="%"  name="cpu_idle"/>
+            <ResultingMetric name="cpuUsage" measurementUnit="%" type="RESOURCE"/>
+            <Operation type="ADD" value="100">
+                <Operation type="MUL" value="-1">
+                    <Operation type="AVG" MetricSourceMonitoredElementLevel="VM">
+                        <ReferenceMetric name="cpu_idle" measurementUnit="%" type="RESOURCE"/>
+                    </Operation>
                 </Operation>
             </Operation>
-            </Operation>
         </CompositionRule>
         <CompositionRule TargetMonitoredElementLevel="SERVICE_UNIT">
-            <TargetMonitoredElementID>DataControllerServiceUnit</TargetMonitoredElementID>
-            <ResultingMetric type="RESOURCE" measurementUnit="%" name="cpuUsage"/>
-            <Operation value="100" type="ADD">
-                  <Operation value="-1" type="MUL">
-                         <Operation MetricSourceMonitoredElementLevel="VM" type="AVG">
-                   		 <ReferenceMetric type="RESOURCE" measurementUnit="%" name="cpu_idle"/>
+            <ResultingMetric name="cpuUsage" measurementUnit="%" type="RESOURCE"/>
+            <Operation type="ADD" value="100">
+                <Operation type="MUL" value="-1">
+                    <Operation type="AVG" MetricSourceMonitoredElementLevel="VM">
+                        <ReferenceMetric name="cpu_idle" measurementUnit="%" type="RESOURCE"/>
+                    </Operation>
                 </Operation>
             </Operation>
-            </Operation>
         </CompositionRule>
-      
-            
         <CompositionRule TargetMonitoredElementLevel="SERVICE_UNIT">
-            <TargetMonitoredElementID>EventProcessingServiceUnit</TargetMonitoredElementID>
-            <ResultingMetric type="RESOURCE" measurementUnit="ms" name="responseTime"/>
-            <Operation MetricSourceMonitoredElementLevel="VM" type="AVG">
-                <ReferenceMetric type="RESOURCE" name="responseTime"/>
+            <ResultingMetric name="responseTime" measurementUnit="ms" type="RESOURCE"/>
+            <Operation type="AVG" MetricSourceMonitoredElementLevel="VM">
+                <ReferenceMetric name="responseTime" type="RESOURCE"/>
             </Operation>
         </CompositionRule>
-    	
-    	 <CompositionRule TargetMonitoredElementLevel="SERVICE_UNIT">
-			<TargetMonitoredElementID>DataNodeServiceUnit</TargetMonitoredElementID>
-			<ResultingMetric type="RESOURCE" measurementUnit="ms" name="latency" />
-			<Operation MetricSourceMonitoredElementLevel="VM" type="AVG">
-				<Operation MetricSourceMonitoredElementLevel="VM" type="AVG">
-					<ReferenceMetric type="RESOURCE" name="read_latency" />
-				</Operation>
-				<Operation MetricSourceMonitoredElementLevel="VM" type="AVG">
-					<ReferenceMetric type="RESOURCE" name="write_latency" />
-				</Operation>
-			</Operation>
-			</CompositionRule>
-			<CompositionRule TargetMonitoredElementLevel="SERVICE_UNIT">
-				<TargetMonitoredElementID>DataControllerServiceUnit</TargetMonitoredElementID>
-				<ResultingMetric type="RESOURCE" measurementUnit="ms" name="latency" />
-				<Operation MetricSourceMonitoredElementLevel="VM" type="AVG">
-					<Operation MetricSourceMonitoredElementLevel="VM" type="AVG">
-						<ReferenceMetric type="RESOURCE" name="read_latency" />
-					</Operation>
-					<Operation MetricSourceMonitoredElementLevel="VM" type="AVG">
-						<ReferenceMetric type="RESOURCE" name="write_latency" />
-					</Operation>
-				</Operation>
-			</CompositionRule>
- 
         <CompositionRule TargetMonitoredElementLevel="SERVICE_UNIT">
-            <TargetMonitoredElementID>EventProcessingServiceUnit</TargetMonitoredElementID>
-            <ResultingMetric type="RESOURCE" measurementUnit="operations/s" name="throughput"/>
-            <Operation MetricSourceMonitoredElementLevel="VM" type="SUM">
-                <ReferenceMetric type="RESOURCE" name="throughput"/>
-             </Operation>
-        </CompositionRule>
-
-         <CompositionRule TargetMonitoredElementLevel="VM">
-            <ResultingMetric type="RESOURCE" measurementUnit="ms" name="numberOfVMs"/>
-            <Operation value="1" type="SET_VALUE"/>
-        </CompositionRule>
-
- 
- 
-        <CompositionRule TargetMonitoredElementLevel="SERVICE_UNIT">
-            <ResultingMetric type="RESOURCE" measurementUnit="ms" name="numberOfVMs"/>
-            <Operation MetricSourceMonitoredElementLevel="VM" type="SUM">
-                <ReferenceMetric type="RESOURCE" name="numberOfVMs"/>
-            </Operation>
-        </CompositionRule>
-              <CompositionRule TargetMonitoredElementLevel="SERVICE_UNIT">
-            <ResultingMetric type="RESOURCE" measurementUnit="$" name="cost"/>
-            <Operation MetricSourceMonitoredElementLevel="SERVICE_UNIT" value="0.12" type="MUL">
-			       <ReferenceMetric type="RESOURCE" name="numberOfVMs"/>
-            </Operation>
-        </CompositionRule>
-        <CompositionRule TargetMonitoredElementLevel="SERVICE_TOPOLOGY">
-            <TargetMonitoredElementID>EventProcessingServiceTopology</TargetMonitoredElementID>
-            <ResultingMetric type="RESOURCE" measurementUnit="no" name="numberOfClients"/>
-            <Operation MetricSourceMonitoredElementLevel="SERVICE_UNIT" type="KEEP">
-                <ReferenceMetric type="RESOURCE" measurementUnit="no" name="numberOfClients"/>
-                <SourceMonitoredElementID>LoadBalancerServiceUnit</SourceMonitoredElementID>
-            </Operation>
-        </CompositionRule>
-        
-         <CompositionRule TargetMonitoredElementLevel="SERVICE_TOPOLOGY">
-            <TargetMonitoredElementID>DataEndServiceTopology</TargetMonitoredElementID>
-            <ResultingMetric type="QUALITY" measurementUnit="ms" name="latency"/>
-            <Operation MetricSourceMonitoredElementLevel="SERVICE_UNIT" type="KEEP">
-                <ReferenceMetric type="QUALITY" measurementUnit="ms" name="latency"/>
-            </Operation>
-        </CompositionRule>
-         <CompositionRule TargetMonitoredElementLevel="SERVICE_TOPOLOGY">
-            <TargetMonitoredElementID>DataEndServiceTopology</TargetMonitoredElementID>
-            <ResultingMetric type="RESOURCE" measurementUnit="%" name="cpuUsage"/>
-            <Operation MetricSourceMonitoredElementLevel="SERVICE_UNIT" type="AVG">
-                <ReferenceMetric type="RESOURCE" measurementUnit="%" name="cpuUsage"/>
-            </Operation>
-        </CompositionRule>
-        <CompositionRule TargetMonitoredElementLevel="SERVICE_TOPOLOGY">
-            <TargetMonitoredElementID>EventProcessingServiceTopology</TargetMonitoredElementID>
-            <ResultingMetric type="RESOURCE" measurementUnit="ms" name="responseTime"/>
-            <Operation MetricSourceMonitoredElementLevel="SERVICE_UNIT" type="AVG">
-                <ReferenceMetric type="RESOURCE" name="responseTime"/>
-                <SourceMonitoredElementID>EventProcessingServiceUnit</SourceMonitoredElementID>
-            </Operation>
-        </CompositionRule>
-        <CompositionRule TargetMonitoredElementLevel="SERVICE_TOPOLOGY">
-            <TargetMonitoredElementID>EventProcessingServiceTopology</TargetMonitoredElementID>
-            <ResultingMetric type="RESOURCE" measurementUnit="operations/s" name="throughput"/>
-            <Operation MetricSourceMonitoredElementLevel="SERVICE_UNIT" type="SUM">
-                <ReferenceMetric type="RESOURCE" name="throughput"/>
-                <SourceMonitoredElementID>EventProcessingServiceUnit</SourceMonitoredElementID>
-            </Operation>
-        </CompositionRule>
-        <CompositionRule TargetMonitoredElementLevel="SERVICE_TOPOLOGY">
-            <ResultingMetric type="RESOURCE" measurementUnit="$" name="cost"/>
-                <Operation MetricSourceMonitoredElementLevel="SERVICE_UNIT" type="SUM">
-                    <ReferenceMetric type="RESOURCE" name="cost"/>
+            <ResultingMetric name="latency" measurementUnit="ms" type="RESOURCE"/>
+            <Operation type="AVG" MetricSourceMonitoredElementLevel="VM">
+                <Operation type="AVG" MetricSourceMonitoredElementLevel="VM">
+                    <ReferenceMetric name="read_latency" type="RESOURCE"/>
                 </Operation>
+                <Operation type="AVG" MetricSourceMonitoredElementLevel="VM">
+                    <ReferenceMetric name="write_latency" type="RESOURCE"/>
+                </Operation>
+            </Operation>
+        </CompositionRule>
+        <CompositionRule TargetMonitoredElementLevel="SERVICE_UNIT">
+            <ResultingMetric name="latency" measurementUnit="ms" type="RESOURCE"/>
+            <Operation type="AVG" MetricSourceMonitoredElementLevel="VM">
+                <Operation type="AVG" MetricSourceMonitoredElementLevel="VM">
+                    <ReferenceMetric name="read_latency" type="RESOURCE"/>
+                </Operation>
+                <Operation type="AVG" MetricSourceMonitoredElementLevel="VM">
+                    <ReferenceMetric name="write_latency" type="RESOURCE"/>
+                </Operation>
+            </Operation>
+        </CompositionRule>
+        <CompositionRule TargetMonitoredElementLevel="SERVICE_UNIT">
+            <ResultingMetric name="throughput" measurementUnit="operations/s" type="RESOURCE"/>
+            <Operation type="SUM" MetricSourceMonitoredElementLevel="VM">
+                <ReferenceMetric name="throughput" type="RESOURCE"/>
+            </Operation>
+        </CompositionRule>
+        <CompositionRule TargetMonitoredElementLevel="VM">
+            <ResultingMetric name="numberOfVMs" measurementUnit="ms" type="RESOURCE"/>
+            <Operation type="SET_VALUE" value="1"/>
+        </CompositionRule>
+        <CompositionRule TargetMonitoredElementLevel="SERVICE_UNIT">
+            <ResultingMetric name="numberOfVMs" measurementUnit="ms" type="RESOURCE"/>
+            <Operation type="SUM" MetricSourceMonitoredElementLevel="VM">
+                <ReferenceMetric name="numberOfVMs" type="RESOURCE"/>
+            </Operation>
+        </CompositionRule>
+        <CompositionRule TargetMonitoredElementLevel="SERVICE_UNIT">
+            <ResultingMetric name="cost" measurementUnit="$" type="RESOURCE"/>
+            <Operation type="MUL" value="0.12" MetricSourceMonitoredElementLevel="SERVICE_UNIT">
+                <ReferenceMetric name="numberOfVMs" type="RESOURCE"/>
+            </Operation>
+        </CompositionRule>
+        <CompositionRule TargetMonitoredElementLevel="SERVICE_TOPOLOGY">
+            <ResultingMetric name="latency" measurementUnit="ms" type="QUALITY"/>
+            <Operation type="KEEP" MetricSourceMonitoredElementLevel="SERVICE_UNIT">
+                <ReferenceMetric name="latency" measurementUnit="ms" type="QUALITY"/>
+            </Operation>
+        </CompositionRule>
+        <CompositionRule TargetMonitoredElementLevel="SERVICE_TOPOLOGY">
+            <ResultingMetric name="cpuUsage" measurementUnit="%" type="RESOURCE"/>
+            <Operation type="AVG" MetricSourceMonitoredElementLevel="SERVICE_UNIT">
+                <ReferenceMetric name="cpuUsage" measurementUnit="%" type="RESOURCE"/>
+            </Operation>
+        </CompositionRule>
+        <CompositionRule TargetMonitoredElementLevel="SERVICE_TOPOLOGY">
+            <ResultingMetric name="responseTime" measurementUnit="ms" type="RESOURCE"/>
+            <Operation type="AVG" MetricSourceMonitoredElementLevel="SERVICE_UNIT">
+                <ReferenceMetric name="responseTime" type="RESOURCE"/>
+            </Operation>
+        </CompositionRule>
+        <CompositionRule TargetMonitoredElementLevel="SERVICE_TOPOLOGY">
+            <ResultingMetric name="throughput" measurementUnit="operations/s" type="RESOURCE"/>
+            <Operation type="SUM" MetricSourceMonitoredElementLevel="SERVICE_UNIT">
+                <ReferenceMetric name="throughput" type="RESOURCE"/>
+            </Operation>
+        </CompositionRule>
+        <CompositionRule TargetMonitoredElementLevel="SERVICE_TOPOLOGY">
+            <ResultingMetric name="cost" measurementUnit="$/h" type="RESOURCE"/>
+            <Operation type="SUM" MetricSourceMonitoredElementLevel="SERVICE_UNIT">
+                <ReferenceMetric name="cost" type="COST"/>
+            </Operation>
         </CompositionRule>
         <CompositionRule TargetMonitoredElementLevel="SERVICE">
-            <ResultingMetric type="RESOURCE" measurementUnit="$" name="cost/client/h"/>
-            <Operation MetricSourceMonitoredElementLevel="SERVICE" type="DIV">
-                <Operation MetricSourceMonitoredElementLevel="SERVICE_TOPOLOGY" type="SUM">
-                    <ReferenceMetric type="RESOURCE" name="cost"/>
+            <ResultingMetric name="cost" measurementUnit="$/1000ops" type="COST"/>
+            <Operation type="MUL">
+                <Operation type="DIV">
+                    <Operation type="SUM" MetricSourceMonitoredElementLevel="SERVICE_TOPOLOGY">
+                        <ReferenceMetric name="cost" measurementUnit="$/h" type="COST"/>
+                    </Operation>
+                    <Operation type="KEEP" MetricSourceMonitoredElementLevel="SERVICE_UNIT">
+                        <ReferenceMetric name="throughput" measurementUnit="operations/s" type="RESOURCE"/>
+                    </Operation>
                 </Operation>
-                <Operation MetricSourceMonitoredElementLevel="SERVICE_TOPOLOGY" type="KEEP">
-                    <ReferenceMetric type="RESOURCE" name="numberOfClients"/>
-                    <SourceMonitoredElementID>EventProcessingServiceTopology</SourceMonitoredElementID>
+                <Operation type="DIV" MetricSourceMonitoredElementLevel="SERVICE_UNIT">
+                    <Operation type="SET_VALUE" value="1000"/>
+                    <Operation type="SET_VALUE" value="360"/>
                 </Operation>
             </Operation>
         </CompositionRule>
     </MetricsCompositionRules>
-    <HistoricalMetricsCompositionRules>
-        <CompositionRule TargetMonitoredElementLevel="SERVICE_UNIT">
-            <TargetMonitoredElementID>LoadBalancerServiceUnit</TargetMonitoredElementID>
-            <ResultingMetric type="RESOURCE" measurementUnit="no" name="activeConnections"/>
-            <Operation MetricSourceMonitoredElementLevel="VM" type="AVG">
-                <ReferenceMetric type="RESOURCE" name="activeConnections"/>
-            </Operation>
-        </CompositionRule>
-        <CompositionRule TargetMonitoredElementLevel="SERVICE_UNIT">
-            <TargetMonitoredElementID>EventProcessingServiceUnit</TargetMonitoredElementID>
-            <ResultingMetric type="RESOURCE" measurementUnit="no" name="throughput"/>
-            <Operation MetricSourceMonitoredElementLevel="VM" type="AVG">
-                <ReferenceMetric type="RESOURCE" name="throughput"/>
-            </Operation>
-        </CompositionRule>
-        <CompositionRule TargetMonitoredElementLevel="SERVICE_UNIT">
-            <TargetMonitoredElementID>EventProcessingServiceUnit</TargetMonitoredElementID>
-            <ResultingMetric type="RESOURCE" measurementUnit="no" name="responseTime"/>
-            <Operation MetricSourceMonitoredElementLevel="VM" type="AVG">
-                <ReferenceMetric type="RESOURCE" name="responseTime"/>
-            </Operation>
-        </CompositionRule>
-    </HistoricalMetricsCompositionRules>
+    <HistoricalMetricsCompositionRules/>
 </CompositionRulesConfiguration>

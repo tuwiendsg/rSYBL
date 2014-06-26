@@ -47,6 +47,7 @@ import at.ac.tuwien.dsg.rSybl.analysisEngine.utils.MonitoringThread;
 import at.ac.tuwien.dsg.rSybl.cloudInteractionUnit.api.EnforcementAPI;
 import at.ac.tuwien.dsg.rSybl.cloudInteractionUnit.api.EnforcementAPIInterface;
 import at.ac.tuwien.dsg.rSybl.cloudInteractionUnit.api.MultipleEnforcementAPIs;
+import at.ac.tuwien.dsg.rSybl.cloudInteractionUnit.utils.RuntimeLogger;
 import at.ac.tuwien.dsg.rSybl.dataProcessingUnit.api.MonitoringAPI;
 import at.ac.tuwien.dsg.rSybl.dataProcessingUnit.api.MonitoringAPIInterface;
 import at.ac.tuwien.dsg.rSybl.planningEngine.PlanningAlgorithmInterface;
@@ -602,6 +603,7 @@ public class ControlService {
 	}
 	public void replaceElasticityRequirements(String requirements){
 		InputProcessing inputProcessing=new InputProcessing();
+		RuntimeLogger.logger.info("Replacing requirements from dependency graph " +dependencyGraph.graphToString());
 		dependencyGraph=inputProcessing.replaceRequirements(dependencyGraph, requirements);
 		monitoringAPI.submitElasticityRequirements(dependencyGraph.getAllElasticityRequirements());
 		planningAlgorithm.stop();
