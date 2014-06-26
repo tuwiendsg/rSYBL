@@ -8,7 +8,10 @@ import java.io.InputStreamReader;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import at.ac.tuwien.dsg.csdg.DependencyGraph;
 import at.ac.tuwien.dsg.csdg.Node;
+import at.ac.tuwien.dsg.csdg.Node.NodeType;
+import at.ac.tuwien.dsg.csdg.Relationship.RelationshipType;
 import at.ac.tuwien.dsg.rSybl.cloudInteractionUnit.utils.Configuration;
 import at.ac.tuwien.dsg.rSybl.dataProcessingUnit.monitoringPlugins.gangliaMonitoring.GangliaMonitor.MyUserInfo;
 
@@ -21,12 +24,30 @@ import com.jcraft.jsch.UserInfo;
 public class M2MApplicationControl {
 	
 	public void decommission(String nodeId, String ip, Node controlledService){
+		DependencyGraph dependencyGraph=new DependencyGraph();
+		dependencyGraph.setCloudService(controlledService);
+		
 		String cmd="";
-		if (nodeId.equalsIgnoreCase("EventProcessingServiceUnit"))
-	   		   cmd = "decomissionWS " + ip ;
-	   	   else
-	   		   cmd = "decomissionCassandra "+ip;
-	   	   				
+		
+		if (nodeId.contains("EventProcessing")){
+			String ip1="";
+			for (Node node:dependencyGraph.getAllServiceUnits()){
+				if (node.getId().contains("Load")){
+					ip1=node.getAllRelatedNodesOfType(RelationshipType.HOSTED_ON_RELATIONSHIP, NodeType.VIRTUAL_MACHINE).get(0).getId();
+				}
+			}         
+	   		   cmd = "decomissionWS " + ip1+" "+ip ;
+		}
+	   	   else{
+	   		String ip1="";
+			for (Node node:dependencyGraph.getAllServiceUnits()){
+				if (node.getId().contains("Controller")){
+					ip1=node.getAllRelatedNodesOfType(RelationshipType.HOSTED_ON_RELATIONSHIP, NodeType.VIRTUAL_MACHINE).get(0).getId();
+				}
+			}    
+	   	   
+	   		   cmd = "decomissionCassandra "+ip1+" "+ip;
+	   	   }				
 
 	          if (!(controlledService.getStaticInformation("AccessIP").equals("localhost")))
 	      	try {
