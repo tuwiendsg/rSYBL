@@ -68,6 +68,7 @@ public class Utils {
 		this.enforcementAPI=enforcementAPI;
 		this.dependencyGraph=dependencyGraph;
 	}
+	private boolean enforcingAction=false;
 	public void clearDisabledRules(){
 	 disabledRules.clear();
 		
@@ -98,7 +99,6 @@ public class Utils {
 			//SYBLDirectivesEnforcementLogger.logger.info("=============================================");
 			SYBLDirectivesEnforcementLogger.logger.info("Strategies are: " + strategies);
 			processStrategies(strategies);
-
 		}
 		if (!priorities.equalsIgnoreCase("")) {
 			//SYBLDirectivesEnforcementLogger.logger.info("=============================================");
@@ -314,6 +314,7 @@ public void processStrategies(String strategies) {
 
 }
 public void doEnforcement( String enf, String strategyName){
+	enforcingAction=true;
 	if (!enf.contains("minimize") &&  !enf.contains("maximize")){
 	if (enf.contains("(")){
 		//SYBLDirectivesEnforcementLogger.logger.info("s[1]= " +s[1]);
@@ -483,6 +484,7 @@ public void doEnforcement( String enf, String strategyName){
 	}
 	}
 	}
+	enforcingAction=false;
 
 }
 public void processStrategy(Rule r) {
@@ -842,5 +844,11 @@ public void processSimpleConstraint(Rule constraint)
 		SYBLDirectivesEnforcementLogger.logger.info("CONSTRAINT "
 				+ constraint.getName() + " is violated.");
 	}
+}
+public boolean isEnforcingAction() {
+	return enforcingAction;
+}
+public void setEnforcingAction(boolean enforcingAction) {
+	this.enforcingAction = enforcingAction;
 }
 }

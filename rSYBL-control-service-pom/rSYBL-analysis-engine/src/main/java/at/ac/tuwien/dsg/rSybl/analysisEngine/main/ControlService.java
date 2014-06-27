@@ -607,6 +607,8 @@ public class ControlService {
 	public void replaceElasticityRequirements(String requirements){
 		InputProcessing inputProcessing=new InputProcessing();
 		RuntimeLogger.logger.info("Replacing requirements from dependency graph " +dependencyGraph.graphToString());
+		syblService.stopProcessingThreads();
+		RuntimeLogger.logger.info("Stopped processing threads");
 		dependencyGraph=inputProcessing.replaceRequirements(dependencyGraph, requirements);
 		monitoringAPI.submitElasticityRequirements(dependencyGraph.getAllElasticityRequirements());
 		planningAlgorithm.stop();
@@ -615,7 +617,7 @@ public class ControlService {
 		if (!effects.equalsIgnoreCase(""))
 			planningAlgorithm.setEffects(effects);
 		planningAlgorithm.start();
-		syblService.stopProcessingThreads();
+		
 
 		syblService = new SYBLService(dependencyGraph, monitoringAPI,
 				enforcementAPI);

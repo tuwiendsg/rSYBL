@@ -59,6 +59,20 @@ public class SYBLProcessingThread implements Runnable {
 	}
     
 	public void stop(){
+		while (utils.isEnforcingAction()){
+			try {
+				t.wait(1000);
+			} catch (InterruptedException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+			try {
+				Thread.sleep(1000);
+			} catch (InterruptedException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		}
 		ok = false;
 		try{
 		t.stop();

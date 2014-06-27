@@ -56,7 +56,6 @@ public class MultipleEnforcementAPIs implements EnforcementAPIInterface{
 			EnforcementAPI enforcementAPI=enforcementAPIs.get("");
 		if (!enforcementAPI.isExecutingControlAction() && arg0!=null){
 			monitoringAPIInterface.enforcingActionStarted("ScaleIn",arg0 );
-
 			RuntimeLogger.logger.info("Scaling in without target on node "+arg0.getId()+" with Enforcement plugin "+enforcementAPIs.get(""));
 		
 		enforcementAPI.setExecutingControlAction(true);
