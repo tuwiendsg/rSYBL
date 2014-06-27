@@ -60,6 +60,9 @@ public class ControlCoordination {
 	public void replaceCloudServiceWithRequirements(String cloudService){
 		controls.get(currentControls).replaceCloudServiceRequirements(cloudService);
 	}
+	public void replaceEffects(String effects){
+		controls.get(currentControls).replaceEffects(effects);
+	}
 	public void replaceCompositionRules(String compositionRules){
 		controls.get(currentControls).replaceCompositionRules(compositionRules);
 	}

@@ -601,6 +601,9 @@ public class ControlService {
 		enforcementAPI.setControlledService(dependencyGraph.getCloudService());
 
 	}
+	public void replaceEffects(String effects){
+		planningAlgorithm.setEffects(effects);
+	}
 	public void replaceElasticityRequirements(String requirements){
 		InputProcessing inputProcessing=new InputProcessing();
 		RuntimeLogger.logger.info("Replacing requirements from dependency graph " +dependencyGraph.graphToString());

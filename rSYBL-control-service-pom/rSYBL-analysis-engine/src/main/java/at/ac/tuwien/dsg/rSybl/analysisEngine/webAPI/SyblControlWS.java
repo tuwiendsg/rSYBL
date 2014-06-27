@@ -172,7 +172,12 @@ public class SyblControlWS {
 	public void replaceRequirements(String requirements){
 		 controlCoordination.replaceRequirements(requirements);
 	}
-
+	 @POST
+	 @Path("/replaceEffectsForCurrentCloudService")
+	 @Consumes("application/xml")
+	public void replaceEffects(String effects){
+		 controlCoordination.replaceEffects(effects);
+	}
 	public UriInfo getContext() {
 		return context;
 	}
