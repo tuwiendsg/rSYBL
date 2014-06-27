@@ -218,7 +218,7 @@ public class ActionEffects {
 			
 			
 			JSONObject object=(JSONObject) jsonObject.get(myaction);
-			
+			actionEffects = new HashMap<String,List<ActionEffect>>();
 		for (Object actions: object.keySet()){
 			ActionEffect actionEffect = new ActionEffect();
 			actionEffect.setActionType((String)myaction);
