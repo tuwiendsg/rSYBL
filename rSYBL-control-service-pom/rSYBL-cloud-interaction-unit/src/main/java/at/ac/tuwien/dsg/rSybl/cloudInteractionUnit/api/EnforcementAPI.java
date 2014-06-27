@@ -80,10 +80,10 @@ public class EnforcementAPI {
 
 
 	public void scalein(Node arg0) {
-		if (executingControlAction==false){
+		if (isExecutingControlAction()==false){
 			if (arg0.getAllRelatedNodes().size()>1){
-		executingControlAction=true;
-		RuntimeLogger.logger.info("~~~~~~~~~~~Trying to execute action executingControlaction="+executingControlAction);
+		setExecutingControlAction(true);
+		RuntimeLogger.logger.info("~~~~~~~~~~~Trying to execute action executingControlaction="+isExecutingControlAction());
 
 	
 		offeredCapabilities.scaleIn(arg0);
@@ -92,12 +92,6 @@ public class EnforcementAPI {
 		//monitoringAPIInterface.enforcingActionStarted("ScaleIn", arg0);
 		while (!checkIfMetrics){
 			boolean myMetrics=true;
-			try {
-				Thread.sleep(10000);
-			} catch (InterruptedException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
 			RuntimeLogger.logger.info("Waiting for action....");
 			
 			
@@ -113,7 +107,7 @@ public class EnforcementAPI {
 		}
 		checkIfMetrics=myMetrics;
 		try {
-			Thread.sleep(20000);
+			Thread.sleep(10000);
 		} catch (InterruptedException ex) {
 			// TODO Auto-generated catch block
 			ex.printStackTrace();
@@ -123,7 +117,7 @@ public class EnforcementAPI {
 		
 		
 		
-		executingControlAction=false;
+		setExecutingControlAction(false);
 		//monitoringAPIInterface.enforcingActionEnded("ScaleIn", arg0);
 		RuntimeLogger.logger.info("Finished scaling in "+arg0.getId()+" ...");
 			}
@@ -136,10 +130,10 @@ public class EnforcementAPI {
 
 
 	public void scaleout(Node arg0) {
-		if (executingControlAction==false && arg0!=null){
+		if (isExecutingControlAction()==false && arg0!=null){
 			RuntimeLogger.logger.info("Scaling out "+arg0+" ...");
-			executingControlAction=true;
-			RuntimeLogger.logger.info("~~~~~~~~~~~Trying to execute action executingControlaction="+executingControlAction);
+			setExecutingControlAction(true);
+			RuntimeLogger.logger.info("~~~~~~~~~~~Trying to execute action executingControlaction="+isExecutingControlAction());
 
 	
 		offeredCapabilities.scaleOut(arg0);
@@ -149,12 +143,6 @@ public class EnforcementAPI {
 		boolean checkIfMetrics=false;
 		while (!checkIfMetrics){
 			boolean myMetrics=true;
-			try {
-				Thread.sleep(10000);
-			} catch (InterruptedException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
 			RuntimeLogger.logger.info("Waiting for action....");
 		for (String metricName:metrics){
 			
@@ -169,14 +157,21 @@ public class EnforcementAPI {
 		checkIfMetrics=myMetrics;
 		
 		try {
-			Thread.sleep(20000);
+			Thread.sleep(10000);
 		} catch (InterruptedException ex) {
 			// TODO Auto-generated catch block
 			ex.printStackTrace();
 		
 			}
 		}
-		executingControlAction=false;
+		try {
+			Thread.sleep(60000);
+		} catch (InterruptedException ex) {
+			// TODO Auto-generated catch block
+			ex.printStackTrace();
+		
+			}
+		setExecutingControlAction(false);
 		//monitoringAPIInterface.enforcingActionEnded("ScaleOut", arg0);
 		RuntimeLogger.logger.info("Finished scaling out "+arg0.getId()+" ...");
 		}else{
@@ -189,12 +184,12 @@ public class EnforcementAPI {
 
 	
 	public void enforceAction(String actionName, Node e) {
-		RuntimeLogger.logger.info("~~~~~~~~~~~Trying to execute action executingControlaction="+executingControlAction);
+		RuntimeLogger.logger.info("~~~~~~~~~~~Trying to execute action executingControlaction="+isExecutingControlAction());
 
-		if (executingControlAction==false){
+		if (isExecutingControlAction()==false){
 		RuntimeLogger.logger.info("Enforcing action "+actionName+" on the node "+e+" ...");
 
-		executingControlAction=true;
+		setExecutingControlAction(true);
 
 		offeredCapabilities.enforceAction(actionName, e);
 		try {
@@ -203,7 +198,7 @@ public class EnforcementAPI {
 			// TODO Auto-generated catch block
 			ex.printStackTrace();
 		}
-		executingControlAction=false;
+		setExecutingControlAction(false);
 		RuntimeLogger.logger.info("Finished enforcing action "+actionName+" on the node "+e+" ...");
 		}
 	}
@@ -240,9 +235,9 @@ public class EnforcementAPI {
 	
 	public void enforceElasticityCapability(ElasticityCapability capability,
 			Node e) {
-		if (executingControlAction==false && e!=null){
+		if (isExecutingControlAction()==false && e!=null){
 			RuntimeLogger.logger.info("Enforcing "+capability.getApiMethod()+" ...");
-			executingControlAction=true;
+			setExecutingControlAction(true);
 		
 		if (capability.getCallType().toLowerCase().contains("rest")){
 			 URL url = null;
@@ -303,9 +298,13 @@ public class EnforcementAPI {
 				offeredCapabilities.enforceAction(capability.getEndpoint(),e);
 			}
 		}
-		executingControlAction=false;
+		setExecutingControlAction(false);
 		RuntimeLogger.logger.info("Finished enforcing action "+capability.getName()+" on the node "+e+" ...");
 		}
+	}
+
+	public void setExecutingControlAction(boolean executingControlAction) {
+		this.executingControlAction = executingControlAction;
 	}
 
 

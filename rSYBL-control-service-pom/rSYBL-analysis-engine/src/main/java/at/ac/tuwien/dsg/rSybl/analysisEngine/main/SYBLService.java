@@ -32,6 +32,7 @@ import at.ac.tuwien.dsg.csdg.Node;
 import at.ac.tuwien.dsg.csdg.Node.NodeType;
 import at.ac.tuwien.dsg.csdg.Relationship.RelationshipType;
 import at.ac.tuwien.dsg.csdg.elasticityInformation.elasticityRequirements.SYBLAnnotation;
+import at.ac.tuwien.dsg.rSybl.analysisEngine.utils.AnalysisLogger;
 import at.ac.tuwien.dsg.rSybl.cloudInteractionUnit.api.EnforcementAPIInterface;
 import at.ac.tuwien.dsg.rSybl.dataProcessingUnit.api.MonitoringAPIInterface;
 import at.ac.tuwien.dsg.sybl.syblProcessingUnit.processing.SYBLProcessingThread;
@@ -50,7 +51,7 @@ public class SYBLService {
 		    this.dependencyGraph=dependencyGraph;
 		    this.monitoringAPI=monitoringAPI;
 		    this.enforcementAPI=enforcementAPI;
-
+		    AnalysisLogger.logger.info("~~~~~~~~~~~~~~~~~~~Instantiating SYBL Processing Service ");
 			initializeEntities();
 			
 	}
