@@ -55,8 +55,8 @@ public class MultipleEnforcementAPIs implements EnforcementAPIInterface{
 		if (arg0.getAllRelatedNodes().size()>1){
 			monitoringAPIInterface.enforcingActionStarted("ScaleIn",arg0 );
 
-		RuntimeLogger.logger.info("Scaling in without target on node "+arg0.getId());
-		EnforcementAPI enforcementAPI=enforcementAPIs.values().iterator().next();
+		RuntimeLogger.logger.info("Scaling in without target on node "+arg0.getId()+" with Enforcement plugin "+enforcementAPIs.get(""));
+		EnforcementAPI enforcementAPI=enforcementAPIs.get("");
 
 		enforcementAPI.setExecutingControlAction(true);
 			enforcementAPI.scalein(arg0);
@@ -89,7 +89,9 @@ public class MultipleEnforcementAPIs implements EnforcementAPIInterface{
 	@Override
 	public void scaleout(Node arg0) {
 		monitoringAPIInterface.enforcingActionStarted("ScaleOut",arg0 );
-		EnforcementAPI enforcementAPI=enforcementAPIs.values().iterator().next();
+		RuntimeLogger.logger.info("Scaling out with default enforcement on node "+arg0.getId()+" with Enforcement plugin "+enforcementAPIs.get(""));
+
+		EnforcementAPI enforcementAPI=enforcementAPIs.get("");
 
 		enforcementAPI.setExecutingControlAction(true);
 			enforcementAPI.scaleout(arg0);
@@ -97,7 +99,8 @@ public class MultipleEnforcementAPIs implements EnforcementAPIInterface{
 			for (EnforcementAPI api:enforcementAPIs.values()){
 				api.refreshControlService(controlService);
 			}
-		
+			RuntimeLogger.logger.info("Finished scaling out with default enforcement on node "+arg0.getId()+" with Enforcement plugin "+enforcementAPIs.get(""));
+
 		monitoringAPIInterface.enforcingActionEnded("ScaleOut",arg0 );
 		try {
 			Thread.sleep(60000);
@@ -111,7 +114,7 @@ public class MultipleEnforcementAPIs implements EnforcementAPIInterface{
 	@Override
 	public void enforceAction(String actionName, Node e) {
 		monitoringAPIInterface.enforcingActionStarted(actionName,e );
-		EnforcementAPI enforcementAPI=enforcementAPIs.values().iterator().next();
+		EnforcementAPI enforcementAPI=enforcementAPIs.get("");
 		enforcementAPI.setExecutingControlAction(true);
 			enforcementAPI.enforceAction(actionName,e);
 			Node controlService = enforcementAPI.getControlledService();

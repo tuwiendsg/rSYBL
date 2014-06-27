@@ -82,7 +82,6 @@ public class EnforcementAPI {
 	public void scalein(Node arg0) {
 		if (isExecutingControlAction()==false){
 			if (arg0.getAllRelatedNodes().size()>1){
-		setExecutingControlAction(true);
 		RuntimeLogger.logger.info("~~~~~~~~~~~Trying to execute action executingControlaction="+isExecutingControlAction());
 
 	
@@ -117,7 +116,6 @@ public class EnforcementAPI {
 		
 		
 		
-		setExecutingControlAction(false);
 		//monitoringAPIInterface.enforcingActionEnded("ScaleIn", arg0);
 		RuntimeLogger.logger.info("Finished scaling in "+arg0.getId()+" ...");
 			}
@@ -132,7 +130,6 @@ public class EnforcementAPI {
 	public void scaleout(Node arg0) {
 		if (isExecutingControlAction()==false && arg0!=null){
 			RuntimeLogger.logger.info("Scaling out "+arg0+" ...");
-			setExecutingControlAction(true);
 			RuntimeLogger.logger.info("~~~~~~~~~~~Trying to execute action executingControlaction="+isExecutingControlAction());
 
 	
@@ -171,7 +168,6 @@ public class EnforcementAPI {
 			ex.printStackTrace();
 		
 			}
-		setExecutingControlAction(false);
 		//monitoringAPIInterface.enforcingActionEnded("ScaleOut", arg0);
 		RuntimeLogger.logger.info("Finished scaling out "+arg0.getId()+" ...");
 		}else{
@@ -189,7 +185,6 @@ public class EnforcementAPI {
 		if (isExecutingControlAction()==false){
 		RuntimeLogger.logger.info("Enforcing action "+actionName+" on the node "+e+" ...");
 
-		setExecutingControlAction(true);
 
 		offeredCapabilities.enforceAction(actionName, e);
 		try {
@@ -198,7 +193,6 @@ public class EnforcementAPI {
 			// TODO Auto-generated catch block
 			ex.printStackTrace();
 		}
-		setExecutingControlAction(false);
 		RuntimeLogger.logger.info("Finished enforcing action "+actionName+" on the node "+e+" ...");
 		}
 	}

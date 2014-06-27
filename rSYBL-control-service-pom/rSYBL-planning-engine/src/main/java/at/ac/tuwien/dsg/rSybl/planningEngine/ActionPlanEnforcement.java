@@ -55,7 +55,6 @@ public class ActionPlanEnforcement {
         if (target.equalsIgnoreCase("")) {
             switch (actionName) {
                 case "scaleout":
-
                     enforcementAPI.scaleout(actionEffect.getTargetedEntity());
                     break;
                 case "scalein":
