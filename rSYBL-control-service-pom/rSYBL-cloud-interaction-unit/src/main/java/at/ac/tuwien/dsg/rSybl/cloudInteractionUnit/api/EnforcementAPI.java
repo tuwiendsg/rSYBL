@@ -80,7 +80,7 @@ public class EnforcementAPI {
 
 
 	public void scalein(Node arg0) {
-		if (isExecutingControlAction()==false){
+
 			if (arg0.getAllRelatedNodes().size()>1){
 		RuntimeLogger.logger.info("~~~~~~~~~~~Trying to execute action executingControlaction="+isExecutingControlAction());
 
@@ -118,7 +118,7 @@ public class EnforcementAPI {
 		
 		//monitoringAPIInterface.enforcingActionEnded("ScaleIn", arg0);
 		RuntimeLogger.logger.info("Finished scaling in "+arg0.getId()+" ...");
-			}
+			
 			}else{
 				RuntimeLogger.logger.info("Number of nodes associated with "+arg0.getAllRelatedNodes().size());
 			}
@@ -128,7 +128,7 @@ public class EnforcementAPI {
 
 
 	public void scaleout(Node arg0) {
-		if (isExecutingControlAction()==false && arg0!=null){
+		
 			RuntimeLogger.logger.info("Scaling out "+arg0+" ...");
 			RuntimeLogger.logger.info("~~~~~~~~~~~Trying to execute action executingControlaction="+isExecutingControlAction());
 
@@ -170,9 +170,7 @@ public class EnforcementAPI {
 			}
 		//monitoringAPIInterface.enforcingActionEnded("ScaleOut", arg0);
 		RuntimeLogger.logger.info("Finished scaling out "+arg0.getId()+" ...");
-		}else{
-			RuntimeLogger.logger.info(arg0);
-		}
+		
 	}
 
 

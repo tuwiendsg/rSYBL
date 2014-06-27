@@ -57,6 +57,7 @@ public class MultipleEnforcementAPIs implements EnforcementAPIInterface{
 
 		RuntimeLogger.logger.info("Scaling in without target on node "+arg0.getId()+" with Enforcement plugin "+enforcementAPIs.get(""));
 		EnforcementAPI enforcementAPI=enforcementAPIs.get("");
+		if (!enforcementAPI.isExecutingControlAction() && arg0!=null){
 
 		enforcementAPI.setExecutingControlAction(true);
 			enforcementAPI.scalein(arg0);
@@ -75,6 +76,7 @@ public class MultipleEnforcementAPIs implements EnforcementAPIInterface{
 		}
 		enforcementAPI.setExecutingControlAction(false);
 		}
+		}
 	}
 
 	@Override
@@ -88,10 +90,13 @@ public class MultipleEnforcementAPIs implements EnforcementAPIInterface{
 
 	@Override
 	public void scaleout(Node arg0) {
+		
 		monitoringAPIInterface.enforcingActionStarted("ScaleOut",arg0 );
 		RuntimeLogger.logger.info("Scaling out with default enforcement on node "+arg0.getId()+" with Enforcement plugin "+enforcementAPIs.get(""));
 
 		EnforcementAPI enforcementAPI=enforcementAPIs.get("");
+		
+		if (!enforcementAPI.isExecutingControlAction() && arg0!=null){
 		enforcementAPI.setExecutingControlAction(true);
 			enforcementAPI.scaleout(arg0);
 			Node controlService = enforcementAPI.getControlledService();
@@ -108,12 +113,15 @@ public class MultipleEnforcementAPIs implements EnforcementAPIInterface{
 			ex.printStackTrace();
 		}
 		enforcementAPI.setExecutingControlAction(false);
+		}
 	}
 
 	@Override
 	public void enforceAction(String actionName, Node e) {
 		monitoringAPIInterface.enforcingActionStarted(actionName,e );
 		EnforcementAPI enforcementAPI=enforcementAPIs.get("");
+		if (!enforcementAPI.isExecutingControlAction() && e!=null){
+
 		enforcementAPI.setExecutingControlAction(true);
 			enforcementAPI.enforceAction(actionName,e);
 			Node controlService = enforcementAPI.getControlledService();
@@ -129,6 +137,7 @@ public class MultipleEnforcementAPIs implements EnforcementAPIInterface{
 			ex.printStackTrace();
 		}
 		enforcementAPI.setExecutingControlAction(false);
+		}
 	}
 
 	@Override
@@ -136,6 +145,8 @@ public class MultipleEnforcementAPIs implements EnforcementAPIInterface{
 			Node e) {
 		monitoringAPIInterface.enforcingActionStarted(capability.getName(),e );
 		EnforcementAPI enforcementAPI=enforcementAPIs.values().iterator().next();
+		if (!enforcementAPI.isExecutingControlAction() && e!=null){
+
 		enforcementAPI.setExecutingControlAction(true);
 		enforcementAPI.enforceElasticityCapability(capability,e);
 			Node controlService = enforcementAPI.getControlledService();
@@ -151,6 +162,7 @@ public class MultipleEnforcementAPIs implements EnforcementAPIInterface{
 			ex.printStackTrace();
 		}
 		enforcementAPI.setExecutingControlAction(false);
+		}
 	}
 	
 
@@ -160,6 +172,8 @@ public class MultipleEnforcementAPIs implements EnforcementAPIInterface{
 			monitoringAPIInterface.enforcingActionStarted("ScaleIn - "+target,arg0 );
 		RuntimeLogger.logger.info("Scaling in on plugin , "+target+" node "+arg0.getId());
 		EnforcementAPI enforcementAPI = enforcementAPIs.get(target);
+		if (!enforcementAPI.isExecutingControlAction() && arg0!=null){
+
 		enforcementAPI.setExecutingControlAction(true);
 		enforcementAPI.scalein(arg0);	
 		Node controlService = enforcementAPI.getControlledService();
@@ -176,12 +190,15 @@ public class MultipleEnforcementAPIs implements EnforcementAPIInterface{
 		}
 		enforcementAPI.setExecutingControlAction(false);
 		}
+		}
 	}
 
 	@Override
 	public void scaleout(String target, Node arg0) {
 		monitoringAPIInterface.enforcingActionStarted("ScaleOut - "+target, arg0);
 		EnforcementAPI enforcementAPI = enforcementAPIs.get(target);
+		if (!enforcementAPI.isExecutingControlAction() && arg0!=null){
+
 		enforcementAPI.setExecutingControlAction(true);
 		enforcementAPI.scaleout( arg0);	
 		Node controlService = enforcementAPI.getControlledService();
@@ -196,6 +213,7 @@ public class MultipleEnforcementAPIs implements EnforcementAPIInterface{
 			ex.printStackTrace();
 		}
 		enforcementAPI.setExecutingControlAction(false);
+		}
 	}
 
 	@Override
@@ -203,6 +221,8 @@ public class MultipleEnforcementAPIs implements EnforcementAPIInterface{
 		monitoringAPIInterface.enforcingActionStarted(actionName+" - "+target, e);
 
 		EnforcementAPI enforcementAPI = enforcementAPIs.get(target);
+		if (!enforcementAPI.isExecutingControlAction() && e!=null){
+
 		enforcementAPI.setExecutingControlAction(true);
 
 		enforcementAPI.enforceAction(actionName, e);	
@@ -218,6 +238,7 @@ public class MultipleEnforcementAPIs implements EnforcementAPIInterface{
 			ex.printStackTrace();
 		}
 		enforcementAPI.setExecutingControlAction(false);
+		}
 	}
 
 	@Override
@@ -226,6 +247,8 @@ public class MultipleEnforcementAPIs implements EnforcementAPIInterface{
 		monitoringAPIInterface.enforcingActionStarted(capability.getName()+" - "+target, e);
 
 		EnforcementAPI enforcementAPI = enforcementAPIs.get(target);
+		if (!enforcementAPI.isExecutingControlAction() && e!=null){
+
 		enforcementAPI.setExecutingControlAction(true);
 
 		enforcementAPI.enforceElasticityCapability(capability, e);	
@@ -242,6 +265,7 @@ public class MultipleEnforcementAPIs implements EnforcementAPIInterface{
 			ex.printStackTrace();
 		}
 		enforcementAPI.setExecutingControlAction(false);
+		}
 	}
 
 }
