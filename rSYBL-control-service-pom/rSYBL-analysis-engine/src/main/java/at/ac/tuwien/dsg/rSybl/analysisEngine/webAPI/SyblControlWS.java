@@ -174,7 +174,7 @@ public class SyblControlWS {
 	}
 	 @POST
 	 @Path("/replaceEffectsForCurrentCloudService")
-	 @Consumes("application/xml")
+	 @Consumes("application/json")
 	public void replaceEffects(String effects){
 		 controlCoordination.replaceEffects(effects);
 	}
