@@ -625,6 +625,9 @@ public class ControlService {
 		}
 		enforcementAPI.setControlledService(dependencyGraph.getCloudService());
 	}
+	public void replaceCompositionRules(String composition){
+		monitoringAPI.setCompositionRules(composition);
+	}
 	public String getMetricCompositionRules() {
 		return metricCompositionRules;
 	}

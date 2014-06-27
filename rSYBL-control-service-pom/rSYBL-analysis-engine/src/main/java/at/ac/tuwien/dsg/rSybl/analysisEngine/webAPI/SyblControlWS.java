@@ -28,6 +28,7 @@ import java.util.logging.Logger;
 
 import javax.ws.rs.Consumes;
 import javax.ws.rs.GET;
+import javax.ws.rs.POST;
 import javax.ws.rs.PUT;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
@@ -141,26 +142,31 @@ public class SyblControlWS {
 		 controlCoordination.stopControl(cloudServiceId);
 	}
 	 
-	 @PUT
+	 @POST
 	 @Path("/replaceCloudService")
 	 @Consumes("application/xml")
 	public void replaceCloudService(String cloudServiceId, String cloudService){
 		 controlCoordination.replaceCloudServiceWithRequirements(cloudServiceId, cloudService);
 	}
-	 @PUT
+	 @POST
 	 @Path("/replaceRequirements")
 	 @Consumes("application/xml")
 	public void replaceRequirements(String cloudServiceId, String requirements){
 		 controlCoordination.replaceRequirements(cloudServiceId, requirements);
 	}
-	 @PUT
+	 @POST
 	 @Path("/replaceCloudServiceRequirementsFromCurrentCloudService")
 	 @Consumes("application/xml")
 	public void replaceCloudService(String cloudService){
 		 controlCoordination.replaceCloudServiceWithRequirements(cloudService);
 	}
-	 
-	 @PUT
+	 @POST
+	 @Path("/replaceCompositionRulesFromCurrentCloudService")
+	 @Consumes("application/xml")
+	public void replaceCompositionRules(String composition){
+		 controlCoordination.replaceCompositionRules(composition);
+	}
+	 @POST
 	 @Path("/replaceRequirementsFromCurrentCloudService")
 	 @Consumes("application/xml")
 	public void replaceRequirements(String requirements){
