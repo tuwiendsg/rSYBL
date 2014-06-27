@@ -65,7 +65,7 @@ public class MultipleEnforcementAPIs implements EnforcementAPIInterface{
 				api.refreshControlService(controlService);
 			}
 		
-		RuntimeLogger.logger.info("Finished scaling in in without target on node "+arg0.getId());
+		RuntimeLogger.logger.info("Finished scaling in without target on node "+arg0.getId());
 		monitoringAPIInterface.enforcingActionEnded("ScaleIn",arg0 );
 		try {
 			Thread.sleep(60000);
@@ -92,7 +92,6 @@ public class MultipleEnforcementAPIs implements EnforcementAPIInterface{
 		RuntimeLogger.logger.info("Scaling out with default enforcement on node "+arg0.getId()+" with Enforcement plugin "+enforcementAPIs.get(""));
 
 		EnforcementAPI enforcementAPI=enforcementAPIs.get("");
-
 		enforcementAPI.setExecutingControlAction(true);
 			enforcementAPI.scaleout(arg0);
 			Node controlService = enforcementAPI.getControlledService();
