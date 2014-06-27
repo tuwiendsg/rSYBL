@@ -55,10 +55,11 @@ public class MultipleEnforcementAPIs implements EnforcementAPIInterface{
 		if (arg0.getAllRelatedNodes().size()>1){
 			EnforcementAPI enforcementAPI=enforcementAPIs.get("");
 		if (!enforcementAPI.isExecutingControlAction() && arg0!=null){
+			try{
 			monitoringAPIInterface.enforcingActionStarted("ScaleIn",arg0 );
 			RuntimeLogger.logger.info("Scaling in without target on node "+arg0.getId()+" with Enforcement plugin "+enforcementAPIs.get(""));
 		
-		enforcementAPI.setExecutingControlAction(true);
+			enforcementAPI.setExecutingControlAction(true);
 			enforcementAPI.scalein(arg0);
 			Node controlService = enforcementAPI.getControlledService();
 			for (EnforcementAPI api:enforcementAPIs.values()){
@@ -74,6 +75,13 @@ public class MultipleEnforcementAPIs implements EnforcementAPIInterface{
 			ex.printStackTrace();
 		}
 		enforcementAPI.setExecutingControlAction(false);
+			}catch(Exception e){
+				RuntimeLogger.logger.error("Big big big error " +e.getMessage());
+				RuntimeLogger.logger.error("Big big big error " +e.getCause());
+				
+				monitoringAPIInterface.enforcingActionEnded("ScaleIn",arg0 );
+				
+			}
 		}
 		}
 	}

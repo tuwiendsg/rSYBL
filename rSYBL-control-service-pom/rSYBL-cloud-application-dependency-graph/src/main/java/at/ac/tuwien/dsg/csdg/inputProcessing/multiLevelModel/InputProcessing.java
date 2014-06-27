@@ -287,6 +287,11 @@ public class InputProcessing {
             }
             remainingServiceTopologies.remove(0);
         }
+        DependencyGraphLogger.logger.info("The current graph is  "+graph.graphToString());
+        for (ElasticityRequirement req:graph.getAllElasticityRequirements()){
+            DependencyGraphLogger.logger.info("Requirement set is "+req.getAnnotation().getConstraints()+" "+req.getAnnotation().getStrategies());
+
+        }
         return graph;
     }
 

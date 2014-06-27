@@ -76,9 +76,11 @@ public class SYBLProcessingThread implements Runnable {
 		ok = false;
 		try{
 		t.stop();
+		SYBLDirectivesEnforcementLogger.logger.info("Stopping thread ... ");
 		}catch(Exception e){
 			e.printStackTrace();
 		}
+		
 	}
 	
 	public void singleRun(){

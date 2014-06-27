@@ -231,15 +231,17 @@ public class EnforcementSALSAAPI implements EnforcementInterface {
 		graph.setCloudService(controlledService);
 		  
 		Node toBeScaled = graph.getNodeWithID(o.getId());
-		   Node toBeRemoved = toBeScaled.getAllRelatedNodesOfType(RelationshipType.HOSTED_ON_RELATIONSHIP, NodeType.VIRTUAL_MACHINE).get(0);
-           RuntimeLogger.logger.info( "Trying to remove  "+toBeRemoved.getId()+" From "+toBeScaled.getId());
-		        	   String cmd = "";
-		        	   String ip=toBeRemoved.getId();
+		Node toBeRemoved = toBeScaled.getAllRelatedNodesOfType(RelationshipType.HOSTED_ON_RELATIONSHIP, NodeType.VIRTUAL_MACHINE).get(0);
+        RuntimeLogger.logger.info( "Trying to remove  "+toBeRemoved.getId()+" From "+toBeScaled.getId());
+		String cmd = "";
+		String ip=toBeRemoved.getId();
 		  
 		M2MApplicationControl applicationControl = new M2MApplicationControl();
 		applicationControl.decommission(toBeScaled.getId(), ip, controlledService);
+		
 		salsaClient.scaleIn(toBeRemoved.getId());
 		
+		RuntimeLogger.logger.info("Objects here" + toBeScaled + monitoring);
 		toBeScaled.removeNode(toBeRemoved);
 
 		monitoring.refreshServiceStructure(controlledService);
