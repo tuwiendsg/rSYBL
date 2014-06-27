@@ -750,7 +750,7 @@ public class MELA_API implements MonitoringInterface {
         Requirements requirements = new Requirements();
         ArrayList<Requirement> requirements2 = new ArrayList<Requirement>();
         for (ElasticityRequirement elasticityRequirement : description) {
-            RuntimeLogger.logger.info("Setting elasticity requirement " + elasticityRequirement.getAnnotation().getConstraints());
+           // RuntimeLogger.logger.info("Setting elasticity requirement " + elasticityRequirement.getAnnotation().getConstraints());
             SYBLSpecification specification = SYBLDirectiveMappingFromXML.mapFromSYBLAnnotation(elasticityRequirement.getAnnotation());
 
             //		!!!Set all info

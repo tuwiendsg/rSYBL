@@ -313,7 +313,7 @@ public void processStrategies(String strategies) {
 	}
 
 }
-public void doEnforcement( String enf){
+public void doEnforcement( String enf, String strategyName){
 	if (!enf.contains("minimize") &&  !enf.contains("maximize")){
 	if (enf.contains("(")){
 		//SYBLDirectivesEnforcementLogger.logger.info("s[1]= " +s[1]);
@@ -373,7 +373,8 @@ public void doEnforcement( String enf){
 		actionMethod.invoke(enforcementAPI, parameters);
 	} catch (NoSuchMethodException ex1)  {
 		Node entity = dependencyGraph.getNodeWithID(parameter);
-		
+		SYBLDirectivesEnforcementLogger.logger.info("Enforcing action "+actionName+" as a result of enforcing strategy "+strategyName+" on "+entity.getId());
+
 		if (target.equalsIgnoreCase(""))
 			enforcementAPI.enforceAction(actionName, entity);
 		else
@@ -402,8 +403,8 @@ public void doEnforcement( String enf){
 		enf.replace(")","");
 	}
 
-	}
-		
+
+	}else{
 		String actionName = eliminateSpaces(enf);
 		String target = "";
 		if (actionName.contains(".")){
@@ -448,7 +449,7 @@ public void doEnforcement( String enf){
 			}
 		
 		try {
-			SYBLDirectivesEnforcementLogger.logger.info("Enforcing action "+actionName+" as a result of enforcing a strategy. ");
+			SYBLDirectivesEnforcementLogger.logger.info("Enforcing action "+actionName+" as a result of enforcing strategy "+strategyName+" on "+currentEntity.getId());
 			Method actionMethod = EnforcementAPIInterface.class.getMethod(
 					actionName, partypes);
 
@@ -477,8 +478,10 @@ public void doEnforcement( String enf){
 		catch(InvocationTargetException ex5){
 			SYBLDirectivesEnforcementLogger.logger.info("Invocation target exception. Error in processing strategy "+ex5.getMessage());
 
+		
 		}
-		}
+	}
+	}
 	}
 
 }
@@ -490,7 +493,7 @@ public void processStrategy(Rule r) {
 		try {
 			try {
 				if ((condition.contains("AND") && evaluateCompositeCondition(condition))||(!condition.contains("AND") &&evaluateCondition(condition)) ){
-					doEnforcement( s[1]);
+					doEnforcement( s[1],r.getName());
 				}else{
 					SYBLDirectivesEnforcementLogger.logger.info("Condition not true for strategy "+r.getName() );
 				}
@@ -506,7 +509,7 @@ public void processStrategy(Rule r) {
 		String[] actions = s[0].split(";");
 		
 		for (String action:actions){
-			doEnforcement(action);
+			doEnforcement(action,r.getName());
 			}
 				
 		}
