@@ -37,6 +37,7 @@ import at.ac.tuwien.dsg.rSybl.cloudInteractionUnit.utils.Configuration;
 import at.ac.tuwien.dsg.rSybl.dataProcessingUnit.api.MonitoringAPIInterface;
 import at.ac.tuwien.dsg.rSybl.dataProcessingUnit.utils.RuntimeLogger;
 import at.ac.tuwien.dsg.sybl.syblProcessingUnit.exceptions.ConstraintViolationException;
+import at.ac.tuwien.dsg.sybl.syblProcessingUnit.exceptions.MeasurementNotAvailableException;
 import at.ac.tuwien.dsg.sybl.syblProcessingUnit.exceptions.MethodNotFoundException;
 import at.ac.tuwien.dsg.sybl.syblProcessingUnit.languageDescription.SYBLDescriptionParser;
 import at.ac.tuwien.dsg.sybl.syblProcessingUnit.utils.EnvironmentVariable;
@@ -192,6 +193,8 @@ public void processPriorities(String priorities,ArrayList<Rule> rules)  {
 							} catch (NoSuchMethodException | SecurityException | IllegalAccessException | IllegalArgumentException | InvocationTargetException e) {
 								// TODO Auto-generated catch block
 								e.printStackTrace();
+							}catch (MeasurementNotAvailableException e){
+								SYBLDirectivesEnforcementLogger.logger.error(e.getMessage());
 							}
 				
 					}else
@@ -502,6 +505,8 @@ public void processStrategy(Rule r) {
 			} catch (NoSuchMethodException | SecurityException | IllegalAccessException | IllegalArgumentException | InvocationTargetException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
+			}catch (MeasurementNotAvailableException e){
+				SYBLDirectivesEnforcementLogger.logger.error(e.getMessage());
 			}
 		} catch (MethodNotFoundException e) {
 			e.printStackTrace();
@@ -633,8 +638,12 @@ public void processComplexMonitoringRule(Rule r)
 	String monitoring = s[0].split("MONITORING ")[1];
 	String condition = s[1];
 	// Process condition, if it holds process and enforce constraint
+	try{
 	if (evaluateCondition(condition)) {
 		processSimpleMonitoringRule(monitoring);
+	}
+	}catch(Exception e){
+		SYBLDirectivesEnforcementLogger.logger.error(e.getMessage());
 	}
 }
 
@@ -650,6 +659,7 @@ public void processComplexConstraint(Rule constraint)
 	String constr = s[0].split("CONSTRAINT ")[1];
 	String condition = s[1];
 	// Process condition, if it holds process and enforce constraint
+	try{
 	if (evaluateCondition(condition)) {
 		if (evaluateCondition(constr))
 			SYBLDirectivesEnforcementLogger.logger.info("CONSTRAINT " + constraint.getName()
@@ -662,6 +672,9 @@ public void processComplexConstraint(Rule constraint)
 				+ " is not evaluated because the condition " + condition
 				+ " is not met.");
 	}
+	}catch (MeasurementNotAvailableException e){
+		SYBLDirectivesEnforcementLogger.logger.error(e.getMessage());
+	}
 }
 public void processCompositeConstraint(Rule constraint)
 		{
@@ -672,13 +685,17 @@ public boolean evaluateCompositeCondition (String compCond)throws MethodNotFound
 	String [] s= compCond.split("AND ");
 	//SYBLDirectivesEnforcementLogger.logger.info("Condition "+s[0]+" is "+evaluateCondition(s[0]));
 	//SYBLDirectivesEnforcementLogger.logger.info("Condition "+s[1]+" is "+evaluateCondition(s[1]));
-
+	try{
 	if (evaluateCondition(s[0]) && evaluateCondition(s[1])) return true;
+	
 	else return false;
+	}catch (MeasurementNotAvailableException e){
+		SYBLDirectivesEnforcementLogger.logger.error(e.getMessage());
+	}
 	}
 	return false;
 }
-public Comparable evaluateTerm(String term) throws NoSuchMethodException, SecurityException, IllegalAccessException, IllegalArgumentException, InvocationTargetException  {
+public Comparable evaluateTerm(String term) throws MeasurementNotAvailableException, NoSuchMethodException, SecurityException, IllegalAccessException, IllegalArgumentException, InvocationTargetException  {
 	Double result = 0.0;
 	SYBLDescriptionParser descriptionParser = new SYBLDescriptionParser();
 	
@@ -709,7 +726,11 @@ public Comparable evaluateTerm(String term) throws NoSuchMethodException, Securi
 				}
 			}
 			if (myVar == null){
-				 result= (Double) monitoringAPI.getMetricValue(term, currentEntity);
+				 try {
+					result= (Double) monitoringAPI.getMetricValue(term, currentEntity);
+				} catch (Exception e) {
+					throw new MeasurementNotAvailableException(term+" not found");
+				}
 
 			}else
 			result= (Double) monitoredVariables.get(myVar);
@@ -727,7 +748,7 @@ public Comparable evaluateTerm(String term) throws NoSuchMethodException, Securi
 }
 
 @SuppressWarnings("unchecked")
-public  boolean evaluateCondition(String condition) throws NoSuchMethodException, SecurityException, IllegalAccessException, IllegalArgumentException, InvocationTargetException
+public  boolean evaluateCondition(String condition) throws NoSuchMethodException, SecurityException, IllegalAccessException, IllegalArgumentException, InvocationTargetException, MeasurementNotAvailableException
 		 {
 	String[] s = condition.split(" ");
 	if (condition.toLowerCase().contains("violated") || condition.toLowerCase().contains("fulfilled")){
@@ -775,6 +796,7 @@ public  boolean evaluateCondition(String condition) throws NoSuchMethodException
 //		if (((Double)evaluateTerm(s[0]))<((Double)evaluateTerm(s[2])))return true;
 //		else return false;
 //	}
+	try{
 	switch (s[1]) {
 	case ">":
 		if ((evaluateTerm(s[0]).compareTo(evaluateTerm(s[2])) <= 0))
@@ -810,6 +832,9 @@ public  boolean evaluateCondition(String condition) throws NoSuchMethodException
 	default:
 		break;
 	}
+	}catch(MeasurementNotAvailableException availableException){
+		throw availableException; 
+	}
 
 	return false;
 }
@@ -832,6 +857,7 @@ public void processSimpleConstraint(Rule constraint)
 					+ constraint.getName() + " is violated.");
 		}
 	}
+	try{
 	if (evaluateCondition(s[1])){
 		cons.put(eliminateSpaces(constraint.getName().toLowerCase()), true);
 		SYBLDirectivesEnforcementLogger.logger.info("CONSTRAINT " + constraint.getName()
@@ -843,6 +869,9 @@ public void processSimpleConstraint(Rule constraint)
 
 		SYBLDirectivesEnforcementLogger.logger.info("CONSTRAINT "
 				+ constraint.getName() + " is violated.");
+	}}catch(MeasurementNotAvailableException e){
+		SYBLDirectivesEnforcementLogger.logger.error(e.getMessage());
+	
 	}
 }
 public boolean isEnforcingAction() {

@@ -302,7 +302,7 @@ public class MonitoringAPI implements MonitoringAPIInterface {
         }
     }
 
-    public Double getMetricValue(String metricName, Node e) {
+    public Double getMetricValue(String metricName, Node e) throws Exception {
         if (isExecutingControlAction()) {
             try {
                 Thread.sleep(1000);
@@ -316,7 +316,7 @@ public class MonitoringAPI implements MonitoringAPIInterface {
             return offeredMonitoringMetrics.getMetricValue(metricName, e);
         } catch (Exception ex) {
             RuntimeLogger.logger.error("Current " + metricName + ex.toString() + "for node " + e.getId());
-            return 0.0;
+            throw new Exception();
         }
     }
 

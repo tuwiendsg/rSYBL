@@ -29,35 +29,35 @@ public interface MonitoringAPIInterface {
 
     public void setCompositionRules();
 
-    public Double getCurrentCPUSize(Node e);
+    public Double getCurrentCPUSize(Node e) throws Exception;
 
-    public Double getCostPerHour(Node e);
+    public Double getCostPerHour(Node e) throws Exception;
 
-    public Double getCurrentRAMSize(Node e);
+    public Double getCurrentRAMSize(Node e) throws Exception;
 
-    public Double getCurrentMemUsage(Node e);
-
-    public Double getTotalCostSoFar(Node e);
+    public Double getCurrentMemUsage(Node e) throws Exception;
+ 
+    public Double getTotalCostSoFar(Node e) throws Exception;
 
     public Node getControlledService();
 
     public void setControlledService(Node controlledService);
 
-    public Double getCurrentReadLatency(Node e);
+    public Double getCurrentReadLatency(Node e) throws Exception;
 
-    public Double getCurrentReadCount(Node e);
+    public Double getCurrentReadCount(Node e) throws Exception;
 
-    public Double getCurrentWriteLatency(Node e);
+    public Double getCurrentWriteLatency(Node e) throws Exception;
 
-    public Double getCurrentWriteCount(Node e);
+    public Double getCurrentWriteCount(Node e) throws Exception;
 
-    public Double getMetricValue(String metricName, Node e);
+    public Double getMetricValue(String metricName, Node e) throws Exception;
 
-    public Double getCurrentCPUUsage(Node e);
+    public Double getCurrentCPUUsage(Node e) throws Exception;
 
     public void submitElasticityRequirements(ArrayList<ElasticityRequirement> description);
 
-    public Double getCurrentHDDSize(Node e);
+    public Double getCurrentHDDSize(Node e) throws Exception;
 
     public void scaleinstarted(Node arg0);
 
@@ -67,17 +67,17 @@ public interface MonitoringAPIInterface {
 
     public void scaleoutended(Node arg0);
 
-    public Double getCurrentLatency(Node arg0);
+    public Double getCurrentLatency(Node arg0) throws Exception;
 
-    public Double getCurrentOperationCount(Node arg0);
+    public Double getCurrentOperationCount(Node arg0) throws Exception;
 
-    public Double getCurrentHDDUsage(Node e);
+    public Double getCurrentHDDUsage(Node e) throws Exception;
 
     public void enforcingActionStarted(String actionName, Node e);
 
     public void enforcingActionEnded(String actionName, Node e);
 
-    public Double getNumberInstances(Node e);
+    public Double getNumberInstances(Node e) throws Exception;
 
     public void refreshServiceStructure(Node cloudService);
 
