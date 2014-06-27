@@ -68,7 +68,12 @@ public class MonitoringThread implements Runnable{
 					 */
 				  String toWrite = date.toString()+",";
 				  for (String metric :api.getAvailableMetrics(entity))
-					  toWrite+=api.getMetricValue(metric, entity)+",";
+					try {
+						toWrite+=api.getMetricValue(metric, entity)+",";
+					} catch (Exception e) {
+						// TODO Auto-generated catch block
+						AnalysisLogger.logger.error("Metric "+metric+"not valid");
+					}
 				  toWrite+=api.getOngoingActionID()+","+api.getOngoingActionNodeID();
 				  fstream.write(toWrite+'\n');
 				  

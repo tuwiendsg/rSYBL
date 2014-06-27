@@ -68,7 +68,12 @@ public class ActionEffectsCassandraCluster {
 			if (ycsbClient!=null){
                             Double val = 0.0;
                             if (ycsbClient.getMonitoredValue("throughput")==null){
-                               val= syblAPI.getMetricValue("throughput", dependencyGraph.getNodeWithID("YCSBClient"));
+                               try {
+								val= syblAPI.getMetricValue("throughput", dependencyGraph.getNodeWithID("YCSBClient"));
+							} catch (Exception e1) {
+								// TODO Auto-generated catch block
+								PlanningLogger.logger.error("Metric throughput not valid");
+							}
                             }else{
                                 val=ycsbClient.getMonitoredValue("throughput");
                             }

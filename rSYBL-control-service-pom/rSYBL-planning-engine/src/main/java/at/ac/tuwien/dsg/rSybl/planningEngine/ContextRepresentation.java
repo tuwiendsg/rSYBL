@@ -124,7 +124,12 @@ public class ContextRepresentation {
 								e.printStackTrace();
 							}
 						}else{
-							 value= (Double) monitoringAPI.getMetricValue(metric, entity);
+							 try {
+								value= (Double) monitoringAPI.getMetricValue(metric, entity);
+							} catch (Exception e) {
+								// TODO Auto-generated catch block
+								PlanningLogger.logger.error("Metric "+metric+"not valid");
+							}
 
 						}
 		   				monitoredEntity.setMonitoredValue(metric,value );	
@@ -153,7 +158,12 @@ public class ContextRepresentation {
 							}
 						}else{
 							
-						 value= (Double) monitoringAPI.getMetricValue(monitoring.getMonitor().getMetric(), entity);
+						 try {
+							value= (Double) monitoringAPI.getMetricValue(monitoring.getMonitor().getMetric(), entity);
+						} catch (Exception e) {
+							// TODO Auto-generated catch block
+							PlanningLogger.logger.error("Metric "+monitoring.getMonitor().getMetric()+"not valid");
+						}
 							
 						}
 					monitoredEntity.setMonitoredValue(monitoring.getMonitor().getMetric(),value );	
@@ -183,7 +193,12 @@ public class ContextRepresentation {
 								e.printStackTrace();
 							}
 						}else{
-							 value= (Double) monitoringAPI.getMetricValue(metric, entity);
+							 try {
+								value= (Double) monitoringAPI.getMetricValue(metric, entity);
+							} catch (Exception e) {
+								// TODO Auto-generated catch block
+								PlanningLogger.logger.error("Metric "+metric+"not valid");
+							}
 
 						}
 		   				monitoredEntity.setMonitoredValue(metric,value );	
@@ -213,7 +228,12 @@ public class ContextRepresentation {
 								e.printStackTrace();
 							}
 						}else{
-							 value= (Double) monitoringAPI.getMetricValue(metric, entity);
+							 try {
+								value= (Double) monitoringAPI.getMetricValue(metric, entity);
+							} catch (Exception e) {
+								// TODO Auto-generated catch block
+								PlanningLogger.logger.error("Metric " +metric+" not valid");
+							}
 
 						}
 		   				monitoredEntity.setMonitoredValue(metric,value );	
@@ -234,7 +254,12 @@ public class ContextRepresentation {
 					MonitoredEntity newMon = findMonitoredEntity(n.getId());
 	   				if (entity.getAllRelatedNodesOfType(RelationshipType.COMPOSITION_RELATIONSHIP)!=null)
 					for (String metric: monitoredTopologies.get(0).getMonitoredData().keySet()){
-                                            v1=monitoringAPI.getMetricValue(metric, n);
+                                            try {
+												v1=monitoringAPI.getMetricValue(metric, n);
+											} catch (Exception e) {
+												PlanningLogger.logger.error("Metric " +metric+" not valid");
+
+											}
 					if (v1>-1 && newMon!=null)
 					findMonitoredEntity(n.getId()).setMonitoredValue(metric, v1);
 					}

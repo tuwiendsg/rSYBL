@@ -95,13 +95,18 @@ public class EnforcementAPI {
 			
 			
 		for (String metricName:metrics){
+			try{
 			RuntimeLogger.logger.info("Metric "+metricName+" has value "+monitoringAPIInterface.getMetricValue(metricName,arg0));
 
 			if (monitoringAPIInterface.getMetricValue(metricName,arg0)==null || monitoringAPIInterface.getMetricValue(metricName, arg0)<0 ){
 				myMetrics=false;
 				RuntimeLogger.logger.info("~~~~Metric "+metricName+"smaller than 0");
 			}
-			
+			}catch(Exception e){
+				myMetrics=false;
+				RuntimeLogger.logger.info("~~~~Metric "+metricName+"not valid");
+
+			}
 			
 		}
 		checkIfMetrics=myMetrics;
@@ -142,13 +147,16 @@ public class EnforcementAPI {
 			boolean myMetrics=true;
 			RuntimeLogger.logger.info("Waiting for action....");
 		for (String metricName:metrics){
-			
+			try{
 				RuntimeLogger.logger.info("Metric "+metricName+" has value "+monitoringAPIInterface.getMetricValue(metricName,arg0));
 			if (monitoringAPIInterface.getMetricValue(metricName,arg0)==null || monitoringAPIInterface.getMetricValue(metricName, arg0)<0 ){
 				myMetrics=false;
 				RuntimeLogger.logger.info("~~~Metric "+metricName+"smaller than 0");
 			}
-			
+			}catch(Exception e){
+				RuntimeLogger.logger.info("~~~Metric "+metricName+"does not have a valid value");
+
+			}
 			
 		}
 		checkIfMetrics=myMetrics;
