@@ -1,5 +1,5 @@
 <figure>
-<img src="https://github.com/tuwiendsg/rSYBL/blob/master/logo.png?raw=true" width="600px" >
+<img src="https://github.com/tuwiendsg/rSYBL/blob/master/logo.png?raw=true" width="200px" >
 </figure>
 ==========
 
