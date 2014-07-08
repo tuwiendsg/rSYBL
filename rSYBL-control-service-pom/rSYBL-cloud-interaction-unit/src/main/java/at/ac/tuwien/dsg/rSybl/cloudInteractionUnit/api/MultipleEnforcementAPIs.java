@@ -28,7 +28,7 @@ public class MultipleEnforcementAPIs implements EnforcementAPIInterface{
 	public void setControlledService(Node controlledService) {
 		
 		HashMap<String,String> plugins= Configuration.getEnforcementPlugins();
-		if (!plugins.isEmpty()){
+		if (plugins!=null && !plugins.isEmpty()){
 		for (String plugin : plugins.keySet()){
 			EnforcementAPI enforcementAPI = new EnforcementAPI();
 			enforcementAPI.setControlledService(controlledService, plugins.get(plugin));
