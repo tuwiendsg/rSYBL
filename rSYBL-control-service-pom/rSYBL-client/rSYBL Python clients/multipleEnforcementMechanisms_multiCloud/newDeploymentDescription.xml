@@ -1,24 +1,22 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <DeploymentDescription CloudServiceID="CloudService" AccessIP="localhost">
-	<DeploymentUnit serviceUnitID="LoadBalancerServiceUnit" 
-		defaultFlavor="m1.tiny" defaultImage="a4fe953e-d4c8-40a5-9c73-d9fee3f00c08" >
-	<AssociatedVM IP="109.231.122.200" UUID="ef2d0c3d-ef37-30b0-b5fb-daffa0bda44a"/>
-	</DeploymentUnit>
-	<DeploymentUnit serviceUnitID="EventProcessingServiceUnit"
-		defaultFlavor="m1.tiny" defaultImage="d279e72d-4bba-3c7f-8330-9ad4d29e8dfe">
-		<AssociatedVM IP="109.231.122.250" UUID="131627fe-d5f3-3518-8bf5-7d16a932df8c"/>
-		<AssociatedVM IP="109.231.122.251" UUID="9c99d99b-b2c4-30ee-a87f-67e7370291ad"/>	
-	<ElasticityCapability Name="flexiant.scaleIn"/>
-	<ElasticityCapability Name="flexiant.scaleOut"/>
-	</DeploymentUnit>
-	<DeploymentUnit serviceUnitID="DataControllerServiceUnit"
-		defaultFlavor="m1.tiny" defaultImage="9ac8c332-69e7-4ea1-87c2-8c5c8ad0ec92" >
-	        <AssociatedVM IP="10.99.0.44"/>
-	</DeploymentUnit>
-	<DeploymentUnit serviceUnitID="DataNodeServiceUnit"
-		defaultFlavor="m1.tiny" defaultImage="728a8bfc-2af7-4e8c-a782-05e292deef81" >
-			<AssociatedVM IP="10.99.0.91"/>
-	<ElasticityCapability Name="openstack.scaleIn"/>
-	<ElasticityCapability Name="openstack.scaleOut"/>
-	</DeploymentUnit>
+	  <DeploymentUnit defaultImage="" defaultFlavor="" serviceUnitID="LoadBalancerServiceUnit">
+        <AssociatedVM IP="4" UUID="44"/>
+    </DeploymentUnit>
+	  <DeploymentUnit defaultImage="" defaultFlavor="" serviceUnitID="EventProcessingServiceUnit">
+        <AssociatedVM IP="3" UUID="33"/>
+        <ElasticityCapability Name="scaleIn" PrimitiveOperationsSequence="M2MDaaS.decommissionWS;dryRun.scaleIn" Endpoint="" Type=""/>
+		<ElasticityCapability Name="scaleOut" PrimitiveOperationsSequence="dryRun.scaleOut" Endpoint="" Type=""/>
+    </DeploymentUnit>
+	  <DeploymentUnit defaultImage="" defaultFlavor="" serviceUnitID="DataControllerServiceUnit">
+        <AssociatedVM IP="2" UUID="22"/>
+    </DeploymentUnit>
+  <DeploymentUnit defaultImage="" defaultFlavor="" serviceUnitID="DataNodeServiceUnit">
+        <AssociatedVM IP="1" UUID="11"/>
+		 <AssociatedVM IP="12" UUID="111"/>
+		  <AssociatedVM IP="13" UUID="1111"/>
+        <ElasticityCapability Name="scaleIn" PrimitiveOperationsSequence="M2MDaaS.decommissionNode;dryRun.scaleIn" Endpoint="" Type=""/>
+		<ElasticityCapability Name="scaleOut" PrimitiveOperationsSequence="dryRun.scaleOut" Endpoint="" Type=""/>
+    </DeploymentUnit>
 </DeploymentDescription>
+

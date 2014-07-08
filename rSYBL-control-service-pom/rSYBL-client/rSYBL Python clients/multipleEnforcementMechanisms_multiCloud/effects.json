@@ -1,6 +1,6 @@
 
 {"scaleout":{
-		"openstack.scaleOutEffectForDataNode": {
+		"scaleOutEffectForDataNode": {
 			"targetUnit":"DataNodeServiceUnit",
 			"effects":{
 				"DataNodeServiceUnit": {
@@ -15,7 +15,7 @@
 						}
 					}
 					},
-		"flexiant.scaleOutEffectForEventProcessingServiceUnit": {
+		"scaleOutEffectForEventProcessingServiceUnit": {
 			"targetUnit":"EventProcessingServiceUnit",
 			"effects":{
 				"EventProcessingServiceUnit": {
@@ -35,7 +35,7 @@
 						
 		},
 	"scalein":{
-		"openstack.scaleInEffectForDataNode": {
+		"scaleInEffectForDataNode": {
 			"targetUnit":"DataNodeServiceUnit",
 			"effects":{
 				"DataNodeServiceUnit": {
@@ -50,7 +50,7 @@
 						}
 					}
 					},
-		"flexiant.scaleInEffectForEventProcessingServiceUnit": {
+		"scaleInEffectForEventProcessingServiceUnit": {
 			"targetUnit":"EventProcessingServiceUnit",
 			"effects":{
 				"EventProcessingServiceUnit": {
