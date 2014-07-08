@@ -78,7 +78,9 @@ public class Configuration {
     public static String getDirectivesPath(){
     	return configuration.getProperty("SYBLDirectives");
     }
-    
+    public static String getPrimitivesDescriptionFile(){
+    	return configuration.getProperty("PrimitivesDescription");
+    }
     public static String getCloudServiceTOSCADescription()
     {
     	

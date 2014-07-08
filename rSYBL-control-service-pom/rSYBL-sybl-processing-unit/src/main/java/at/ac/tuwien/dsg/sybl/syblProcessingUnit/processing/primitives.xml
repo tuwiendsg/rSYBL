@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<ElasticityPrimitivesDescription>
+    <ServiceElasticityPrimitives id="FCO" ServiceProvider="Flexiant FCO">
+        <ElasticityPrimitive id="ScaleIn" name="Remove VM" parameters="UUID"/>
+        <ElasticityPrimitive id="ScaleOut" name="Create new VM" parameters=""/>
+        <ElasticityPrimitive id="AllocateIP" name="Allocate public IP" parameters="UUID"/>
+        <ElasticityPrimitive id="AttachDisk" name="Attach New Disk" parameters="UUID">
+            <PrimitiveDependency dependencyType="AFTER_ENFORCEMENT" primitiveID="Reboot"/>
+        </ElasticityPrimitive>
+        <ElasticityPrimitive id="Reboot" name="Restart VM" parameters="UUID"/>
+    </ServiceElasticityPrimitives>
+    <ServiceElasticityPrimitives id="OpenStack" ServiceProvider="OpenStack private cloud">
+        <ElasticityPrimitive id="ScaleIn" name="Remove VM" parameters="IP"/>
+        <ElasticityPrimitive id="ScaleOut" name="Create new VM" parameters=""/>
+    </ServiceElasticityPrimitives>
+    <ServiceElasticityPrimitives id="SALSA" ServiceProvider="SALSA Deployment and Configuration Tool">
+        <ElasticityPrimitive id="ScaleIn" name="Remove VM" parameters="IP"/>
+        <ElasticityPrimitive id="ScaleOut" name="Create new VM" parameters=""/>
+    </ServiceElasticityPrimitives>
+      <ServiceElasticityPrimitives id="M2MDaaS" ServiceProvider="Application Specific Orchestration">
+        <ElasticityPrimitive id="DecommissionNode" name="Decommision Data Node from Cluster" parameters="$DataController$.IP IP"/>
+        <ElasticityPrimitive id="DecommissionWS" name="Decommission Web Service from Load Balancer" parameters="$LoadBalancer$.IP IP"/>
+    </ServiceElasticityPrimitives>
+</ElasticityPrimitivesDescription>

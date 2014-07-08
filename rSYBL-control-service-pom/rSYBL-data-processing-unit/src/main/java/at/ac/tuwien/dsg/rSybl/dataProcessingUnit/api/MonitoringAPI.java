@@ -358,9 +358,7 @@ public class MonitoringAPI implements MonitoringAPIInterface {
         for (ElasticityRequirement elasticityRequirement : description) {
 
             RuntimeLogger.logger.info(elasticityRequirement.getAnnotation().getEntityID() + " Setting elasticity requirements ");
-            RuntimeLogger.logger.info(elasticityRequirement.getAnnotation().getEntityID() + " Constraints " + elasticityRequirement.getAnnotation().getConstraints());
-            RuntimeLogger.logger.info(elasticityRequirement.getAnnotation().getEntityID() + " Strategies" + elasticityRequirement.getAnnotation().getStrategies());
-
+          
         }
         offeredMonitoringMetrics.submitElasticityRequirements(description);
 

@@ -51,7 +51,7 @@ public class SYBLService {
 		    this.dependencyGraph=dependencyGraph;
 		    this.monitoringAPI=monitoringAPI;
 		    this.enforcementAPI=enforcementAPI;
-		    AnalysisLogger.logger.info("~~~~~~~~~~~~~~~~~~~Instantiating SYBL Processing Service ");
+		   // AnalysisLogger.logger.info("~~~~~~~~~~~~~~~~~~~Instantiating SYBL Processing Service ");
 			initializeEntities();
 			
 	}

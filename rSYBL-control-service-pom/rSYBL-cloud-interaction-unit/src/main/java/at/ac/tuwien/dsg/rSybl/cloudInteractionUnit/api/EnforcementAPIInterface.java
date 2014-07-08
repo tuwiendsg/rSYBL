@@ -37,23 +37,23 @@ public interface EnforcementAPIInterface{
 		public void setControlledService(Node controlledService) ;
 	    
 		public void submitElasticityRequirements(ArrayList<ElasticityRequirement> description);
-		public void scalein(Node arg0);
+		public boolean scalein(Node arg0);
 
 		public void setMonitoringPlugin(MonitoringAPIInterface monitoringInterface) ;
 
-		public void scaleout(Node arg0);
+		public boolean scaleout(Node arg0);
 	    	
-			    public void enforceAction(String actionName, Node e);
+			    public boolean enforceAction(String actionName, Node e);
 			    
-			    public void enforceElasticityCapability(ElasticityCapability capability,Node e);
+			    public boolean enforceElasticityCapability(ElasticityCapability capability,Node e);
 			    
-				public void scalein(String target,Node arg0);
+				public boolean scalein(String target,Node arg0);
 
 
-				public void scaleout(String target,Node arg0);
+				public boolean scaleout(String target,Node arg0);
 			    	
-					    public void enforceAction(String target,String actionName, Node e);
+					    public boolean enforceAction(String target,String actionName, Node e);
 					    
-					    public void enforceElasticityCapability(String target,ElasticityCapability capability,Node e);
-					 
+					    public boolean enforceElasticityCapability(String target,ElasticityCapability capability,Node e);
+					public boolean enforceAction (String target, String actionName, Node node, Object[] parameters) ; 
 }

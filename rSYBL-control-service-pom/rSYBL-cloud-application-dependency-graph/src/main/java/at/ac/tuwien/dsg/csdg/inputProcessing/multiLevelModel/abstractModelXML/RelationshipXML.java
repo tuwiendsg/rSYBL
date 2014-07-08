@@ -32,8 +32,8 @@ import javax.xml.bind.annotation.XmlType;
 
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "Relationship", propOrder = {
-    "master",
-    "slave"
+    "source",
+    "target","syblDirective","type","metricSource","metricTarget","focusMetric","id"
 })
 public class RelationshipXML {
 
@@ -41,12 +41,26 @@ public class RelationshipXML {
 	 * 
 	 */
 	private static final long serialVersionUID = 6850194411292974553L;
-	@XmlElement(name = "Master", required = true)
-    protected String master;
-    @XmlElement(name = "Slave", required = true)
-    protected String slave;
+	@XmlElement(name = "source", required = true)
+    protected String source;
+    @XmlElement(name = "target", required = true)
+    protected String target;
+    @XmlElement(name = "SYBLDirective")
+	private SYBLAnnotationXML syblDirective;
+
     @XmlAttribute(name = "type")
     protected String type;
+    @XmlElement(name = "metricSource")
+	private String metricSource;
+    @XmlElement(name = "metricTarget")
+	private String metricTarget;
+    @XmlElement(name = "focusMetric")
+  	private String focusMetric;
+
+    @XmlAttribute(name = "id")
+	private String id;
+    
+    
 
     /**
      * Gets the value of the master property.
@@ -56,8 +70,8 @@ public class RelationshipXML {
      *     {@link String }
      *     
      */
-    public String getMaster() {
-        return master;
+    public String getSource() {
+        return source;
     }
 
     /**
@@ -68,8 +82,8 @@ public class RelationshipXML {
      *     {@link String }
      *     
      */
-    public void setMaster(String value) {
-        this.master = value;
+    public void setSource(String value) {
+        this.source = value;
     }
 
     /**
@@ -80,8 +94,8 @@ public class RelationshipXML {
      *     {@link String }
      *     
      */
-    public String getSlave() {
-        return slave;
+    public String getTarget() {
+        return target;
     }
 
     /**
@@ -92,8 +106,8 @@ public class RelationshipXML {
      *     {@link String }
      *     
      */
-    public void setSlave(String value) {
-        this.slave = value;
+    public void setTarget(String value) {
+        this.target = value;
     }
 
     /**
@@ -119,6 +133,46 @@ public class RelationshipXML {
     public void setType(String value) {
         this.type = value;
     }
+
+	public SYBLAnnotationXML getSyblAnnotationXML() {
+		return syblDirective;
+	}
+
+	public void setSyblAnnotationXML(SYBLAnnotationXML syblAnnotationXML) {
+		this.syblDirective = syblAnnotationXML;
+	}
+
+	public String getMetricSource() {
+		return metricSource;
+	}
+
+	public void setMetricSource(String metricSource) {
+		this.metricSource = metricSource;
+	}
+
+	public String getMetricTarget() {
+		return metricTarget;
+	}
+
+	public void setMetricTarget(String metricTarget) {
+		this.metricTarget = metricTarget;
+	}
+
+	public String getRelationshipID() {
+		return id;
+	}
+
+	public void setRelationshipID(String relationshipID) {
+		this.id = relationshipID;
+	}
+
+	public String getFocusMetric() {
+		return focusMetric;
+	}
+
+	public void setFocusMetric(String focusMetric) {
+		this.focusMetric = focusMetric;
+	}
 
 	
 }

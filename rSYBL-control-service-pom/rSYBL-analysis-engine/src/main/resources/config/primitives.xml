@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<ElasticityPrimitivesDescription>
+    <ServiceElasticityPrimitives id="DryRun" ServiceProvider="Dry Run">
+        <ElasticityPrimitive id="scaleIn" methodName="scalein" name="Remove VM" parameters="IP"/>
+        <ElasticityPrimitive id="scaleOut"  methodName="scaleout" name="Create new VM" parameters=""/>
+    </ServiceElasticityPrimitives>
+  
+      <ServiceElasticityPrimitives id="M2MDaaS" ServiceProvider="Application Specific Orchestration">
+        <ElasticityPrimitive id="decommissionNode" name="Decommision Data Node from Cluster" parameters="{DataController}.IP IP"/>
+        <ElasticityPrimitive id="decommissionWS" name="Decommission Web Service from Load Balancer" parameters="{LoadBalancer}.IP IP"/>
+    </ServiceElasticityPrimitives>
+</ElasticityPrimitivesDescription>

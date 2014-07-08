@@ -123,8 +123,8 @@ public  class ServiceUnitXML {
    @XmlElement(name = "CodeRegions")
  	private List<CodeRegionXML> codeRegions = new ArrayList<CodeRegionXML>();
     
-    @XmlElement(name = "Action")
- 	private List<ActionXML> actions = new ArrayList<ActionXML>();
+    @XmlElement(name = "ElasticityCapability")
+ 	private List<ElasticityCapabilityXML> actions = new ArrayList<ElasticityCapabilityXML>();
     
     @XmlElement(name = "InitializationSequence")
  	private InitializationSequenceXML initializationSequence;
@@ -204,15 +204,17 @@ public  class ServiceUnitXML {
 
 	
 
-	public List<ActionXML> getActions() {
+	public List<ElasticityCapabilityXML> getElasticityCapability() {
 		return actions;
 	}
 
-	public void setActions(List<ActionXML> actions) {
+	public void setElasticityCapability(List<ElasticityCapabilityXML> actions) {
 		this.actions = actions;
 	}
 
-
+	public void addElasticityCapability(ElasticityCapabilityXML capabilityXML){
+		actions.add(capabilityXML);
+	}
 	
 
 
@@ -230,130 +232,6 @@ public  class ServiceUnitXML {
 
 
 
-	/**
-     * <p>Java class for anonymous complex type.
-     * 
-     * <p>The following schema fragment specifies the expected content contained within this class.
-     * 
-     * <pre>
-     * &lt;complexType>
-     *   &lt;simpleContent>
-     *     &lt;extension base="&lt;http://www.w3.org/2001/XMLSchema>string">
-     *       &lt;attribute name="name" type="{http://www.w3.org/2001/XMLSchema}string" />
-     *       &lt;attribute name="apiMethod" type="{http://www.w3.org/2001/XMLSchema}string" />
-     *       &lt;attribute name="parameter" type="{http://www.w3.org/2001/XMLSchema}string" />
-     *     &lt;/extension>
-     *   &lt;/simpleContent>
-     * &lt;/complexType>
-     * </pre>
-     * 
-     * 
-     */
-    @XmlAccessorType(XmlAccessType.FIELD)
-    @XmlType(name = "", propOrder = {
-        
-    })
-    public static class ActionXML {
-
-        
-        @XmlAttribute(name = "name")
-        protected String name;
-        @XmlAttribute(name = "apiMethod")
-        protected String apiMethod;
-        @XmlElement(name = "parameters")
-        protected List<String> parameter;
-        @XmlAttribute(name="callType")
-		private String callType;
-        /**
-         * Gets the value of the value property.
-         * 
-         * @return
-         *     possible object is
-         *     {@link String }
-         *     
-         */
-    
-        /**
-         * Gets the value of the name property.
-         * 
-         * @return
-         *     possible object is
-         *     {@link String }
-         *     
-         */
-        public String getName() {
-            return name;
-        }
-
-        /**
-         * Sets the value of the name property.
-         * 
-         * @param value
-         *     allowed object is
-         *     {@link String }
-         *     
-         */
-        public void setName(String value) {
-            this.name = value;
-        }
-
-        /**
-         * Gets the value of the apiMethod property.
-         * 
-         * @return
-         *     possible object is
-         *     {@link String }
-         *     
-         */
-        public String getApiMethod() {
-            return apiMethod;
-        }
-
-        /**
-         * Sets the value of the apiMethod property.
-         * 
-         * @param value
-         *     allowed object is
-         *     {@link String }
-         *     
-         */
-        public void setApiMethod(String value) {
-            this.apiMethod = value;
-        }
-
-        /**
-         * Gets the value of the parameter property.
-         * 
-         * @return
-         *     possible object is
-         *     {@link String }
-         *     
-         */
-        public List<String> getParameter() {
-            return parameter;
-        }
-
-        /**
-         * Sets the value of the parameter property.
-         * 
-         * @param value
-         *     allowed object is
-         *     {@link String }
-         *     
-         */
-        public void setParameters(List<String> value) {
-            this.parameter = value;
-        }
-
-		public String getCallType() {
-			return callType;
-		}
-
-		public void setCallType(String callType) {
-			this.callType = callType;
-		}
-
-    }
 
 
    

@@ -276,9 +276,13 @@ public class UtilsMain {
 			   //webService.setDefaultImage("");
 			   components1.add(loadBalancer);
 			   RelationshipXML relationshipXML = new RelationshipXML();
-			   relationshipXML.setMaster("LoadBalancer");
-			   relationshipXML.setSlave("WebService");
-			   webServiceTopology.setRelationship(relationshipXML);
+			   relationshipXML.setSource("LoadBalancer");
+			   relationshipXML.setTarget("WebService");
+			   relationshipXML.setType("DATA");
+			   relationshipXML.setMetricSource("dataIoT");
+			   relationshipXML.setMetricTarget("dataCloud");
+			   relationshipXML.setRelationshipID("DataRelationship");
+			   webServiceTopology.addRelationship(relationshipXML);
 			   components1.add(webService);
 			   annotation=new SYBLAnnotationXML();
 			   
@@ -309,9 +313,9 @@ public class UtilsMain {
 			   cassandraComponentTopology.setId("DataServiceTopology");
 			   cassandraComponentTopology.setServiceUnits(comps);
 			   RelationshipXML cassandraRelationship = new RelationshipXML();
-			   cassandraRelationship.setMaster("CassandraController");
-			   cassandraRelationship.setSlave("CassandraNode");		   
-			   cassandraComponentTopology.setRelationship(cassandraRelationship);
+			   cassandraRelationship.setSource("CassandraController");
+			   cassandraRelationship.setTarget("CassandraNode");		   
+			   cassandraComponentTopology.addRelationship(cassandraRelationship);
 			   List<ServiceTopologyXML> componentTopologiesCassandra = new ArrayList<ServiceTopologyXML>();
 			   componentTopologiesCassandra.add(cassandraComponentTopology);
 			   

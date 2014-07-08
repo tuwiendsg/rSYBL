@@ -94,14 +94,14 @@ public class EnforcementOpenstackAPI implements EnforcementInterface{
 		return null;
 	}
 	
-	public void scaleOut(Node arg0)   {
+	public boolean scaleOut(Node arg0)   {
 		//monitoring.enforcingActionStarted("ScaleOut",arg0 );
-		
+		boolean res=false;
 		Node o = arg0;
 		RuntimeLogger.logger.info("Scaling out ... "+arg0+" "+arg0.getNodeType());
 	
 		if (o.getNodeType()==NodeType.CODE_REGION){
-			scaleOutComponent(findComponentOfCodeRegion(arg0));
+			res=scaleOutComponent(findComponentOfCodeRegion(arg0));
 		}
 		
 		//TODO : enable just ComponentTopology level 
@@ -146,8 +146,9 @@ public class EnforcementOpenstackAPI implements EnforcementInterface{
 		}
 		
 		if (o.getNodeType()==NodeType.SERVICE_UNIT){
-			scaleOutComponent((Node) o);
+			res=scaleOutComponent((Node) o);
 		}
+		return res;
 		//monitoring.enforcingActionEnded("ScaleOut",arg0 );
 
 	}
@@ -170,7 +171,8 @@ public class EnforcementOpenstackAPI implements EnforcementInterface{
 //			e.printStackTrace();
 //		}
 	}
-	private void scaleOutComponent(Node o){
+	private boolean scaleOutComponent(Node o){
+				boolean res=false;
 				DependencyGraph graph=new DependencyGraph();
 				graph.setCloudService(controlledService);
 				String ip= cloudsOpenStackConnection.scaleOutAndWaitUntilNewServerBoots( o ,graph.findParentNode(o.getId()));
@@ -187,14 +189,18 @@ public class EnforcementOpenstackAPI implements EnforcementInterface{
 	            RuntimeLogger.logger.info("Adding to "+o.getId()+" vm with ip "+ip);
 	            
 	            o.addNode(node,rel);
+	            res=true;
+				}else{
+					res=false;
 				}
+				
 	            RuntimeLogger.logger.info("The controlled service is now "+controlledService.toString());
 	            
 	            monitoring.refreshServiceStructure(controlledService);
-	            
+	            return res;
 		}
-	private void scaleInComponent(Node o){
-		
+	private boolean  scaleInComponent(Node o){
+				boolean res=false;
 				DependencyGraph d = new DependencyGraph();
 				d.setCloudService(controlledService);
 				if (d.getNodeWithID(o.getId()).getAllRelatedNodesOfType(RelationshipType.HOSTED_ON_RELATIONSHIP,NodeType.VIRTUAL_MACHINE).size()>0){
@@ -204,9 +210,12 @@ public class EnforcementOpenstackAPI implements EnforcementInterface{
 				cloudsOpenStackConnection.scaleIn( tobeRemoved);
 				RuntimeLogger.logger.info(d.graphToString());
 	            monitoring.refreshServiceStructure(controlledService);
+	            res=true;
+				}else{
+					res=false;
 				}
 
-				
+				return res;		
 	}
 	public Node findControllerForComponent(Node c){
 		Node res = null;
@@ -325,11 +334,11 @@ public class EnforcementOpenstackAPI implements EnforcementInterface{
 		return null;
 	}
 	
-	public void scaleIn(Node arg0){
+	public boolean scaleIn(Node arg0){
 		RuntimeLogger.logger.info("Scaling in on openstack ..."+arg0.getId());
-
+		boolean res=false;
 		if (arg0.getNodeType()==NodeType.CODE_REGION){
-			scaleIn(findComponentOfCodeRegion(arg0));
+			res=scaleIn(findComponentOfCodeRegion(arg0));
 		}
 		
 		//TODO : enable just ComponentTopology level 
@@ -366,15 +375,17 @@ public class EnforcementOpenstackAPI implements EnforcementInterface{
 				}
 				//scale in on the number of components of the topology
 			}
+			res=true;
 		}
 		
 		if (arg0.getAllRelatedNodesOfType(RelationshipType.HOSTED_ON_RELATIONSHIP, NodeType.VIRTUAL_MACHINE).size()>1){
 			//RuntimeLogger.logger.info("Scaling in "+arg0.getId());
 			//monitoring.enforcingActionStarted("ScaleIn",arg0 );
 			
-			scaleInComponent(((Node) arg0));
+			res=scaleInComponent(((Node) arg0));
 			//monitoring.enforcingActionEnded("ScaleIn",arg0 );
 		}
+		return res;
 		
 
 	}
@@ -405,9 +416,9 @@ public void setMonitoringPlugin(MonitoringAPIInterface monitoring) {
  this.monitoring=monitoring;	
 }
 @Override
-public void enforceAction(String actionName, Node entity) {
+public boolean enforceAction(String actionName, Node entity) {
 	// TODO Auto-generated method stub
-	
+	return false;
 }
 
 @Override

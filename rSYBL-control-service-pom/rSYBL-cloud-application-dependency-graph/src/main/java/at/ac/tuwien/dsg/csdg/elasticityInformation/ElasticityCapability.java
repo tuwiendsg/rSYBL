@@ -31,6 +31,7 @@ public class ElasticityCapability{
 	      	
       }
       private String value;
+      private String primitiveOperations;
       private String name;
       private String type;
       private String apiMethod;
@@ -77,6 +78,12 @@ public class ElasticityCapability{
 		}
 		public void setCallType(String type) {
 			this.type = type;
+		}
+		public String getPrimitiveOperations() {
+			return primitiveOperations;
+		}
+		public void setPrimitiveOperations(String primitiveOperations) {
+			this.primitiveOperations = primitiveOperations;
 		}
 
 }

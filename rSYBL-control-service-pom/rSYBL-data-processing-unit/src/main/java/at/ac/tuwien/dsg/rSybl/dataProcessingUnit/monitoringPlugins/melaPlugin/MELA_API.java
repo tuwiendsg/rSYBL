@@ -846,7 +846,7 @@ public class MELA_API implements MonitoringInterface {
                         }
                         conditions.add(cond);
                         req.setConditions(conditions);
-                        RuntimeLogger.logger.info("~~~Req for MELA" + req.toString());
+                        RuntimeLogger.logger.info("Requirements for MELA" + req.toString());
                         requirements2.add(req);
                     }
                 }

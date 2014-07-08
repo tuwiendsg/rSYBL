@@ -10,6 +10,8 @@ import javax.xml.bind.annotation.XmlType;
 public class ElasticityCapability {
 	 @XmlAttribute(name = "Name")
 		private String name="";
+	 @XmlAttribute(name="PrimitiveOperationsSequence")
+	 private String primitiveOperations;
 	 @XmlAttribute(name = "Endpoint")
 		private String script="";
 	 @XmlAttribute(name = "Type")
@@ -32,5 +34,11 @@ public class ElasticityCapability {
 	}
 	public void setType(String type) {
 		this.type = type;
+	}
+	public String getPrimitiveOperations() {
+		return primitiveOperations;
+	}
+	public void setPrimitiveOperations(String primitiveOperations) {
+		this.primitiveOperations = primitiveOperations;
 	}
 }

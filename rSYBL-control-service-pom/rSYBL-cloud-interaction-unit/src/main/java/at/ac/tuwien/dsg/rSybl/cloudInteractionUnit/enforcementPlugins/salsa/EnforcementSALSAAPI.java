@@ -106,21 +106,21 @@ public class EnforcementSALSAAPI implements EnforcementInterface {
 		return null;
 	}
 
-	public void scaleOut(Node arg0) {
+	public boolean scaleOut(Node arg0) {
 		//monitoring.enforcingActionStarted("ScaleOut", arg0);
-
+		boolean res= false;
 		Node o = arg0;
 		RuntimeLogger.logger.info("Scaling out ... " + arg0 + " "
 				+ arg0.getNodeType());
 
 		if (o.getNodeType() == NodeType.CODE_REGION) {
-			scaleOutComponent(findComponentOfCodeRegion(arg0));
+			res=scaleOutComponent(findComponentOfCodeRegion(arg0));
 		}
 
 		// TODO : enable just ComponentTopology level
 
 		if (o.getNodeType() == NodeType.SERVICE_UNIT) {
-			scaleOutComponent(o);
+			res=scaleOutComponent(o);
 		}
 		if (o.getNodeType() == NodeType.SERVICE_TOPOLOGY) {
 			// TODO: make it possible to scale a set of component topologies
@@ -162,7 +162,7 @@ public class EnforcementSALSAAPI implements EnforcementInterface {
 
 		}
 
-	
+	return res;
 		//monitoring.enforcingActionEnded("ScaleOut", arg0);
 
 	}
@@ -192,7 +192,8 @@ public class EnforcementSALSAAPI implements EnforcementInterface {
 		// }
 	}
 
-	private void scaleOutComponent(Node o) {
+	private boolean scaleOutComponent(Node o) {
+		boolean res=false;
 		DependencyGraph graph = new DependencyGraph();
 		graph.setCloudService(controlledService);
 		RuntimeLogger.logger
@@ -213,18 +214,20 @@ public class EnforcementSALSAAPI implements EnforcementInterface {
 					+ ip);
 
 			o.addNode(node, rel);
+			res=true;
 		}else {
+			res=false;
 			RuntimeLogger.logger.info("IP is empty");
 		}
 		RuntimeLogger.logger.info("The controlled service is now "
 				+ controlledService.toString());
 
 		monitoring.refreshServiceStructure(controlledService);
-
+		return res;
 	}
 
-	private void scaleInComponent(Node o) {
-
+	private boolean scaleInComponent(Node o) {
+boolean res=false;
 		DependencyGraph graph = new DependencyGraph();
 		graph.setCloudService(controlledService);
 		  
@@ -234,15 +237,16 @@ public class EnforcementSALSAAPI implements EnforcementInterface {
 		String cmd = "";
 		String ip=toBeRemoved.getId();
 		  
-		M2MApplicationControl applicationControl = new M2MApplicationControl();
+		M2MApplicationControl applicationControl = new M2MApplicationControl(controlledService);
 		applicationControl.decommission(toBeScaled.getId(), ip, controlledService);
 		
-		salsaClient.scaleIn(toBeRemoved.getId());
+		res=salsaClient.scaleIn(toBeRemoved.getId());
 		
 		RuntimeLogger.logger.info("Objects here" + toBeScaled + monitoring);
 		toBeScaled.removeNode(toBeRemoved);
 
 		monitoring.refreshServiceStructure(controlledService);
+	return res;
 	}
 
 	public Node findControllerForComponent(Node c) {
@@ -406,16 +410,16 @@ public class EnforcementSALSAAPI implements EnforcementInterface {
 		return null;
 	}
 
-	public void scaleIn(Node arg0) {
+	public boolean scaleIn(Node arg0) {
 		RuntimeLogger.logger.info("Scaling in..." + arg0.getId());
-
+		boolean res= false;
 		if (arg0.getNodeType() == NodeType.CODE_REGION) {
-			scaleIn(findComponentOfCodeRegion(arg0));
+			res=scaleIn(findComponentOfCodeRegion(arg0));
 		}
 
 		// TODO : enable just ComponentTopology level
 		if (arg0.getNodeType() == NodeType.SERVICE_UNIT) {
-			scaleInComponent(arg0);
+			res=scaleInComponent(arg0);
 		}
 
 		if (arg0.getNodeType() == NodeType.SERVICE_TOPOLOGY) {
@@ -460,7 +464,7 @@ public class EnforcementSALSAAPI implements EnforcementInterface {
 //			scaleInComponent(((Node) arg0));
 //			//monitoring.enforcingActionEnded("ScaleIn", arg0);
 //		}
-
+		return res;
 	}
 
 	public List<String> getElasticityCapabilities() {
@@ -492,9 +496,9 @@ public class EnforcementSALSAAPI implements EnforcementInterface {
 	}
 
 	@Override
-	public void enforceAction(String actionName, Node entity) {
+	public boolean enforceAction(String actionName, Node entity) {
 		// TODO Auto-generated method stub
-
+return false;
 	}
 
 	@Override
@@ -504,5 +508,6 @@ public class EnforcementSALSAAPI implements EnforcementInterface {
 				return true;
 		return false;
 	}
+
 
 }

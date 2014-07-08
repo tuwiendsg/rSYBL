@@ -240,6 +240,18 @@ public class DependencyGraph implements Serializable{
 			}
 		return elasticityRequirements;
 	}
+	public ArrayList<Relationship> getAllRelationshipsOfType(RelationshipType type){
+		ArrayList<Relationship> relationship= new ArrayList<Relationship>();
+		relationship.addAll(cloudService.getAllRelationshipsOfType(type));
+		for (Node n:getAllServiceTopologies()){
+			relationship.addAll(n.getAllRelationshipsOfType(type));
+			
+		}
+		for (Node n:getAllServiceUnits()){
+			relationship.addAll(n.getAllRelationshipsOfType(type));
+			}
+		return relationship;
+	}
 	public String graphToString(){
 		String message = "";
 		

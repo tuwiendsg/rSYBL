@@ -1,5 +1,6 @@
-package at.ac.tuwien.dsg.rSybl.planningEngine;
+package at.ac.tuwien.dsg.sybl.syblProcessingUnit.processing;
 
+import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.regex.Matcher;
@@ -16,82 +17,43 @@ import at.ac.tuwien.dsg.csdg.inputProcessing.multiLevelModel.primitives.Elastici
 import at.ac.tuwien.dsg.csdg.inputProcessing.multiLevelModel.primitives.ElasticityPrimitivesDescription;
 import at.ac.tuwien.dsg.csdg.inputProcessing.multiLevelModel.primitives.ServiceElasticityPrimitives;
 import at.ac.tuwien.dsg.rSybl.cloudInteractionUnit.api.EnforcementAPIInterface;
-import at.ac.tuwien.dsg.rSybl.planningEngine.PlanningGreedyAlgorithm.Pair;
-import at.ac.tuwien.dsg.rSybl.planningEngine.staticData.ActionEffect;
-import at.ac.tuwien.dsg.rSybl.planningEngine.utils.PlanningLogger;
 import at.ac.tuwien.dsg.sybl.syblProcessingUnit.utils.SYBLDirectivesEnforcementLogger;
 
-public class ActionPlanEnforcement {
+
+public class ElasticityCapabilityEnforcement {
 
 	EnforcementAPIInterface enforcementAPI = null;
 	ElasticityPrimitivesDescription primitivesDescription = null;
-	public ActionPlanEnforcement(EnforcementAPIInterface apiInterface) {
+	public ElasticityCapabilityEnforcement(EnforcementAPIInterface apiInterface) {
 		enforcementAPI = apiInterface;
 		try{
 		InputProcessing inputProcessing = new InputProcessing();
 		primitivesDescription=inputProcessing.loadElasticityPrimitivesDescriptionFromFile();
 		}catch(Exception e){
-			PlanningLogger.logger.error("Failed to load enabled primitives, working with default case");
+			SYBLDirectivesEnforcementLogger.logger.error("Failed to load enabled primitives, working with default case");
 		}
 	}
 
 
 
-	public void enforceResult(ArrayList<Pair<ActionEffect, Integer>> result,DependencyGraph dependencyGraph) {
-		PlanningLogger.logger.info("Number of actions to enforce" +result);
-		for (Pair<ActionEffect, Integer> actionEffect : result) {
-			PlanningLogger.logger.info("Enforcing capability "
-					+ actionEffect.getFirst().getActionType() + " on "
-					+ actionEffect.getFirst().getTargetedEntity().getId());
-			boolean foundCapability = false;
-			for (ElasticityCapability capability : actionEffect.getFirst()
-					.getTargetedEntity().getElasticityCapabilities()) {
-				if (capability.getName() != null
-						&& !capability.getName().equalsIgnoreCase("")) {
-					if (capability.getEndpoint() != null
-							&& !capability.getEndpoint().equalsIgnoreCase("")) {
-						foundCapability = true;
-						PlanningLogger.logger.info("Found capability "
-								+ capability.getName()
-								+ " enforcing with capabilities ");
-						enforcementAPI.enforceElasticityCapability(capability,
-								actionEffect.getFirst().getTargetedEntity());
-					}
-				}
-			}
-
-			if (!foundCapability) {
-				if (actionEffect.getSecond() > 0) {
-					for (int i = 0; i < actionEffect.getSecond(); i++) {
-						enforceActionGivenPrimitives(actionEffect.getFirst(), dependencyGraph);
-						
-					}
-				}
-			}
-
-		}
-	}
+	
 
 	public void enforceActionGivenPrimitives(
 			
-			ActionEffect actionEffect, DependencyGraph dependencyGraph) {
-		String actionName = actionEffect.getActionType().toLowerCase();
-		for (ElasticityCapability elasticityCapability : actionEffect
-				.getTargetedEntity().getElasticityCapabilities()) {
+			String actionName,Node target, DependencyGraph dependencyGraph) {
+		
+		for (ElasticityCapability elasticityCapability : target.getElasticityCapabilities()) {
 			if (elasticityCapability.getName().equalsIgnoreCase(actionName)) {
-				if (!elasticityCapability.getName().toLowerCase().contains("scalein") || (elasticityCapability.getName().toLowerCase().contains("scalein")&& actionEffect.getTargetedEntity().getAllRelatedNodesOfType(RelationshipType.HOSTED_ON_RELATIONSHIP, NodeType.VIRTUAL_MACHINE).size()>1)){
-					
+				if (!elasticityCapability.getName().toLowerCase().contains("scalein") || (elasticityCapability.getName().toLowerCase().contains("scalein")&&target.getAllRelatedNodesOfType(RelationshipType.HOSTED_ON_RELATIONSHIP, NodeType.VIRTUAL_MACHINE).size()>1)){
 				String[] primitives = elasticityCapability
 						.getPrimitiveOperations().split(";");
 				for (int i = 0; i < primitives.length; i++) {
-					if (!enforcePrimitive(primitivesDescription, primitives[i],
-							actionEffect.getTargetedEntity(), dependencyGraph))
+					
+					if(!enforcePrimitive(primitivesDescription, primitives[i],
+							target, dependencyGraph))
 					{
-						PlanningLogger.logger.info("Failed Enforcing "+primitives[i]+", cancelling the entire elasticity capability "+actionEffect.getActionType()+"-"+actionEffect.getTargetedEntityID());
+						SYBLDirectivesEnforcementLogger.logger.info("Failed Enforcing "+primitives[i]+", cancelling the entire elasticity capability "+ actionName+"-"+target.getId());
 						break;
-					}else{
-						PlanningLogger.logger.info("Successfully enforced "+primitives[i]+", continuing with capability "+actionEffect.getActionType()+"-"+actionEffect.getTargetedEntityID());
-
 					}
 				}
 				break;
@@ -237,6 +199,7 @@ public class ActionPlanEnforcement {
 			String primitive, Node node, DependencyGraph dependencyGraph)  {
 		String target = "";
 		String actionName = primitive;
+		//SYBLDirectivesEnforcementLogger.logger.info("Enforcing primitive " + actionName);
 
 		if (actionName.contains(".")) {
 			target = actionName.split("\\.")[0];
@@ -253,9 +216,13 @@ public class ActionPlanEnforcement {
 		if (target.equalsIgnoreCase("")) {
 			switch (actionName.toLowerCase()) {
 			case "scaleout":
+				//SYBLDirectivesEnforcementLogger.logger.info("Calling Scale out from planning ");
+
 				return enforcementAPI.scaleout(node);
 				
 			case "scalein":
+				//SYBLDirectivesEnforcementLogger.logger.info("Calling Scale in from planning ");
+
 				return enforcementAPI.scalein(node);
 			default:
 				return enforcementAPI.enforceAction(actionName, node);
@@ -275,7 +242,7 @@ public class ActionPlanEnforcement {
 							if (elasticityPrimitive.getParameters()
 									.equalsIgnoreCase("")){
 								boolean x=enforcementAPI.enforceAction(target,
-										elasticityPrimitive.getMethodName(), node);
+										actionName, node);
 										if (x==false) res=false;
 							}
 							else {
@@ -357,7 +324,6 @@ public class ActionPlanEnforcement {
 									if (!x) res=false;
 
 								}
-								
 								for (ElasticityPrimitiveDependency elasticityPrimitiveDependency : afterPrimitives) {
 									// check before primitives
 									boolean x=enforcePrimitive(primitivesDescription,
@@ -375,6 +341,7 @@ public class ActionPlanEnforcement {
 				}
 
 			}
+			//SYBLDirectivesEnforcementLogger.logger.info("Enforcing primitive success="+res);
 			return res;
 //			switch (actionName) {
 //			case "scaleout":
@@ -397,63 +364,8 @@ public class ActionPlanEnforcement {
 		}
 	}
 
-	public void enforceAction(ActionEffect actionEffect) {
-		String target = "";
-		String actionName = actionEffect.getActionType().toLowerCase();
-		if (actionName.contains(".")) {
-			target = actionName.split("\\.")[0];
-			actionName = actionName.split("\\.")[1];
-		}
-		if (target.equalsIgnoreCase("")) {
-			for (ElasticityCapability capability : actionEffect
-					.getTargetedEntity().getElasticityCapabilities()) {
-				if (capability.getName().toLowerCase().contains(actionName)) {
-					target = capability.getName().split("\\.")[0].toLowerCase();
-				}
-			}
-		}
-		if (target.equalsIgnoreCase("")) {
-			switch (actionName.toLowerCase()) {
-			case "scaleout":
-				enforcementAPI.scaleout(actionEffect.getTargetedEntity());
-				break;
-			case "scalein":
-				enforcementAPI.scalein(actionEffect.getTargetedEntity());
-				break;
-			default:
-				enforcementAPI.enforceAction(actionEffect.getActionType(),
-						actionEffect.getTargetedEntity());
-				break;
-			}
-		} else {
-			switch (actionName.toLowerCase()) {
-			case "scaleout":
-				enforcementAPI.scaleout(target,
-						actionEffect.getTargetedEntity());
-				break;
-			case "scalein":
-				enforcementAPI
-						.scalein(target, actionEffect.getTargetedEntity());
-				break;
-			default:
-				if (target.equalsIgnoreCase("")) {
-					enforcementAPI.enforceAction(target,
-							actionEffect.getActionType(),
-							actionEffect.getTargetedEntity());
-				}
+	
 
-				break;
-			}
-		}
-	}
-
-	public void enforceFoundActions(ContextRepresentation contextRepresentation) {
-
-		for (ActionEffect actionEffect : contextRepresentation
-				.getActionsAssociatedToContext()) {
-			enforceAction(actionEffect);
-		}
-
-	}
+	
 
 }

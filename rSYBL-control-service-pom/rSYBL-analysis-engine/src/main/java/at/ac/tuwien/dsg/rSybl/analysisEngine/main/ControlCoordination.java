@@ -28,11 +28,11 @@ public class ControlCoordination {
 		controls.get(currentControls).setApplicationDeployment(deployment);
 	}
 	public void setElasticityCapabilitiesEffects(String effects){
-		AnalysisLogger.logger.info("Setting the effects for "+currentControls);
+		//AnalysisLogger.logger.info("Setting the effects for "+currentControls);
 		controls.get(currentControls).setEffects(effects);
 	}
 	public void setMetricComposition(String composition){
-		AnalysisLogger.logger.info("Setting the metric composition rules for "+currentControls);
+		//AnalysisLogger.logger.info("Setting the metric composition rules for "+currentControls);
 		controls.get(currentControls).setMetricCompositionRules(composition);
 	}
 	

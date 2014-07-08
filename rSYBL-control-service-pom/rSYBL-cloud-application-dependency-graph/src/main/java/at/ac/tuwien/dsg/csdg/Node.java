@@ -205,7 +205,7 @@ public  ArrayList<Node> getAllRelatedNodesOfType(RelationshipType relationshipTy
 	public  void removeNode(String id){
 		Node string = null;
 		for (Node n:relatedNodes.keySet()){
-			DependencyGraphLogger.logger.info("Searching for node to remove "+n.id);
+		//	DependencyGraphLogger.logger.info("Searching for node to remove "+n.id);
 			if (n.getId().equalsIgnoreCase(id)){
 				string = n;
 			}
@@ -313,6 +313,15 @@ public  ArrayList<Node> getAllRelatedNodesOfType(RelationshipType relationshipTy
 	public HashMap<Node,Relationship> getRelatedNodes() {
 		return relatedNodes;
 	}
+	public List<Relationship> getAllRelationshipsOfType (RelationshipType type){
+		List<Relationship> res = new ArrayList<Relationship>();
+		for (Relationship r : relatedNodes.values()){
+			if (type==r.getType())
+			res.add(r);
+		}
+		return res;
+	}
+	
 	public void setRelatedNodes(HashMap<Node,Relationship> relatedNodes) {
 		this.relatedNodes = relatedNodes;
 		this.relationships = new HashMap<RelationshipType,ArrayList<Node>>();

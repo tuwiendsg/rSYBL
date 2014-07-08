@@ -110,15 +110,15 @@ public class ControlService {
 
 			dependencyGraph = inputProcessing.loadDependencyGraphFromStrings(applicationDescription, "", deploymentDescription);
 			
-			AnalysisLogger.logger.info("Current graph is "
-					+ dependencyGraph.graphToString());
+			//AnalysisLogger.logger.info("Current graph is "
+				//	+ dependencyGraph.graphToString());
 			
 			// at.ac.tuwien.dsg.sybl.monitorandenforcement.runtimeapi.Node
 			// clService =
 			// MappingToWS.mapNodeToNode(dependencyGraph.getCloudService());
 			Node node = new Node();
 			node = dependencyGraph.getCloudService();
-			AnalysisLogger.logger.info(dependencyGraph.graphToString());
+			AnalysisLogger.logger.info("Current graph is" + dependencyGraph.graphToString());
 			monitoringAPI = new MonitoringAPI();
 			monitoringAPI.setControlledService(node);
 			if (!metricCompositionRules.equalsIgnoreCase("")){
@@ -155,7 +155,7 @@ public class ControlService {
 			// CloudService cloudService, ArrayList<SYBLSpecification>
 			// syblSpecifications
 			//disableConflictingConstraints();
-			AnalysisLogger.logger.info("Conflicting constraints disabled");
+			//AnalysisLogger.logger.info("Conflicting constraints disabled");
 
 			planningAlgorithm = new PlanningGreedyAlgorithm(
 					dependencyGraph, monitoringAPI, enforcementAPI);
@@ -239,7 +239,7 @@ public class ControlService {
 	public void loadEverythingFromConfigurationFiles() {
 		InputProcessing input = new InputProcessing();
 		dependencyGraph = input.loadDependencyGraphFromFile();
-		AnalysisLogger.logger.info("Loaded graph from files ");
+		//AnalysisLogger.logger.info("Loaded graph from files ");
 		startSYBLProcessingAndPlanning();
 	}
 
@@ -626,7 +626,7 @@ public class ControlService {
 		enforcementAPI.setControlledService(dependencyGraph.getCloudService());
 
 		enforcementAPI.setMonitoringPlugin(monitoringAPI);
-		AnalysisLogger.logger.info("Have information on enforcement api");
+		//AnalysisLogger.logger.info("Have information on enforcement api");
 
 		syblService = new SYBLService(dependencyGraph, monitoringAPI,
 				enforcementAPI);

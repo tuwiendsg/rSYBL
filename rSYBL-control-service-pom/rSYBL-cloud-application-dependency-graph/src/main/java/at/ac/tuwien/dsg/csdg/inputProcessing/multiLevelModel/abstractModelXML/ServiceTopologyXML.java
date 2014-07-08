@@ -37,7 +37,7 @@ import at.ac.tuwien.dsg.csdg.elasticityInformation.elasticityRequirements.SYBLAn
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "ServiceTopology", propOrder = {
 	    "componentTopology",
-	    "relationship","associatedIps","components","syblAnnotationXML",
+	    "relationships","associatedIps","components","syblAnnotationXML",
 	})
 public  class ServiceTopologyXML {
 
@@ -45,7 +45,7 @@ public  class ServiceTopologyXML {
 	@XmlElement(name = "ServiceTopology")
     protected List<ServiceTopologyXML> componentTopology;
     @XmlElement(name = "Relationship", required = true)
-    protected RelationshipXML relationship;
+    protected List<RelationshipXML> relationships = new ArrayList<RelationshipXML>();
     @XmlElement(name="associatedIps")
     protected List<String> associatedIps = new ArrayList<String>();
     @XmlElement(name = "ServiceUnit")
@@ -88,8 +88,8 @@ public  class ServiceTopologyXML {
      *     {@link CloudServiceXML.ServiceTopologyXML.RelationshipXML }
      *     
      */
-    public RelationshipXML getRelationship() {
-        return relationship;
+    public List<RelationshipXML> getRelationships() {
+        return relationships;
     }
 
     /**
@@ -100,10 +100,12 @@ public  class ServiceTopologyXML {
      *     {@link CloudServiceXML.ServiceTopologyXML.RelationshipXML }
      *     
      */
-    public void setRelationship(RelationshipXML value) {
-        this.relationship = value;
+    public void setRelationships(List<RelationshipXML> value) {
+        this.relationships = value;
     }
-
+    public void addRelationship(RelationshipXML value) {
+        this.relationships.add(value);
+    }
  	public List<ServiceUnitXML> getServiceUnits() {
 		return components;
 	}

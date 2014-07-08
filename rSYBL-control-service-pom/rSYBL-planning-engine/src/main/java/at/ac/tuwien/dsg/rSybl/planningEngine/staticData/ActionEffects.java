@@ -204,7 +204,7 @@ public class ActionEffects {
 		PlanningLogger.logger.info("~~~~~~~~~~Action effects set through web serv, setting the effects ! ");
 
 		JSONParser parser = new JSONParser();
-
+		actionEffects = new HashMap<String,List<ActionEffect>>();
 		Object obj;
 		try {
 			obj = parser.parse(eff);
@@ -218,7 +218,7 @@ public class ActionEffects {
 			
 			
 			JSONObject object=(JSONObject) jsonObject.get(myaction);
-			actionEffects = new HashMap<String,List<ActionEffect>>();
+
 		for (Object actions: object.keySet()){
 			ActionEffect actionEffect = new ActionEffect();
 			actionEffect.setActionType((String)myaction);
@@ -245,13 +245,16 @@ public class ActionEffects {
 				 
 				}
 			
-			if (actionEffects.get(actionEffect.getTargetedEntityID())==null ){
+			if (! actionEffects.containsKey(actionEffect.getTargetedEntityID().trim()) ){
 				List <ActionEffect > l = new ArrayList<ActionEffect>();
 				l.add(actionEffect);
-				actionEffects.put(actionEffect.getTargetedEntityID(), l);
-			
+				actionEffects.put(actionEffect.getTargetedEntityID().trim(), l);
+				//PlanningLogger.logger.info("New Action effects "+actionEffect.getActionType()+" "+actionEffect.getActionName()+" "+actionEffect.getTargetedEntityID());
+				
 			}else{
-				actionEffects.get(actionEffect.getTargetedEntityID()).add(actionEffect);
+				actionEffects.get(actionEffect.getTargetedEntityID().trim()).add(actionEffect);
+				//PlanningLogger.logger.info("Adding Action effects "+actionEffect.getActionType()+" "+actionEffect.getActionName()+" "+actionEffect.getTargetedEntityID());
+
 			}
 		}
 		}

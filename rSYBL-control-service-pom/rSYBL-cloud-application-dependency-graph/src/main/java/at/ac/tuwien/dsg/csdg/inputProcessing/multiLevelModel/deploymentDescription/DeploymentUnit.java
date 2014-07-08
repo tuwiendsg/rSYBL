@@ -76,4 +76,7 @@ public List<ElasticityCapability> getElasticityCapabilities() {
 public void setElasticityCapabilities(List<ElasticityCapability> elasticityCapabilities) {
 	this.elasticityCapabilities = elasticityCapabilities;
 }
+public void addElasticityCapability(ElasticityCapability elasticityCapability){
+	this.elasticityCapabilities.add(elasticityCapability);
+}
 }

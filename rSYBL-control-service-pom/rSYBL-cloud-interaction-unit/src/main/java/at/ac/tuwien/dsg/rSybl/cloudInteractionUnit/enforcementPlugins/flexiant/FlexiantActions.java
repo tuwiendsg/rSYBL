@@ -48,7 +48,8 @@ public class FlexiantActions  {
 	String password = Configuration.getPassword();
 	String ENDPOINT_ADDRESS_PROPERTY = "https://api.sd1.flexiant.net:4442";
 
-	public void removeServer(String serverUUID) {
+	public boolean removeServer(String serverUUID) {
+		boolean res=true;
 		UserService service;
 		RuntimeLogger.logger.info("~~~~~~~~~~~~~ Removing server with UUID "+serverUUID);
 		URL url = ClassLoader.getSystemClassLoader()
@@ -79,6 +80,7 @@ public class FlexiantActions  {
 			datatypeFactory = DatatypeFactory.newInstance();
 		} catch (DatatypeConfigurationException e) {
 			// TODO Auto-generated catch block
+			res=false;
 			RuntimeLogger.logger.error(e.getMessage()); 
 		}
 		XMLGregorianCalendar now = datatypeFactory
@@ -90,6 +92,7 @@ public class FlexiantActions  {
 			datatypeFactory = DatatypeFactory.newInstance();
 		} catch (DatatypeConfigurationException e) {
 			// TODO Auto-generated catch block
+			res=false;
 			RuntimeLogger.logger.error(e.getMessage()); 
 		}
 		now = datatypeFactory.newXMLGregorianCalendar(gregorianCalendar);
@@ -117,9 +120,11 @@ public class FlexiantActions  {
 		date = new Date();
 		datatypeFactory = null;
 		try {
+			res=false;
 			datatypeFactory = DatatypeFactory.newInstance();
 		} catch (DatatypeConfigurationException e) {
 			// TODO Auto-generated catch block
+			res=false;
 			RuntimeLogger.logger.error(e.getMessage()); 
 		}
 		now = datatypeFactory.newXMLGregorianCalendar(gregorianCalendar);
@@ -143,9 +148,11 @@ public class FlexiantActions  {
 			service.waitForJob(deleteServer.getResourceUUID(), false);
 		} catch (ExtilityException e) {
 			// TODO Auto-generated catch block
+			res=false;
 			RuntimeLogger.logger.error(e.getMessage()); 
-			return;
+			
 		}
+		return res;
 
 	}
 

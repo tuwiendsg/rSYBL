@@ -28,10 +28,10 @@ import at.ac.tuwien.dsg.csdg.Node;
 import at.ac.tuwien.dsg.rSybl.dataProcessingUnit.api.MonitoringAPIInterface;
 
 public interface EnforcementInterface {
-public void scaleOut(Node toBeScaled);
-public void scaleIn(Node toBeScaled);
+public boolean scaleOut(Node toBeScaled);
+public boolean scaleIn(Node toBeScaled);
 public List<String> getElasticityCapabilities();
-public void enforceAction(String actionName, Node entity);
+public boolean enforceAction(String actionName, Node entity);
 public void setControlledService(Node controlledService);
 public Node getControlledService();
 public void setMonitoringPlugin(MonitoringAPIInterface monitoring);

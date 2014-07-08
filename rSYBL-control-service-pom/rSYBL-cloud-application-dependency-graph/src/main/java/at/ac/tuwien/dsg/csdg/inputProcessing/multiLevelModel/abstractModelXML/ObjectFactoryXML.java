@@ -101,13 +101,7 @@ public class ObjectFactoryXML {
 
 
 
-    /**
-     * Create an instance of {@link CloudServiceXML.ServiceTopologyXML.ServiceUnitXML.ActionXML }
-     * 
-     */
-    public ServiceUnitXML.ActionXML createComponentAction() {
-        return new ServiceUnitXML.ActionXML();
-    }
+    
 
     /**
      * Create an instance of {@link JAXBElement }{@code <}{@link CloudServiceXML.ServiceTopologyXML.RelationshipXML }{@code >}}
@@ -130,9 +124,5 @@ public class ObjectFactoryXML {
         return new JAXBElement<ServiceUnitXML.InitializationSequenceXML>(_CloudServiceComponentTopologyComponentInitializationSequence_QNAME, ServiceUnitXML.InitializationSequenceXML.class, ServiceUnitXML.class, value);
     }
     
-    @XmlElementDecl(namespace = "", name = "ActionXML", scope =ServiceUnitXML.class)
-    public JAXBElement<ServiceUnitXML.ActionXML> createComponentAction(ServiceUnitXML.ActionXML value) {
-        return new JAXBElement<ServiceUnitXML.ActionXML>(_CloudServiceComponentTopologyComponentAction_QNAME, ServiceUnitXML.ActionXML.class, ServiceUnitXML.class, value);
-    }
-
+   
 }

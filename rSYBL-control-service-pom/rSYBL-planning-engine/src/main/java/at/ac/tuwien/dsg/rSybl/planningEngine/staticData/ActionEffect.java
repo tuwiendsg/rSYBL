@@ -22,9 +22,11 @@
 
 package at.ac.tuwien.dsg.rSybl.planningEngine.staticData;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
@@ -50,9 +52,12 @@ public class ActionEffect {
 			effects.put(entityID, new HashMap<String,Double>());
 		
 		effects.get(entityID).put(metricName, result);
-		PlanningLogger.logger.info("~~~~~~~~~~ Just set "+actionName+", for entity "+entityID+" the effect "+effects.get(entityID).get(metricName)+" for metric "+metricName);
+		//PlanningLogger.logger.info("~~~~~~~~~~ Just set "+actionType+" with action name "+actionName+", for entity "+entityID+" the effect "+effects.get(entityID).get(metricName)+" for metric "+metricName);
 
 	}
+	public Set<String> getAffectedNodes(){
+		return effects.keySet();
+	} 
 	public Double getActionEffectForMetric(String metricName,String entityID){	
 		//PlanningLogger.logger.info("aaa"+entityID+"aaa");
 		if (effects.get(entityID)==null){

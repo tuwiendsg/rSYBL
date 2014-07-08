@@ -10,9 +10,6 @@ import javax.xml.ws.WebEndpoint;
 import javax.xml.ws.WebServiceClient;
 import javax.xml.ws.WebServiceFeature;
 
-import at.ac.tuwien.dsg.rSybl.cloudInteractionUnit.utils.Configuration;
-import at.ac.tuwien.dsg.rSybl.dataProcessingUnit.utils.RuntimeLogger;
-
 
 /**
  * This is the API for the Extility user service. You need to be a authenticated as a valid user to use this service.
@@ -22,7 +19,7 @@ import at.ac.tuwien.dsg.rSybl.dataProcessingUnit.utils.RuntimeLogger;
  * Generated source version: 2.1
  * 
  */
-@WebServiceClient(name = "UserAPI", targetNamespace = "http://extility.flexiant.net", wsdlLocation = "UserAPI.wsdl")
+@WebServiceClient(name = "UserAPI", targetNamespace = "http://extility.flexiant.net", wsdlLocation = "file:/C:/Users/Georgiana/Desktop/TUWIEN_DSG_Github/rSYBL/rSYBL-control-service-pom/rSYBL-cloud-interaction-unit/src/main/resources/UserAPI.wsdl")
 public class UserAPI
     extends Service
 {
@@ -34,12 +31,10 @@ public class UserAPI
         URL url = null;
         try {
             URL baseUrl;
-            
-            baseUrl = Configuration.class.getClassLoader().getResource("/config/UserAPI.wsdl");
-            RuntimeLogger.logger.info("Get url get url get url "+baseUrl);
-            url = new URL(baseUrl, "UserAPI.wsdl");
+            baseUrl = com.extl.jade.user.UserAPI.class.getResource(".");
+            url = new URL(baseUrl, "file:/C:/Users/Georgiana/Desktop/TUWIEN_DSG_Github/rSYBL/rSYBL-control-service-pom/rSYBL-cloud-interaction-unit/src/main/resources/UserAPI.wsdl");
         } catch (MalformedURLException e) {
-            logger.warning("Failed to create URL for the wsdl Location: 'UserAPI.wsdl', retrying as a local file");
+            logger.warning("Failed to create URL for the wsdl Location: 'file:/C:/Users/Georgiana/Desktop/TUWIEN_DSG_Github/rSYBL/rSYBL-control-service-pom/rSYBL-cloud-interaction-unit/src/main/resources/UserAPI.wsdl', retrying as a local file");
             logger.warning(e.getMessage());
         }
         USERAPI_WSDL_LOCATION = url;
@@ -48,7 +43,7 @@ public class UserAPI
     public UserAPI(URL wsdlLocation, QName serviceName) {
         super(wsdlLocation, serviceName);
     }
-   
+
     public UserAPI() {
         super(USERAPI_WSDL_LOCATION, new QName("http://extility.flexiant.net", "UserAPI"));
     }

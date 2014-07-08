@@ -24,13 +24,16 @@ package at.ac.tuwien.dsg.csdg;
 
 import java.io.Serializable;
 
+import at.ac.tuwien.dsg.csdg.elasticityInformation.ElasticityRequirement;
+
 public class Relationship implements Serializable{
 	private String sourceElement;// parent
 	private String targetElement; //child
+	private ElasticityRequirement requirement;
+	private String id;
 	private RelationshipType type = RelationshipType.COMPOSITION_RELATIONSHIP;
-	private ElasticityInfoRelationship elasticityRelationship;
 	public static enum RelationshipType{
-		   COMPOSITION_RELATIONSHIP,HOSTED_ON_RELATIONSHIP, ASSOCIATED_AT_RUNTIME_RELATIONSHIP, RUNS_ON, MASTER_OF, PEER_OF;
+		   COMPOSITION_RELATIONSHIP,HOSTED_ON_RELATIONSHIP, ASSOCIATED_AT_RUNTIME_RELATIONSHIP, RUNS_ON, MASTER_OF, PEER_OF,DATA,LOAD,INSTANTIATION;
 		 }
 	public String getSourceElement() {
 		return sourceElement;
@@ -50,11 +53,19 @@ public class Relationship implements Serializable{
 	public void setType(RelationshipType type) {
 		this.type = type;
 	}
-	public ElasticityInfoRelationship getElasticityRelationship() {
-		return elasticityRelationship;
+	
+	public ElasticityRequirement getRequirement() {
+		return requirement;
 	}
-	public void setElasticityRelationship(ElasticityInfoRelationship elasticityRelationship) {
-		this.elasticityRelationship = elasticityRelationship;
+
+	public void setRequirement(ElasticityRequirement requirement) {
+		this.requirement = requirement;
+	}
+	public String getId() {
+		return id;
+	}
+	public void setId(String id) {
+		this.id = id;
 	}
 
 }

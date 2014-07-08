@@ -22,16 +22,29 @@
 
 package at.ac.tuwien.dsg.csdg;
 
+import java.io.File;
 import java.util.ArrayList;
+import java.util.List;
+
+import javax.xml.bind.JAXBContext;
+import javax.xml.bind.JAXBException;
+import javax.xml.bind.Marshaller;
 
 import at.ac.tuwien.dsg.csdg.Node.NodeType;
 import at.ac.tuwien.dsg.csdg.Relationship.RelationshipType;
+import at.ac.tuwien.dsg.csdg.elasticityInformation.ElasticityCapability;
 import at.ac.tuwien.dsg.csdg.elasticityInformation.ElasticityRequirement;
 import at.ac.tuwien.dsg.csdg.elasticityInformation.elasticityRequirements.SYBLAnnotation;
 import at.ac.tuwien.dsg.csdg.elasticityInformation.elasticityRequirements.SYBLElasticityRequirementsDescription;
 import at.ac.tuwien.dsg.csdg.inputProcessing.multiLevelModel.InputProcessing;
 import at.ac.tuwien.dsg.csdg.inputProcessing.multiLevelModel.abstractModelXML.CloudServiceXML;
+import at.ac.tuwien.dsg.csdg.inputProcessing.multiLevelModel.deploymentDescription.AssociatedVM;
 import at.ac.tuwien.dsg.csdg.inputProcessing.multiLevelModel.deploymentDescription.DeploymentDescription;
+import at.ac.tuwien.dsg.csdg.inputProcessing.multiLevelModel.deploymentDescription.DeploymentUnit;
+import at.ac.tuwien.dsg.csdg.inputProcessing.multiLevelModel.primitives.ElasticityPrimitive;
+import at.ac.tuwien.dsg.csdg.inputProcessing.multiLevelModel.primitives.ElasticityPrimitiveDependency;
+import at.ac.tuwien.dsg.csdg.inputProcessing.multiLevelModel.primitives.ElasticityPrimitivesDescription;
+import at.ac.tuwien.dsg.csdg.inputProcessing.multiLevelModel.primitives.ServiceElasticityPrimitives;
 import at.ac.tuwien.dsg.csdg.inputProcessing.tosca.TOSCAProcessing;
 
 
@@ -128,15 +141,110 @@ public class Main {
 	serviceTopology.addNode(serviceUnit, relationship);
 	return rootCloudService;
 	}
-	
-	public static void main(String[] args) {
-		//Main m = new Main();
-		//Node cloudService = m.constructExampleDependencyGraph();
+	public static void createExampleDeploymentDescription(){
+		DeploymentDescription deploymentDescription = new DeploymentDescription();
+		deploymentDescription.setAccessIP("localhost");
+		DeploymentUnit deploymentUnit = new DeploymentUnit();
+		AssociatedVM associatedVM = new AssociatedVM();
+		deploymentUnit.addAssociatedVM(associatedVM);
+		at.ac.tuwien.dsg.csdg.inputProcessing.multiLevelModel.deploymentDescription.ElasticityCapability elasticityCapability = new at.ac.tuwien.dsg.csdg.inputProcessing.multiLevelModel.deploymentDescription.ElasticityCapability();
+		elasticityCapability.setName("scaleIn");
+		elasticityCapability.setPrimitiveOperations("M2MDaaS.decommissionWS;dryRun.scaleIn");
+		deploymentUnit.addElasticityCapability(elasticityCapability);
+		ArrayList<DeploymentUnit> units = new ArrayList<DeploymentUnit>();
+		units.add(deploymentUnit);
+		deploymentDescription.setDeployments(units);
+		try {
+	    	 
+			File file = new File("deployment.xml");
+			JAXBContext jaxbContext = JAXBContext.newInstance(DeploymentDescription.class);
+			Marshaller jaxbMarshaller = jaxbContext.createMarshaller();
+	 
+			// output pretty printed
+			jaxbMarshaller.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, true);
+	 
+			jaxbMarshaller.marshal(deploymentDescription, file);
+			jaxbMarshaller.marshal(deploymentDescription, System.out);
+	 
+		      } catch (JAXBException e) {
+			e.printStackTrace();
+		      }
+	}
+	public static void populateElasticityPrimitives(){
+		ElasticityPrimitivesDescription elasticityPrimitivesDescription = new ElasticityPrimitivesDescription();
+		List<ElasticityPrimitive> elasticityPrimitives = new ArrayList<ElasticityPrimitive>();
+		ElasticityPrimitive elasticityPrimitive = new ElasticityPrimitive();
+		elasticityPrimitive.setId("ScaleOut");
+		elasticityPrimitive.setName("Create new VM");
 		
+		ElasticityPrimitive elasticityPrimitive1 = new ElasticityPrimitive();
+		elasticityPrimitive1.setId("ScaleIn");
+		elasticityPrimitive1.setName("Remove VM");
+		
+		ElasticityPrimitive allocateIP = new ElasticityPrimitive();
+		allocateIP.setId("AllocateIP");
+		allocateIP.setName("Allocate public IP");
+		allocateIP.setParameters("UUID");
+		
+		ElasticityPrimitive createDisk = new ElasticityPrimitive();
+		createDisk.setId("AttachDisk");
+		createDisk.setName("Attach New Disk");
+		createDisk.setParameters("UUID");
+		
+		ElasticityPrimitiveDependency dependency=new ElasticityPrimitiveDependency();
+		dependency.setDependencyType("AFTER_ENFORCEMENT");
+		dependency.setPrimitiveID("Reboot");
+		createDisk.addPrimitiveDependency(dependency);
+		
+		ElasticityPrimitive reboot = new ElasticityPrimitive();
+		reboot.setId("Reboot");
+		reboot.setName("Restart VM");
+		reboot.setParameters("UUID");
+		
+		
+		
+		elasticityPrimitives.add(elasticityPrimitive1);
+		elasticityPrimitives.add(elasticityPrimitive);
+		elasticityPrimitives.add(allocateIP);
+		elasticityPrimitives.add(createDisk);
+		elasticityPrimitives.add(reboot);
+		ServiceElasticityPrimitives elasticityPrimitives2 =new ServiceElasticityPrimitives();
+		elasticityPrimitives2.setServiceProvider("Flexiant FCO");
+		elasticityPrimitives2.setElasticityPrimitives(elasticityPrimitives);
+		elasticityPrimitives2.setId("FCO");
+	    elasticityPrimitivesDescription.addElasticityPrimitiveDescription(elasticityPrimitives2);
+	    try {
+	    	 
+			File file = new File("primitives.xml");
+			JAXBContext jaxbContext = JAXBContext.newInstance(ElasticityPrimitivesDescription.class);
+			Marshaller jaxbMarshaller = jaxbContext.createMarshaller();
+	 
+			// output pretty printed
+			jaxbMarshaller.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, true);
+	 
+			jaxbMarshaller.marshal(elasticityPrimitivesDescription, file);
+			jaxbMarshaller.marshal(elasticityPrimitivesDescription, System.out);
+	 
+		      } catch (JAXBException e) {
+			e.printStackTrace();
+		      }
+	 
+		
+
+		
+	}
+	public static void main(String[] args) {
+		//populateElasticityPrimitives();
+		createExampleDeploymentDescription();
+//		Main m = new Main();
+//		Node cloudService = m.constructExampleDependencyGraph();
+//		
 //		DependencyGraph dependencyGraph = new DependencyGraph();
 //		dependencyGraph.setCloudService(cloudService);
 //		
 //		System.out.println(dependencyGraph.graphToString());
+		
+		
 //		SYBLElasticityRequirementsDescription description = new SYBLElasticityRequirementsDescription();
 //		try {
 //			description.generateXSD("sybl.xsd");
@@ -145,13 +253,13 @@ public class Main {
 //			e.printStackTrace();
 //		}
 //		
-		DeploymentDescription description1 = new DeploymentDescription();
-		try {
-			description1.generateXSD("DeploymentDescription.xsd");
-		} catch (Exception e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
+//		DeploymentDescription description1 = new DeploymentDescription();
+//		try {
+//			description1.generateXSD("DeploymentDescription.xsd");
+//		} catch (Exception e) {
+//			// TODO Auto-generated catch block
+//			e.printStackTrace();
+//		}
 		//DependencyGraph fromTosca = new TOSCAProcessing().toscaDescriptionToDependencyGraph();
 		//System.out.println(fromTosca.graphToString());
 		

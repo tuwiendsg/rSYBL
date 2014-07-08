@@ -38,6 +38,7 @@ public class OfferedEnforcementElasticityCapabilities {
 	public void callSpecializedMethod(Node method, Node parameter){
 		
 	}
+	
 	public void scaleOut(Node entity){
 		Map<Method,EnforcementInterface> methods = manageEnforcementPlugins.getMethods(manageEnforcementPlugins.getAllPlugins(cloudService));
 		for (Method method:methods.keySet()){

@@ -32,11 +32,27 @@ import at.ac.tuwien.dsg.csdg.Node;
 
 public class VirtualMachine extends Node{
 	public List<Node> ips = new ArrayList<Node>();
-	
+	public List<Artifact> artifacts = new ArrayList<Artifact>();
+	public List<Container> containers = new ArrayList<Container>();
 	public List<Node> getPublicIps(){
 		return null;
 	}
 	public List<Node> getPrivateIps(){
 		return null;
 	}
+	public List<Artifact> getArtifacts() {
+		return artifacts;
+	}
+
+	public void setArtifacts(List<Artifact> artifacts) {
+		this.artifacts = artifacts;
+	}
+	public void addArtifact(Artifact artifact){
+		artifacts.add(artifact);
+	}
+	
+	public void removeArtifact(Artifact artifact){
+		artifacts.remove(artifact);
+	}
+	
 }

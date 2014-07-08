@@ -187,7 +187,7 @@ public void processPriorities(String priorities,ArrayList<Rule> rules)  {
 						String cond = ruleText.split("CASE ")[1].split(":")[0];
 							try {
 								if (evaluateCondition(cond)){
-								SYBLDirectivesEnforcementLogger.logger.info("Evaluating condition "+cond+" of the higher importance rule");
+								//SYBLDirectivesEnforcementLogger.logger.info("Evaluating condition "+cond+" of the higher importance rule");
 									disableLessImpRule=true;
 								}
 							} catch (NoSuchMethodException | SecurityException | IllegalAccessException | IllegalArgumentException | InvocationTargetException e) {
@@ -225,11 +225,9 @@ public void processConstraints(String constraints)
 		String[] x = c.split(":");
 		
 		Rule r = new Rule();
-		try{
-		SYBLDirectivesEnforcementLogger.logger.info("Constraint " + x[0] + " has the following body: " + x[1]);
-		}catch(Exception e){
-			SYBLDirectivesEnforcementLogger.logger.info("Error when splitting on : the constraint "+c);
-		}
+
+		//SYBLDirectivesEnforcementLogger.logger.info("Constraint " + x[0] + " has the following body: " + x[1]);
+
 		r.setName(eliminateSpaces(x[0]));
 		r.setText(x[1]);
 		if (!disabledRules.contains(r)){
@@ -276,7 +274,7 @@ public void processMonitoring(String monitoring) {
 	String[] s = monitoring.split(";");
 	for (String c : s) {
 		String[] x = c.split(":");
-		SYBLDirectivesEnforcementLogger.logger.info("Monitoring requirement " + x[0] + " has the following body: " + x[1]);
+		//SYBLDirectivesEnforcementLogger.logger.info("Monitoring requirement " + x[0] + " has the following body: " + x[1]);
 		Rule r = new Rule();
 		r.setName(x[0]);
 		r.setText(x[1]);
@@ -308,13 +306,32 @@ public void processStrategies(String strategies) {
 		r.setName(x[0]);
 
 		r.setText(c.substring(c.indexOf(":") + 1));
-		SYBLDirectivesEnforcementLogger.logger.info("Strategy requirement " + x[0] + " has the following body: " + r.getText());
+		//SYBLDirectivesEnforcementLogger.logger.info("Strategy requirement " + x[0] + " has the following body: " + r.getText());
 		if (r.getText().contains("WHERE "))
 			processComplexStrategy(r);
 		else
 			processStrategy(r);
 	}
 
+}
+public void doEnforcementWithPrimitives(String enf, String strategyName){
+	if (!enf.contains("minimize") &&  !enf.contains("maximize")){
+		if (enf.contains("(")){
+			String actionName = enf.split("[(]")[0];
+
+			
+			String parameter = eliminateSpaces(enf.split("[(]")[1].split("[)]")[0]);
+			Node entity = dependencyGraph.getNodeWithID(parameter);
+			ElasticityCapabilityEnforcement capabilityEnforcement = new ElasticityCapabilityEnforcement(enforcementAPI);
+			capabilityEnforcement.enforceActionGivenPrimitives(actionName, entity, dependencyGraph);
+		}else{
+			String actionName = eliminateSpaces(enf);
+			
+
+			ElasticityCapabilityEnforcement capabilityEnforcement = new ElasticityCapabilityEnforcement(enforcementAPI);
+			capabilityEnforcement.enforceActionGivenPrimitives(actionName, currentEntity, dependencyGraph);
+		}
+		}
 }
 public void doEnforcement( String enf, String strategyName){
 	enforcingAction=true;
@@ -325,7 +342,7 @@ public void doEnforcement( String enf, String strategyName){
 
 		
 	String parameter = eliminateSpaces(enf.split("[(]")[1].split("[)]")[0]);
-	SYBLDirectivesEnforcementLogger.logger.info("Parametor for " +actionName+" to be enforced is "+ parameter+" ");
+	//SYBLDirectivesEnforcementLogger.logger.info("Parametor for " +actionName+" to be enforced is "+ parameter+" ");
 	if (!parameter.equals("")){
 	actionName = eliminateSpaces(actionName);
 	String target = "";
@@ -333,7 +350,7 @@ public void doEnforcement( String enf, String strategyName){
 		target=actionName.split("\\.")[0];
 		String a  = actionName.split("\\.")[1];
 		actionName=eliminateSpaces(a);
-		SYBLDirectivesEnforcementLogger.logger.info("Found plugin " +target+" for action "+actionName);
+		//SYBLDirectivesEnforcementLogger.logger.info("Found plugin " +target+" for action "+actionName);
 
 	}
 	try {
@@ -377,7 +394,7 @@ public void doEnforcement( String enf, String strategyName){
 		actionMethod.invoke(enforcementAPI, parameters);
 	} catch (NoSuchMethodException ex1)  {
 		Node entity = dependencyGraph.getNodeWithID(parameter);
-		SYBLDirectivesEnforcementLogger.logger.info("Enforcing action "+actionName+" as a result of enforcing strategy "+strategyName+" on "+entity.getId());
+		//SYBLDirectivesEnforcementLogger.logger.info("Enforcing el capability "+actionName+" as a result of enforcing strategy "+strategyName+" on "+entity.getId());
 
 		if (target.equalsIgnoreCase(""))
 			enforcementAPI.enforceAction(actionName, entity);
@@ -410,12 +427,15 @@ public void doEnforcement( String enf, String strategyName){
 
 	}else{
 		String actionName = eliminateSpaces(enf);
+		
+
+		
 		String target = "";
 		if (actionName.contains(".")){
 			target=actionName.split("\\.")[0];
 			String a  = actionName.split("\\.")[1];
 			actionName=eliminateSpaces(a);
-			SYBLDirectivesEnforcementLogger.logger.info("Found plugin " +target+" for "+actionName);
+		//	SYBLDirectivesEnforcementLogger.logger.info("Found plugin " +target+" for "+actionName);
 
 		}
 		if (target.equalsIgnoreCase("")){
@@ -453,7 +473,7 @@ public void doEnforcement( String enf, String strategyName){
 			}
 		
 		try {
-			SYBLDirectivesEnforcementLogger.logger.info("Enforcing action "+actionName+" as a result of enforcing strategy "+strategyName+" on "+currentEntity.getId());
+			//SYBLDirectivesEnforcementLogger.logger.info("Enforcing el capability "+actionName+" as a result of enforcing strategy "+strategyName+" on "+currentEntity.getId());
 			Method actionMethod = EnforcementAPIInterface.class.getMethod(
 					actionName, partypes);
 
@@ -498,7 +518,7 @@ public void processStrategy(Rule r) {
 		try {
 			try {
 				if ((condition.contains("AND") && evaluateCompositeCondition(condition))||(!condition.contains("AND") &&evaluateCondition(condition)) ){
-					doEnforcement( s[1],r.getName());
+					doEnforcementWithPrimitives( s[1],r.getName());
 				}else{
 					SYBLDirectivesEnforcementLogger.logger.info("Condition not true for strategy "+r.getName() );
 				}
@@ -516,7 +536,7 @@ public void processStrategy(Rule r) {
 		String[] actions = s[0].split(";");
 		
 		for (String action:actions){
-			doEnforcement(action,r.getName());
+			doEnforcementWithPrimitives(action,r.getName());
 			}
 				
 		}
@@ -592,7 +612,7 @@ public void processSimpleMonitoringRule(String monitoring)
 			EnvironmentVariable environmentVariable = new EnvironmentVariable();
 			environmentVariable.setName(variableName);
 			environmentVariable.setVar(newVar);
-			SYBLDirectivesEnforcementLogger.logger.info("Executing method "+methodName);
+			//SYBLDirectivesEnforcementLogger.logger.info("Executing method "+methodName);
 			
 			Comparable res = (Comparable) method.invoke(monitoringAPI,parameters);
 			//SYBLDirectivesEnforcementLogger.logger.info("The monitored variable, " + variableName
@@ -743,7 +763,7 @@ public Comparable evaluateTerm(String term) throws MeasurementNotAvailableExcept
 			result= Double.parseDouble(term);
 		}
 	}
-	SYBLDirectivesEnforcementLogger.logger.info("We evaluate term "+term+" discovered in the requirement. Its value is "+result+ " for node "+currentEntity.getId());
+//	SYBLDirectivesEnforcementLogger.logger.info("We evaluate term "+term+" discovered in the requirement. Its value is "+result+ " for node "+currentEntity.getId());
 	return result;
 }
 

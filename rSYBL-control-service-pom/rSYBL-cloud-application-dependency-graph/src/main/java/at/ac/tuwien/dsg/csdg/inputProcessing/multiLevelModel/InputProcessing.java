@@ -35,7 +35,10 @@ import javax.xml.bind.Marshaller;
 import javax.xml.bind.Unmarshaller;
 import javax.xml.transform.stream.StreamSource;
 
+import at.ac.tuwien.dsg.csdg.DataElasticityDependency;
 import at.ac.tuwien.dsg.csdg.DependencyGraph;
+import at.ac.tuwien.dsg.csdg.InstantiationElasticityDependency;
+import at.ac.tuwien.dsg.csdg.LoadElasticityDependency;
 import at.ac.tuwien.dsg.csdg.Node;
 import at.ac.tuwien.dsg.csdg.Relationship;
 import at.ac.tuwien.dsg.csdg.Node.NodeType;
@@ -47,14 +50,15 @@ import at.ac.tuwien.dsg.csdg.elasticityInformation.elasticityRequirements.SYBLEl
 import at.ac.tuwien.dsg.csdg.elasticityInformation.elasticityRequirements.SYBLSpecification;
 import at.ac.tuwien.dsg.csdg.elasticityInformation.elasticityRequirements.SYBLAnnotation.AnnotationType;
 import at.ac.tuwien.dsg.csdg.inputProcessing.multiLevelModel.abstractModelXML.CloudServiceXML;
+import at.ac.tuwien.dsg.csdg.inputProcessing.multiLevelModel.abstractModelXML.RelationshipXML;
 import at.ac.tuwien.dsg.csdg.inputProcessing.multiLevelModel.abstractModelXML.SYBLAnnotationXML;
 import at.ac.tuwien.dsg.csdg.inputProcessing.multiLevelModel.abstractModelXML.SYBLDirectiveMappingFromXML;
 import at.ac.tuwien.dsg.csdg.inputProcessing.multiLevelModel.abstractModelXML.ServiceTopologyXML;
 import at.ac.tuwien.dsg.csdg.inputProcessing.multiLevelModel.abstractModelXML.ServiceUnitXML;
-import at.ac.tuwien.dsg.csdg.inputProcessing.multiLevelModel.abstractModelXML.ServiceUnitXML.ActionXML;
 import at.ac.tuwien.dsg.csdg.inputProcessing.multiLevelModel.deploymentDescription.AssociatedVM;
 import at.ac.tuwien.dsg.csdg.inputProcessing.multiLevelModel.deploymentDescription.DeploymentDescription;
 import at.ac.tuwien.dsg.csdg.inputProcessing.multiLevelModel.deploymentDescription.DeploymentUnit;
+import at.ac.tuwien.dsg.csdg.inputProcessing.multiLevelModel.primitives.ElasticityPrimitivesDescription;
 import at.ac.tuwien.dsg.csdg.utils.Configuration;
 import at.ac.tuwien.dsg.csdg.utils.DependencyGraphLogger;
 
@@ -67,23 +71,17 @@ public class InputProcessing {
 
     private void loadDeploymentDescriptionFromFile() {
         try {
-            //load deployment description and populate the dependency graph
 
             JAXBContext a = JAXBContext.newInstance(DeploymentDescription.class);
             Unmarshaller u = a.createUnmarshaller();
             String deploymentDescriptionPath = Configuration.getDeploymentDescriptionPath();
-            //	RuntimeLogger.logger.info("Got here "+deploymentDescriptionPath);
-            //	RuntimeLogger.logger.info("Got here "+this.getClass().getClassLoader().getResourceAsStream(deploymentDescriptionPath));
-
+           
             if (deploymentDescriptionPath != null) {
-                //deploymentDescription = (DeploymentDescription) u.unmarshal(new File(deploymentDescriptionPath));
                 deploymentDescription = (DeploymentDescription) u.unmarshal(InputProcessing.class.getClassLoader().getResourceAsStream(deploymentDescriptionPath));
             }
-            //RuntimeLogger.logger.info("Read deployment Descrption"+deploymentDescription.toString());
 
         } catch (Exception e) {
             DependencyGraphLogger.logger.error("Error in reading deployment description" + e.toString());
-            // TODO Auto-generated catch block
             e.printStackTrace();
         }
 
@@ -91,19 +89,13 @@ public class InputProcessing {
 
     private void loadDeploymentDescriptionFromString(String deploymentDescr) {
         try {
-            //load deployment description and populate the dependency graph
-
             JAXBContext a = JAXBContext.newInstance(DeploymentDescription.class);
             Unmarshaller u = a.createUnmarshaller();
-            //String deploymentDescriptionPath = Configuration.getDeploymentDescriptionPath();
-            //DependencyGraphLogger.logger.info("Got here "+this.getClass().getClassLoader().getResourceAsStream(deploymentDescriptionPath));
-
             deploymentDescription = (DeploymentDescription) u.unmarshal(new StringReader(deploymentDescr));
-            DependencyGraphLogger.logger.info("Read deployment Descrption" + deploymentDescription.toString());
+           // DependencyGraphLogger.logger.info("Read deployment Description" + deploymentDescription.toString());
 
         } catch (Exception e) {
             DependencyGraphLogger.logger.error("Error in reading deployment description" + e.toString());
-            // TODO Auto-generated catch block
             e.printStackTrace();
         }
 
@@ -115,18 +107,11 @@ public class InputProcessing {
         try {
             jc = JAXBContext.newInstance(CloudServiceXML.class);
             Unmarshaller u = jc.createUnmarshaller();
-
-            //JAXBElement element=  u.unmarshal( new File(Configuration.getModelDescrFile()));
-            // cloudS = (CloudServiceXML) element.getValue();
             cloudServiceXML = (CloudServiceXML) u.unmarshal(this.getClass().getClassLoader().getResourceAsStream(Configuration.getModelDescrFile()));
-            //File f = new File(Configuration.getModelDescrFile());
-            //cloudServiceXML = (CloudServiceXML) u.unmarshal(new File(Configuration.getModelDescrFile()));
         } catch (JAXBException e) {
-            // TODO Auto-generated catch block
             e.printStackTrace();
         }
-        //populate ips for above levels
-        //populateIps();
+
 
         try {
             JAXBContext a = JAXBContext.newInstance(SYBLElasticityRequirementsDescription.class);
@@ -134,17 +119,14 @@ public class InputProcessing {
             String directivePath = Configuration.getDirectivesPath();
             if (directivePath != null) {
                 syblSpecifications = (SYBLElasticityRequirementsDescription) u.unmarshal(this.getClass().getClassLoader().getResourceAsStream(directivePath));
-                // syblSpecifications = (SYBLElasticityRequirementsDescription) u.unmarshal(new File(directivePath));
             }
             for (SYBLAnnotation syblAnnotation : parseXMLInjectedAnnotations(cloudServiceXML)) {
                 if (syblSpecifications == null) {
                     syblSpecifications = new SYBLElasticityRequirementsDescription();
                 }
-                //if (syblAnnotation.getStrategies()!=null && syblAnnotation.getStrategies()!="")
                 syblSpecifications.getSyblSpecifications().add(SYBLDirectiveMappingFromXML.mapFromSYBLAnnotation(syblAnnotation));
             }
         } catch (JAXBException e) {
-            // TODO Auto-generated catch block
             e.printStackTrace();
         }
 
@@ -157,13 +139,9 @@ public class InputProcessing {
             jc = JAXBContext.newInstance(CloudServiceXML.class);
             Unmarshaller u = jc.createUnmarshaller();
 
-            //JAXBElement element=  u.unmarshal( new File(Configuration.getModelDescrFile()));
-            // cloudS = (CloudServiceXML) element.getValue();
             cloudServiceXML = (CloudServiceXML) u.unmarshal(new StringReader(applicationDescr));
-            //File f = new File(Configuration.getModelDescrFile());
-            //cloudServiceXML = (CloudServiceXML) u.unmarshal(new File(Configuration.getModelDescrFile()));
+
         } catch (JAXBException e) {
-            // TODO Auto-generated catch block
             DependencyGraphLogger.logger.info(e.getStackTrace().toString());
         }
 
@@ -172,7 +150,6 @@ public class InputProcessing {
             Unmarshaller u = a.createUnmarshaller();
             if (!elasticityReq.equalsIgnoreCase("")) {
                 syblSpecifications = (SYBLElasticityRequirementsDescription) u.unmarshal(new StringReader(elasticityReq));
-                // syblSpecifications = (SYBLElasticityRequirementsDescription) u.unmarshal(new File(directivePath));
             }
 				//DependencyGraphLogger.logger.info(parseXMLInjectedAnnotations(cloudServiceXML).size());
             //for (SYBLAnnotation syblAnnotation:parseXMLInjectedAnnotations(cloudServiceXML)){
@@ -294,13 +271,65 @@ public class InputProcessing {
         }
         return graph;
     }
+    public List<Relationship> evaluateRelationships(ServiceTopologyXML serviceTopologyXML){
+    	List <Relationship> resRelationships = new ArrayList<Relationship>();
+    	   for (RelationshipXML relationshipXML : serviceTopologyXML.getRelationships()){
 
+           	if (relationshipXML.getType()!=null && relationshipXML.getType().toLowerCase().contains("data")){
+           		DataElasticityDependency dataElasticityDependency = new DataElasticityDependency();
+           		
+           		dataElasticityDependency.setSourceElement(relationshipXML.getSource());
+           		dataElasticityDependency.setTargetElement(relationshipXML.getTarget());
+           		dataElasticityDependency.setDataMeasurementSource(relationshipXML.getMetricSource());
+           		dataElasticityDependency.setDataMeasurementTarget(relationshipXML.getMetricTarget());
+           		ElasticityRequirement requirement=new ElasticityRequirement();
+           		if (relationshipXML.getSyblAnnotationXML()!=null)
+           		requirement.setAnnotation(mapFromXMLAnnotationToSYBLAnnotation(relationshipXML.getRelationshipID(), relationshipXML.getSyblAnnotationXML(), AnnotationType.RELATIONSHIP));
+           		dataElasticityDependency.setRequirement(requirement);
+           		dataElasticityDependency.setId(relationshipXML.getRelationshipID());
+           		dataElasticityDependency.setType(RelationshipType.DATA);
+           		resRelationships.add(dataElasticityDependency);
+
+           	}
+           	if (relationshipXML.getType()!=null && relationshipXML.getType().toLowerCase().contains("instant")){
+           		InstantiationElasticityDependency instantiationElasticityDependency = new InstantiationElasticityDependency();
+           		
+           		instantiationElasticityDependency.setSourceElement(relationshipXML.getSource());
+           		instantiationElasticityDependency.setTargetElement(relationshipXML.getTarget());
+           		instantiationElasticityDependency.setFocusMetric(relationshipXML.getFocusMetric());
+           		ElasticityRequirement requirement=new ElasticityRequirement();
+           		if (relationshipXML.getSyblAnnotationXML()!=null)
+           		requirement.setAnnotation(mapFromXMLAnnotationToSYBLAnnotation(relationshipXML.getRelationshipID(), relationshipXML.getSyblAnnotationXML(), AnnotationType.RELATIONSHIP));
+           		instantiationElasticityDependency.setRequirement(requirement);
+           		instantiationElasticityDependency.setType(RelationshipType.INSTANTIATION);
+
+           		instantiationElasticityDependency.setId(relationshipXML.getRelationshipID());
+           		resRelationships.add(instantiationElasticityDependency);
+           	}
+           	if (relationshipXML.getType()!=null &&  relationshipXML.getType().toLowerCase().contains("load")){
+           		LoadElasticityDependency loadElasticityDependency = new LoadElasticityDependency();
+           		
+           		loadElasticityDependency.setSourceElement(relationshipXML.getSource());
+           		loadElasticityDependency.setTargetElement(relationshipXML.getTarget());
+           		loadElasticityDependency.setSourceLoadMetric(relationshipXML.getMetricSource());
+           		loadElasticityDependency.setTargetLoadMetric(relationshipXML.getMetricTarget());
+           		ElasticityRequirement requirement=new ElasticityRequirement();
+           		if (relationshipXML.getSyblAnnotationXML()!=null)
+           		requirement.setAnnotation(mapFromXMLAnnotationToSYBLAnnotation(relationshipXML.getRelationshipID(), relationshipXML.getSyblAnnotationXML(), AnnotationType.RELATIONSHIP));
+           		loadElasticityDependency.setRequirement(requirement);
+           		loadElasticityDependency.setType(RelationshipType.LOAD);
+           		loadElasticityDependency.setId(relationshipXML.getRelationshipID());
+           		resRelationships.add(loadElasticityDependency);
+           	}
+           }
+    	   return resRelationships;
+    }
     public DependencyGraph constructDependencyGraph() {
         graph = new DependencyGraph();
         Node cloudService = new Node();
         cloudService.setId(cloudServiceXML.getId());
         cloudService.setNodeType(NodeType.CLOUD_SERVICE);
-
+        List<Relationship> specialRelationships = new ArrayList<Relationship>();
         if (cloudServiceXML.getXMLAnnotation() != null) {
             ElasticityRequirement elReq = new ElasticityRequirement();
             elReq.setAnnotation(mapFromXMLAnnotationToSYBLAnnotation(cloudService.getId(), cloudServiceXML.getXMLAnnotation(), AnnotationType.CLOUD_SERVICE));
@@ -312,10 +341,13 @@ public class InputProcessing {
         for (ServiceTopologyXML serviceTopologyXML : cloudServiceXML.getServiceTopologies()) {
             remainingServiceTopologies.add(serviceTopologyXML);
             ServiceTopologyXML firstServTopology = serviceTopologyXML;
+            
             Node serviceTopologyFirst = new Node();
             serviceTopologyFirst.setId(firstServTopology.getId());
             serviceTopologyFirst.setNodeType(NodeType.SERVICE_TOPOLOGY);
             Relationship rel = new Relationship();
+            
+           specialRelationships.addAll(evaluateRelationships(serviceTopologyXML));
             rel.setSourceElement(cloudService.getId());
             rel.setTargetElement(serviceTopologyFirst.getId());
             rel.setType(RelationshipType.COMPOSITION_RELATIONSHIP);
@@ -334,9 +366,9 @@ public class InputProcessing {
             if (nodes.containsKey(serviceTopologyXML.getId())) {
                 serviceTopology = nodes.get(serviceTopologyXML.getId());
             }
-
+            
             if (serviceTopologyXML.getServiceUnits() != null && !serviceTopologyXML.getServiceUnits().isEmpty()) {
-                for (ServiceUnitXML serviceUnitXML : serviceTopologyXML.getServiceUnits()) {
+            	for (ServiceUnitXML serviceUnitXML : serviceTopologyXML.getServiceUnits()) {
                     Node serviceUnit = new Node();
                     serviceUnit.setId(serviceUnitXML.getId());
                     serviceUnit.setNodeType(NodeType.SERVICE_UNIT);
@@ -350,18 +382,18 @@ public class InputProcessing {
                         serviceUnit.getElasticityRequirements().add(elReq);
                     }
 
-                    if (serviceUnitXML.getActions() != null && !serviceUnitXML.getActions().isEmpty()) {
-                        for (ActionXML actionXML : serviceUnitXML.getActions()) {
-                            ElasticityCapability elCapability = new ElasticityCapability();
-                            elCapability.setApiMethod(actionXML.getApiMethod());
-                            elCapability.setName(actionXML.getName());
-                            elCapability.setParameter(actionXML.getParameter());
-
-                            elCapability.setCallType(actionXML.getCallType());
-                            serviceUnit.addElasticityCapability(elCapability);
-                        }
-
-                    }
+//                    if (serviceUnitXML.getActions() != null && !serviceUnitXML.getActions().isEmpty()) {
+//                        for (ActionXML actionXML : serviceUnitXML.getActions()) {
+//                            ElasticityCapability elCapability = new ElasticityCapability();
+//                            elCapability.setApiMethod(actionXML.getApiMethod());
+//                            elCapability.setName(actionXML.getName());
+//                            elCapability.setParameter(actionXML.getParameter());
+//
+//                            elCapability.setCallType(actionXML.getCallType());
+//                            serviceUnit.addElasticityCapability(elCapability);
+//                        }
+//
+//                    }
                     serviceTopology.addNode(serviceUnit, rel);
                     nodes.put(serviceUnit.getId(), serviceUnit);
 
@@ -389,10 +421,16 @@ public class InputProcessing {
             nodes.put(serviceTopology.getId(), serviceTopology);
             remainingServiceTopologies.remove(0);
         }
+      
         for (Entry<Node, Relationship> entry : serviceTopologiesFirst.entrySet()) {
             cloudService.addNode(entry.getKey(), entry.getValue());
         }
+        
         graph.setCloudService(cloudService);
+        for (Relationship rel : specialRelationships){
+        	graph.getNodeWithID(rel.getSourceElement()).addNode(graph.getNodeWithID(rel.getTargetElement()), rel);
+        }
+        
         DependencyGraphLogger.logger.info("Deployment Description " + deploymentDescription.getAccessIP());
         cloudService.getStaticInformation().put("AccessIP", deploymentDescription.getAccessIP());
 		//
@@ -427,6 +465,7 @@ public class InputProcessing {
                         newElasticityCapability.setName(elasticityCapability.getName());
                         newElasticityCapability.setCallType(elasticityCapability.getType());
                         newElasticityCapability.setEndpoint(elasticityCapability.getScript());
+                        newElasticityCapability.setPrimitiveOperations(elasticityCapability.getPrimitiveOperations());
                         node.addElasticityCapability(newElasticityCapability);
                     }
 
@@ -453,7 +492,43 @@ public class InputProcessing {
 
         return graph;
     }
+    public ElasticityPrimitivesDescription loadElasticityPrimitivesDescriptionFromFile(){
+    	 JAXBContext jc;
+    	 ElasticityPrimitivesDescription elasticityPrimitivesDescription = null;
+     	  try {
+             jc = JAXBContext.newInstance(ElasticityPrimitivesDescription.class);
+             Unmarshaller u = jc.createUnmarshaller();
 
+             elasticityPrimitivesDescription = (ElasticityPrimitivesDescription) u.unmarshal(this.getClass().getClassLoader().getResourceAsStream(Configuration.getPrimitivesDescriptionFile()));
+           } catch (Exception e) {
+             // TODO Auto-generated catch block
+             try{
+                 jc = JAXBContext.newInstance(ElasticityPrimitivesDescription.class);
+
+            	 Unmarshaller u = jc.createUnmarshaller();
+
+            	   File f = new File(Configuration.getPrimitivesDescriptionFile());
+            	   elasticityPrimitivesDescription = (ElasticityPrimitivesDescription) u.unmarshal(new File(Configuration.getPrimitivesDescriptionFile()));
+            
+             }catch(Exception e1){
+            	 e1.printStackTrace();
+             }
+         }
+     	  return elasticityPrimitivesDescription;
+    }
+    public ElasticityPrimitivesDescription elasticityPrimitivesDescription(String elasticityPrimitives){
+    	ElasticityPrimitivesDescription elasticityPrimitivesDescription = null;
+    	  JAXBContext jc;
+          try {
+              jc = JAXBContext.newInstance(ElasticityPrimitivesDescription.class);
+              Unmarshaller u = jc.createUnmarshaller();
+
+              elasticityPrimitivesDescription = (ElasticityPrimitivesDescription) u.unmarshal(new StringReader(elasticityPrimitives));
+          } catch (JAXBException e) {
+              DependencyGraphLogger.logger.info(e.getStackTrace().toString());
+          }
+          return elasticityPrimitivesDescription;
+    }
     public DependencyGraph loadDependencyGraphFromFile() {
 
         loadModelFromFile();

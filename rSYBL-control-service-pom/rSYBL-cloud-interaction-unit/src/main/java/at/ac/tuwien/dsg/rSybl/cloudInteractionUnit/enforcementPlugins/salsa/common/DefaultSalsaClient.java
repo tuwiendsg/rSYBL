@@ -29,7 +29,7 @@ public class DefaultSalsaClient {
         service = cloudService;
     }
 
-    public String scaleIn(String toScale) {
+    public boolean scaleIn(String toScale) {
         URL url = null;
         HttpURLConnection connection = null;
         try {
@@ -54,6 +54,7 @@ public class DefaultSalsaClient {
                 String line;
                 while ((line = reader.readLine()) != null) {
                     RuntimeLogger.logger.error(line);
+                    return false;
                 }
             }
 
@@ -63,20 +64,21 @@ public class DefaultSalsaClient {
                 String line;
                 while ((line = reader.readLine()) != null) {
                     RuntimeLogger.logger.info(line);
-                    return line;
+                   
                 }
                 
             }
 
         } catch (Exception e) {
             RuntimeLogger.logger.info(e.getMessage());
+            return false;
         } finally {
 
             if (connection != null) {
                 connection.disconnect();
             }
         }
-        return "";
+        return true;
     }
 
     public String scaleOut(String toScale) {

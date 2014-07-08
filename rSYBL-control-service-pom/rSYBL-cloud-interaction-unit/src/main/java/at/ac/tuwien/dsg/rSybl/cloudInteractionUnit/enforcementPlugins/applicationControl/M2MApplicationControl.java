@@ -5,6 +5,7 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -12,8 +13,10 @@ import at.ac.tuwien.dsg.csdg.DependencyGraph;
 import at.ac.tuwien.dsg.csdg.Node;
 import at.ac.tuwien.dsg.csdg.Node.NodeType;
 import at.ac.tuwien.dsg.csdg.Relationship.RelationshipType;
+import at.ac.tuwien.dsg.rSybl.cloudInteractionUnit.enforcementPlugins.interfaces.EnforcementInterface;
 import at.ac.tuwien.dsg.rSybl.cloudInteractionUnit.utils.Configuration;
 import at.ac.tuwien.dsg.rSybl.cloudInteractionUnit.utils.RuntimeLogger;
+import at.ac.tuwien.dsg.rSybl.dataProcessingUnit.api.MonitoringAPIInterface;
 import at.ac.tuwien.dsg.rSybl.dataProcessingUnit.monitoringPlugins.gangliaMonitoring.GangliaMonitor.MyUserInfo;
 
 import com.jcraft.jsch.ChannelExec;
@@ -22,9 +25,12 @@ import com.jcraft.jsch.JSchException;
 import com.jcraft.jsch.Session;
 import com.jcraft.jsch.UserInfo;
 
-public class M2MApplicationControl {
-	
-	public void decommission(String nodeId, String ip, Node controlledService){
+public class M2MApplicationControl implements EnforcementInterface{
+	private Node controlledService;
+	public M2MApplicationControl(Node cloudService){
+		controlledService=cloudService;
+	}
+	public boolean decommission(String nodeId, String ip, Node controlledService){
 		DependencyGraph dependencyGraph=new DependencyGraph();
 		dependencyGraph.setCloudService(controlledService);
 		
@@ -56,6 +62,7 @@ public class M2MApplicationControl {
 	      	} catch (JSchException e1) {
 	      		// TODO Auto-generated catch block
 	      		e1.printStackTrace();
+	      		return false;
 	      	}
 	          else
 	          {
@@ -65,8 +72,70 @@ public class M2MApplicationControl {
 				} catch (IOException | InterruptedException e) {
 					// TODO Auto-generated catch block
 					e.printStackTrace();
+					return false;
 				}
 	          }
+	          return true;
+	}
+	public boolean decommissionWS( Node node,String commandParameters){
+		
+		
+		String cmd="";
+
+	   		   cmd = "decomissionWS " + commandParameters ;
+		RuntimeLogger.logger.info("~~~~~~~~~~~~~~~Appl level enforcement~~~~~~~~ Enforcing command "+cmd);
+	          if (!(controlledService.getStaticInformation("AccessIP").equals("localhost")))
+	      	try {
+	      		 executeAndExpectNothing((String)controlledService.getStaticInformation("AccessIP"), Configuration.getCertificatePath(), cmd);
+	      	} catch (JSchException e1) {
+	      		// TODO Auto-generated catch block
+	      		RuntimeLogger.logger.info("Failed to enforce decomission ws on "+node.getId());
+	      		return false;
+	      	}
+	          else
+	          {
+	       	   try {
+					Process p = Runtime.getRuntime().exec(cmd);
+					int exitVal = p.waitFor();
+				} catch (IOException | InterruptedException e) {
+					// TODO Auto-generated catch block
+					RuntimeLogger.logger.info("Failed to enforce decomissionWS on "+node.getId());
+		      		return false;
+				}
+	          }
+	          return true;
+	          
+	}
+	public boolean decommissionNode( Node node,String cmdParameters) {
+		DependencyGraph dependencyGraph=new DependencyGraph();
+		dependencyGraph.setCloudService(controlledService);
+		
+		String cmd="";
+    
+	   		   cmd = "decomissionNode " + cmdParameters;
+		RuntimeLogger.logger.info("~~~~~~~~~~~~~~~Appl level enforcement~~~~~~~~ Enforcing command "+cmd);
+	          if (!(controlledService.getStaticInformation("AccessIP").equals("localhost")))
+				try {
+					executeAndExpectNothing((String)controlledService.getStaticInformation("AccessIP"), Configuration.getCertificatePath(), cmd);
+				} catch (JSchException e) {
+			
+					RuntimeLogger.logger.info("Failed to enforce decomission ws on "+node.getId());
+		      		return false;
+				}
+			else
+	          {
+				try {
+					Process p = Runtime.getRuntime().exec(cmd);
+					
+						int exitVal = p.waitFor();
+					} catch (InterruptedException | IOException e) {
+						// TODO Auto-generated catch block
+						RuntimeLogger.logger.info("Failed to enforce decomission ws on "+node.getId());
+			      		return false;
+					}
+				
+	          }
+	          return true;
 	          
 	}
 	 private byte[] readFile (String file) throws IOException {
@@ -203,4 +272,44 @@ public class M2MApplicationControl {
           channel.disconnect();
 
      }
+	@Override
+	public boolean scaleOut(Node toBeScaled) {
+		// TODO Auto-generated method stub
+		return false;
+	}
+	@Override
+	public boolean scaleIn(Node toBeScaled) {
+		// TODO Auto-generated method stub
+		return false;
+	}
+	@Override
+	public List<String> getElasticityCapabilities() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+	@Override
+	public boolean enforceAction(String actionName, Node entity) {
+		// TODO Auto-generated method stub
+		return false;
+	}
+	@Override
+	public void setControlledService(Node controlledService) {
+		// TODO Auto-generated method stub
+		
+	}
+	@Override
+	public Node getControlledService() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+	@Override
+	public void setMonitoringPlugin(MonitoringAPIInterface monitoring) {
+		// TODO Auto-generated method stub
+		
+	}
+	@Override
+	public boolean containsElasticityCapability(Node entity, String capability) {
+		// TODO Auto-generated method stub
+		return false;
+	}
 }
