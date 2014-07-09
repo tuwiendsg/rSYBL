@@ -20,6 +20,7 @@
     <module>rSYBL-planning-engine</module>
     <module>rSYBL-learning-engine</module>
     <module>rSYBL-cloud-interaction-unit</module>
+	<module>rSYBL-cloud-api-lowlevel</module>
     <module>rSYBL-cloud-application-dependency-graph</module>
     <module>rSYBL-sybl-processing-unit</module>
     <module>rSYBL-client</module>
