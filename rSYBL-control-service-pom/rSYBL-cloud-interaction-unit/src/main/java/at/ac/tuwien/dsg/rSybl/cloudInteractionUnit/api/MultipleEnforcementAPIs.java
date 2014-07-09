@@ -8,7 +8,7 @@ import at.ac.tuwien.dsg.csdg.elasticityInformation.ElasticityCapability;
 import at.ac.tuwien.dsg.csdg.elasticityInformation.ElasticityRequirement;
 import at.ac.tuwien.dsg.rSybl.cloudInteractionUnit.utils.Configuration;
 import at.ac.tuwien.dsg.rSybl.dataProcessingUnit.api.MonitoringAPIInterface;
-import at.ac.tuwien.dsg.rSybl.dataProcessingUnit.utils.RuntimeLogger;
+import at.ac.tuwien.dsg.rSybl.cloudInteractionUnit.utils.RuntimeLogger;
 
 public class MultipleEnforcementAPIs implements EnforcementAPIInterface{
 	HashMap<String,EnforcementAPI> enforcementAPIs = new HashMap<String, EnforcementAPI>() ;
@@ -52,6 +52,10 @@ public class MultipleEnforcementAPIs implements EnforcementAPIInterface{
 
 	@Override
 	public void scalein(Node arg0) {
+           if (Configuration.getCoordinatedMode().toLowerCase().contains("on")||Configuration.getCoordinatedMode().toLowerCase().contains("true")){
+           enforceAction("scalein", arg0);
+           
+           }else{
 		if (arg0.getAllRelatedNodes().size()>1){
 			monitoringAPIInterface.enforcingActionStarted("ScaleIn",arg0 );
 
@@ -69,6 +73,7 @@ public class MultipleEnforcementAPIs implements EnforcementAPIInterface{
 		monitoringAPIInterface.enforcingActionEnded("ScaleIn",arg0 );
 
 		}
+           }
 	}
 
 	@Override
@@ -82,6 +87,10 @@ public class MultipleEnforcementAPIs implements EnforcementAPIInterface{
 
 	@Override
 	public void scaleout(Node arg0) {
+            if (Configuration.getCoordinatedMode().toLowerCase().contains("on")||Configuration.getCoordinatedMode().toLowerCase().contains("true")){
+           enforceAction("scaleout", arg0);
+           
+           }else{
 		monitoringAPIInterface.enforcingActionStarted("ScaleOut",arg0 );
 
 		for (EnforcementAPI enforcementAPI:enforcementAPIs.values()){
@@ -92,7 +101,7 @@ public class MultipleEnforcementAPIs implements EnforcementAPIInterface{
 			}
 		}
 		monitoringAPIInterface.enforcingActionEnded("ScaleOut",arg0 );
-
+            }
 	}
 
 	@Override

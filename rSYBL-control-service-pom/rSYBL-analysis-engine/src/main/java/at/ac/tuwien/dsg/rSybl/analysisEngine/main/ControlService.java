@@ -157,21 +157,21 @@ public class ControlService {
 			planningAlgorithm = new PlanningGreedyAlgorithm(
 					dependencyGraph, monitoringAPI, enforcementAPI);
 			if (!effects.equalsIgnoreCase(""))
-			planningAlgorithm.setEffects(effects);
+                            planningAlgorithm.setEffects(effects);
 	
 			planningAlgorithm.start();
 			AnalysisLogger.logger.info("Planning algorithm started");
-			for (Node node1:dependencyGraph.getAllServiceUnits()){
-				
-				MonitoringThread monitoringThread = new MonitoringThread(node1, monitoringAPI);
-				monitoringThread.start();
-			}
-			for (Node node1:dependencyGraph.getAllServiceTopologies()){
-				MonitoringThread monitoringThread = new MonitoringThread(node1, monitoringAPI);
-				monitoringThread.start();
-			}
-			MonitoringThread monitoringThread = new MonitoringThread(dependencyGraph.getCloudService(), monitoringAPI);
-			monitoringThread.start();
+//			for (Node node1:dependencyGraph.getAllServiceUnits()){
+//				
+//				MonitoringThread monitoringThread = new MonitoringThread(node1, monitoringAPI);
+//				monitoringThread.start();
+//			}
+//			for (Node node1:dependencyGraph.getAllServiceTopologies()){
+//				MonitoringThread monitoringThread = new MonitoringThread(node1, monitoringAPI);
+//				monitoringThread.start();
+//			}
+//			MonitoringThread monitoringThread = new MonitoringThread(dependencyGraph.getCloudService(), monitoringAPI);
+//			monitoringThread.start();
 
 
 		} catch (Exception e) {
