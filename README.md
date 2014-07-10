@@ -1,6 +1,6 @@
  <center>
 <figure>
-<img src="https://github.com/tuwiendsg/rSYBL/blob/master/logo.png?raw=true" width="200px" >
+<img src="https://github.com/tuwiendsg/rSYBL/blob/master/docs/logo.png?raw=true" width="200px" >
 </figure> 
 </center>
 ==========
@@ -14,7 +14,7 @@ For any research work in which rSYBL is used, please cite the following papers:
 
 A snapshot of user interaction with rSYBL is presented below
 <figure>
-<img src="https://github.com/tuwiendsg/rSYBL/blob/master/lifecycle.jpg?raw=true" width="600px" >
+<img src="https://github.com/tuwiendsg/rSYBL/blob/master/docs/lifecycle.jpg?raw=true" width="600px" >
 </figure>
 ***
 
