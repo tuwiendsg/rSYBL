@@ -1,4 +1,4 @@
-package at.ac.tuwien.dsg.rSybl.cloudInteractionUnit.enforcementPlugins.flexiant;
+package at.ac.tuwien.dsg.rSybl.cloudApiLowLevel.enforcementPlugins.flexiant;
 
 import java.io.IOException;
 import java.util.ArrayList;
