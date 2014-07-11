@@ -11,7 +11,7 @@ import javax.xml.ws.WebServiceClient;
 import javax.xml.ws.WebServiceFeature;
 
 import at.ac.tuwien.dsg.rSybl.cloudInteractionUnit.utils.Configuration;
-import at.ac.tuwien.dsg.rSybl.dataProcessingUnit.utils.RuntimeLogger;
+import at.ac.tuwien.dsg.rSybl.cloudInteractionUnit.utils.RuntimeLogger;
 
 
 /**

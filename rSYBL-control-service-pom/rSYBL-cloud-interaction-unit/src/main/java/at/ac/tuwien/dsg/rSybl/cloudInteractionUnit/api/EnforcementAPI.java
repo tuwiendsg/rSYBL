@@ -67,7 +67,7 @@ public class EnforcementAPI  {
     /*
      * s.mariani@unibo.it CODE begins
      */
-    private final RespectEnforcementAPI respect;
+    private RespectEnforcementAPI respect;
 
     public EnforcementAPI() {
         /*
@@ -81,7 +81,7 @@ public class EnforcementAPI  {
     /*
      * s.mariani@unibo.it CODE ends
      */
-    public void enforceAction(final String actionName, final Node e) {
+    public void enforceAction( String actionName,  Node e) {
         RuntimeLogger.logger
                 .info("~~~~~~~~~~~Trying to execute action executingControlaction="
                         + this.executingControlAction);
@@ -98,7 +98,7 @@ public class EnforcementAPI  {
             }
             this.executingControlAction = true;
             String args;
-            if (actionName.startsWith("scaleout")) {
+            if (actionName.contains("scaleout")) {
                 if ("scaleout".length() == actionName.length()) {
                     args = null;
                 } else {
@@ -147,7 +147,7 @@ public class EnforcementAPI  {
     // TODO depending on the protocol specified and the parameters, call the
     // capability = default parameter - Service Part ID
     public void enforceElasticityCapability(
-            final ElasticityCapability capability, final Node e) {
+             ElasticityCapability capability,  Node e) {
         if (capability.getCallType().toLowerCase().contains("rest")) {
             URL url = null;
             HttpURLConnection connection = null;
@@ -162,7 +162,7 @@ public class EnforcementAPI  {
                     connection.setRequestMethod("PUT");
                 }
                 // write message body
-                final OutputStream os = connection.getOutputStream();
+                OutputStream os = connection.getOutputStream();
                 if (capability.getParameter().size() == 0) {
                     connection.setRequestProperty("Content-Type", "text/plain");
                     connection.setRequestProperty("Accept", "text/plain");
@@ -172,9 +172,9 @@ public class EnforcementAPI  {
                 }
                 os.flush();
                 os.close();
-                final InputStream errorStream = connection.getErrorStream();
+                InputStream errorStream = connection.getErrorStream();
                 if (errorStream != null) {
-                    final BufferedReader reader = new BufferedReader(
+                    BufferedReader reader = new BufferedReader(
                             new InputStreamReader(errorStream));
                     String line;
                     while ((line = reader.readLine()) != null) {
@@ -182,9 +182,9 @@ public class EnforcementAPI  {
                                 Level.SEVERE, line);
                     }
                 }
-                final InputStream inputStream = connection.getInputStream();
+                InputStream inputStream = connection.getInputStream();
                 if (inputStream != null) {
-                    final BufferedReader reader = new BufferedReader(
+                    BufferedReader reader = new BufferedReader(
                             new InputStreamReader(inputStream));
                     String line;
                     while ((line = reader.readLine()) != null) {
@@ -192,7 +192,7 @@ public class EnforcementAPI  {
                                 Level.SEVERE, line);
                     }
                 }
-            } catch (final Exception ex) {
+            } catch (Exception ex) {
                 Logger.getLogger(MELA_API.class.getName()).log(Level.SEVERE,
                         ex.getMessage(), e);
             } finally {
@@ -219,7 +219,7 @@ public class EnforcementAPI  {
     }
 
     
-    public void scalein(final Node arg0) {
+    public void scalein( Node arg0) {
         RuntimeLogger.logger
                 .info("~~~~~~~~~~~Trying to execute action executingControlaction="
                         + this.executingControlAction);
@@ -227,7 +227,7 @@ public class EnforcementAPI  {
             if (arg0.getAllRelatedNodes().size() > 1) {
                 this.executingControlAction = true;
                 this.offeredCapabilities.scaleIn(arg0);
-                final List<String> metrics = this.monitoringAPIInterface
+                List<String> metrics = this.monitoringAPIInterface
                         .getAvailableMetrics(arg0);
                 boolean checkIfMetrics = false;
                 // monitoringAPIInterface.enforcingActionStarted("ScaleIn",
@@ -236,12 +236,12 @@ public class EnforcementAPI  {
                     boolean myMetrics = true;
                     try {
                         Thread.sleep(10000);
-                    } catch (final InterruptedException e) {
+                    } catch (InterruptedException e) {
                         // TODO Auto-generated catch block
                         e.printStackTrace();
                     }
                     RuntimeLogger.logger.info("Waiting for action....");
-                    for (final String metricName : metrics) {
+                    for (String metricName : metrics) {
                         RuntimeLogger.logger.info("Metric "
                                 + metricName
                                 + " has value "
@@ -260,7 +260,7 @@ public class EnforcementAPI  {
                 }
                 try {
                     Thread.sleep(60000);
-                } catch (final InterruptedException ex) {
+                } catch (InterruptedException ex) {
                     // TODO Auto-generated catch block
                     ex.printStackTrace();
                 }
@@ -276,7 +276,7 @@ public class EnforcementAPI  {
     }
 
     
-    public void scaleout(final Node arg0) {
+    public void scaleout( Node arg0) {
         RuntimeLogger.logger
                 .info("~~~~~~~~~~~Trying to execute action executingControlaction="
                         + this.executingControlAction);
@@ -284,7 +284,7 @@ public class EnforcementAPI  {
             RuntimeLogger.logger.info("Scaling out " + arg0 + " ...");
             this.executingControlAction = true;
             this.offeredCapabilities.scaleOut(arg0);
-            final List<String> metrics = this.monitoringAPIInterface
+            List<String> metrics = this.monitoringAPIInterface
                     .getAvailableMetrics(arg0);
             // monitoringAPIInterface.enforcingActionStarted("ScaleOut", arg0);
             boolean checkIfMetrics = false;
@@ -292,12 +292,12 @@ public class EnforcementAPI  {
                 boolean myMetrics = true;
                 try {
                     Thread.sleep(10000);
-                } catch (final InterruptedException e) {
+                } catch (InterruptedException e) {
                     // TODO Auto-generated catch block
                     e.printStackTrace();
                 }
                 RuntimeLogger.logger.info("Waiting for action....");
-                for (final String metricName : metrics) {
+                for (String metricName : metrics) {
                     RuntimeLogger.logger.info("Metric "
                             + metricName
                             + " has value "
@@ -316,7 +316,7 @@ public class EnforcementAPI  {
             }
             try {
                 Thread.sleep(60000);
-            } catch (final InterruptedException ex) {
+            } catch (InterruptedException ex) {
                 // TODO Auto-generated catch block
                 ex.printStackTrace();
             }
@@ -330,7 +330,7 @@ public class EnforcementAPI  {
     }
 
     
-    public void setControlledService(final Node controlledService) {
+    public void setControlledService( Node controlledService) {
         this.controlledService = controlledService;
         this.offeredCapabilities = OfferedEnforcementCapabilities
                 .getInstance(this.controlledService);
@@ -338,14 +338,14 @@ public class EnforcementAPI  {
 
     
     public void setMonitoringPlugin(
-            final MonitoringAPIInterface monitoringInterface) {
+             MonitoringAPIInterface monitoringInterface) {
         this.monitoringAPIInterface = monitoringInterface;
         this.offeredCapabilities.setMonitoringPlugin(monitoringInterface);
     }
 
     
     public void submitElasticityRequirements(
-            final ArrayList<ElasticityRequirement> description) {
+             ArrayList<ElasticityRequirement> description) {
         // TODO Auto-generated method stub
     }
 
@@ -357,8 +357,8 @@ public class EnforcementAPI  {
      * @param e
      *            the node to be monitored
      */
-    private void doCoordinatedMonitorMetrics(final String actionName,
-            final Node node) {
+    private void doCoordinatedMonitorMetrics( String actionName,
+             Node node) {
         try {
             // this.respect.setMonitorMetricsPath(actionName);
             if (actionName != null) {
@@ -376,7 +376,7 @@ public class EnforcementAPI  {
                     RespectEnforcementAPI.TUCSON_PORT, node).go();
             this.respect.delegate("out(sampleMetrics('" + node.getId() + "'))",
                     Long.MAX_VALUE, node);
-        } catch (final IOException e) {
+        } catch ( IOException e) {
             // TODO Auto-generated catch block
             e.printStackTrace();
         } catch (TucsonInvalidAgentIdException e) {
@@ -389,7 +389,7 @@ public class EnforcementAPI  {
      * @param node
      *            the node to be scaled in
      */
-    private void doCoordinatedScaleIn(final String actionName, final Node node) {
+    private void doCoordinatedScaleIn( String actionName,  Node node) {
         // TODO Auto-generated method stub
     }
 
@@ -399,11 +399,11 @@ public class EnforcementAPI  {
      *            the node to be scaled out
      * 
      */
-    private void doCoordinatedScaleOut(final String actionName, final Node node) {
+    private void doCoordinatedScaleOut( String actionName,  Node node) {
         RuntimeLogger.logger
                 .info("~~~~~~~~~~~Trying to execute action executingControlaction="
                         + this.executingControlAction);
-        if (this.executingControlAction == false && node != null) {
+        if ( node != null) {
             RuntimeLogger.logger.info("Scaling out " + node + " ...");
             this.executingControlAction = true;
             // call CloudAPI for scaling
@@ -434,7 +434,7 @@ public class EnforcementAPI  {
             // .delegateMetricsReadingToRespect(node);
             // coordinate with ReSpecT tc to get metrics!
             ITucsonOperation op = null;
-            final List<ITucsonOperation> ops = new LinkedList<ITucsonOperation>();
+             List<ITucsonOperation> ops = new LinkedList<ITucsonOperation>();
             for (int i = 0; i < RespectEnforcementAPI.MAX_TRIES; i++) {
                 op = this.respect.delegate("in(metric(node('" + node.getId()
                         + "'), name(M), value(V)))",
@@ -444,13 +444,13 @@ public class EnforcementAPI  {
                 }
             }
             // do something with metrics (e.g. log)...
-            for (final ITucsonOperation o : ops) {
+            for ( ITucsonOperation o : ops) {
                 try {
                     RuntimeLogger.logger.info("Metric "
                             + o.getLogicTupleResult().getArg(1).getArg(0)
                             + " has value "
                             + o.getLogicTupleResult().getArg(2).getArg(0));
-                } catch (final InvalidOperationException e) {
+                } catch ( InvalidOperationException e) {
                     // cannot happen
                     e.printStackTrace();
                 }

@@ -1,52 +1,34 @@
-/** 
-   Copyright 2013 Technische Universitat Wien (TUW), Distributed SystemsGroup E184.               
-   
-   This work was partially supported by the European Commission in terms of the CELAR FP7 project (FP7-ICT-2011-8 #317790).
- 
-   Licensed under the Apache License, Version 2.0 (the "License");
-   you may not use this file except in compliance with the License.
-   You may obtain a copy of the License at
+package at.ac.tuwien.dsg.rSybl.cloudApiLowLevel.enforcementPlugins.flexiant;
 
-       http://www.apache.org/licenses/LICENSE-2.0
-
-   Unless required by applicable law or agreed to in writing, software
-   distributed under the License is distributed on an "AS IS" BASIS,
-   WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-   See the License for the specific language governing permissions and
-   limitations under the License.
-*/
-
-/**
- *  Author : Georgiana Copil - e.copil@dsg.tuwien.ac.at
- */
-
-package at.ac.tuwien.dsg.rSybl.cloudInteractionUnit.enforcementPlugins.dryRun;
-
+import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
-import java.util.Random;
-import java.util.UUID;
+
+import org.apache.log4j.Level;
+import org.apache.log4j.Logger;
+
+import com.jcraft.jsch.JSchException;
 
 import at.ac.tuwien.dsg.csdg.DependencyGraph;
 import at.ac.tuwien.dsg.csdg.Node;
 import at.ac.tuwien.dsg.csdg.Relationship;
 import at.ac.tuwien.dsg.csdg.Node.NodeType;
 import at.ac.tuwien.dsg.csdg.Relationship.RelationshipType;
-import at.ac.tuwien.dsg.rSybl.cloudInteractionUnit.enforcementPlugins.flexiant.FlexiantActions;
-import at.ac.tuwien.dsg.rSybl.cloudInteractionUnit.enforcementPlugins.interfaces.EnforcementInterface;
+
 import at.ac.tuwien.dsg.rSybl.cloudInteractionUnit.utils.RuntimeLogger;
 import at.ac.tuwien.dsg.rSybl.dataProcessingUnit.api.MonitoringAPIInterface;
 
-public class DryRunEnforcementAPI implements EnforcementInterface{
-	private Node controlledService;
 
+public class EnforcementFlexiantAPI{
+	private Node controlledService ;
+	private FlexiantActions flexiantActions;
 	private MonitoringAPIInterface monitoring;
-	public  DryRunEnforcementAPI(Node cloudService) {
-		// TODO Auto-generated constructor stub
-		controlledService = cloudService;
+	public EnforcementFlexiantAPI(Node cloudService){
+		flexiantActions= new FlexiantActions();
+		this.controlledService=cloudService;
+		flexiantActions.cleanNics();
+		
 	}
-	
 	public Node findNode(String id){
 		boolean found=false;
 		if (!found){
@@ -98,11 +80,10 @@ public class DryRunEnforcementAPI implements EnforcementInterface{
 	}
 	
 	public void scaleOut(Node arg0)   {
-		RuntimeLogger.logger.info("Scaling out ... "+arg0+" "+arg0.getNodeType());
-
 		monitoring.enforcingActionStarted("ScaleOut",arg0 );
-		boolean res = true;
+		
 		Node o = arg0;
+		RuntimeLogger.logger.info("Scaling out ... "+arg0+" "+arg0.getNodeType());
 	
 		if (o.getNodeType()==NodeType.CODE_REGION){
 			scaleOutComponent(findComponentOfCodeRegion(arg0));
@@ -110,6 +91,9 @@ public class DryRunEnforcementAPI implements EnforcementInterface{
 		
 		//TODO : enable just ComponentTopology level 
 		
+		if (o.getNodeType()==NodeType.SERVICE_UNIT){
+			scaleOutComponent(o);
+		}
 		if (o.getNodeType()==NodeType.SERVICE_TOPOLOGY){
 			//TODO: make it possible to scale a set of component topologies
 			
@@ -150,10 +134,10 @@ public class DryRunEnforcementAPI implements EnforcementInterface{
 		}
 		
 		if (o.getNodeType()==NodeType.SERVICE_UNIT){
-			res=scaleOutComponent((Node) o);
+			scaleOutComponent((Node) o);
 		}
 		monitoring.enforcingActionEnded("ScaleOut",arg0 );
-		
+
 	}
 	private void loadDeploymentDescription(){
 //		try {			
@@ -174,16 +158,28 @@ public class DryRunEnforcementAPI implements EnforcementInterface{
 //			e.printStackTrace();
 //		}
 	}
-	private boolean scaleOutComponent(Node o){
+	private void scaleOutComponent(Node o){
 				DependencyGraph graph=new DependencyGraph();
 				graph.setCloudService(controlledService);
 				RuntimeLogger.logger.info("~~~~~~~~~~~~~~~~~~~~~~Image from which we create "+(String) o.getStaticInformation("DefaultImage"));
-				String uuid=UUID.randomUUID().toString();
+				String uuid=flexiantActions.createNewServer(o.getId(), (String) o.getStaticInformation("DefaultImage"), 2, 2);
 				Node node = new Node();
-				Random r = new Random();
-				String ip= r.nextInt(256) + "." + r.nextInt(256) + "." + r.nextInt(256) + "." + r.nextInt(256);
-	    		
-	    		
+	         
+	    		String ip="";
+	    		List<com.extl.jade.user.Nic> nics=flexiantActions.listAllNics();
+
+	    		for (com.extl.jade.user.Nic nic:nics){
+	    			if (nic.getServerUUID()!=null && nic.getServerUUID().equalsIgnoreCase(uuid)){
+	    				if (nic.getIpAddresses()!=null && nic.getIpAddresses().size()>0){
+	    					ip=nic.getIpAddresses().get(0).getIpAddress();
+	    					if (ip.equalsIgnoreCase("") && nic.getIpAddresses().size()>1){
+	    						ip = nic.getIpAddresses().get(1).getIpAddress();
+	    						if (!ip.equalsIgnoreCase(""))
+	    							break;
+	    					}
+	    				}
+	    			}
+	    		}
 	    		if (!ip.equalsIgnoreCase("err") && !ip.equalsIgnoreCase("")){
 	            node.getStaticInformation().put("UUID", uuid);
 	            node.getStaticInformation().put("IP",ip);
@@ -200,10 +196,11 @@ public class DryRunEnforcementAPI implements EnforcementInterface{
 	            RuntimeLogger.logger.info("The controlled service is now "+controlledService.toString());
 	            
 	            monitoring.refreshServiceStructure(controlledService);
-	       return true;     
+	            
 		}
 	private void scaleInComponent(Node o){
 		
+			RuntimeLogger.logger.info("AAAAAAAAAAAAAAA current nb servers "+flexiantActions.listServers().size());
 			DependencyGraph graph=new DependencyGraph();
 			graph.setCloudService(controlledService);
 			Node toBeScaled = graph.getNodeWithID(o.getId()); 
@@ -216,7 +213,7 @@ public class DryRunEnforcementAPI implements EnforcementInterface{
 			        	
 			        			               
 			            	
-			        	   //flexiantActions.removeServer(uuid);
+			        	   flexiantActions.removeServer(uuid);
 			               try {
 			   				Thread.sleep(30000);
 			   			} catch (InterruptedException e) {
@@ -229,33 +226,7 @@ public class DryRunEnforcementAPI implements EnforcementInterface{
 			               monitoring.refreshServiceStructure(controlledService);
 				}
 
-	private void scaleInComponent(Node o, String IP){
-		
-		DependencyGraph graph=new DependencyGraph();
-		graph.setCloudService(controlledService);
-		Node toBeScaled = graph.getNodeWithID(o.getId()); 
-            Node toBeRemoved = graph.getNodeWithID(IP);
-            RuntimeLogger.logger.info( "Trying to remove  "+toBeRemoved.getId()+" From "+toBeScaled.getId());
-		        	   String cmd = "";
-		        	   String ip=IP;
-		        	   String uuid = (String) toBeRemoved.getStaticInformation().get("UUID");
-		        	   RuntimeLogger.logger.info( "Removing server with UUID" + uuid);
-		        	
-		        			               
-		            	
-		        	   //flexiantActions.removeServer(uuid);
-		               try {
-		   				Thread.sleep(30000);
-		   			} catch (InterruptedException e) {
-		   				// TODO Auto-generated catch block
-		   				RuntimeLogger.logger.info(e.getMessage());
-		   			}
-		               
-		               toBeScaled.removeNode(toBeRemoved);
-	               
-		               monitoring.refreshServiceStructure(controlledService);
-			}
-			
+				
 	
 	public Node findControllerForComponent(Node c){
 		Node res = null;
@@ -409,66 +380,25 @@ public class DryRunEnforcementAPI implements EnforcementInterface{
 			
 			for (String ip:master.getAssociatedIps()){
 				if (ip.split("\\.")[0].length()==2){
-					//monitoring.enforcingActionStarted("ScaleIn",arg0 );
+					monitoring.enforcingActionStarted("ScaleIn",arg0 );
 					
 					//flexiantActions.scaleInCluster(master, slave, ip,controlledService);
-					//monitoring.enforcingActionEnded("ScaleIn",arg0 );
-				break;
-				}
-				//scale in on the number of components of the topology
-			}
-		}
-	
-
-	}
-	public boolean scaleIn(Node arg0,String IP){
-		RuntimeLogger.logger.info("Scaling in..."+arg0.getId());
-
-		if (arg0.getNodeType()==NodeType.CODE_REGION){
-			scaleIn(findComponentOfCodeRegion(arg0));
-		}
-		
-		//TODO : enable just ComponentTopology level 
-		if (arg0.getNodeType()==NodeType.SERVICE_UNIT){
-			scaleInComponent(arg0,IP);
-		}
-		
-		if (arg0.getNodeType()==NodeType.SERVICE_TOPOLOGY){
-			ArrayList<Node> comps = (ArrayList<Node>)  arg0.getAllRelatedNodesOfType(RelationshipType.COMPOSITION_RELATIONSHIP);
-			Node master =null ;
-			Node slave =null ;
-			
-			for (Node comp:comps){
-				if (comp.getAllRelatedNodesOfType(RelationshipType.MASTER_OF)!=null)
-				{
-					master = comp;
-					slave = comp.getAllRelatedNodesOfType(RelationshipType.MASTER_OF).get(0);
-				}
-			}
-			
-			for (Node component:comps){
-				if (component.getId().equalsIgnoreCase(master.getId()))
-					master=component;
-				if (component.getId().equalsIgnoreCase(slave.getId()))
-					slave=component;
-				
-			}
-			
-			for (String ip:master.getAssociatedIps()){
-				if (ip.split("\\.")[0].length()==2){
-					//monitoring.enforcingActionStarted("ScaleIn",arg0 );
-					
-					//flexiantActions.scaleInCluster(master, slave, ip,controlledService);
-					//monitoring.enforcingActionEnded("ScaleIn",arg0 );
+					monitoring.enforcingActionEnded("ScaleIn",arg0 );
 				break;
 				}
 				//scale in on the number of components of the topology
 			}
 		}
 		
+		if (arg0.getAllRelatedNodesOfType(RelationshipType.HOSTED_ON_RELATIONSHIP, NodeType.VIRTUAL_MACHINE).size()>1){
+			//RuntimeLogger.logger.info("Scaling in "+arg0.getId());
+			monitoring.enforcingActionStarted("ScaleIn",arg0 );
+			
+			scaleInComponent(((Node) arg0));
+			monitoring.enforcingActionEnded("ScaleIn",arg0 );
+		}
 		
-		
-return true;
+
 	}
 public List<String> getElasticityCapabilities() {
 	List<String> list = new ArrayList<String>();
@@ -492,21 +422,18 @@ public Node getControlledService() {
 	return controlledService;
 }
 
-@Override
 public void setMonitoringPlugin(MonitoringAPIInterface monitoring) {
  this.monitoring=monitoring;	
 }
-@Override
 public void enforceAction(String actionName, Node entity) {
 	// TODO Auto-generated method stub
+	
 }
-@Override
+
 public boolean containsElasticityCapability(Node entity, String capability) {
 	for (String cap : getElasticityCapabilities())
 		if (cap.equalsIgnoreCase(capability)) return true;
 	return false;
 }
-
-
 
 }

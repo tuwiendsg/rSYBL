@@ -32,8 +32,6 @@
 			<groupId>TuCSoN-1.10.8.0208</groupId>
 			<artifactId>TuCSoN-1.10.8.0208</artifactId>
 			<version>TuCSoN-1.10.8.0208</version>
-			<scope>system</scope>
-			<systemPath>${project.basedir}/src/main/resources/TuCSoN-1.10.8.0208.jar</systemPath>
 		</dependency>
 		<dependency>
 			<groupId>at.ac.tuwien.rSYBL.control-service</groupId>
@@ -53,4 +51,5 @@
 			<version>0.1-SNAPSHOT</version>
 		</dependency>
 	</dependencies>
+
 </project>

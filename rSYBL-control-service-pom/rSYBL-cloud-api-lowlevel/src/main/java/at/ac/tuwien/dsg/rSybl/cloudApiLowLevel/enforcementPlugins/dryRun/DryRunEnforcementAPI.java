@@ -20,7 +20,7 @@
  *  Author : Georgiana Copil - e.copil@dsg.tuwien.ac.at
  */
 
-package at.ac.tuwien.dsg.rSybl.cloudInteractionUnit.enforcementPlugins.dryRun;
+package at.ac.tuwien.dsg.rSybl.cloudApiLowLevel.enforcementPlugins.dryRun;
 
 import java.util.ArrayList;
 import java.util.Date;
@@ -33,12 +33,11 @@ import at.ac.tuwien.dsg.csdg.Node;
 import at.ac.tuwien.dsg.csdg.Relationship;
 import at.ac.tuwien.dsg.csdg.Node.NodeType;
 import at.ac.tuwien.dsg.csdg.Relationship.RelationshipType;
-import at.ac.tuwien.dsg.rSybl.cloudInteractionUnit.enforcementPlugins.flexiant.FlexiantActions;
-import at.ac.tuwien.dsg.rSybl.cloudInteractionUnit.enforcementPlugins.interfaces.EnforcementInterface;
+
 import at.ac.tuwien.dsg.rSybl.cloudInteractionUnit.utils.RuntimeLogger;
 import at.ac.tuwien.dsg.rSybl.dataProcessingUnit.api.MonitoringAPIInterface;
 
-public class DryRunEnforcementAPI implements EnforcementInterface{
+public class DryRunEnforcementAPI {
 	private Node controlledService;
 
 	private MonitoringAPIInterface monitoring;
@@ -492,15 +491,15 @@ public Node getControlledService() {
 	return controlledService;
 }
 
-@Override
+
 public void setMonitoringPlugin(MonitoringAPIInterface monitoring) {
  this.monitoring=monitoring;	
 }
-@Override
+
 public void enforceAction(String actionName, Node entity) {
 	// TODO Auto-generated method stub
 }
-@Override
+
 public boolean containsElasticityCapability(Node entity, String capability) {
 	for (String cap : getElasticityCapabilities())
 		if (cap.equalsIgnoreCase(capability)) return true;

@@ -39,8 +39,11 @@ public class Configuration {
 			InputStream is = Configuration.class.getClassLoader().getResourceAsStream("/config.properties");
 			configuration.load(is);
         } catch (Exception ex) {
-        	ex.printStackTrace();
-        }
+		try{
+		configuration.load(new FileReader( new File("./config.properties")));
+		}catch (Exception ex1){
+        	ex1.printStackTrace();
+        }}
     }
 
     public static String getModelDescrFile(){
