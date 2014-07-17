@@ -226,6 +226,28 @@ public class EnforcementSALSAAPI implements EnforcementInterface {
 		monitoring.refreshServiceStructure(controlledService);
 		return res;
 	}
+        private boolean scaleInComponent(Node toscale, String ip) {
+boolean res=false;
+		DependencyGraph graph = new DependencyGraph();
+		graph.setCloudService(controlledService);
+		  
+		Node toBeScaled = graph.getNodeWithID(toscale.getId());
+		Node toBeRemoved = graph.getNodeWithID(ip);
+        RuntimeLogger.logger.info( "Trying to remove  "+toBeRemoved.getId()+" From "+toBeScaled.getId());
+		String cmd = "";
+
+		  
+		M2MApplicationControl applicationControl = new M2MApplicationControl(controlledService);
+		applicationControl.decommission(toBeScaled.getId(), ip, controlledService);
+		
+		res=salsaClient.scaleIn(toBeRemoved.getId());
+		
+		RuntimeLogger.logger.info("Objects here" + toBeScaled + monitoring);
+		toBeScaled.removeNode(toBeRemoved);
+
+		monitoring.refreshServiceStructure(controlledService);
+	return res;
+	}
 private boolean scaleInComponent(String toscale) {
 boolean res=false;
 		DependencyGraph graph = new DependencyGraph();
@@ -489,7 +511,62 @@ boolean res=false;
 //		}
 		return res;
 	}
-        
+        	public boolean scaleIn(Node arg0, String ip) {
+		RuntimeLogger.logger.info("Scaling in..." + arg0.getId());
+		boolean res= false;
+		if (arg0.getNodeType() == NodeType.CODE_REGION) {
+			res=scaleIn(findComponentOfCodeRegion(arg0));
+		}
+
+		// TODO : enable just ComponentTopology level
+		if (arg0.getNodeType() == NodeType.SERVICE_UNIT) {
+			res=scaleInComponent(arg0,ip);
+		}
+
+		if (arg0.getNodeType() == NodeType.SERVICE_TOPOLOGY) {
+			ArrayList<Node> comps = (ArrayList<Node>) arg0
+					.getAllRelatedNodesOfType(RelationshipType.COMPOSITION_RELATIONSHIP);
+			Node master = null;
+			Node slave = null;
+
+			for (Node comp : comps) {
+				if (comp.getAllRelatedNodesOfType(RelationshipType.MASTER_OF) != null) {
+					master = comp;
+					slave = comp.getAllRelatedNodesOfType(
+							RelationshipType.MASTER_OF).get(0);
+				}
+			}
+
+			for (Node component : comps) {
+				if (component.getId().equalsIgnoreCase(master.getId()))
+					master = component;
+				if (component.getId().equalsIgnoreCase(slave.getId()))
+					slave = component;
+
+			}
+
+			for (String x : master.getAssociatedIps()) {
+				if (x.split("\\.")[0].length() == 2) {
+					monitoring.enforcingActionStarted("ScaleIn", arg0);
+
+					monitoring.enforcingActionEnded("ScaleIn", arg0);
+					break;
+				}
+				// scale in on the number of components of the topology
+			}
+		}
+
+//		if (arg0.getAllRelatedNodesOfType(
+//				RelationshipType.HOSTED_ON_RELATIONSHIP,
+//				NodeType.VIRTUAL_MACHINE).size() > 1) {
+//			// RuntimeLogger.logger.info("Scaling in "+arg0.getId());
+//			//monitoring.enforcingActionStarted("ScaleIn", arg0);
+//
+//			scaleInComponent(((Node) arg0));
+//			//monitoring.enforcingActionEnded("ScaleIn", arg0);
+//		}
+		return res;
+	}
         public boolean scaleIn(String toScale) {
 		RuntimeLogger.logger.info("Scaling in..." + toScale);
 		boolean res= false;

@@ -231,6 +231,34 @@ return res;
 			               monitoring.refreshServiceStructure(controlledService);
 			               return res;
 				}
+      private boolean scaleIn(Node node, String ip){
+          boolean res=false;
+			RuntimeLogger.logger.info("AAAAAAAAAAAAAAA current nb servers "+flexiantActions.listServers().size());
+			DependencyGraph graph=new DependencyGraph();
+			graph.setCloudService(controlledService);
+			//Node toBeScaled = graph.getNodeWithID(o.getId()); 
+	            Node toBeRemoved = graph.getNodeWithID(ip);
+	            RuntimeLogger.logger.info( "Trying to remove  "+toBeRemoved.getId()+" From "+node.getId());
+			        	   String cmd = "";
+			        	   String uuid = (String) toBeRemoved.getStaticInformation().get("UUID");
+			        	   RuntimeLogger.logger.info( "Removing server with UUID" + uuid);
+			        	
+			        			               
+			            	
+			        	   res=flexiantActions.removeServer(uuid);
+			               try {
+			   				Thread.sleep(30000);
+			   			} catch (InterruptedException e) {
+			   				// TODO Auto-generated catch block
+			   				RuntimeLogger.logger.info(e.getMessage());
+			   			}
+			               
+			               node.removeNode(toBeRemoved);
+		               
+			               monitoring.refreshServiceStructure(controlledService);
+			               return res;
+      }
+
 
 				
 	
