@@ -106,6 +106,7 @@ public class EnforcementSALSAAPI implements EnforcementInterface {
 		return null;
 	}
 
+    @Override
 	public boolean scaleOut(Node arg0) {
 		//monitoring.enforcingActionStarted("ScaleOut", arg0);
 		boolean res= false;
@@ -224,6 +225,28 @@ public class EnforcementSALSAAPI implements EnforcementInterface {
 
 		monitoring.refreshServiceStructure(controlledService);
 		return res;
+	}
+private boolean scaleInComponent(String toscale) {
+boolean res=false;
+		DependencyGraph graph = new DependencyGraph();
+		graph.setCloudService(controlledService);
+		  
+		Node toBeScaled = graph.getNodeWithID(toscale);
+		Node toBeRemoved = toBeScaled.getAllRelatedNodesOfType(RelationshipType.HOSTED_ON_RELATIONSHIP, NodeType.VIRTUAL_MACHINE).get(0);
+        RuntimeLogger.logger.info( "Trying to remove  "+toBeRemoved.getId()+" From "+toBeScaled.getId());
+		String cmd = "";
+		String ip=toBeRemoved.getId();
+		  
+		M2MApplicationControl applicationControl = new M2MApplicationControl(controlledService);
+		applicationControl.decommission(toBeScaled.getId(), ip, controlledService);
+		
+		res=salsaClient.scaleIn(toBeRemoved.getId());
+		
+		RuntimeLogger.logger.info("Objects here" + toBeScaled + monitoring);
+		toBeScaled.removeNode(toBeRemoved);
+
+		monitoring.refreshServiceStructure(controlledService);
+	return res;
 	}
 
 	private boolean scaleInComponent(Node o) {
@@ -466,7 +489,15 @@ boolean res=false;
 //		}
 		return res;
 	}
-
+        
+        public boolean scaleIn(String toScale) {
+		RuntimeLogger.logger.info("Scaling in..." + toScale);
+		boolean res= false;
+		
+			res=scaleInComponent(toScale);
+		
+		return res;
+	}
 	public List<String> getElasticityCapabilities() {
 		List<String> list = new ArrayList<String>();
 		list.add("scaleOut");
