@@ -434,10 +434,10 @@ public class ContextRepresentation {
 	    		Double currentValueSource = getValueForMetric(findMonitoredEntity(relationship.getSourceElement()), sourceMetric);
 	    		Double prevValueTarget= beforeContext.getValueForMetric(beforeContext.findMonitoredEntity(relationship.getTargetElement()), targetMetric);
 				Double expectedValueTarget = prevValueTarget*currentValueSource/prevValueSource;
-	    		//PlanningLogger.logger.info("Values for "+sourceMetric+"="+prevValueSource+" and now "+currentValueSource+" initial target value "+prevValueTarget);
+	    		PlanningLogger.logger.info("Values for "+sourceMetric+"="+prevValueSource+" and now "+currentValueSource+" initial target value "+prevValueTarget);
 	    		
 	    		if (prevValueSource!=null && currentValueSource!=null && prevValueTarget!=null){
-    				//PlanningLogger.logger.info ("Expected target value for metric "+targetMetric+" expected=" +expectedValueTarget);
+    				PlanningLogger.logger.info ("Expected target value for metric "+targetMetric+" expected=" +expectedValueTarget);
     				
 		    		findMonitoredEntity(relationship.getTargetElement()).setMonitoredValue(targetMetric, expectedValueTarget);
 		    		targetEntities.add(relationship.getTargetElement());

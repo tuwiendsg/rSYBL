@@ -273,7 +273,7 @@ public class ElasticityCapabilityEnforcement {
 									}
 									uuid = (String) node.getStaticInformation()
 											.get("UUID");
-									if (uuid.equalsIgnoreCase("")) {
+									if (uuid==null || uuid.equalsIgnoreCase("")) {
 										uuid = node.getId();
 									}
 								} else {
@@ -286,7 +286,7 @@ public class ElasticityCapabilityEnforcement {
 										}
 										uuid = (String) newNode.getStaticInformation()
 												.get("UUID");
-										if (uuid.equalsIgnoreCase("")) {
+										if (uuid==null || uuid.equalsIgnoreCase("")) {
 											uuid = newNode.getId();
 										}	
 									}

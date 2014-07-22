@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<CloudService id="M2MDaaS">
+    <ServiceTopology id="MainTopology">
+        <Relationship type="DATA" id="DataRelationship">
+            <source>LocalProcessingServiceUnit</source>
+            <target>LoadBalancerServiceUnit</target>
+            <metricSource>bufferSize</metricSource>
+            <metricTarget>requests</metricTarget>
+        </Relationship>	
+        <Relationship>
+            <source>LocalSensorServiceTopology</source>
+            <target>EventProcessingServiceTopology</target>
+        </Relationship>
+        <ServiceTopology id="LocalSensorServiceTopology">
+            <Relationship>
+                <source>QueueServiceUnit</source>
+                <target>LocalProcessingServiceUnit</target>
+            </Relationship>
+            <ServiceUnit id="QueueServiceUnit"/>
+            <ServiceUnit id="LocalProcessingServiceUnit">
+                <SYBLDirective Constraints="Co1:CONSTRAINT bufferSize &lt; 150" Monitoring="" Priorities="" Strategies="St1:STRATEGY avgBufferSize &gt; 200 : scaleout"/>
+            </ServiceUnit>
+        </ServiceTopology>
+        <ServiceTopology id="EventProcessingServiceTopology">
+            <SYBLDirective Constraints="Co4:CONSTRAINT costPerRequests &lt; 0.3" Monitoring="" Priorities="" Strategies=""/>
+            <Relationship>
+                <source>LoadBalancerServiceUnit</source>
+                <target>EventProcessingServiceUnit</target>
+            </Relationship>
+            <ServiceUnit id="LoadBalancerServiceUnit"/>
+            <ServiceUnit id="EventProcessingServiceUnit">
+                <SYBLDirective Constraints="" Monitoring="" Priorities="" Strategies="St2:STRATEGY CASE responseTime &lt; 100 ms AND throughput &lt; 200 : scalein"/>
+            </ServiceUnit>
+            <SYBLDirective Constraints="Co3:CONSTRAINT responseTime &lt; 600 ms" Monitoring="" Priorities="" Strategies=""/>
+        </ServiceTopology>
+        <ServiceTopology id="DataEndServiceTopology">
+            <SYBLDirective Constraints="Co2:CONSTRAINT cpuUsage &lt; 90 %" Monitoring="" Priorities="" Strategies=""/>
+            <Relationship>
+                <source>DataControllerServiceUnit</source>
+                <target>DataNodeServiceUnit</target>
+            </Relationship>
+            <ServiceUnit id="DataControllerServiceUnit"/>
+            <ServiceUnit id="DataNodeServiceUnit">
+                <SYBLDirective Constraints="" Monitoring="" Priorities="" Strategies="St3:STRATEGY CASE cpuUsage &lt; 40 : scalein"/>
+            </ServiceUnit>
+        </ServiceTopology>
+    </ServiceTopology>
+</CloudService>
+

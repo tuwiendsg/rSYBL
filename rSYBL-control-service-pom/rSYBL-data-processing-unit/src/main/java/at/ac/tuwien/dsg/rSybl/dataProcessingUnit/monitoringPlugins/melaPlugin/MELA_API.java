@@ -62,6 +62,7 @@ import at.ac.tuwien.dsg.mela.common.requirements.Requirements;
 import at.ac.tuwien.dsg.rSybl.dataProcessingUnit.monitoringPlugins.interfaces.MonitoringInterface;
 import at.ac.tuwien.dsg.rSybl.dataProcessingUnit.utils.Configuration;
 import at.ac.tuwien.dsg.rSybl.dataProcessingUnit.utils.RuntimeLogger;
+import java.io.StringWriter;
 
 public class MELA_API implements MonitoringInterface {
 
@@ -73,8 +74,8 @@ public class MELA_API implements MonitoringInterface {
     private static final int MONITORING_DATA_REFRESH_INTERVAL = 10; //in seconds
     private MonitoredElementMonitoringSnapshot latestMonitoringData;
     private AtomicBoolean monitoringDataUsed;
-    private String ongoingAction = "";
-    private String actionTargetEntity = "";
+    private ArrayList<String> ongoingAction ;
+    private List<String> actionTargetEntity;
     private Node controlService;
 
     {
@@ -83,7 +84,8 @@ public class MELA_API implements MonitoringInterface {
     }
 
     public MELA_API() {
-
+        ongoingAction = new ArrayList<String>();
+        actionTargetEntity = new ArrayList<String>();
     }
 //todo: Continuous refresh data with a semaphore like mechanism to synchronzie resource access
 
@@ -265,6 +267,10 @@ public class MELA_API implements MonitoringInterface {
                 OutputStream os = connection.getOutputStream();
                 JAXBContext jaxbContext = JAXBContext.newInstance(MonitoredElement.class);
                 jaxbContext.createMarshaller().marshal(element, os);
+                StringWriter stringWriter = new StringWriter();
+                jaxbContext.createMarshaller().marshal(element, stringWriter);
+                
+                RuntimeLogger.logger.info(stringWriter.toString());
                 os.flush();
                 os.close();
 
@@ -522,8 +528,8 @@ public class MELA_API implements MonitoringInterface {
         URL url = null;
         HttpURLConnection connection = null;
         try {
-            this.ongoingAction = actionName;
-            this.actionTargetEntity = actionTargetEntity.getId();
+            this.ongoingAction.add(actionName);
+            this.actionTargetEntity.add(actionTargetEntity.getId());
             url = new URL(REST_API_URL + "/addexecutingactions");
             connection = (HttpURLConnection) url.openConnection();
             connection.setDoOutput(true);
@@ -608,13 +614,13 @@ public class MELA_API implements MonitoringInterface {
                     Logger.getLogger(MELA_API.class.getName()).log(Level.SEVERE, line);
                 }
             }
-            actionName = "";
+            
         } catch (Exception e) {
-            actionName = "";
             Logger.getLogger(MELA_API.class.getName()).log(Level.SEVERE, e.getMessage(), e);
         } finally {
+            this.ongoingAction.remove(actionName);
             actionName = "";
-            this.actionTargetEntity = "";
+            this.actionTargetEntity.remove(actionTargetEntity.getId());
             if (connection != null) {
                 connection.disconnect();
             }
@@ -668,10 +674,21 @@ public class MELA_API implements MonitoringInterface {
         //works as side effect
         public static void convertServiceTopology(MonitoredElement serviceElement, Node cloudService) {
             //RuntimeLogger.logger.info("Related nodes for node "+ cloudService +" are "+ cloudService.getAllRelatedNodesOfType(RelationshipType.COMPOSITION_RELATIONSHIP));
-            List<Node> serviceTopologies = new ArrayList<Node>();
+                        List<Node> serviceTopologies = new ArrayList<Node>();
+                MonitoredElement mainServiceTopologyElement = new MonitoredElement();
 
-            serviceTopologies.addAll(cloudService.getAllRelatedNodesOfType(RelationshipType.COMPOSITION_RELATIONSHIP));
-            while (!serviceTopologies.isEmpty()) {
+            if (cloudService.getAllRelatedNodesOfType(RelationshipType.COMPOSITION_RELATIONSHIP, NodeType.SERVICE_TOPOLOGY).size()==1){
+                mainServiceTopologyElement = new MonitoredElement();
+
+                Node serviceTopology = cloudService.getAllRelatedNodesOfType(RelationshipType.COMPOSITION_RELATIONSHIP, NodeType.SERVICE_TOPOLOGY).get(0);
+                mainServiceTopologyElement.setId(serviceTopology.getId());
+                mainServiceTopologyElement.setLevel(MonitoredElement.MonitoredElementLevel.SERVICE_TOPOLOGY);
+                serviceTopologies.addAll(serviceTopology.getAllRelatedNodesOfType(RelationshipType.COMPOSITION_RELATIONSHIP));
+                
+            }else{
+                        serviceTopologies.addAll(cloudService.getAllRelatedNodesOfType(RelationshipType.COMPOSITION_RELATIONSHIP));
+            }
+             while (!serviceTopologies.isEmpty()) {
                 MonitoredElement serviceTopologyElement = new MonitoredElement();
 
                 Node serviceTopology = serviceTopologies.get(0);
@@ -709,11 +726,24 @@ public class MELA_API implements MonitoringInterface {
                             serviceTopologyElement.addElement(serviceUnitElement);
 
                         }
+                         if (serviceUnit.getNodeType() == NodeType.SERVICE_TOPOLOGY) {
+                            MonitoredElement serviceUnitElement = new MonitoredElement();
+                            serviceTopologyElement.setId(serviceUnit.getId());
+                            serviceTopologyElement.setLevel(MonitoredElement.MonitoredElementLevel.SERVICE_TOPOLOGY);
+
+                           
+                           
+                            serviceTopologyElement.addElement(serviceUnitElement);
+
+                        }
                     }
                 }
-
+                if (mainServiceTopologyElement!=null){
+                    mainServiceTopologyElement.addElement(serviceTopologyElement);
+                  
+                }else{
                 serviceElement.addElement(serviceTopologyElement);
-
+                }
                 if (serviceTopology.getAllRelatedNodesOfType(RelationshipType.COMPOSITION_RELATIONSHIP) != null) {
                     for (Node subTopology : serviceTopology.getAllRelatedNodesOfType(RelationshipType.COMPOSITION_RELATIONSHIP)) {
                         if (subTopology.getNodeType() == NodeType.SERVICE_TOPOLOGY) {
@@ -723,7 +753,9 @@ public class MELA_API implements MonitoringInterface {
                 }
                 serviceTopologies.remove(0);
             }
-
+             if (mainServiceTopologyElement!=null){
+                 serviceElement.addElement(mainServiceTopologyElement);  
+             }
         }
 
         public static MonitoredElement.MonitoredElementLevel getElementLevelFromEntity(Node entity) {
@@ -1105,12 +1137,12 @@ public class MELA_API implements MonitoringInterface {
     }
 
     @Override
-    public String getOngoingActionID() {
+    public List<String> getOngoingActionID() {
         return this.ongoingAction;
     }
 
     @Override
-    public String getOngoingActionNodeID() {
+    public List<String> getOngoingActionNodeID() {
         return this.actionTargetEntity;
     }
 

@@ -234,18 +234,16 @@ boolean res=false;
 		Node toBeScaled = graph.getNodeWithID(toscale.getId());
 		Node toBeRemoved = graph.getNodeWithID(ip);
         RuntimeLogger.logger.info( "Trying to remove  "+toBeRemoved.getId()+" From "+toBeScaled.getId());
-		String cmd = "";
 
 		  
-		M2MApplicationControl applicationControl = new M2MApplicationControl(controlledService);
-		applicationControl.decommission(toBeScaled.getId(), ip, controlledService);
+		
 		
 		res=salsaClient.scaleIn(toBeRemoved.getId());
 		
 		RuntimeLogger.logger.info("Objects here" + toBeScaled + monitoring);
 		toBeScaled.removeNode(toBeRemoved);
 
-		monitoring.refreshServiceStructure(controlledService);
+		
 	return res;
 	}
 private boolean scaleInComponent(String toscale) {
@@ -255,12 +253,7 @@ boolean res=false;
 		  
 		Node toBeScaled = graph.getNodeWithID(toscale);
 		Node toBeRemoved = toBeScaled.getAllRelatedNodesOfType(RelationshipType.HOSTED_ON_RELATIONSHIP, NodeType.VIRTUAL_MACHINE).get(0);
-        RuntimeLogger.logger.info( "Trying to remove  "+toBeRemoved.getId()+" From "+toBeScaled.getId());
-		String cmd = "";
-		String ip=toBeRemoved.getId();
-		  
-		M2MApplicationControl applicationControl = new M2MApplicationControl(controlledService);
-		applicationControl.decommission(toBeScaled.getId(), ip, controlledService);
+        RuntimeLogger.logger.info( "Trying to remove  "+toBeRemoved.getId()+" From "+toBeScaled.getId());		  
 		
 		res=salsaClient.scaleIn(toBeRemoved.getId());
 		
@@ -282,8 +275,6 @@ boolean res=false;
 		String cmd = "";
 		String ip=toBeRemoved.getId();
 		  
-		M2MApplicationControl applicationControl = new M2MApplicationControl(controlledService);
-		applicationControl.decommission(toBeScaled.getId(), ip, controlledService);
 		
 		res=salsaClient.scaleIn(toBeRemoved.getId());
 		

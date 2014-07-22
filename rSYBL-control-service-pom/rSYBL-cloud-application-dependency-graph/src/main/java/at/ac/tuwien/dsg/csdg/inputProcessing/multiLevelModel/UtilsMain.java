@@ -30,7 +30,6 @@ import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBException;
 import javax.xml.bind.Marshaller;
 
-import at.ac.tuwien.dsg.csdg.DependencyGraph;
 import at.ac.tuwien.dsg.csdg.elasticityInformation.elasticityRequirements.BinaryRestriction;
 import at.ac.tuwien.dsg.csdg.elasticityInformation.elasticityRequirements.BinaryRestrictionsConjunction;
 import at.ac.tuwien.dsg.csdg.elasticityInformation.elasticityRequirements.Condition;
@@ -48,6 +47,7 @@ import at.ac.tuwien.dsg.csdg.inputProcessing.multiLevelModel.abstractModelXML.Re
 import at.ac.tuwien.dsg.csdg.inputProcessing.multiLevelModel.abstractModelXML.SYBLAnnotationXML;
 import at.ac.tuwien.dsg.csdg.inputProcessing.multiLevelModel.abstractModelXML.ServiceTopologyXML;
 import at.ac.tuwien.dsg.csdg.inputProcessing.multiLevelModel.abstractModelXML.ServiceUnitXML;
+import javax.xml.bind.Unmarshaller;
 
 
 
@@ -65,10 +65,18 @@ public class UtilsMain {
 	 InputProcessing inputProc = new InputProcessing();
 	 //DependencyGraph dependencyGraph=inputProc.loadDependencyGraphFromFile();
 	 //System.out.println(dependencyGraph.graphToString());
-		new UtilsMain().writeDefaultData();
+		new UtilsMain().load();
 	}
 	
-	
+	public void load(){
+            try{
+             JAXBContext jc = JAXBContext.newInstance(CloudServiceXML.class );
+       Unmarshaller u = jc.createUnmarshaller();
+       Object o = u.unmarshal( new File( "serviceDescription.xml" ) );
+            }catch(Exception e){
+                e.printStackTrace();
+            }
+        }
 	public void writeElasticityRequirementsDirectives(){
 		SYBLElasticityRequirementsDescription elasticityRequirementsDescription = new SYBLElasticityRequirementsDescription();
 		List<SYBLSpecification> syblSpecifications = new ArrayList<SYBLSpecification>();
@@ -257,8 +265,12 @@ public class UtilsMain {
 			   jc = JAXBContext.newInstance(CloudServiceXML.class);
 			   Marshaller m = jc.createMarshaller();
 			   CloudServiceXML c = new CloudServiceXML();
-			   c.setId("CloudService");
-			   
+			   c.setId("M2MDaaS");
+			    ServiceTopologyXML ioTTopology = new ServiceTopologyXML();
+                            ioTTopology.setId("LocalSensorServiceTopology");
+                             ServiceUnitXML queue = new ServiceUnitXML();
+                             queue.setId("QueueServiceUnit");
+			   ServiceUnitXML local = new ServiceUnitXML();
 			   ServiceTopologyXML webServiceTopology = new ServiceTopologyXML();
 			   webServiceTopology.setId("WebServiceTopology");
 			   List<ServiceUnitXML> components1 = new ArrayList<ServiceUnitXML>();
@@ -269,7 +281,7 @@ public class UtilsMain {
 			   loadBalancer.setId("LoadBalancer");
 			   SYBLAnnotationXML annotation=new SYBLAnnotationXML();
 			   
-			   annotation.setStrategies("St1:STRATEGY CASE responseTime < 360 ms AND throughput_average < 300 : scalein");
+			   annotation.setStrategies("St1:STRATEGY CASE responseTime > 360 ms AND throughput_average < 300 : scalein");
 			   webService.setXMLAnnotation(annotation);
 			   //webService.setAssociatedOpenstackSnapshot("hadoopSlave");
 			   webService.setId("WebService");
@@ -326,14 +338,16 @@ public class UtilsMain {
 			   
 			   dataServiceTopology.setXMLAnnotation(annotation);
 			   annotation=new SYBLAnnotationXML();
-			   annotation.setConstraints("Co4:CONSTRAINT cost.PerHour < 60 Euro; Co5:CONSTRAINT cost.PerClientPerHour < 3 Euro");	
+			   annotation.setConstraints("Co4:CONSTRAINT cost.PerHour > 60 Euro; Co5:CONSTRAINT cost.PerClientPerHour < 3 Euro");	
 			   c.setXMLAnnotation(annotation);
 			   ServiceTopologyXML mainTopology = new ServiceTopologyXML();
 			   List<ServiceTopologyXML> topologies = new ArrayList<ServiceTopologyXML>();
 			   topologies.add(webServiceTopology);
+                           topologies.add(ioTTopology);
 			   dataServiceTopology.setId("DataServiceTopology");
 			   topologies.add(dataServiceTopology);
 			   mainTopology.setId("MainTopology");
+                           
 			   mainTopology.setServiceTopology(topologies);
 			   List<ServiceTopologyXML> servTop = new ArrayList<ServiceTopologyXML>();
 			   servTop.add(mainTopology);

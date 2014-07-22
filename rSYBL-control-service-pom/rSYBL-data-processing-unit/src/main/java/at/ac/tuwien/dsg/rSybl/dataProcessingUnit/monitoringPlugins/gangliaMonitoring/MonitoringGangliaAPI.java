@@ -566,12 +566,12 @@ Double retValue = 0.0;
 		
 	}
 	@Override
-	public String getOngoingActionID() {
+	public List<String> getOngoingActionID() {
 		// TODO Auto-generated method stub
 		return null;
 	}
 	@Override
-	public String getOngoingActionNodeID() {
+	public List<String> getOngoingActionNodeID() {
 		// TODO Auto-generated method stub
 		return null;
 	}

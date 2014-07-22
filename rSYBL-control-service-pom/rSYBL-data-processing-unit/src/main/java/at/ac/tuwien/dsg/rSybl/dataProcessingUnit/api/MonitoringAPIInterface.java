@@ -28,6 +28,8 @@ public interface MonitoringAPIInterface {
     public void setCompositionRules(String compositionRules);
 
     public void setCompositionRules();
+    
+    public void refreshCompositionRules();
 
     public Double getCurrentCPUSize(Node e) throws Exception;
 
@@ -83,9 +85,9 @@ public interface MonitoringAPIInterface {
 
     public List<String> getAvailableMetrics(Node node);
 
-    public String getOngoingActionID();
+    public List<String> getOngoingActionID();
 
-    public String getOngoingActionNodeID();
+    public List<String> getOngoingActionNodeID();
 
     public boolean checkIfMetricsValid(Node node);
 }

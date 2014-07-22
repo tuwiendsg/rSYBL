@@ -10,6 +10,9 @@ import at.ac.tuwien.dsg.rSybl.dataProcessingUnit.monitoringPlugins.interfaces.Mo
 
 public class MonitoringAPIDryRun  implements MonitoringInterface{
 	private double FIXED_VALUE=0;
+        private List<String> actions = new ArrayList<String>();
+        private List<String> targets = new ArrayList<String>();
+
 	private Double returnRandomValue(){
 		Random random = new Random();
 		return random.nextDouble()*100;
@@ -143,13 +146,14 @@ public class MonitoringAPIDryRun  implements MonitoringInterface{
 
 	@Override
 	public void notifyControlActionStarted(String actionName, Node node) {
-		// TODO Auto-generated method stub
-		
+		this.actions.add(actionName);
+		this.targets.add(node.getId());
 	}
 
 	@Override
 	public void notifyControlActionEnded(String actionName, Node node) {
-		// TODO Auto-generated method stub
+		this.actions.remove(actionName);
+		this.targets.remove(node.getId());
 		
 	}
 
@@ -172,15 +176,15 @@ public class MonitoringAPIDryRun  implements MonitoringInterface{
 	}
 
 	@Override
-	public String getOngoingActionID() {
+	public List<String> getOngoingActionID() {
 		// TODO Auto-generated method stub
-		return null;
+		return actions;
 	}
 
 	@Override
-	public String getOngoingActionNodeID() {
+	public List<String> getOngoingActionNodeID() {
 		// TODO Auto-generated method stub
-		return null;
+		return targets;
 	}
 
 	@Override

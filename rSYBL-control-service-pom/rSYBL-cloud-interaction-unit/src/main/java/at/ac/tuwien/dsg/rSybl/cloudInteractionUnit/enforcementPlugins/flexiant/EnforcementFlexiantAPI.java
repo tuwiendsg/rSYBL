@@ -81,7 +81,6 @@ public class EnforcementFlexiantAPI  implements EnforcementInterface{
 	}
 	
 	public boolean scaleOut(Node arg0)   {
-		monitoring.enforcingActionStarted("ScaleOut",arg0 );
 		boolean res=false;
 		Node o = arg0;
 		RuntimeLogger.logger.info("Scaling out ... "+arg0+" "+arg0.getNodeType());
@@ -92,9 +91,7 @@ public class EnforcementFlexiantAPI  implements EnforcementInterface{
 		
 		//TODO : enable just ComponentTopology level 
 		
-		if (o.getNodeType()==NodeType.SERVICE_UNIT){
-			res=scaleOutComponent(o);
-		}
+	
 		if (o.getNodeType()==NodeType.SERVICE_TOPOLOGY){
 			//TODO: make it possible to scale a set of component topologies
 			
@@ -137,7 +134,6 @@ public class EnforcementFlexiantAPI  implements EnforcementInterface{
 		if (o.getNodeType()==NodeType.SERVICE_UNIT){
 			res=scaleOutComponent((Node) o);
 		}
-		monitoring.enforcingActionEnded("ScaleOut",arg0 );
 return res;
 	}
 	private void loadDeploymentDescription(){
@@ -205,7 +201,7 @@ return res;
 		}
 	private boolean scaleInComponent(Node o){
 			boolean res=false;
-			RuntimeLogger.logger.info("AAAAAAAAAAAAAAA current nb servers "+flexiantActions.listServers().size());
+			
 			DependencyGraph graph=new DependencyGraph();
 			graph.setCloudService(controlledService);
 			Node toBeScaled = graph.getNodeWithID(o.getId()); 
@@ -229,7 +225,7 @@ return res;
 			               toBeScaled.removeNode(toBeRemoved);
 		               
 			               monitoring.refreshServiceStructure(controlledService);
-			               return res;
+			               return true;
 				}
       private boolean scaleIn(Node node, String ip){
           boolean res=false;
@@ -386,10 +382,7 @@ return res;
 			res=scaleInComponent(findComponentOfCodeRegion(arg0));
 		}
 		
-		//TODO : enable just ComponentTopology level 
-		if (arg0.getNodeType()==NodeType.SERVICE_UNIT){
-			res=scaleInComponent(arg0);
-		}
+		
 		
 		if (arg0.getNodeType()==NodeType.SERVICE_TOPOLOGY){
 			ArrayList<Node> comps = (ArrayList<Node>)  arg0.getAllRelatedNodesOfType(RelationshipType.COMPOSITION_RELATIONSHIP);

@@ -33,7 +33,7 @@ public class MonitoringAPI implements MonitoringAPIInterface {
     private static HashMap<Node, ArrayList<Double>> avgRunningTimes = new HashMap<Node, ArrayList<Double>>();
 
     private boolean executingControlAction = false;
-
+    private String compositionRules = "";
     private Node controlledService;
     private MonitoringInterface offeredMonitoringMetrics;
 
@@ -42,6 +42,7 @@ public class MonitoringAPI implements MonitoringAPIInterface {
     }
 
     public void setCompositionRules(String compositionRules) {
+        this.compositionRules=compositionRules;
         offeredMonitoringMetrics.submitCompositionRules(compositionRules);
     }
 
@@ -389,27 +390,32 @@ public class MonitoringAPI implements MonitoringAPIInterface {
     }
 
     @Override
-    public String getOngoingActionID() {
+    public List<String> getOngoingActionID() {
         // TODO Auto-generated method stub
         return offeredMonitoringMetrics.getOngoingActionID();
     }
 
     @Override
-    public String getOngoingActionNodeID() {
+    public List<String> getOngoingActionNodeID() {
         // TODO Auto-generated method stub
         return offeredMonitoringMetrics.getOngoingActionNodeID();
     }
 
     @Override
-    public void setCompositionRules() {
+    public void refreshCompositionRules() {
         // TODO Auto-generated method stub
-        offeredMonitoringMetrics.submitCompositionRules();
+        offeredMonitoringMetrics.submitCompositionRules(compositionRules);
     }
 
     @Override
     public boolean checkIfMetricsValid(Node node) {
         // TODO Auto-generated method stub
         return offeredMonitoringMetrics.checkIfMetricsValid(node);
+    }
+
+    @Override
+    public void setCompositionRules() {
+        offeredMonitoringMetrics.submitCompositionRules();
     }
 
 }

@@ -142,7 +142,7 @@ public class InputProcessing {
             cloudServiceXML = (CloudServiceXML) u.unmarshal(new StringReader(applicationDescr));
 
         } catch (JAXBException e) {
-            DependencyGraphLogger.logger.info(e.getStackTrace().toString());
+            DependencyGraphLogger.logger.info("Error unmarshalling cloud service"+e.getStackTrace().toString());
         }
 
         try {
@@ -161,7 +161,7 @@ public class InputProcessing {
             //	syblSpecifications.getSyblSpecifications().add(SYBLDirectiveMappingFromXML.mapFromSYBLAnnotation(syblAnnotation));
             // }
         } catch (JAXBException e) {
-            DependencyGraphLogger.logger.error(e.getStackTrace().toString());
+            DependencyGraphLogger.logger.error("Error unmarshalling specifications"+e.getStackTrace().toString());
         }
 
     }

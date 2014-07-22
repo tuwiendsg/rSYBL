@@ -5,11 +5,11 @@
         <ElasticityPrimitive id="scaleOut"  methodName="scaleout" name="Create new VM" parameters=""/>
     </ServiceElasticityPrimitives>
   <ServiceElasticityPrimitives id="Salsa" ServiceProvider="Salsa">
-        <ElasticityPrimitive id="scaleIn" methodName="scalein" name="Remove VM" parameters="IP"/>
+        <ElasticityPrimitive id="scaleIn" methodName="scalein" name="Remove VM" parameters=""/>
         <ElasticityPrimitive id="scaleOut"  methodName="scaleout" name="Create new VM" parameters=""/>
     </ServiceElasticityPrimitives>
       <ServiceElasticityPrimitives id="FCO" ServiceProvider="Flexiant">
-        <ElasticityPrimitive id="scaleIn" methodName="scalein" name="Remove VM" parameters="IP"/>
+        <ElasticityPrimitive id="scaleIn" methodName="scalein" name="Remove VM" parameters=""/>
         <ElasticityPrimitive id="scaleOut"  methodName="scaleout" name="Create new VM" parameters=""/>
     </ServiceElasticityPrimitives>
       <ServiceElasticityPrimitives id="M2MDaaS" ServiceProvider="Application Specific Orchestration">

@@ -128,6 +128,48 @@ public class EnforcementAPI {
 						+ " params " + parameters.length);
 
 			}
+                        List<String> metrics = monitoringAPIInterface
+					.getAvailableMetrics(node);
+			boolean checkIfMetrics = false;
+			// monitoringAPIInterface.enforcingActionStarted("ScaleIn", arg0);
+			while (!checkIfMetrics) {
+				boolean myMetrics = true;
+				RuntimeLogger.logger.info("Waiting for action....");
+
+				for (String metricName : metrics) {
+					try {
+						RuntimeLogger.logger.info("Metric "
+								+ metricName
+								+ " has value "
+								+ monitoringAPIInterface.getMetricValue(
+										metricName, node));
+
+						if (monitoringAPIInterface.getMetricValue(metricName,
+								node) == null
+								|| monitoringAPIInterface.getMetricValue(
+										metricName, node) < 0) {
+							myMetrics = false;
+							RuntimeLogger.logger.info("~~~~Metric "
+									+ metricName + "smaller than 0");
+						}
+					} catch (Exception e) {
+						myMetrics = false;
+						RuntimeLogger.logger.info("~~~~Metric " + metricName
+								+ "not valid");
+
+					}
+
+				}
+				checkIfMetrics = myMetrics;
+				try {
+					Thread.sleep(10000);
+				} catch (InterruptedException ex) {
+					// TODO Auto-generated catch block
+					ex.printStackTrace();
+				}
+
+			}
+
 		} catch (SecurityException | ClassNotFoundException e1) {
 			// TODO Auto-generated catch block
 			e1.printStackTrace();
@@ -287,7 +329,53 @@ public class EnforcementAPI {
 					e1.printStackTrace();
 					res = false;
 				}
+                                List<String> metrics = monitoringAPIInterface
+					.getAvailableMetrics(e);
+                                try {
+					Thread.sleep(10000);
+				} catch (InterruptedException ex) {
+					// TODO Auto-generated catch block
+					ex.printStackTrace();
+				}
 
+			boolean checkIfMetrics = false;
+			while (!checkIfMetrics) {
+				boolean myMetrics = true;
+				RuntimeLogger.logger.info("Waiting for action....");
+
+				for (String metricName : metrics) {
+					try {
+						RuntimeLogger.logger.info("Metric "
+								+ metricName
+								+ " has value "
+								+ monitoringAPIInterface.getMetricValue(
+										metricName, e));
+
+						if (monitoringAPIInterface.getMetricValue(metricName,
+								e) == null
+								|| monitoringAPIInterface.getMetricValue(
+										metricName, e) < 0) {
+							myMetrics = false;
+							RuntimeLogger.logger.info("~~~~Metric "
+									+ metricName + "smaller than 0");
+						}
+					} catch (Exception ex) {
+						myMetrics = false;
+						RuntimeLogger.logger.info("~~~~Metric " + metricName
+								+ "not valid");
+
+					}
+
+				}
+				checkIfMetrics = myMetrics;
+				try {
+					Thread.sleep(10000);
+				} catch (InterruptedException ex) {
+					// TODO Auto-generated catch block
+					ex.printStackTrace();
+				}
+
+			}
 			} else {
 				res = false;
 				

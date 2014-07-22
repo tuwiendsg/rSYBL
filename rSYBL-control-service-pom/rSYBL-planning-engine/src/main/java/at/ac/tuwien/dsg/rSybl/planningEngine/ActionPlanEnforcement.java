@@ -20,6 +20,8 @@ import at.ac.tuwien.dsg.rSybl.planningEngine.PlanningGreedyAlgorithm.Pair;
 import at.ac.tuwien.dsg.rSybl.planningEngine.staticData.ActionEffect;
 import at.ac.tuwien.dsg.rSybl.planningEngine.utils.PlanningLogger;
 import at.ac.tuwien.dsg.sybl.syblProcessingUnit.utils.SYBLDirectivesEnforcementLogger;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 public class ActionPlanEnforcement {
 
@@ -35,44 +37,164 @@ public class ActionPlanEnforcement {
 		}
 	}
 
-
-
 	public void enforceResult(ArrayList<Pair<ActionEffect, Integer>> result,DependencyGraph dependencyGraph) {
 		PlanningLogger.logger.info("Number of actions to enforce" +result);
-		for (Pair<ActionEffect, Integer> actionEffect : result) {
-			PlanningLogger.logger.info("Enforcing capability "
-					+ actionEffect.getFirst().getActionType() + " on "
-					+ actionEffect.getFirst().getTargetedEntity().getId());
-			boolean foundCapability = false;
-			for (ElasticityCapability capability : actionEffect.getFirst()
-					.getTargetedEntity().getElasticityCapabilities()) {
-				if (capability.getName() != null
-						&& !capability.getName().equalsIgnoreCase("")) {
-					if (capability.getEndpoint() != null
-							&& !capability.getEndpoint().equalsIgnoreCase("")) {
-						foundCapability = true;
-						PlanningLogger.logger.info("Found capability "
-								+ capability.getName()
-								+ " enforcing with capabilities ");
-						enforcementAPI.enforceElasticityCapability(capability,
-								actionEffect.getFirst().getTargetedEntity());
-					}
-				}
-			}
+		List<ArrayList<Pair<ActionEffect, Integer>>> paralelRes = parallellizeResult(result);
+                for (ArrayList<Pair<ActionEffect, Integer>> actionsToEnf : paralelRes){
+                    List<Thread> threadsToExec = new ArrayList<Thread>();
+                    PlanningLogger.logger.info("~~~ paralel actions executed "+actionsToEnf.size());
+                    for (Pair<ActionEffect,Integer>action:actionsToEnf){
+                        EnforceActionInThread enforceActionInThread =new EnforceActionInThread(action.getFirst(), dependencyGraph);
 
-			if (!foundCapability) {
-				if (actionEffect.getSecond() > 0) {
-					for (int i = 0; i < actionEffect.getSecond(); i++) {
-						enforceActionGivenPrimitives(actionEffect.getFirst(), dependencyGraph);
-						
-					}
-				}
-			}
-
-		}
+                        Thread t = new Thread(enforceActionInThread);
+                        t.start();
+                        threadsToExec.add(t);
+                    
+                        }
+                    for(Thread actionInThread:threadsToExec){
+                        try {
+                            actionInThread.join();
+                        } catch (InterruptedException ex) {
+                            PlanningLogger.logger.error( "Exception when joininig threads"+ ex.getMessage());
+                        }
+                    }
+                        
+                }
+//                for (Pair<ActionEffect, Integer> actionEffect : result) {
+//			PlanningLogger.logger.info("Enforcing capability "
+//					+ actionEffect.getFirst().getActionType() + " on "
+//					+ actionEffect.getFirst().getTargetedEntity().getId());
+//			boolean foundCapability = false;
+//			for (ElasticityCapability capability : actionEffect.getFirst()
+//					.getTargetedEntity().getElasticityCapabilities()) {
+//				if (capability.getName() != null
+//						&& !capability.getName().equalsIgnoreCase("")) {
+//					if (capability.getEndpoint() != null
+//							&& !capability.getEndpoint().equalsIgnoreCase("")) {
+//						foundCapability = true;
+//						PlanningLogger.logger.info("Found capability "
+//								+ capability.getName()
+//								+ " enforcing with capabilities ");
+//						enforcementAPI.enforceElasticityCapability(capability,
+//								actionEffect.getFirst().getTargetedEntity());
+//					}
+//				}
+//			}
+//
+//			if (!foundCapability) {
+//				if (actionEffect.getSecond() > 0) {
+//					for (int i = 0; i < actionEffect.getSecond(); i++) {
+//						enforceActionGivenPrimitives(actionEffect.getFirst(), dependencyGraph);
+//						
+//					}
+//				}
+//			}
+//
+//		}
 	}
+        public class EnforceActionInThread implements Runnable{
+        ActionEffect actionEffect;
+        DependencyGraph dependencyGraph;
+            public EnforceActionInThread(ActionEffect actionEffect, DependencyGraph dependencyGraph){
+                this.actionEffect=actionEffect;
+                this.dependencyGraph=dependencyGraph;
+            }
+    @Override
+    public void run() {
+            PlanningLogger.logger.info("Executing action from thread......................... "+actionEffect.getActionType()+" on "+actionEffect.getTargetedEntityID());
+		String actionName = actionEffect.getActionType().toLowerCase();
+		for (ElasticityCapability elasticityCapability : actionEffect
+				.getTargetedEntity().getElasticityCapabilities()) {
+			if (elasticityCapability.getName().equalsIgnoreCase(actionName)) {
+				if (!elasticityCapability.getName().toLowerCase().contains("scalein") || (elasticityCapability.getName().toLowerCase().contains("scalein")&& actionEffect.getTargetedEntity().getAllRelatedNodesOfType(RelationshipType.HOSTED_ON_RELATIONSHIP, NodeType.VIRTUAL_MACHINE).size()>1)){
+					
+				String[] primitives = elasticityCapability
+						.getPrimitiveOperations().split(";");
+				for (int i = 0; i < primitives.length; i++) {
+					if (!enforcePrimitive(primitivesDescription, primitives[i],
+							actionEffect.getTargetedEntity(), dependencyGraph))
+					{
+						PlanningLogger.logger.info("Failed Enforcing "+primitives[i]+", cancelling the entire elasticity capability "+actionEffect.getActionType()+"-"+actionEffect.getTargetedEntityID());
+						break;
+					}else{
+						PlanningLogger.logger.info("Successfully enforced "+primitives[i]+", continuing with capability "+actionEffect.getActionType()+"-"+actionEffect.getTargetedEntityID());
 
-	public void enforceActionGivenPrimitives(
+					}
+				}
+				break;
+				}
+				}
+		}
+	
+    }
+
+
+}
+ public  List<ArrayList<Pair<ActionEffect,Integer>>> parallellizeResult(ArrayList<Pair<ActionEffect,Integer>> result){
+     List<ArrayList<Pair<ActionEffect,Integer>>> parallelizedActions = new ArrayList<ArrayList<Pair<ActionEffect,Integer>>>();
+     int i=0;
+     int indexInBigList =0;
+     parallelizedActions.add(new ArrayList<Pair<ActionEffect,Integer>>());
+     while (i<result.size()) {
+         boolean ok = true;
+         PlanningLogger.logger.info("Index of result "+i);
+         PlanningLogger.logger.info("Index of parallel "+indexInBigList);
+         
+         List<String> targets = new ArrayList<String>();
+         while (ok && i<result.size()){
+            List<String> actionTargets = getTargetsOfPrimitives(result.get(i).getFirst());
+            boolean foundSimilar = false;
+            for (String t:actionTargets){
+                if (targets.contains(t))foundSimilar=true;
+            }
+            if (!foundSimilar){
+               
+                parallelizedActions.get(indexInBigList).add(result.get(i));
+            }else{
+                indexInBigList+=1;
+               parallelizedActions.add(new ArrayList<Pair<ActionEffect,Integer>>());
+               parallelizedActions.get(indexInBigList).add(result.get(i));
+               ok = false;
+            }
+            i++;
+         }
+     }
+     return parallelizedActions;
+ }
+public List<String> getTargetsOfPrimitives(ActionEffect actionEffect){
+    List<String> targets = new ArrayList<String>();
+    String ac = actionEffect.getActionType().toLowerCase();
+    for (ElasticityCapability elasticityCapability : actionEffect
+				.getTargetedEntity().getElasticityCapabilities()) {
+			if (elasticityCapability.getName().equalsIgnoreCase(ac)) {
+				if (!elasticityCapability.getName().toLowerCase().contains("scalein") || (elasticityCapability.getName().toLowerCase().contains("scalein")&& actionEffect.getTargetedEntity().getAllRelatedNodesOfType(RelationshipType.HOSTED_ON_RELATIONSHIP, NodeType.VIRTUAL_MACHINE).size()>1)){
+					
+				String[] primitives = elasticityCapability
+						.getPrimitiveOperations().split(";");
+		for (String primitive: primitives){
+		String actionName = primitive;
+
+		if (actionName.contains(".")) {
+			targets.add(actionName.split("\\.")[0]);
+			actionName = actionName.split("\\.")[1];
+		}else{
+                    boolean foundCap = false;
+                    for (ElasticityCapability capability : actionEffect.getTargetedEntity().getElasticityCapabilities()) {
+				if (capability.getName().toLowerCase().contains(actionName)) {
+					targets.add (capability.getName().split("\\.")[0].toLowerCase());
+				foundCap=true;
+                                }
+			}
+		
+			}
+                }
+                                }
+                        }
+    }
+    
+return targets;
+}
+ public void enforceActionGivenPrimitives(
 			
 			ActionEffect actionEffect, DependencyGraph dependencyGraph) {
 		String actionName = actionEffect.getActionType().toLowerCase();

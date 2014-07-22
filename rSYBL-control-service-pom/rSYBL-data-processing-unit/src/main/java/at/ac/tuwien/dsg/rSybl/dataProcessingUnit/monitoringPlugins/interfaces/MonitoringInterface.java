@@ -51,8 +51,8 @@ public interface MonitoringInterface {
 	    public Double getMetricValue(String metricName, Node node);
 	    public Double getNumberInstances(Node node);
 	    public void refreshServiceStructure(Node node);
-	    public String getOngoingActionID();
-	    public String getOngoingActionNodeID();
+	    public List<String> getOngoingActionID();
+	    public List<String> getOngoingActionNodeID();
 	    public void submitCompositionRules();
 	    public boolean checkIfMetricsValid(Node node);
 }

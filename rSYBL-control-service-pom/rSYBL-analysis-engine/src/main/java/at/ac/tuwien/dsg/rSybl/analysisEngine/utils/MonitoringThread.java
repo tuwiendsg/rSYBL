@@ -71,10 +71,19 @@ public class MonitoringThread implements Runnable{
 					try {
 						toWrite+=api.getMetricValue(metric, entity)+",";
 					} catch (Exception e) {
+                                                toWrite+=" ,";
 						// TODO Auto-generated catch block
 						AnalysisLogger.logger.error("Metric "+metric+"not valid");
 					}
-				  toWrite+=api.getOngoingActionID()+","+api.getOngoingActionNodeID();
+                                  for (int i=0;i<api.getOngoingActionID().size();i++){
+                                      try{
+                                          toWrite+=api.getOngoingActionID().get(i) +","+api.getOngoingActionNodeID().get(i)+",";
+				  
+                                      }catch(Exception e ){
+                                          toWrite+=", ,";
+                                          
+                                      }
+                                  }
 				  fstream.write(toWrite+'\n');
 				  
 				  fstream.close();

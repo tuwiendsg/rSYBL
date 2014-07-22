@@ -164,22 +164,27 @@ public class ControlService {
 	
 			planningAlgorithm.start();
 			AnalysisLogger.logger.info("Planning algorithm started");
-                        try{
+                        
 			for (Node node1:dependencyGraph.getAllServiceUnits()){
-				
+				try{
 				MonitoringThread monitoringThread = new MonitoringThread(node1, monitoringAPI);
 				monitoringThread.start();
+                                 }catch(Exception e){
+                            AnalysisLogger.logger.error ("Error in starting monitoring threads"+e.getMessage()+node1.getId());
+                        }
+
 			}
 			for (Node node1:dependencyGraph.getAllServiceTopologies()){
+                            try{
 				MonitoringThread monitoringThread = new MonitoringThread(node1, monitoringAPI);
 				monitoringThread.start();
+                                 }catch(Exception e){
+                            AnalysisLogger.logger.error ("Error in starting monitoring threads"+e.getMessage()+node1.getId());
+                        }
 			}
 			MonitoringThread monitoringThread = new MonitoringThread(dependencyGraph.getCloudService(), monitoringAPI);
 			monitoringThread.start();
-                        }catch(Exception e){
-                            AnalysisLogger.logger.error ("Error in starting monitoring threads");
-                        }
-
+                       
 		} catch (Exception e) {
 			AnalysisLogger.logger.error("Control service Instantiation "
 					+ e.toString()+"with message " +e.getMessage());

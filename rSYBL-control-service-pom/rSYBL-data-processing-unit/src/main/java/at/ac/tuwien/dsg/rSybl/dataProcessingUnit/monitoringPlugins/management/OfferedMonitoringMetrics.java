@@ -335,8 +335,8 @@ public class OfferedMonitoringMetrics implements MonitoringInterface{
 		}
 	}
 	@Override
-	public String getOngoingActionID() {
-		String result = "";
+	public List<String> getOngoingActionID() {
+		List<String> result = new ArrayList<String>();
     	Map<Method,MonitoringInterface> methods = manageMonitoringPlugins.getMethods(manageMonitoringPlugins.getAllPlugins(cloudService));
 		for (Method method:methods.keySet()){
 			if (method.getName().equalsIgnoreCase("getNumberInstances")){
@@ -347,8 +347,8 @@ public class OfferedMonitoringMetrics implements MonitoringInterface{
 
 	}
 	@Override
-	public String getOngoingActionNodeID() {
-		String result = "";
+	public List<String> getOngoingActionNodeID() {
+		List<String> result = new ArrayList<String>();
     	Map<Method,MonitoringInterface> methods = manageMonitoringPlugins.getMethods(manageMonitoringPlugins.getAllPlugins(cloudService));
 		for (Method method:methods.keySet()){
 			if (method.getName().equalsIgnoreCase("getNumberInstances")){
@@ -368,5 +368,7 @@ public class OfferedMonitoringMetrics implements MonitoringInterface{
 		}
 		return result;
 	}
+
+   
 
 }

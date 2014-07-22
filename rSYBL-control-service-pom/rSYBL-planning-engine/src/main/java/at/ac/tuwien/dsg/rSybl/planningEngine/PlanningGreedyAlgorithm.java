@@ -225,6 +225,8 @@ public class PlanningGreedyAlgorithm implements PlanningAlgorithmInterface {
 		return maxConstraintsAction;
 	}
 
+
+      
     public void findAndExecuteBestActions() {
 
         strategiesThatNeedToBeImproved = "";
@@ -307,7 +309,7 @@ public class PlanningGreedyAlgorithm implements PlanningAlgorithmInterface {
                         	contextRepresentation.doAction(dataAction);
                         	int afterC= contextRepresentation.countViolatedConstraints();
                   			int improvedStrategies=contextRepresentation.countFixedStrategies(beforeContext);
-                  			int req = beforeC-afterC+improvedStrategies;
+                  			int req = initiallyBrokenConstraints-afterC+improvedStrategies;
                            
                                PlanningLogger.logger.info("PlanningAlgorithm: Trying the action due to DATA " + dataAction.getActionName() + "constraints violated : " + contextRepresentation.getViolatedConstraints() + " Strategies improved " + contextRepresentation.getImprovedStrategies(beforeActionContextRepresentation, strategiesThatNeedToBeImproved));
 
@@ -332,7 +334,7 @@ public class PlanningGreedyAlgorithm implements PlanningAlgorithmInterface {
                         	contextRepresentation.doAction(loadAction);
                         	int afterC= contextRepresentation.countViolatedConstraints();
                   			int improvedStrategies=contextRepresentation.countFixedStrategies(beforeContext);
-                  			int req = beforeC-afterC+improvedStrategies;
+                  			int req = initiallyBrokenConstraints-afterC+improvedStrategies;
                            
                                PlanningLogger.logger.info("PlanningAlgorithm: Trying the action due to LOAD " + loadAction.getActionName() + "constraints violated : " + contextRepresentation.getViolatedConstraints() + " Strategies improved " + contextRepresentation.getImprovedStrategies(beforeActionContextRepresentation, strategiesThatNeedToBeImproved));
 
@@ -374,6 +376,7 @@ public class PlanningGreedyAlgorithm implements PlanningAlgorithmInterface {
             List<Pair<ActionEffect, Integer>> action = null;
 
             for (Integer val : fixedDirectives.keySet()) {
+                PlanningLogger.logger.info("fixed directives  "+fixedDirectives.get(val).size());
                 if (val > maxAction) {
                     maxAction = val;
                     action=fixedDirectives.get(val);
@@ -387,11 +390,10 @@ public class PlanningGreedyAlgorithm implements PlanningAlgorithmInterface {
             		action = fixedStrategies.get(minStrat);
             	}
             }
-
-          
+         
             //	PlanningLogger.logger.info("Found action "+ action);
             // Find cloudService = SYBLRMI enforce action with action type,
-            if (action!=null && !result.contains(action)) {
+            if (maxAction>0 && action!=null && !result.contains(action)) {
             	for (Pair<ActionEffect, Integer> actionEffect:action){
             	
             	for (int i=0;i<actionEffect.getSecond();i++){
