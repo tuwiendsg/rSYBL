@@ -81,6 +81,25 @@ public class CloudServiceXML implements Serializable{
 	public void setId(String id) {
 		this.id = id;
 	}
+        
+        @XmlElement(name = "LinearRelationship")
+		private List<LinearRelationshipXML> linearRelationships;
+          
+    /**
+     * @return the linearRelationships
+     */
+    public List<LinearRelationshipXML> getLinearRelationships() {
+        return linearRelationships;
+    }
+
+    /**
+     * @param linearRelationships the linearRelationships to set
+     */
+    public void setLinearRelationships(List<LinearRelationshipXML> linearRelationships) {
+        this.linearRelationships = linearRelationships;
+    }
+
+
     public CloudServiceXML(){
     	
     }

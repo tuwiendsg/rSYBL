@@ -25,15 +25,11 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 
-import org.jclouds.openstack.v2_0.domain.Link.Relation;
-
-import at.ac.tuwien.dsg.csdg.DataElasticityDependency;
 import at.ac.tuwien.dsg.csdg.DependencyGraph;
 import at.ac.tuwien.dsg.csdg.Node;
 import at.ac.tuwien.dsg.csdg.Node.NodeType;
 import at.ac.tuwien.dsg.csdg.Relationship;
 import at.ac.tuwien.dsg.csdg.Relationship.RelationshipType;
-import at.ac.tuwien.dsg.csdg.elasticityInformation.ElasticityCapability;
 import at.ac.tuwien.dsg.csdg.elasticityInformation.ElasticityRequirement;
 import at.ac.tuwien.dsg.csdg.elasticityInformation.elasticityRequirements.Condition;
 import at.ac.tuwien.dsg.csdg.elasticityInformation.elasticityRequirements.SYBLSpecification;
@@ -41,6 +37,7 @@ import at.ac.tuwien.dsg.csdg.elasticityInformation.elasticityRequirements.Strate
 import at.ac.tuwien.dsg.csdg.inputProcessing.multiLevelModel.abstractModelXML.SYBLDirectiveMappingFromXML;
 import at.ac.tuwien.dsg.rSybl.cloudInteractionUnit.api.EnforcementAPIInterface;
 import at.ac.tuwien.dsg.rSybl.dataProcessingUnit.api.MonitoringAPIInterface;
+import at.ac.tuwien.dsg.rSybl.planningEngine.ContextRepresentation.Pair;
 import at.ac.tuwien.dsg.rSybl.planningEngine.utils.Configuration;
 import at.ac.tuwien.dsg.rSybl.planningEngine.staticData.ActionEffect;
 import at.ac.tuwien.dsg.rSybl.planningEngine.staticData.ActionEffects;
@@ -58,61 +55,7 @@ public class PlanningGreedyAlgorithm implements PlanningAlgorithmInterface {
     private String strategiesThatNeedToBeImproved = "";
     private int REFRESH_PERIOD = 120000;
 
-    public class Pair<A, B> {
-
-        private A first;
-        private B second;
-
-        public Pair(A first, B second) {
-            super();
-            this.first = first;
-            this.second = second;
-        }
-
-        @Override
-		public int hashCode() {
-            int hashFirst = first != null ? first.hashCode() : 0;
-            int hashSecond = second != null ? second.hashCode() : 0;
-
-            return (hashFirst + hashSecond) * hashSecond + hashFirst;
-        }
-
-        @Override
-		public boolean equals(Object other) {
-            if (other instanceof Pair) {
-                Pair otherPair = (Pair) other;
-                return ((this.first == otherPair.first || (this.first != null
-                        && otherPair.first != null && this.first
-                        .equals(otherPair.first))) && (this.second == otherPair.second || (this.second != null
-                        && otherPair.second != null && this.second
-                        .equals(otherPair.second))));
-            }
-
-            return false;
-        }
-
-        @Override
-		public String toString() {
-            return "(" + first + ", " + second + ")";
-        }
-
-        public A getFirst() {
-            return first;
-        }
-
-        public void setFirst(A first) {
-            this.first = first;
-        }
-
-        public B getSecond() {
-            return second;
-        }
-
-        public void setSecond(B second) {
-            this.second = second;
-        }
-    }
-
+    
     public PlanningGreedyAlgorithm(DependencyGraph cloudService,
             MonitoringAPIInterface monitoringAPI, EnforcementAPIInterface enforcementAPI) {
         this.dependencyGraph = cloudService;
@@ -286,7 +229,7 @@ public class PlanningGreedyAlgorithm implements PlanningAlgorithmInterface {
 //							}
 
                         contextRepresentation.doAction(actionEffect);
-                        foundActions.add(new Pair<ActionEffect, Integer>(actionEffect, 1));
+                        foundActions.add(contextRepresentation.new Pair<ActionEffect, Integer>(actionEffect, 1));
                        
                         int fixedStr = contextRepresentation.countFixedStrategies(beforeActionContextRepresentation, strategiesThatNeedToBeImproved);
                         PlanningLogger.logger.info("PlanningAlgorithm: Trying the action " + actionEffect.getActionName() + "constraints violated : " + contextRepresentation.getViolatedConstraints() + " Strategies improved " + contextRepresentation.getImprovedStrategies(beforeActionContextRepresentation, strategiesThatNeedToBeImproved));
@@ -313,7 +256,7 @@ public class PlanningGreedyAlgorithm implements PlanningAlgorithmInterface {
                            
                                PlanningLogger.logger.info("PlanningAlgorithm: Trying the action due to DATA " + dataAction.getActionName() + "constraints violated : " + contextRepresentation.getViolatedConstraints() + " Strategies improved " + contextRepresentation.getImprovedStrategies(beforeActionContextRepresentation, strategiesThatNeedToBeImproved));
 
-                               foundActions.add(new Pair<ActionEffect, Integer>(dataAction, 1));
+                               foundActions.add(contextRepresentation.new Pair<ActionEffect, Integer>(dataAction, 1));
                                fixedDirectives
                                .put(req, foundActions);
        		                fixedStrategies
@@ -337,8 +280,8 @@ public class PlanningGreedyAlgorithm implements PlanningAlgorithmInterface {
                   			int req = initiallyBrokenConstraints-afterC+improvedStrategies;
                            
                                PlanningLogger.logger.info("PlanningAlgorithm: Trying the action due to LOAD " + loadAction.getActionName() + "constraints violated : " + contextRepresentation.getViolatedConstraints() + " Strategies improved " + contextRepresentation.getImprovedStrategies(beforeActionContextRepresentation, strategiesThatNeedToBeImproved));
-
-                               foundActions.add(new Pair<ActionEffect, Integer>(loadAction, 1));
+                               
+                               foundActions.add(contextRepresentation.new Pair<ActionEffect, Integer>(loadAction, 1));
                                fixedDirectives
                                .put(req, foundActions);
        		                fixedStrategies

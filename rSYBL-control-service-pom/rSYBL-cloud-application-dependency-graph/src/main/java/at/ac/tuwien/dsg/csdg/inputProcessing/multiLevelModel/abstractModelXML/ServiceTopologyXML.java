@@ -37,7 +37,7 @@ import at.ac.tuwien.dsg.csdg.elasticityInformation.elasticityRequirements.SYBLAn
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "ServiceTopology", propOrder = {
 	    "componentTopology",
-	    "relationships","associatedIps","components","syblAnnotationXML",
+	    "relationships","associatedIps","components","linearRelationships","syblAnnotationXML",
 	})
 public  class ServiceTopologyXML {
 
@@ -51,7 +51,24 @@ public  class ServiceTopologyXML {
     @XmlElement(name = "ServiceUnit")
 	private List<ServiceUnitXML> components;
   
-	
+	@XmlElement(name = "LinearRelationship")
+		private List<LinearRelationshipXML> linearRelationships;
+          
+    /**
+     * @return the linearRelationships
+     */
+    public List<LinearRelationshipXML> getLinearRelationships() {
+        return linearRelationships;
+    }
+
+    /**
+     * @param linearRelationships the linearRelationships to set
+     */
+    public void setLinearRelationships(List<LinearRelationshipXML> linearRelationships) {
+        this.linearRelationships = linearRelationships;
+    }
+
+
 	 @XmlAttribute(name = "id")
 	private String id;
 	 

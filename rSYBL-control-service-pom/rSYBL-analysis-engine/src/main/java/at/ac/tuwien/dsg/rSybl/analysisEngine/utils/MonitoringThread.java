@@ -22,8 +22,8 @@ import java.rmi.RemoteException;
 import java.util.Date;
 
 import at.ac.tuwien.dsg.csdg.Node;
-import at.ac.tuwien.dsg.rSybl.dataProcessingUnit.api.MonitoringAPI;
 import at.ac.tuwien.dsg.rSybl.dataProcessingUnit.api.MonitoringAPIInterface;
+import java.io.File;
 
 
 
@@ -41,6 +41,10 @@ public class MonitoringThread implements Runnable{
 		//Create file for current entity
 		Date date = new Date();
 		try{
+                     ClassLoader classLoader = MonitoringThread.class.getClassLoader();
+                    File classpathRoot = new File(classLoader.getResource("").getPath());
+
+                    System.out.println(classpathRoot.getPath());
 		  fileName = "./monitoring/"+e.getId()+"_"+date.getHours()+"_"+date.getMinutes()+".csv";
 		  fstream = new FileWriter(fileName);
 		  String headers = "Time ,";

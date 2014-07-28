@@ -22,12 +22,17 @@
 
 package at.ac.tuwien.dsg.csdg.elasticityInformation;
 
-import java.io.Serializable;
+import at.ac.tuwien.dsg.csdg.PolynomialElasticityRelationship;
+import java.util.ArrayList;
+import java.util.List;
 
 public class ElasticityMetric{
 	private String metricName = "";
+        private String servicePartID="";
 	private Object value;
 	private String measurementUnit="";
+        
+        private List<PolynomialElasticityRelationship> relationships = new ArrayList<PolynomialElasticityRelationship>();
 	public String getMetricName() {
 		return metricName;
 	}
@@ -46,4 +51,38 @@ public class ElasticityMetric{
 	public void setMeasurementUnit(String measurementUnit) {
 		this.measurementUnit = measurementUnit;
 	}
+
+    /**
+     * @return the servicePartID
+     */
+    public String getServicePartID() {
+        return servicePartID;
+    }
+
+    /**
+     * @param servicePartID the servicePartID to set
+     */
+    public void setServicePartID(String servicePartID) {
+        this.servicePartID = servicePartID;
+    }
+
+    /**
+     * @return the relationships
+     */
+    public List<PolynomialElasticityRelationship> getRelationships() {
+        return relationships;
+    }
+
+    /**
+     * @param relationships the relationships to set
+     */
+    public void setRelationships(List<PolynomialElasticityRelationship> relationships) {
+        this.relationships = relationships;
+    }
+     public void addRelationship(PolynomialElasticityRelationship relationship) {
+        this.relationships.add(relationship);
+    }
+     public void addAllRelationship(List<PolynomialElasticityRelationship> relationships) {
+        this.relationships.addAll(relationships);
+    }
 }

@@ -16,12 +16,10 @@ import at.ac.tuwien.dsg.csdg.inputProcessing.multiLevelModel.primitives.Elastici
 import at.ac.tuwien.dsg.csdg.inputProcessing.multiLevelModel.primitives.ElasticityPrimitivesDescription;
 import at.ac.tuwien.dsg.csdg.inputProcessing.multiLevelModel.primitives.ServiceElasticityPrimitives;
 import at.ac.tuwien.dsg.rSybl.cloudInteractionUnit.api.EnforcementAPIInterface;
-import at.ac.tuwien.dsg.rSybl.planningEngine.PlanningGreedyAlgorithm.Pair;
+import at.ac.tuwien.dsg.rSybl.planningEngine.ContextRepresentation.Pair;
+
 import at.ac.tuwien.dsg.rSybl.planningEngine.staticData.ActionEffect;
 import at.ac.tuwien.dsg.rSybl.planningEngine.utils.PlanningLogger;
-import at.ac.tuwien.dsg.sybl.syblProcessingUnit.utils.SYBLDirectivesEnforcementLogger;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 public class ActionPlanEnforcement {
 
@@ -38,7 +36,7 @@ public class ActionPlanEnforcement {
 	}
 
 	public void enforceResult(ArrayList<Pair<ActionEffect, Integer>> result,DependencyGraph dependencyGraph) {
-		PlanningLogger.logger.info("Number of actions to enforce" +result);
+		PlanningLogger.logger.info("Number of actions to enforce" +result.size());
 		List<ArrayList<Pair<ActionEffect, Integer>>> paralelRes = parallellizeResult(result);
                 for (ArrayList<Pair<ActionEffect, Integer>> actionsToEnf : paralelRes){
                     List<Thread> threadsToExec = new ArrayList<Thread>();
@@ -135,29 +133,28 @@ public class ActionPlanEnforcement {
      int i=0;
      int indexInBigList =0;
      parallelizedActions.add(new ArrayList<Pair<ActionEffect,Integer>>());
+     List<String> targets = new ArrayList<String>();
      while (i<result.size()) {
-         boolean ok = true;
-         PlanningLogger.logger.info("Index of result "+i);
-         PlanningLogger.logger.info("Index of parallel "+indexInBigList);
-         
-         List<String> targets = new ArrayList<String>();
-         while (ok && i<result.size()){
+         //PlanningLogger.logger.info("Index of result "+i);
+         //PlanningLogger.logger.info("Index of parallel "+indexInBigList);
             List<String> actionTargets = getTargetsOfPrimitives(result.get(i).getFirst());
             boolean foundSimilar = false;
             for (String t:actionTargets){
                 if (targets.contains(t))foundSimilar=true;
             }
-            if (!foundSimilar){
-               
+            if (!foundSimilar && actionTargets.size()>0){
+               targets.addAll(actionTargets);
                 parallelizedActions.get(indexInBigList).add(result.get(i));
             }else{
                 indexInBigList+=1;
                parallelizedActions.add(new ArrayList<Pair<ActionEffect,Integer>>());
                parallelizedActions.get(indexInBigList).add(result.get(i));
-               ok = false;
+                targets = new ArrayList<String>();
+               targets.addAll(actionTargets);
+              
             }
             i++;
-         }
+
      }
      return parallelizedActions;
  }
@@ -181,11 +178,14 @@ public List<String> getTargetsOfPrimitives(ActionEffect actionEffect){
                     boolean foundCap = false;
                     for (ElasticityCapability capability : actionEffect.getTargetedEntity().getElasticityCapabilities()) {
 				if (capability.getName().toLowerCase().contains(actionName)) {
+                                    if (capability.getName().toLowerCase().contains("."))
 					targets.add (capability.getName().split("\\.")[0].toLowerCase());
 				foundCap=true;
                                 }
 			}
-		
+		if (!foundCap){
+                    targets.add("");
+                }
 			}
                 }
                                 }
@@ -368,6 +368,7 @@ return targets;
 			for (ElasticityCapability capability : node
 					.getElasticityCapabilities()) {
 				if (capability.getName().toLowerCase().contains(actionName)) {
+                                    if (capability.getName().toLowerCase().contains("."))
 					target = capability.getName().split("\\.")[0].toLowerCase();
 				}
 			}
@@ -530,6 +531,7 @@ return targets;
 			for (ElasticityCapability capability : actionEffect
 					.getTargetedEntity().getElasticityCapabilities()) {
 				if (capability.getName().toLowerCase().contains(actionName)) {
+                                    if (capability.getName().toLowerCase().contains("."))
 					target = capability.getName().split("\\.")[0].toLowerCase();
 				}
 			}
@@ -577,5 +579,12 @@ return targets;
 		}
 
 	}
+public void enforceFoundActions(List<ActionEffect> actions,DependencyGraph dependencyGraph) {
 
+		for (ActionEffect actionEffect : actions) {
+                    actionEffect.setTargetedEntity(dependencyGraph.getNodeWithID(actionEffect.getTargetedEntityID()));
+			enforceAction(actionEffect);
+		}
+
+	}
 }

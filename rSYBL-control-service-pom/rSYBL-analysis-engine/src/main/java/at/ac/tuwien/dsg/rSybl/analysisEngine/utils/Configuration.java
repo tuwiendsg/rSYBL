@@ -69,5 +69,7 @@ public class Configuration {
     public static String getMonitoringServiceURL(){
     	return configuration.getProperty("MonitoringServiceURL");
     }
-
+public static String getPlanningAlgorithm(){
+    	return configuration.getProperty("PlanningAlgorithm");
+    }
 }

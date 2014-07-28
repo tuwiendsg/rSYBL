@@ -48,6 +48,7 @@ public class Node implements Serializable{
 	protected String id;
 	protected HashMap<String, Object> staticInformation = new HashMap<String,Object> ();
 	protected NodeType nodeType;
+
 	public static enum NodeType{
 		   CLOUD_SERVICE,CODE_REGION,SERVICE_TOPOLOGY,SERVICE_UNIT,OS_PROCESS,VIRTUAL_MACHINE,VIRTUAL_CLUSTER,CLOUD_INFRASTRUCTURE;
 		 }
@@ -95,6 +96,29 @@ public class Node implements Serializable{
 		}
 		DependencyGraphLogger.logger.info("Cannot set metric value. Metric not found with the name "+metricName);
 	}
+        public void addElasticityMetric(String metricName,String measurement, String servicePartID){
+            ElasticityMetric metric = new ElasticityMetric();
+            metric.setMetricName(metricName);
+            metric.setServicePartID(servicePartID);
+            metric.setMeasurementUnit(measurement);
+            
+		for (ElasticityMetric m:elasticityMetrics){
+			if (m.getMetricName().equalsIgnoreCase(metricName) ){
+				
+                                return;
+			}
+		}
+            elasticityMetrics.add(metric);
+	}
+        public ElasticityMetric findMetricWithName(String metricName){
+            for (ElasticityMetric m:elasticityMetrics){
+			if (m.getMetricName().equalsIgnoreCase(metricName) ){
+                        return m;
+                        }
+            }
+        return null;
+        }
+        
 	public void addNode(Node node, Relationship rel){
 		if	(getRelatedNode(node.getId())!=null){
 		removeNode(node.getId());
@@ -335,4 +359,15 @@ public  ArrayList<Node> getAllRelatedNodesOfType(RelationshipType relationshipTy
 			}
 		}
 	}
+        
+        public Object getMetricValue(String metricName){
+            for (ElasticityMetric elasticityMetric:elasticityMetrics){
+                if (elasticityMetric.getMetricName().equalsIgnoreCase(metricName)){
+                    return elasticityMetric.getValue();
+                  
+                }
+            }
+            return null;
+        }
+       
 }

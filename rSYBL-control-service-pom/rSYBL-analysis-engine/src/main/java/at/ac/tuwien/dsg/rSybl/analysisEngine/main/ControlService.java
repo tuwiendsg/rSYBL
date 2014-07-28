@@ -52,6 +52,7 @@ import at.ac.tuwien.dsg.rSybl.dataProcessingUnit.api.MonitoringAPI;
 import at.ac.tuwien.dsg.rSybl.dataProcessingUnit.api.MonitoringAPIInterface;
 import at.ac.tuwien.dsg.rSybl.planningEngine.PlanningAlgorithmInterface;
 import at.ac.tuwien.dsg.rSybl.planningEngine.PlanningGreedyAlgorithm;
+import at.ac.tuwien.dsg.rSybl.planningEngine.PlanningHeuristicSearch;
 import at.ac.tuwien.dsg.sybl.syblProcessingUnit.processing.SYBLProcessingThread;
 import at.ac.tuwien.dsg.sybl.syblProcessingUnit.utils.SYBLDirectivesEnforcementLogger;
 
@@ -156,34 +157,39 @@ public class ControlService {
 			// syblSpecifications
 			//disableConflictingConstraints();
 			//AnalysisLogger.logger.info("Conflicting constraints disabled");
-
-			planningAlgorithm = new PlanningGreedyAlgorithm(
+                        if (Configuration.getPlanningAlgorithm()!=null && !Configuration.getPlanningAlgorithm().equals("") && Configuration.getPlanningAlgorithm().toLowerCase().contains("heuristic")){
+                        planningAlgorithm = new PlanningHeuristicSearch(
+					dependencyGraph, monitoringAPI, enforcementAPI);    
+                        }
+                        else{
+                        planningAlgorithm = new PlanningGreedyAlgorithm(
 					dependencyGraph, monitoringAPI, enforcementAPI);
-			if (!effects.equalsIgnoreCase(""))
+                        }
+                        if (!effects.equalsIgnoreCase(""))
 			planningAlgorithm.setEffects(effects);
 	
 			planningAlgorithm.start();
 			AnalysisLogger.logger.info("Planning algorithm started");
                         
-			for (Node node1:dependencyGraph.getAllServiceUnits()){
-				try{
-				MonitoringThread monitoringThread = new MonitoringThread(node1, monitoringAPI);
-				monitoringThread.start();
-                                 }catch(Exception e){
-                            AnalysisLogger.logger.error ("Error in starting monitoring threads"+e.getMessage()+node1.getId());
-                        }
-
-			}
-			for (Node node1:dependencyGraph.getAllServiceTopologies()){
-                            try{
-				MonitoringThread monitoringThread = new MonitoringThread(node1, monitoringAPI);
-				monitoringThread.start();
-                                 }catch(Exception e){
-                            AnalysisLogger.logger.error ("Error in starting monitoring threads"+e.getMessage()+node1.getId());
-                        }
-			}
-			MonitoringThread monitoringThread = new MonitoringThread(dependencyGraph.getCloudService(), monitoringAPI);
-			monitoringThread.start();
+//			for (Node node1:dependencyGraph.getAllServiceUnits()){
+//				try{
+//				MonitoringThread monitoringThread = new MonitoringThread(node1, monitoringAPI);
+//				monitoringThread.start();
+//                                 }catch(Exception e){
+//                            AnalysisLogger.logger.error ("Error in starting monitoring threads"+e.getMessage()+node1.getId());
+//                        }
+//
+//			}
+//			for (Node node1:dependencyGraph.getAllServiceTopologies()){
+//                            try{
+//				MonitoringThread monitoringThread = new MonitoringThread(node1, monitoringAPI);
+//				monitoringThread.start();
+//                                 }catch(Exception e){
+//                            AnalysisLogger.logger.error ("Error in starting monitoring threads"+e.getMessage()+node1.getId());
+//                        }
+//			}
+//			MonitoringThread monitoringThread = new MonitoringThread(dependencyGraph.getCloudService(), monitoringAPI);
+//			monitoringThread.start();
                        
 		} catch (Exception e) {
 			AnalysisLogger.logger.error("Control service Instantiation "

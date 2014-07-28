@@ -70,6 +70,11 @@ public class DependencyGraph implements Serializable{
 
 		return topologies;
 	}
+         public ElasticityMetric findMetricWithName(String metricName, String servicePartID){
+             Node n = getNodeWithID(servicePartID);
+             return n.findMetricWithName(metricName);
+           
+        }
 	public ArrayList<Node> getAllServiceUnits(){
 		ArrayList<Node> units = new ArrayList<Node>();
 		ArrayList<Node> unexploredNodes = new ArrayList<Node>();
