@@ -1,25 +1,30 @@
+/*
+ * To change this template, choose Tools | Templates
+ * and open the template in the editor.
+ */
 package at.ac.tuwien.dsg.rSybl.planningEngine;
-
-import java.util.HashMap;
-import java.util.List;
-import java.util.SortedMap;
-import java.util.TreeMap;
 
 import at.ac.tuwien.dsg.csdg.DependencyGraph;
 import at.ac.tuwien.dsg.csdg.Node;
 import at.ac.tuwien.dsg.csdg.Relationship;
 import at.ac.tuwien.dsg.rSybl.cloudInteractionUnit.api.EnforcementAPIInterface;
 import at.ac.tuwien.dsg.rSybl.dataProcessingUnit.api.MonitoringAPIInterface;
-import at.ac.tuwien.dsg.rSybl.planningEngine.ContextRepresentation.Pair;
 import at.ac.tuwien.dsg.rSybl.planningEngine.staticData.ActionEffect;
 import at.ac.tuwien.dsg.rSybl.planningEngine.staticData.ActionEffects;
 import at.ac.tuwien.dsg.rSybl.planningEngine.utils.Configuration;
 import at.ac.tuwien.dsg.rSybl.planningEngine.utils.PlanningLogger;
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.SortedMap;
+import java.util.TreeMap;
 
-public class PlanningHeuristicSearch implements PlanningAlgorithmInterface {
-
-    private int REFRESH_PERIOD = 0;
+/**
+ *
+ * @author Georgiana
+ */
+public class PlanningHeuristicSearchWithPolynomialElasticityRelationships implements PlanningAlgorithmInterface{
+      private int REFRESH_PERIOD = 0;
     private DependencyGraph dependencyGraph = null;
     private MonitoringAPIInterface monitoringAPI = null;
     private ContextRepresentation contextRepresentation = null;
@@ -28,7 +33,7 @@ public class PlanningHeuristicSearch implements PlanningAlgorithmInterface {
     private SortedMap<Double, List<ActionEffect>> searchContext = new TreeMap<Double, List<ActionEffect>>();
     private double LAMBDA = 1.0;
 
-    public PlanningHeuristicSearch(DependencyGraph cloudService,
+    public PlanningHeuristicSearchWithPolynomialElasticityRelationships(DependencyGraph cloudService,
             MonitoringAPIInterface monitoringAPI, EnforcementAPIInterface enforcementAPI) {
         this.dependencyGraph = cloudService;
         this.monitoringAPI = monitoringAPI;
@@ -233,7 +238,7 @@ public class PlanningHeuristicSearch implements PlanningAlgorithmInterface {
             searchContext.put(CS_UNHEALTHY_STATE, actionEffects);
             recursiveBranchAndBoundEvaluation();
             ActionPlanEnforcement actionPlanEnforcement = new ActionPlanEnforcement(enforcementAPI);
-            ArrayList<Pair<ActionEffect, Integer>> res = new ArrayList<Pair<ActionEffect, Integer>>();
+            ArrayList<ContextRepresentation.Pair<ActionEffect, Integer>> res = new ArrayList<ContextRepresentation.Pair<ActionEffect, Integer>>();
             if (searchContext.size() > 0 && searchContext.firstKey() != null) {
                 for (ActionEffect actionEffect : searchContext.get(searchContext.firstKey())) {
                     actionEffect.setTargetedEntity(dependencyGraph.getNodeWithID(actionEffect.getTargetedEntityID()));

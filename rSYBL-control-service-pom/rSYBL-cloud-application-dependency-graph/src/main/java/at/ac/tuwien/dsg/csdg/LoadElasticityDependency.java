@@ -1,6 +1,6 @@
 package at.ac.tuwien.dsg.csdg;
 
-public class LoadElasticityDependency extends Relationship{
+public class LoadElasticityDependency extends SimpleRelationship{
 	private String sourceLoadMetric;
 	private String targetLoadMetric;
 	public String getSourceLoadMetric() {

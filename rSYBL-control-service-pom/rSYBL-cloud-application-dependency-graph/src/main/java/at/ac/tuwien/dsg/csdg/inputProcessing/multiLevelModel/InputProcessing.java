@@ -21,7 +21,6 @@
 package at.ac.tuwien.dsg.csdg.inputProcessing.multiLevelModel;
 
 import java.io.File;
-import java.io.InputStream;
 import java.io.StringReader;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -29,20 +28,18 @@ import java.util.List;
 import java.util.Map.Entry;
 
 import javax.xml.bind.JAXBContext;
-import javax.xml.bind.JAXBElement;
 import javax.xml.bind.JAXBException;
-import javax.xml.bind.Marshaller;
 import javax.xml.bind.Unmarshaller;
-import javax.xml.transform.stream.StreamSource;
 
 import at.ac.tuwien.dsg.csdg.DataElasticityDependency;
 import at.ac.tuwien.dsg.csdg.DependencyGraph;
 import at.ac.tuwien.dsg.csdg.InstantiationElasticityDependency;
 import at.ac.tuwien.dsg.csdg.LoadElasticityDependency;
 import at.ac.tuwien.dsg.csdg.Node;
-import at.ac.tuwien.dsg.csdg.Relationship;
+import at.ac.tuwien.dsg.csdg.SimpleRelationship;
 import at.ac.tuwien.dsg.csdg.Node.NodeType;
 import at.ac.tuwien.dsg.csdg.PolynomialElasticityRelationship;
+import at.ac.tuwien.dsg.csdg.Relationship;
 import at.ac.tuwien.dsg.csdg.Relationship.RelationshipType;
 import at.ac.tuwien.dsg.csdg.elasticityInformation.ElasticityCapability;
 import at.ac.tuwien.dsg.csdg.elasticityInformation.ElasticityMetric;
@@ -173,7 +170,9 @@ public class InputProcessing {
         PolynomialElasticityRelationship elasticityRelationship = new PolynomialElasticityRelationship();
         List<PolynomialElasticityRelationship.Monom> polynom = new ArrayList<PolynomialElasticityRelationship.Monom>();
         elasticityRelationship.setConfidence(linearRelationshipXML.getConfidence());
-        elasticityRelationship.setConfidence(linearRelationshipXML.getConfidence());
+        elasticityRelationship.setCurrentElasticityMetric(linearRelationshipXML.getMetricName());
+        elasticityRelationship.setServicePartID(linearRelationshipXML.getServicePartID());
+       
         for (LinearRelationshipXML.Monom m : linearRelationshipXML.getDependencyMonoms()) {
             PolynomialElasticityRelationship.Monom monom = elasticityRelationship.new Monom();
             monom.setCoefficient(m.getCoefficient());
@@ -294,8 +293,8 @@ public class InputProcessing {
         return graph;
     }
 
-    public List<Relationship> evaluateRelationships(ServiceTopologyXML serviceTopologyXML) {
-        List<Relationship> resRelationships = new ArrayList<Relationship>();
+    public List<SimpleRelationship> evaluateRelationships(ServiceTopologyXML serviceTopologyXML) {
+        List<SimpleRelationship> resRelationships = new ArrayList<SimpleRelationship>();
         for (RelationshipXML relationshipXML : serviceTopologyXML.getRelationships()) {
 
             if (relationshipXML.getType() != null && relationshipXML.getType().toLowerCase().contains("data")) {
@@ -356,7 +355,7 @@ public class InputProcessing {
         Node cloudService = new Node();
         cloudService.setId(cloudServiceXML.getId());
         cloudService.setNodeType(NodeType.CLOUD_SERVICE);
-        List<Relationship> specialRelationships = new ArrayList<Relationship>();
+        List<SimpleRelationship> specialRelationships = new ArrayList<SimpleRelationship>();
         if (cloudServiceXML.getXMLAnnotation() != null) {
             ElasticityRequirement elReq = new ElasticityRequirement();
             elReq.setAnnotation(mapFromXMLAnnotationToSYBLAnnotation(cloudService.getId(), cloudServiceXML.getXMLAnnotation(), AnnotationType.CLOUD_SERVICE));
@@ -369,12 +368,13 @@ public class InputProcessing {
                 elasticityMetric.setMetricName(linearRelationshipXML.getMetricName());
                 elasticityMetric.setServicePartID(linearRelationshipXML.getServicePartID());
                 elasticityMetric.addRelationship(mapToPolynomialRel(linearRelationshipXML));
+                
                 cloudService.addElasticityMetric(elasticityMetric);
             }
         }
         List<ServiceTopologyXML> remainingServiceTopologies = new ArrayList<ServiceTopologyXML>();
         HashMap<String, Node> nodes = new HashMap<String, Node>();
-        HashMap<Node, Relationship> serviceTopologiesFirst = new HashMap<Node, Relationship>();
+        HashMap<Node, SimpleRelationship> serviceTopologiesFirst = new HashMap<Node, SimpleRelationship>();
         for (ServiceTopologyXML serviceTopologyXML : cloudServiceXML.getServiceTopologies()) {
             remainingServiceTopologies.add(serviceTopologyXML);
             ServiceTopologyXML firstServTopology = serviceTopologyXML;
@@ -382,7 +382,7 @@ public class InputProcessing {
             Node serviceTopologyFirst = new Node();
             serviceTopologyFirst.setId(firstServTopology.getId());
             serviceTopologyFirst.setNodeType(NodeType.SERVICE_TOPOLOGY);
-            Relationship rel = new Relationship();
+            SimpleRelationship rel = new SimpleRelationship();
 
             specialRelationships.addAll(evaluateRelationships(serviceTopologyXML));
             rel.setSourceElement(cloudService.getId());
@@ -421,7 +421,7 @@ public class InputProcessing {
                     Node serviceUnit = new Node();
                     serviceUnit.setId(serviceUnitXML.getId());
                     serviceUnit.setNodeType(NodeType.SERVICE_UNIT);
-                    Relationship rel = new Relationship();
+                    SimpleRelationship rel = new SimpleRelationship();
                     rel.setSourceElement(serviceTopology.getId());
                     rel.setTargetElement(serviceUnit.getId());
                     rel.setType(RelationshipType.COMPOSITION_RELATIONSHIP);
@@ -437,6 +437,7 @@ public class InputProcessing {
                 elasticityMetric.setServicePartID(linearRelationshipXML.getServicePartID());
                 elasticityMetric.addRelationship(mapToPolynomialRel(linearRelationshipXML));
                 serviceUnit.addElasticityMetric(elasticityMetric);
+                
             }
         }
 
@@ -462,7 +463,7 @@ public class InputProcessing {
                     Node serviceTopology2 = new Node();
                     serviceTopology2.setId(serviceTopologyXML2.getId());
                     serviceTopology2.setNodeType(NodeType.SERVICE_TOPOLOGY);
-                    Relationship rel = new Relationship();
+                    SimpleRelationship rel = new SimpleRelationship();
                     rel.setSourceElement(serviceTopology.getId());
                     rel.setTargetElement(serviceTopology2.getId());
                     rel.setType(RelationshipType.COMPOSITION_RELATIONSHIP);
@@ -490,13 +491,18 @@ public class InputProcessing {
             remainingServiceTopologies.remove(0);
         }
 
-        for (Entry<Node, Relationship> entry : serviceTopologiesFirst.entrySet()) {
+        for (Entry<Node, SimpleRelationship> entry : serviceTopologiesFirst.entrySet()) {
             cloudService.addNode(entry.getKey(), entry.getValue());
         }
-
+        
         graph.setCloudService(cloudService);
-        for (Relationship rel : specialRelationships) {
+        for (SimpleRelationship rel : specialRelationships) {
             graph.getNodeWithID(rel.getSourceElement()).addNode(graph.getNodeWithID(rel.getTargetElement()), rel);
+        }
+        for (Relationship rel: graph.findAllElasticityRelationshipsAssociatedToMetrics()){
+            PolynomialElasticityRelationship elasticityRelationship =(PolynomialElasticityRelationship) rel;
+            
+            graph.getNodeWithID(elasticityRelationship.getServicePartID()).addNodes(graph.findAllRelatedNodesForPolynomialRel(elasticityRelationship), elasticityRelationship);
         }
 
         DependencyGraphLogger.logger.info("Deployment Description " + deploymentDescription.getAccessIP());
@@ -521,7 +527,7 @@ public class InputProcessing {
                         vmNode.setId(associatedVM.getIp());
                         vmNode.getStaticInformation().put("UUID", associatedVM.getUuid());
                         vmNode.setNodeType(NodeType.VIRTUAL_MACHINE);
-                        Relationship vmRel = new Relationship();
+                        SimpleRelationship vmRel = new SimpleRelationship();
                         vmRel.setSourceElement(node.getId());
                         vmRel.setTargetElement(vmNode.getId());
                         vmRel.setType(RelationshipType.HOSTED_ON_RELATIONSHIP);

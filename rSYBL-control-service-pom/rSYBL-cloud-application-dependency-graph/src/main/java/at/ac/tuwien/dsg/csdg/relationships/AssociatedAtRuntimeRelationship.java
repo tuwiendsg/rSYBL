@@ -22,8 +22,8 @@
 
 package at.ac.tuwien.dsg.csdg.relationships;
 
-import at.ac.tuwien.dsg.csdg.Relationship;
+import at.ac.tuwien.dsg.csdg.SimpleRelationship;
 
-public class AssociatedAtRuntimeRelationship extends Relationship {
+public class AssociatedAtRuntimeRelationship extends SimpleRelationship {
 
 }

@@ -59,7 +59,7 @@ public class Main {
 	rootCloudService.setNodeType(NodeType.CLOUD_SERVICE);
 	
 	Node serviceTopology = new Node();
-	Relationship relationship = new Relationship();
+	SimpleRelationship relationship = new SimpleRelationship();
 	relationship.setSourceElement(rootCloudService.getId());
 	relationship.setTargetElement(serviceTopology.getId());
 	relationship.setType(RelationshipType.COMPOSITION_RELATIONSHIP);
@@ -99,41 +99,41 @@ public class Main {
 	virtualMachine2.setId("VM2");
 	virtualMachine3.setId("VM3");
 	Node virtualCluster = new Node();
-	relationship = new Relationship();
+	relationship = new SimpleRelationship();
 	relationship.setType(RelationshipType.COMPOSITION_RELATIONSHIP);
 	relationship.setSourceElement(virtualCluster.getId());
 	relationship.setTargetElement(virtualMachine1.getId());	
 	virtualCluster.addNode(virtualMachine1, relationship);
 	virtualCluster.setId("VirtualCluster1");
-	relationship = new Relationship();
+	relationship = new SimpleRelationship();
 	relationship.setType(RelationshipType.COMPOSITION_RELATIONSHIP);
 	relationship.setSourceElement(virtualCluster.getId());
 	relationship.setTargetElement(virtualMachine2.getId());
 	virtualCluster.addNode(virtualMachine2, relationship);
-	relationship = new Relationship();
+	relationship = new SimpleRelationship();
 	relationship.setType(RelationshipType.COMPOSITION_RELATIONSHIP);
 	relationship.setSourceElement(virtualCluster.getId());
 	relationship.setTargetElement(virtualMachine3.getId());
 	virtualCluster.addNode(virtualMachine3, relationship);
-	relationship = new Relationship();
+	relationship = new SimpleRelationship();
 	relationship.setType(RelationshipType.HOSTED_ON_RELATIONSHIP);
 	relationship.setSourceElement(serviceUnit.getId());
 	relationship.setTargetElement(virtualCluster.getId());
 	serviceUnit.addNode(virtualCluster, relationship);
 	
-	relationship = new Relationship();
+	relationship = new SimpleRelationship();
 	relationship.setType(RelationshipType.HOSTED_ON_RELATIONSHIP);
 	relationship.setSourceElement(serviceUnit.getId());
 	relationship.setTargetElement(virtualMachine1.getId());
 	serviceUnit.addNode(virtualMachine1, relationship);
 	
-	relationship = new Relationship();
+	relationship = new SimpleRelationship();
 	relationship.setType(RelationshipType.HOSTED_ON_RELATIONSHIP);
 	relationship.setSourceElement(serviceUnit.getId());
 	relationship.setTargetElement(virtualMachine2.getId());
 	serviceUnit.addNode(virtualMachine2, relationship);
 	
-	relationship = new Relationship();
+	relationship = new SimpleRelationship();
 	relationship.setType(RelationshipType.HOSTED_ON_RELATIONSHIP);
 	relationship.setSourceElement(serviceUnit.getId());
 	relationship.setTargetElement(virtualMachine3.getId());

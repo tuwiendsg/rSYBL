@@ -24,18 +24,18 @@ package at.ac.tuwien.dsg.rSybl.planningEngine;
 
 import java.lang.reflect.Method;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 
-import com.google.common.collect.Sets.SetView;
 
 import at.ac.tuwien.dsg.csdg.DataElasticityDependency;
 import at.ac.tuwien.dsg.csdg.DependencyGraph;
 import at.ac.tuwien.dsg.csdg.LoadElasticityDependency;
 import at.ac.tuwien.dsg.csdg.Node;
-import at.ac.tuwien.dsg.csdg.Relationship;
 import at.ac.tuwien.dsg.csdg.Node.NodeType;
+import at.ac.tuwien.dsg.csdg.PolynomialElasticityRelationship;
+import at.ac.tuwien.dsg.csdg.Relationship;
 import at.ac.tuwien.dsg.csdg.Relationship.RelationshipType;
+import at.ac.tuwien.dsg.csdg.elasticityInformation.ElasticityMetric;
 import at.ac.tuwien.dsg.csdg.elasticityInformation.ElasticityRequirement;
 import at.ac.tuwien.dsg.csdg.elasticityInformation.elasticityRequirements.BinaryRestriction;
 import at.ac.tuwien.dsg.csdg.elasticityInformation.elasticityRequirements.BinaryRestrictionsConjunction;
@@ -47,14 +47,11 @@ import at.ac.tuwien.dsg.csdg.elasticityInformation.elasticityRequirements.Strate
 import at.ac.tuwien.dsg.csdg.elasticityInformation.elasticityRequirements.UnaryRestriction;
 import at.ac.tuwien.dsg.csdg.elasticityInformation.elasticityRequirements.UnaryRestrictionsConjunction;
 import at.ac.tuwien.dsg.csdg.inputProcessing.multiLevelModel.abstractModelXML.SYBLDirectiveMappingFromXML;
-import at.ac.tuwien.dsg.mela.common.monitoringConcepts.Action;
 import at.ac.tuwien.dsg.rSybl.dataProcessingUnit.api.MonitoringAPIInterface;
 import at.ac.tuwien.dsg.rSybl.dataProcessingUnit.monitoringPlugins.interfaces.MonitoringInterface;
 import at.ac.tuwien.dsg.rSybl.planningEngine.staticData.ActionEffect;
-import at.ac.tuwien.dsg.rSybl.planningEngine.staticData.ActionEffects;
 import at.ac.tuwien.dsg.rSybl.planningEngine.utils.PlanningLogger;
 import at.ac.tuwien.dsg.sybl.syblProcessingUnit.languageDescription.SYBLDescriptionParser;
-import at.ac.tuwien.dsg.sybl.syblProcessingUnit.utils.SYBLDirectivesEnforcementLogger;
 
 
 
@@ -144,8 +141,8 @@ public class ContextRepresentation {
 		monitoredEntity.setId(entity.getId());
 			SYBLDescriptionParser descriptionParser = new SYBLDescriptionParser();
 		for (Relationship rel : dependencyGraph.getAllRelationshipsOfType(RelationshipType.DATA)){
-			if (monitoredEntity.getId().equalsIgnoreCase(rel.getSourceElement())){
-			DataElasticityDependency dataElasticityDependency = (DataElasticityDependency) rel;
+                        DataElasticityDependency dataElasticityDependency = (DataElasticityDependency) rel;
+			if (monitoredEntity.getId().equalsIgnoreCase(dataElasticityDependency.getSourceElement())){
 			Double value = 0.0;
 			try {
 				value = monitoringAPI.getMetricValue(dataElasticityDependency.getDataMeasurementSource(), dependencyGraph.getNodeWithID(dataElasticityDependency.getSourceElement()));
@@ -156,8 +153,7 @@ public class ContextRepresentation {
 			}
 			monitoredEntity.setMonitoredValue(dataElasticityDependency.getDataMeasurementSource(),value );
 			}
-			if (monitoredEntity.getId().equalsIgnoreCase(rel.getTargetElement())){
-				DataElasticityDependency dataElasticityDependency = (DataElasticityDependency) rel;
+			if (monitoredEntity.getId().equalsIgnoreCase(dataElasticityDependency.getTargetElement())){
 			Double value = 0.0;
 			try {
 				value = monitoringAPI.getMetricValue(dataElasticityDependency.getDataMeasurementTarget(), dependencyGraph.getNodeWithID(dataElasticityDependency.getTargetElement()));
@@ -170,28 +166,28 @@ public class ContextRepresentation {
 			}
 		}
 		for (Relationship rel : dependencyGraph.getAllRelationshipsOfType(RelationshipType.LOAD)){
-			if (monitoredEntity.getId().equalsIgnoreCase(rel.getSourceElement())){
-			LoadElasticityDependency dataElasticityDependency = (LoadElasticityDependency) rel;
+                			LoadElasticityDependency loadElasticityDependency = (LoadElasticityDependency) rel;
+
+			if (monitoredEntity.getId().equalsIgnoreCase(loadElasticityDependency.getSourceElement())){
 			Double value = 0.0;
 			try {
-				value = monitoringAPI.getMetricValue(dataElasticityDependency.getSourceLoadMetric(), dependencyGraph.getNodeWithID(dataElasticityDependency.getSourceElement()));
+				value = monitoringAPI.getMetricValue(loadElasticityDependency.getSourceLoadMetric(), dependencyGraph.getNodeWithID(loadElasticityDependency.getSourceElement()));
 
 			} catch (Exception e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
-			monitoredEntity.setMonitoredValue(dataElasticityDependency.getSourceLoadMetric(),value );
+			monitoredEntity.setMonitoredValue(loadElasticityDependency.getSourceLoadMetric(),value );
 			}
-			if (monitoredEntity.getId().equalsIgnoreCase(rel.getTargetElement())){
-				LoadElasticityDependency dataElasticityDependency = (LoadElasticityDependency) rel;
+			if (monitoredEntity.getId().equalsIgnoreCase(loadElasticityDependency.getTargetElement())){
 			Double value = 0.0;
 			try {
-				value = monitoringAPI.getMetricValue(dataElasticityDependency.getTargetLoadMetric(), dependencyGraph.getNodeWithID(dataElasticityDependency.getTargetElement()));
+				value = monitoringAPI.getMetricValue(loadElasticityDependency.getTargetLoadMetric(), dependencyGraph.getNodeWithID(loadElasticityDependency.getTargetElement()));
 			} catch (Exception e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
-			monitoredEntity.setMonitoredValue(dataElasticityDependency.getTargetLoadMetric(),value );
+			monitoredEntity.setMonitoredValue(loadElasticityDependency.getTargetLoadMetric(),value );
 			}
 		}
 		for (ElasticityRequirement elasticityRequirement :entity.getElasticityRequirements()){
@@ -426,8 +422,8 @@ public class ContextRepresentation {
 	    	
     		DataElasticityDependency dataElasticityDependency=(DataElasticityDependency) relationship;
     		boolean requirementFulfilled = true;
-    		if (relationship.getRequirement()!= null && relationship.getRequirement().getAnnotation()!=null){
-    			SYBLSpecification syblSpecification = SYBLDirectiveMappingFromXML.mapFromSYBLAnnotation(relationship.getRequirement().getAnnotation());
+    		if (dataElasticityDependency.getRequirement()!= null && dataElasticityDependency.getRequirement().getAnnotation()!=null){
+    			SYBLSpecification syblSpecification = SYBLDirectiveMappingFromXML.mapFromSYBLAnnotation(dataElasticityDependency.getRequirement().getAnnotation());
     			MonitoredEntity monitoredEntity = findMonitoredEntity(syblSpecification.getComponentId());
     			if (monitoredEntity==null) PlanningLogger.logger.info("Not finding monitored entity "+monitoredEntity+ " "+syblSpecification.getComponentId());
     			for (Constraint constraint:syblSpecification.getConstraint()){
@@ -438,9 +434,9 @@ public class ContextRepresentation {
     		if (requirementFulfilled){
     		String sourceMetric= dataElasticityDependency.getDataMeasurementSource();
     		String targetMetric= dataElasticityDependency.getDataMeasurementTarget();
-    		Double prevValueSource = beforeContext.getValueForMetric(beforeContext.findMonitoredEntity(relationship.getSourceElement()), sourceMetric);
-    		Double currentValueSource = getValueForMetric(findMonitoredEntity(relationship.getSourceElement()), sourceMetric);
-    		Double prevValueTarget= getValueForMetric(findMonitoredEntity(relationship.getTargetElement()), targetMetric);
+    		Double prevValueSource = beforeContext.getValueForMetric(beforeContext.findMonitoredEntity(dataElasticityDependency.getSourceElement()), sourceMetric);
+    		Double currentValueSource = getValueForMetric(findMonitoredEntity(dataElasticityDependency.getSourceElement()), sourceMetric);
+    		Double prevValueTarget= getValueForMetric(findMonitoredEntity(dataElasticityDependency.getTargetElement()), targetMetric);
 			
     		Double expectedValueTarget = prevValueTarget*prevValueSource/currentValueSource;
     		//PlanningLogger.logger.info("Values for "+sourceMetric+"="+prevValueSource+" and now "+currentValueSource+" target "+prevValueTarget+" and node for target-"+relationship.getTargetElement());
@@ -448,14 +444,14 @@ public class ContextRepresentation {
     		if (prevValueSource!=null && currentValueSource!=null && prevValueTarget!=null){
 				//PlanningLogger.logger.info ("~~~~~~~~~~~~Data impact current "+targetMetric+" undone " +expectedValueTarget);
 
-	    		findMonitoredEntity(relationship.getTargetElement()).setMonitoredValue(targetMetric, expectedValueTarget);
+	    		findMonitoredEntity(dataElasticityDependency.getTargetElement()).setMonitoredValue(targetMetric, expectedValueTarget);
 			}
 			else{
-				for (String metric : beforeContext.findMonitoredEntity(relationship.getTargetElement()).getMonitoredMetrics()){
-					PlanningLogger.logger.info("Monitored metric is "+metric+"-for-"+relationship.getTargetElement()+" and searching for:"+targetMetric);
+				for (String metric : beforeContext.findMonitoredEntity(dataElasticityDependency.getTargetElement()).getMonitoredMetrics()){
+					PlanningLogger.logger.info("Monitored metric is "+metric+"-for-"+dataElasticityDependency.getTargetElement()+" and searching for:"+targetMetric);
 					
 				}
-				PlanningLogger.logger.info("Values for "+sourceMetric+"="+prevValueSource+" and now "+currentValueSource+" target "+prevValueTarget+" and node for target-"+relationship.getTargetElement());
+				PlanningLogger.logger.info("Values for "+sourceMetric+"="+prevValueSource+" and now "+currentValueSource+" target "+prevValueTarget+" and node for target-"+dataElasticityDependency.getTargetElement());
 			}
 			}
     	}
@@ -472,8 +468,8 @@ public class ContextRepresentation {
 		    	
 	    		DataElasticityDependency dataElasticityDependency=(DataElasticityDependency) relationship;
 	    		boolean requirementFulfilled = true;
-	    		if (relationship.getRequirement()!= null && relationship.getRequirement().getAnnotation()!=null){
-	    			SYBLSpecification syblSpecification = SYBLDirectiveMappingFromXML.mapFromSYBLAnnotation(relationship.getRequirement().getAnnotation());
+	    		if (dataElasticityDependency.getRequirement()!= null && dataElasticityDependency.getRequirement().getAnnotation()!=null){
+	    			SYBLSpecification syblSpecification = SYBLDirectiveMappingFromXML.mapFromSYBLAnnotation(dataElasticityDependency.getRequirement().getAnnotation());
 	    			MonitoredEntity monitoredEntity = findMonitoredEntity(syblSpecification.getComponentId());
 	    			if (monitoredEntity==null) PlanningLogger.logger.info("Not finding monitored entity "+monitoredEntity+ " "+syblSpecification.getComponentId());
 	    			for (Constraint constraint:syblSpecification.getConstraint()){
@@ -484,24 +480,24 @@ public class ContextRepresentation {
 	    		if (requirementFulfilled){
 	    		String sourceMetric= dataElasticityDependency.getDataMeasurementSource();
 	    		String targetMetric= dataElasticityDependency.getDataMeasurementTarget();
-	    		Double prevValueSource = beforeContext.getValueForMetric(beforeContext.findMonitoredEntity(relationship.getSourceElement()), sourceMetric);
-	    		Double currentValueSource = getValueForMetric(findMonitoredEntity(relationship.getSourceElement()), sourceMetric);
-	    		Double prevValueTarget= beforeContext.getValueForMetric(beforeContext.findMonitoredEntity(relationship.getTargetElement()), targetMetric);
+	    		Double prevValueSource = beforeContext.getValueForMetric(beforeContext.findMonitoredEntity(dataElasticityDependency.getSourceElement()), sourceMetric);
+	    		Double currentValueSource = getValueForMetric(findMonitoredEntity(dataElasticityDependency.getSourceElement()), sourceMetric);
+	    		Double prevValueTarget= beforeContext.getValueForMetric(beforeContext.findMonitoredEntity(dataElasticityDependency.getTargetElement()), targetMetric);
 				Double expectedValueTarget = prevValueTarget*currentValueSource/prevValueSource;
 	    		PlanningLogger.logger.info("Values for "+sourceMetric+"="+prevValueSource+" and now "+currentValueSource+" initial target value "+prevValueTarget);
 	    		
 	    		if (prevValueSource!=null && currentValueSource!=null && prevValueTarget!=null){
     				PlanningLogger.logger.info ("Expected target value for metric "+targetMetric+" expected=" +expectedValueTarget);
     				
-		    		findMonitoredEntity(relationship.getTargetElement()).setMonitoredValue(targetMetric, expectedValueTarget);
-		    		targetEntities.add(relationship.getTargetElement());
+		    		findMonitoredEntity(dataElasticityDependency.getTargetElement()).setMonitoredValue(targetMetric, expectedValueTarget);
+		    		targetEntities.add(dataElasticityDependency.getTargetElement());
     			}
     			else{
-    				for (String metric : beforeContext.findMonitoredEntity(relationship.getTargetElement()).getMonitoredMetrics()){
-    					PlanningLogger.logger.info("Monitored metric is "+metric+"-for-"+relationship.getTargetElement()+" and searching for:"+targetMetric);
+    				for (String metric : beforeContext.findMonitoredEntity(dataElasticityDependency.getTargetElement()).getMonitoredMetrics()){
+    					PlanningLogger.logger.info("Monitored metric is "+metric+"-for-"+dataElasticityDependency.getTargetElement()+" and searching for:"+targetMetric);
     					
     				}
-    				PlanningLogger.logger.info("Values for "+sourceMetric+"="+prevValueSource+" and now "+currentValueSource+" target "+prevValueTarget+" and node for target-"+relationship.getTargetElement());
+    				PlanningLogger.logger.info("Values for "+sourceMetric+"="+prevValueSource+" and now "+currentValueSource+" target "+prevValueTarget);
     			}
     			}
 	    	}
@@ -519,8 +515,8 @@ public class ContextRepresentation {
     		LoadElasticityDependency loadElasticityDependency=(LoadElasticityDependency) relationship;
     		
     		boolean requirementFulfilled = true;
-    		if (relationship.getRequirement()!= null && relationship.getRequirement().getAnnotation()!=null){
-    			SYBLSpecification syblSpecification = SYBLDirectiveMappingFromXML.mapFromSYBLAnnotation(relationship.getRequirement().getAnnotation());
+    		if (loadElasticityDependency.getRequirement()!= null && loadElasticityDependency.getRequirement().getAnnotation()!=null){
+    			SYBLSpecification syblSpecification = SYBLDirectiveMappingFromXML.mapFromSYBLAnnotation(loadElasticityDependency.getRequirement().getAnnotation());
     			MonitoredEntity monitoredEntity = findMonitoredEntity(syblSpecification.getComponentId());
     			if (monitoredEntity==null) PlanningLogger.logger.info("Not finding monitored entity "+monitoredEntity+ " "+syblSpecification.getComponentId());
     			for (Constraint constraint:syblSpecification.getConstraint()){
@@ -531,16 +527,16 @@ public class ContextRepresentation {
     		if (requirementFulfilled){
     		String sourceMetric= loadElasticityDependency.getSourceLoadMetric();
     		String targetMetric= loadElasticityDependency.getTargetLoadMetric();
-    		Double prevValueSource = beforeContext.getValueForMetric(beforeContext.findMonitoredEntity(relationship.getSourceElement()), sourceMetric);
-    		Double currentValueSource = getValueForMetric(findMonitoredEntity(relationship.getSourceElement()), sourceMetric);
+    		Double prevValueSource = beforeContext.getValueForMetric(beforeContext.findMonitoredEntity(loadElasticityDependency.getSourceElement()), sourceMetric);
+    		Double currentValueSource = getValueForMetric(findMonitoredEntity(loadElasticityDependency.getSourceElement()), sourceMetric);
     		
-    		Double prevValueTarget= beforeContext.getValueForMetric(beforeContext.findMonitoredEntity(relationship.getSourceElement()), targetMetric);
+    		Double prevValueTarget= beforeContext.getValueForMetric(beforeContext.findMonitoredEntity(loadElasticityDependency.getSourceElement()), targetMetric);
     		Double percentImpact = (currentValueSource-prevValueSource)/prevValueSource;
 
 			Double expectedValueTarget = prevValueTarget*currentValueSource/prevValueSource;
 	    	
-    		findMonitoredEntity(relationship.getTargetElement()).setMonitoredValue(targetMetric, expectedValueTarget);
-    		targetEntities.add(relationship.getTargetElement());
+    		findMonitoredEntity(loadElasticityDependency.getTargetElement()).setMonitoredValue(targetMetric, expectedValueTarget);
+    		targetEntities.add(loadElasticityDependency.getTargetElement());
     		}
     	}
     	return targetEntities;
@@ -555,8 +551,8 @@ public void undoLoadImpactSimulation(ContextRepresentation beforeContext, Action
     		LoadElasticityDependency loadElasticityDependency=(LoadElasticityDependency) relationship;
     		
     		boolean requirementFulfilled = true;
-    		if (relationship.getRequirement()!= null && relationship.getRequirement().getAnnotation()!=null){
-    			SYBLSpecification syblSpecification = SYBLDirectiveMappingFromXML.mapFromSYBLAnnotation(relationship.getRequirement().getAnnotation());
+    		if (loadElasticityDependency.getRequirement()!= null && loadElasticityDependency.getRequirement().getAnnotation()!=null){
+    			SYBLSpecification syblSpecification = SYBLDirectiveMappingFromXML.mapFromSYBLAnnotation(loadElasticityDependency.getRequirement().getAnnotation());
     			MonitoredEntity monitoredEntity = findMonitoredEntity(syblSpecification.getComponentId());
     			if (monitoredEntity==null) PlanningLogger.logger.info("Not finding monitored entity "+monitoredEntity+ " "+syblSpecification.getComponentId());
     			for (Constraint constraint:syblSpecification.getConstraint()){
@@ -567,20 +563,97 @@ public void undoLoadImpactSimulation(ContextRepresentation beforeContext, Action
     		if (requirementFulfilled){
     		String sourceMetric= loadElasticityDependency.getSourceLoadMetric();
     		String targetMetric= loadElasticityDependency.getTargetLoadMetric();
-    		Double prevValueSource = beforeContext.getValueForMetric(beforeContext.findMonitoredEntity(relationship.getSourceElement()), sourceMetric);
-    		Double currentValueSource = getValueForMetric(findMonitoredEntity(relationship.getSourceElement()), sourceMetric);
+    		Double prevValueSource = beforeContext.getValueForMetric(beforeContext.findMonitoredEntity(loadElasticityDependency.getSourceElement()), sourceMetric);
+    		Double currentValueSource = getValueForMetric(findMonitoredEntity(loadElasticityDependency.getSourceElement()), sourceMetric);
     		
-    		Double prevValueTarget= beforeContext.getValueForMetric(beforeContext.findMonitoredEntity(relationship.getSourceElement()), targetMetric);
+    		Double prevValueTarget= beforeContext.getValueForMetric(beforeContext.findMonitoredEntity(loadElasticityDependency.getSourceElement()), targetMetric);
     		Double percentImpact = (currentValueSource-prevValueSource)/prevValueSource;
 
     		Double expectedValueTarget = prevValueTarget*prevValueSource/currentValueSource;
 	    	
-    		findMonitoredEntity(relationship.getTargetElement()).setMonitoredValue(targetMetric, expectedValueTarget);
+    		findMonitoredEntity(loadElasticityDependency.getTargetElement()).setMonitoredValue(targetMetric, expectedValueTarget);
     		}
     	}
     	
     }
+public  List<String> simulateRelatedMetrics(){
+    			List<String> targetEntities = new ArrayList<String>();
 
+    for (ElasticityMetric elasticityMetric :dependencyGraph.findAllElasticityMetrics()){
+        dependencyGraph.setMetricValue(elasticityMetric.getServicePartID(), elasticityMetric.getMetricName(), this.getValueForMetric(findMonitoredEntity(elasticityMetric.getServicePartID()),elasticityMetric.getMetricName()));
+    }
+    for (ElasticityMetric elasticityMetric:dependencyGraph.findAllElasticityMetrics()){
+        PolynomialElasticityRelationship elasticityRelationship=null; 
+        for (Relationship relationship: elasticityMetric.getRelationships()){
+        if (elasticityRelationship==null){
+            elasticityRelationship=(PolynomialElasticityRelationship) relationship;
+        } 
+        if (elasticityRelationship.getConfidence()<((PolynomialElasticityRelationship)relationship).getConfidence()){
+            elasticityRelationship=(PolynomialElasticityRelationship)relationship;
+        }
+        }
+           double value= elasticityRelationship.evaluateElasticityRelationshipGivenValues(dependencyGraph);
+           findMonitoredEntity(elasticityRelationship.getServicePartID()).setMonitoredValue(elasticityMetric.getMetricName(), value);
+           for (Node node :dependencyGraph.findAllRelatedNodesForPolynomialRel(elasticityRelationship)) {
+            targetEntities.add(node.getId());
+        }
+      
+    }
+    return targetEntities;
+}
+
+
+	public void doActionWithElasticityRelationships(ActionEffect action){
+		//PlanningLogger.logger.info("Trying action "+action.getActionName());
+		for (String currentMetric:getMonitoredCloudService().getMonitoredMetrics()){
+			if (action.getActionEffectForMetric(currentMetric,getMonitoredCloudService().getId())!=null){
+                         Double oldValue = monitoredCloudService.getMonitoredValue(currentMetric);   
+                        // PlanningLogger.logger.info("Setting effect for "+getMonitoredCloudService().getId());
+			getMonitoredCloudService().setMonitoredValue(currentMetric, oldValue + action.getActionEffectForMetric(currentMetric,getMonitoredCloudService().getId()) );
+		}
+                }
+		for (MonitoredComponentTopology componentTopology:getMonitoredCloudService().getMonitoredTopologies()){
+			for (String currentMetric:componentTopology.getMonitoredMetrics()){
+				if(action.getActionEffectForMetric(currentMetric,componentTopology.getId())!=null){
+                                 Double oldValue = componentTopology.getMonitoredValue(currentMetric);   
+				componentTopology.setMonitoredValue(currentMetric, oldValue +action.getActionEffectForMetric(currentMetric,componentTopology.getId()));
+				 //PlanningLogger.logger.info("Setting effect for "+currentMetric+componentTopology.getId()+" new value"+oldValue +"_"+action.getActionEffectForMetric(currentMetric,componentTopology.getId()));
+				}
+                        }
+			for (MonitoredComponentTopology componentTopology2:componentTopology.getMonitoredTopologies()){
+				for (String currentMetric:componentTopology2.getMonitoredMetrics()){
+					if (action.getActionEffectForMetric(currentMetric,componentTopology2.getId())!=null){
+                                         Double oldValue = componentTopology2.getMonitoredValue(currentMetric);   
+                                        componentTopology2.setMonitoredValue(currentMetric, oldValue +action.getActionEffectForMetric(currentMetric,componentTopology2.getId()) );
+                                       // PlanningLogger.logger.info("Setting effect for "+currentMetric+componentTopology.getId()+" new value"+oldValue +"_"+action.getActionEffectForMetric(currentMetric,componentTopology.getId()));
+                        									}
+                                        }
+				for (MonitoredComponent comp:componentTopology2.getMonitoredComponents()){
+					for (String currentMetric:comp.getMonitoredMetrics()){
+						if (action.getActionEffectForMetric(currentMetric,comp.getId())!=null){
+                                                     Double oldValue = comp.getMonitoredValue(currentMetric);
+                                                      Double newValue =   oldValue +action.getActionEffectForMetric(currentMetric,comp.getId());
+                                                     // PlanningLogger.logger.info("Setting effect for "+currentMetric+comp.getId()+" new value"+oldValue +"_"+action.getActionEffectForMetric(currentMetric,comp.getId()));
+                                                     comp.setMonitoredValue(currentMetric, newValue );
+                                                }
+					}
+				}
+			}
+			for (MonitoredComponent comp:componentTopology.getMonitoredComponents()){
+				for (String currentMetric:comp.getMonitoredMetrics()){
+					if (action.getActionEffectForMetric(currentMetric,comp.getId())!=null)
+                                        {
+                                             Double oldValue = comp.getMonitoredValue(currentMetric);
+                                                  Double newValue =   oldValue +action.getActionEffectForMetric(currentMetric,comp.getId());
+                                                 //PlanningLogger.logger.info("Setting effect for "+currentMetric+comp.getId()+" new value"+oldValue +"_"+action.getActionEffectForMetric(currentMetric,comp.getId()));
+					comp.setMonitoredValue(currentMetric, newValue );
+                                        }
+                                        }
+			}
+		}
+                simulateRelatedMetrics();
+	}
+        
 	public void doAction(ActionEffect action){
 		//PlanningLogger.logger.info("Trying action "+action.getActionName());
 		for (String currentMetric:getMonitoredCloudService().getMonitoredMetrics()){
@@ -672,6 +745,49 @@ public void undoLoadImpactSimulation(ContextRepresentation beforeContext, Action
 			}
 		}
 		
+	}
+        public void undoActionWithElasticityRelationships(ActionEffect action){
+		//PlanningLogger.logger.info("~~~~~~~~~~~~~~Undoing action ~~~ "+action.getActionName());
+		for (String currentMetric:getMonitoredCloudService().getMonitoredMetrics()){
+			if (action.getActionEffectForMetric(currentMetric,getMonitoredCloudService().getId())!=null){
+                            Double oldValue = monitoredCloudService.getMonitoredValue(currentMetric);
+                            monitoredCloudService.setMonitoredValue(currentMetric, oldValue +(-1)*action.getActionEffectForMetric(currentMetric,getMonitoredCloudService().getId()) );
+                        
+                        }
+                        }
+		for (MonitoredComponentTopology componentTopology:getMonitoredCloudService().getMonitoredTopologies()){
+			for (String currentMetric:componentTopology.getMonitoredMetrics()){
+				if (action.getActionEffectForMetric(currentMetric,componentTopology.getId())!=null){
+                                    Double oldValue = componentTopology.getMonitoredValue(currentMetric);
+                                    componentTopology.setMonitoredValue(currentMetric, oldValue +(-1)*action.getActionEffectForMetric(currentMetric,componentTopology.getId()));
+			
+                                }}
+			for (MonitoredComponentTopology componentTopology2:componentTopology.getMonitoredTopologies()){
+				for (String currentMetric:componentTopology2.getMonitoredMetrics()){
+					if (action.getActionEffectForMetric(currentMetric,componentTopology2.getId())!=null){
+					 Double oldValue = componentTopology2.getMonitoredValue(currentMetric);
+                                   
+                                            componentTopology2.setMonitoredValue(currentMetric, componentTopology2.getMonitoredValue(currentMetric) +(-1)*action.getActionEffectForMetric(currentMetric,componentTopology2.getId()) );
+                                        }
+                                        }
+				for (MonitoredComponent comp:componentTopology2.getMonitoredComponents()){
+					for (String currentMetric:comp.getMonitoredMetrics()){
+						if (action.getActionEffectForMetric(currentMetric,comp.getId())!=null){
+						 Double oldValue = comp.getMonitoredValue(currentMetric);
+                                   
+                                                    comp.setMonitoredValue(currentMetric,oldValue +(-1)*action.getActionEffectForMetric(currentMetric,comp.getId()) );
+					}}
+				}
+			}
+			for (MonitoredComponent comp:componentTopology.getMonitoredComponents()){
+				for (String currentMetric:comp.getMonitoredMetrics()){
+					if (action.getActionEffectForMetric(currentMetric,comp.getId())!=null){
+                                         Double oldValue = comp.getMonitoredValue(currentMetric);
+					comp.setMonitoredValue(currentMetric, oldValue +(-1)*action.getActionEffectForMetric(currentMetric,comp.getId()) );
+				}}
+			}
+		}
+		simulateRelatedMetrics();
 	}
 	public MonitoredEntity findMonitoredEntity(String id){
 		boolean found=false;

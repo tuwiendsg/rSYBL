@@ -103,7 +103,7 @@ public class LinearRelationshipXML {
     "coefficient","metricName","power",
     "servicePartID"
 })
-    public class Monom{
+    public static class Monom{
         	@XmlElement(name = "coefficient", required = true)
     private double coefficient;
         	@XmlElement(name = "metricName", required = true)

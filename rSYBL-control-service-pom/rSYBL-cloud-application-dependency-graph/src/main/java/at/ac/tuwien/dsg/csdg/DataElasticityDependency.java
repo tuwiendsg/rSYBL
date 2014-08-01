@@ -1,6 +1,6 @@
 package at.ac.tuwien.dsg.csdg;
 
-public class DataElasticityDependency extends Relationship{
+public class DataElasticityDependency extends SimpleRelationship{
 	private String dataMeasurementSource;
 	private String dataMeasurementTarget;
 	//Assumption: there is 1-1 dependency among these two. will also implement more complex things later on

@@ -229,6 +229,7 @@ public class PlanningGreedyAlgorithm implements PlanningAlgorithmInterface {
 //							}
 
                         contextRepresentation.doAction(actionEffect);
+                        
                         foundActions.add(contextRepresentation.new Pair<ActionEffect, Integer>(actionEffect, 1));
                        
                         int fixedStr = contextRepresentation.countFixedStrategies(beforeActionContextRepresentation, strategiesThatNeedToBeImproved);

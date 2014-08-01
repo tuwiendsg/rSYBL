@@ -22,17 +22,19 @@
 package at.ac.tuwien.dsg.csdg;
 
 import at.ac.tuwien.dsg.csdg.elasticityInformation.ElasticityMetric;
+import at.ac.tuwien.dsg.csdg.elasticityInformation.ElasticityRequirement;
 import java.util.ArrayList;
 import java.util.List;
 
 
-public class PolynomialElasticityRelationship {
+public class PolynomialElasticityRelationship extends Relationship{
 
     private List<Monom> polynom = new ArrayList<Monom>();
-
+    private RelationshipType type = RelationshipType.POLYNIMIAL_RELATIONSHIP;
     private double confidence = 0.0;
-   
-
+    private String currentElasticityMetric = "";
+    private String servicePartID="";
+    private ElasticityRequirement requirement;
     /**
      * @return the polynom
      */
@@ -86,6 +88,53 @@ public class PolynomialElasticityRelationship {
      */
     public void setConfidence(double confidence) {
         this.confidence = confidence;
+    }
+
+    @Override
+    public RelationshipType getType() {
+        return type;
+    }
+
+    /**
+     * @return the currentElasticityMetric
+     */
+    public String getCurrentElasticityMetric() {
+        return currentElasticityMetric;
+    }
+
+    /**
+     * @param currentElasticityMetric the currentElasticityMetric to set
+     */
+    public void setCurrentElasticityMetric(String currentElasticityMetric) {
+        this.currentElasticityMetric = currentElasticityMetric;
+    }
+
+    /**
+     * @return the targetNodeID
+     */
+    public String getServicePartID() {
+        return servicePartID;
+    }
+
+    /**
+     * @param targetNodeID the targetNodeID to set
+     */
+    public void setServicePartID(String targetNodeID) {
+        this.servicePartID = targetNodeID;
+    }
+
+    /**
+     * @return the requirement
+     */
+    public ElasticityRequirement getRequirement() {
+        return requirement;
+    }
+
+    /**
+     * @param requirement the requirement to set
+     */
+    public void setRequirement(ElasticityRequirement requirement) {
+        this.requirement = requirement;
     }
 
   

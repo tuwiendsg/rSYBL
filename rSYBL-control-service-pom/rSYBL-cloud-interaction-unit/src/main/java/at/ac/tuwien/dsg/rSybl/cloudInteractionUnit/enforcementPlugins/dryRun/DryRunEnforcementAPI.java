@@ -30,7 +30,7 @@ import java.util.UUID;
 
 import at.ac.tuwien.dsg.csdg.DependencyGraph;
 import at.ac.tuwien.dsg.csdg.Node;
-import at.ac.tuwien.dsg.csdg.Relationship;
+import at.ac.tuwien.dsg.csdg.SimpleRelationship;
 import at.ac.tuwien.dsg.csdg.Node.NodeType;
 import at.ac.tuwien.dsg.csdg.Relationship.RelationshipType;
 import at.ac.tuwien.dsg.rSybl.cloudInteractionUnit.enforcementPlugins.flexiant.FlexiantActions;
@@ -189,7 +189,7 @@ public class DryRunEnforcementAPI implements EnforcementInterface{
 	            node.getStaticInformation().put("IP",ip);
 	            node.setId(ip);
 	            node.setNodeType(NodeType.VIRTUAL_MACHINE);
-	            Relationship rel = new Relationship();
+	            SimpleRelationship rel = new SimpleRelationship();
 	            rel.setSourceElement(o.getId());
 	            rel.setTargetElement(node.getId());
 	            rel.setType(RelationshipType.HOSTED_ON_RELATIONSHIP);

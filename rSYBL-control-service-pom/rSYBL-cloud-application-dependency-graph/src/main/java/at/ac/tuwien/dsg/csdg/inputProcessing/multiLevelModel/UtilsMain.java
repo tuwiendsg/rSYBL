@@ -65,7 +65,7 @@ public class UtilsMain {
 	 InputProcessing inputProc = new InputProcessing();
 	 //DependencyGraph dependencyGraph=inputProc.loadDependencyGraphFromFile();
 	 //System.out.println(dependencyGraph.graphToString());
-		new UtilsMain().load();
+		new UtilsMain().writeDefaultData();
 	}
 	
 	public void load(){

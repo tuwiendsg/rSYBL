@@ -30,6 +30,7 @@ import at.ac.tuwien.dsg.csdg.Node.NodeType;
 import at.ac.tuwien.dsg.csdg.Relationship.RelationshipType;
 import at.ac.tuwien.dsg.csdg.elasticityInformation.ElasticityMetric;
 import at.ac.tuwien.dsg.csdg.elasticityInformation.ElasticityRequirement;
+import com.sun.org.apache.xalan.internal.xsltc.dom.CurrentNodeListFilter;
 
 
 
@@ -75,6 +76,35 @@ public class DependencyGraph implements Serializable{
              return n.findMetricWithName(metricName);
            
         }
+         public List<Node> findAllRelatedNodesForPolynomialRel(PolynomialElasticityRelationship relationship){
+             List<Node> nodes = new ArrayList<Node>();
+             for (PolynomialElasticityRelationship.Monom monom:relationship.getPolynom()){
+             
+                 nodes.add(getNodeWithID(monom.getServicePartID()));
+             }
+             return nodes;
+         }
+        public List<Relationship> findAllElasticityRelationshipsAssociatedToMetrics(){
+            List<Relationship> rel = new ArrayList<Relationship>();
+            for (ElasticityMetric elasticityMetric:findAllElasticityMetrics()){
+                rel.addAll(elasticityMetric.getRelationships());
+            }
+            return rel;
+        }
+         public List<ElasticityMetric> findAllElasticityMetrics(){
+             List<ElasticityMetric> result = new ArrayList<ElasticityMetric>();
+             for (Node node:getAllServiceUnits()){
+                 result.addAll(node.getElasticityMetrics());
+             }
+             for (Node node:getAllServiceTopologies()){
+                 result.addAll(node.getElasticityMetrics());
+             }
+             for (Node node:getAllVMs()){
+                 result.addAll(node.getElasticityMetrics());
+             }
+             result.addAll(cloudService.getElasticityMetrics());
+             return result;
+         }
 	public ArrayList<Node> getAllServiceUnits(){
 		ArrayList<Node> units = new ArrayList<Node>();
 		ArrayList<Node> unexploredNodes = new ArrayList<Node>();
@@ -142,8 +172,8 @@ public class DependencyGraph implements Serializable{
 		Node parent = null;
 		Node currentNode = getNodeWithID(entityID);
 		for (Node n: currentNode.getAllRelatedNodes()){
-			Relationship rel = currentNode.getRelationshipWithNode(n);
-			if (rel.getTargetElement().equalsIgnoreCase(entityID))
+			SimpleRelationship rel = (SimpleRelationship) currentNode.getRelationshipOfTypeWithNode(RelationshipType.COMPOSITION_RELATIONSHIP,currentNode);
+			if (rel!=null && rel.getTargetElement().equalsIgnoreCase(entityID))
 				parent=n;
 		}
 		for (Node n: cloudService.getAllRelatedNodes()){
@@ -153,8 +183,8 @@ public class DependencyGraph implements Serializable{
 		}
 		for (Node n:getAllServiceTopologies()){
 			if (n.getRelatedNode(entityID)!=null ){
-				Relationship rel =n.getRelationshipWithNode(currentNode);
-				if (rel.getTargetElement().equalsIgnoreCase(entityID)){
+				SimpleRelationship rel =(SimpleRelationship) n.getRelationshipOfTypeWithNode(RelationshipType.COMPOSITION_RELATIONSHIP,currentNode);
+				if (rel!=null &&  rel.getTargetElement().equalsIgnoreCase(entityID)){
 					
 					parent=n;
 					return parent;
@@ -164,8 +194,8 @@ public class DependencyGraph implements Serializable{
 		}
 		for (Node n:getAllServiceUnits()){
 			if (n.getRelatedNode(entityID)!=null ){
-				Relationship rel =n.getRelationshipWithNode(currentNode);
-				if (rel.getTargetElement().equalsIgnoreCase(entityID)){
+				SimpleRelationship rel =(SimpleRelationship)n.getRelationshipOfTypeWithNode(RelationshipType.COMPOSITION_RELATIONSHIP,currentNode);
+				if ( rel!=null && rel.getTargetElement().equalsIgnoreCase(entityID)){
 					
 					parent=n;
 					return parent;
@@ -216,7 +246,9 @@ public class DependencyGraph implements Serializable{
 		else
 			currentNode.addElasticityMetric(metricName, unit, value);
 	}
-
+        public void setMetricValue (String nodeID, String metricName, Object value){
+            getNodeWithID(nodeID).setValueForElasticityMetric(metricName, value);
+        }
 	public void setMetricForNode(String nodeID, ElasticityMetric metric) {
 		Node currentNode = getNodeWithID(nodeID);
 		if (currentNode.getElasticityMetrics().contains(metric))
