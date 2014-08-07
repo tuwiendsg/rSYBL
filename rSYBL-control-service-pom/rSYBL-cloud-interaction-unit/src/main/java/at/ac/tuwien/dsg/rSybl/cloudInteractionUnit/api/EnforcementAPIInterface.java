@@ -28,12 +28,13 @@ import at.ac.tuwien.dsg.csdg.Node;
 import at.ac.tuwien.dsg.csdg.elasticityInformation.ElasticityCapability;
 import at.ac.tuwien.dsg.csdg.elasticityInformation.ElasticityRequirement;
 import at.ac.tuwien.dsg.rSybl.dataProcessingUnit.api.MonitoringAPIInterface;
+import java.util.List;
 
 
 public interface EnforcementAPIInterface{
 	   
 		public Node getControlledService() ;
-	    
+                public List<String> getPluginsExecutingActions();
 		public void setControlledService(Node controlledService) ;
 	    
 		public void submitElasticityRequirements(ArrayList<ElasticityRequirement> description);

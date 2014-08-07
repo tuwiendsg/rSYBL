@@ -24,6 +24,7 @@ import at.ac.tuwien.dsg.rSybl.planningEngine.utils.PlanningLogger;
 public class ActionPlanEnforcement {
 
 	EnforcementAPIInterface enforcementAPI = null;
+        
 	ElasticityPrimitivesDescription primitivesDescription = null;
 	public ActionPlanEnforcement(EnforcementAPIInterface apiInterface) {
 		enforcementAPI = apiInterface;
@@ -103,6 +104,7 @@ public class ActionPlanEnforcement {
 		String actionName = actionEffect.getActionType().toLowerCase();
 		for (ElasticityCapability elasticityCapability : actionEffect
 				.getTargetedEntity().getElasticityCapabilities()) {
+                    if (checkECPossible(actionEffect)){
 			if (elasticityCapability.getName().equalsIgnoreCase(actionName)) {
 				if (!elasticityCapability.getName().toLowerCase().contains("scalein") || (elasticityCapability.getName().toLowerCase().contains("scalein")&& actionEffect.getTargetedEntity().getAllRelatedNodesOfType(RelationshipType.HOSTED_ON_RELATIONSHIP, NodeType.VIRTUAL_MACHINE).size()>1)){
 					
@@ -122,6 +124,7 @@ public class ActionPlanEnforcement {
 				break;
 				}
 				}
+                    }
 		}
 	
     }
@@ -157,6 +160,14 @@ public class ActionPlanEnforcement {
 
      }
      return parallelizedActions;
+ }
+ public boolean checkECPossible(ActionEffect actionEffect){
+     List<String> execTargets = enforcementAPI.getPluginsExecutingActions();
+     for (String target: getTargetsOfPrimitives(actionEffect)){
+         if (execTargets.contains(target))
+             return false;
+     }
+     return true;
  }
 public List<String> getTargetsOfPrimitives(ActionEffect actionEffect){
     List<String> targets = new ArrayList<String>();

@@ -1,7 +1,5 @@
 package at.ac.tuwien.dsg.rSybl.cloudInteractionUnit.api;
 
-import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.HashMap;
 
@@ -12,6 +10,9 @@ import at.ac.tuwien.dsg.csdg.elasticityInformation.ElasticityRequirement;
 import at.ac.tuwien.dsg.rSybl.cloudInteractionUnit.utils.Configuration;
 import at.ac.tuwien.dsg.rSybl.dataProcessingUnit.api.MonitoringAPIInterface;
 import at.ac.tuwien.dsg.rSybl.dataProcessingUnit.utils.RuntimeLogger;
+
+import java.util.List;
+import java.util.Map.Entry;
 
 public class MultipleEnforcementAPIs implements EnforcementAPIInterface {
 	HashMap<String, EnforcementAPI> enforcementAPIs = new HashMap<String, EnforcementAPI>();
@@ -400,5 +401,13 @@ public class MultipleEnforcementAPIs implements EnforcementAPIInterface {
 		}
 		return res;
 	}
-
+        public List<String> getPluginsExecutingActions(){
+            List<String> pluginsExec = new ArrayList<String>();
+            for (Entry<String, EnforcementAPI> enforcementAPI:enforcementAPIs.entrySet()){
+                if (enforcementAPI.getValue().isExecutingControlAction()){
+                    pluginsExec.add(enforcementAPI.getKey());
+                }
+            }
+            return pluginsExec;
+        }
 }

@@ -300,7 +300,7 @@ public class EnforcementAPI {
 		try {
 			for (Method method : Class.forName(className).getMethods()) {
 				if (method.getName().toLowerCase()
-						.contains(actionName.toLowerCase())) {
+						.equalsIgnoreCase(actionName.toLowerCase())) {
 					foundMethod = method;
 
 				}

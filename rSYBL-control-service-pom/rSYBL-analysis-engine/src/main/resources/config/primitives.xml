@@ -12,8 +12,12 @@
         <ElasticityPrimitive id="scaleIn" methodName="scalein" name="Remove VM" parameters=""/>
         <ElasticityPrimitive id="scaleOut"  methodName="scaleout" name="Create new VM" parameters=""/>
     </ServiceElasticityPrimitives>
+<ServiceElasticityPrimitives id="OpenStack" ServiceProvider="OpenStack">
+        <ElasticityPrimitive id="scaleIn" methodName="scaleIn" name="Remove VM" parameters="IP"/>
+        <ElasticityPrimitive id="scaleOut"  methodName="scaleOut" name="Create new VM" parameters=""/>
+    </ServiceElasticityPrimitives>
       <ServiceElasticityPrimitives id="M2MDaaS" ServiceProvider="Application Specific Orchestration">
-        <ElasticityPrimitive id="decommissionNode" name="Decommision Data Node from Cluster" parameters="{DataController}.IP IP"/>
-        <ElasticityPrimitive id="decommissionWS" name="Decommission Web Service from Load Balancer" parameters="{LoadBalancer}.IP IP"/>
+        <ElasticityPrimitive id="decommissionNode" methodName="decommissionNode"  name="Decommision Data Node from Cluster" parameters="{DataController}.IP IP"/>
+        <ElasticityPrimitive id="decommissionWS" methodName="decommissionWS" name="Decommission Web Service from Load Balancer" parameters="{LoadBalancer}.IP IP"/>
     </ServiceElasticityPrimitives>
 </ElasticityPrimitivesDescription>

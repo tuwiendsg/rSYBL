@@ -52,7 +52,9 @@ import at.ac.tuwien.dsg.rSybl.dataProcessingUnit.api.MonitoringAPI;
 import at.ac.tuwien.dsg.rSybl.dataProcessingUnit.api.MonitoringAPIInterface;
 import at.ac.tuwien.dsg.rSybl.planningEngine.PlanningAlgorithmInterface;
 import at.ac.tuwien.dsg.rSybl.planningEngine.PlanningGreedyAlgorithm;
+import at.ac.tuwien.dsg.rSybl.planningEngine.PlanningGreedyAlgorithmWithPolynomialElasticityRelationships;
 import at.ac.tuwien.dsg.rSybl.planningEngine.PlanningHeuristicSearch;
+import at.ac.tuwien.dsg.rSybl.planningEngine.PlanningHeuristicSearchWithPolynomialElasticityRelationships;
 import at.ac.tuwien.dsg.sybl.syblProcessingUnit.processing.SYBLProcessingThread;
 import at.ac.tuwien.dsg.sybl.syblProcessingUnit.utils.SYBLDirectivesEnforcementLogger;
 
@@ -158,11 +160,11 @@ public class ControlService {
 			//disableConflictingConstraints();
 			//AnalysisLogger.logger.info("Conflicting constraints disabled");
                         if (Configuration.getPlanningAlgorithm()!=null && !Configuration.getPlanningAlgorithm().equals("") && Configuration.getPlanningAlgorithm().toLowerCase().contains("heuristic")){
-                        planningAlgorithm = new PlanningHeuristicSearch(
+                        planningAlgorithm = new PlanningHeuristicSearchWithPolynomialElasticityRelationships(
 					dependencyGraph, monitoringAPI, enforcementAPI);    
                         }
                         else{
-                        planningAlgorithm = new PlanningGreedyAlgorithm(
+                        planningAlgorithm = new PlanningGreedyAlgorithmWithPolynomialElasticityRelationships(
 					dependencyGraph, monitoringAPI, enforcementAPI);
                         }
                         if (!effects.equalsIgnoreCase(""))

@@ -175,7 +175,7 @@ public class EnforcementOpenstackAPI implements EnforcementInterface{
 				boolean res=false;
 				DependencyGraph graph=new DependencyGraph();
 				graph.setCloudService(controlledService);
-				String ip= cloudsOpenStackConnection.scaleOutAndWaitUntilNewServerBoots( o ,graph.findParentNode(o.getId()));
+				String ip= cloudsOpenStackConnection.scaleOutAndWaitUntilNewServerBoots( o );
 				if (!ip.equalsIgnoreCase("err")){
 				Node node = new Node();
 	            node.setId(ip);
@@ -208,6 +208,24 @@ public class EnforcementOpenstackAPI implements EnforcementInterface{
 				RuntimeLogger.logger.info("Will delete this.....: "+d.getNodeWithID(o.getId()));
 				Node tobeRemoved = d.getNodeWithID(o.getId());
 				cloudsOpenStackConnection.scaleIn( tobeRemoved);
+				RuntimeLogger.logger.info(d.graphToString());
+	            monitoring.refreshServiceStructure(controlledService);
+	            res=true;
+				}else{
+					res=false;
+				}
+
+				return res;		
+	}
+        private boolean  scaleInComponent(Node o,String ip){
+				boolean res=false;
+				DependencyGraph d = new DependencyGraph();
+				d.setCloudService(controlledService);
+				if (d.getNodeWithID(o.getId()).getAllRelatedNodesOfType(RelationshipType.HOSTED_ON_RELATIONSHIP,NodeType.VIRTUAL_MACHINE).size()>0){
+				RuntimeLogger.logger.info(d.graphToString());
+				RuntimeLogger.logger.info("Will delete this.....: "+d.getNodeWithID(o.getId()));
+				Node tobeRemoved = d.getNodeWithID(o.getId());
+				cloudsOpenStackConnection.scaleIn( tobeRemoved,ip);
 				RuntimeLogger.logger.info(d.graphToString());
 	            monitoring.refreshServiceStructure(controlledService);
 	            res=true;
@@ -383,6 +401,61 @@ public class EnforcementOpenstackAPI implements EnforcementInterface{
 			//monitoring.enforcingActionStarted("ScaleIn",arg0 );
 			
 			res=scaleInComponent(((Node) arg0));
+			//monitoring.enforcingActionEnded("ScaleIn",arg0 );
+		}
+		return res;
+		
+
+	}
+        public boolean scaleIn(Node arg0, String ipToScale){
+		RuntimeLogger.logger.info("Scaling in on openstack ..."+arg0.getId());
+		boolean res=false;
+		if (arg0.getNodeType()==NodeType.CODE_REGION){
+			res=scaleIn(findComponentOfCodeRegion(arg0));
+		}
+		
+		//TODO : enable just ComponentTopology level 
+		
+		
+		if (arg0.getNodeType()==NodeType.SERVICE_TOPOLOGY){
+			ArrayList<Node> comps = (ArrayList<Node>)  arg0.getAllRelatedNodesOfType(RelationshipType.COMPOSITION_RELATIONSHIP);
+			Node master =null ;
+			Node slave =null ;
+			
+			for (Node comp:comps){
+				if (comp.getAllRelatedNodesOfType(RelationshipType.MASTER_OF)!=null)
+				{
+					master = comp;
+					slave = comp.getAllRelatedNodesOfType(RelationshipType.MASTER_OF).get(0);
+				}
+			}
+			
+			for (Node component:comps){
+				if (component.getId().equalsIgnoreCase(master.getId()))
+					master=component;
+				if (component.getId().equalsIgnoreCase(slave.getId()))
+					slave=component;
+				
+			}
+			
+			for (String ip:master.getAssociatedIps()){
+				if (ip.split("\\.")[0].length()==2){
+					//monitoring.enforcingActionStarted("ScaleIn",arg0 );
+					
+					cloudsOpenStackConnection.scaleInCluster(master, slave, ip,controlledService);
+					//monitoring.enforcingActionEnded("ScaleIn",arg0 );
+				break;
+				}
+				//scale in on the number of components of the topology
+			}
+			res=true;
+		}
+		
+		if (arg0.getAllRelatedNodesOfType(RelationshipType.HOSTED_ON_RELATIONSHIP, NodeType.VIRTUAL_MACHINE).size()>1){
+			//RuntimeLogger.logger.info("Scaling in "+arg0.getId());
+			//monitoring.enforcingActionStarted("ScaleIn",arg0 );
+			
+			res=scaleInComponent(((Node) arg0),ipToScale);
 			//monitoring.enforcingActionEnded("ScaleIn",arg0 );
 		}
 		return res;

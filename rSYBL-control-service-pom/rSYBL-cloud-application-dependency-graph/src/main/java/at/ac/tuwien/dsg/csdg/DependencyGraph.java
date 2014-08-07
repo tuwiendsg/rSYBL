@@ -79,8 +79,9 @@ public class DependencyGraph implements Serializable{
          public List<Node> findAllRelatedNodesForPolynomialRel(PolynomialElasticityRelationship relationship){
              List<Node> nodes = new ArrayList<Node>();
              for (PolynomialElasticityRelationship.Monom monom:relationship.getPolynom()){
-             
-                 nodes.add(getNodeWithID(monom.getServicePartID()));
+                 if (monom.getServicePartID()!=null && !monom.getServicePartID().equalsIgnoreCase("") && getNodeWithID(monom.getServicePartID())!=null){
+                    nodes.add(getNodeWithID(monom.getServicePartID()));
+                 }
              }
              return nodes;
          }

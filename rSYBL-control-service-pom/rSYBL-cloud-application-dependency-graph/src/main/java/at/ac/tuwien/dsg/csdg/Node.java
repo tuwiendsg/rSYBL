@@ -129,7 +129,7 @@ public class Node implements Serializable{
         public void addNodes( List<Node> nodes,PolynomialElasticityRelationship rel){
 	for (Node node:nodes){
 
-            if	(getRelatedNode(node.getId())!=null){
+            if	(node!=null && getRelatedNode(node.getId())!=null){
 		removeNode(node.getId());
 			
 			

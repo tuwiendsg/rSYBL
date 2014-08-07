@@ -140,18 +140,18 @@ public class JCloudsOpenStackConnection {
         serverApi = client.getServerApiForZone(region);
 
 	}
-	public String scaleOutAndWaitUntilNewServerBoots(Node entity,Node controller){
+	public String scaleOutAndWaitUntilNewServerBoots(Node entity){
 		 try{  
         CreateServerOptions createNodeOptions = new CreateServerOptions();
         Map<String, String> nodeMetaData = new HashMap<String, String>();
         
         String metadata ="";
-        if (entity.getId().equalsIgnoreCase("DataNodeServiceUnit"))metadata= "CASSANDRA_SEED_IP=10.99.0.44 \n CASSANDRA_RPC_PORT=9160 \n CASSANDRA_TCP_PORT=9161";
-        else 
-        	metadata="LOAD_BALANCER_IP=10.99.0.39 \n CASSANDRA_SEED_NODE_IP=10.99.0.44";
-        nodeMetaData.put(metadata, "");
-        createNodeOptions.metadata(nodeMetaData);
-        createNodeOptions.userData(metadata.getBytes());
+//        if (entity.getId().equalsIgnoreCase("DataNodeUnit"))metadata= "CASSANDRA_SEED_IP=10.99.0.9  \n CASSANDRA_RPC_PORT=9160 \n CASSANDRA_TCP_PORT=9161";
+//        else 
+//        	metadata="LOAD_BALANCER_IP=10.99.0.39 \n CASSANDRA_SEED_NODE_IP=10.99.0.44";
+//        nodeMetaData.put(metadata, "");
+//        createNodeOptions.metadata(nodeMetaData);
+//        createNodeOptions.userData(metadata.getBytes());
         
         createNodeOptions.keyPairName(Configuration.getCertificateName());
         String vmName = entity.getId();
@@ -606,7 +606,68 @@ public class JCloudsOpenStackConnection {
 
 
 
+	public void scaleIn(Node toBeScaled, String ipToBeScaled) {
 	
+			
+		 if (toBeScaled.getAllRelatedNodesOfType(RelationshipType.HOSTED_ON_RELATIONSHIP,NodeType.VIRTUAL_MACHINE).size()>1){
+
+			 boolean removed=false;
+			
+//			 FluentIterable<? extends Server> servers=serverApi.listInDetail().concat();
+//			 for (Server server: servers) {
+		         //  if( server.getName().equalsIgnoreCase(toBeScaled.getId())){
+		        	  
+//		        	   String cmd = "";
+//		        	   
+//		        	   String ip = ipToBeScaled;
+//		        	   RuntimeLogger.logger.info("Trying to remove node "+toBeRemoved.getId());
+//		        	   if (ip.equalsIgnoreCase(toBeRemoved.getId())){
+//		        		   RuntimeLogger.logger.info("Removing node "+ip);
+//		        	   if (toBeScaled.getId().equalsIgnoreCase("EventProcessingServiceUnit"))
+//		        		   cmd = "decomissionWS " + ip ;
+//		        	   else
+//		        		   cmd = "decomissionCassandra "+ip;
+		        	   				
+
+//		               if (!(controlledService.getStaticInformation("AccessIP").equals("localhost")))
+//		           	try {
+//		           		 executeAndExpectNothing((String)controlledService.getStaticInformation("AccessIP"), Configuration.getCertificatePath(), cmd);
+//		           	} catch (JSchException e1) {
+//		           		// TODO Auto-generated catch block
+//		           		e1.printStackTrace();
+//		           	}
+//		               else
+//		               {
+//		            	   try {
+//							Process p = Runtime.getRuntime().exec(cmd);
+//							int exitVal = p.waitFor();
+//						} catch (IOException | InterruptedException e) {
+//							// TODO Auto-generated catch block
+//							e.printStackTrace();
+//						}
+//		               }
+//		               try {
+//		   				Thread.sleep(70000);
+//		   			} catch (InterruptedException e) {
+//		   				// TODO Auto-generated catch block
+//		   				e.printStackTrace();
+//		   			}
+		               DependencyGraph graph = new DependencyGraph();
+                               graph.setCloudService(controlledService);
+		               toBeScaled.removeNode(graph.getNodeWithID(ipToBeScaled));
+		               
+		        	   serverApi.delete(ipToBeScaled);
+		        	   removed=true;
+		        
+		        	  		        
+		        	   
+		           //}
+		         
+
+			 
+		 }
+		
+	}
 
 	
 

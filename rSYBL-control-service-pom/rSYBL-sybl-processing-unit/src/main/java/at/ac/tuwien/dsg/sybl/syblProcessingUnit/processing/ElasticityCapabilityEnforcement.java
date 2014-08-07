@@ -37,13 +37,36 @@ public class ElasticityCapabilityEnforcement {
 
 
 	
+         public boolean checkECPossible(ElasticityCapability ec){
+     List<String> execTargets = enforcementAPI.getPluginsExecutingActions();
+     for (String target: getTargetsOfPrimitives(ec)){
+         if (execTargets.contains(target))
+             return false;
+     }
+     return true;
+ }
+         public List<String> getTargetsOfPrimitives(ElasticityCapability elasticityCapability){
+    List<String> targets = new ArrayList<String>();			
+				String[] primitives = elasticityCapability
+						.getPrimitiveOperations().split(";");
+		for (String primitive: primitives){
+		String actionName = primitive;
 
+		if (actionName.contains(".")) {
+			targets.add(actionName.split("\\.")[0]);
+			actionName = actionName.split("\\.")[1];
+		}
+                        }
+    
+    
+return targets;
+}
 	public void enforceActionGivenPrimitives(
 			
 			String actionName,Node target, DependencyGraph dependencyGraph) {
 		
 		for (ElasticityCapability elasticityCapability : target.getElasticityCapabilities()) {
-			if (elasticityCapability.getName().equalsIgnoreCase(actionName)) {
+			if (elasticityCapability.getName().equalsIgnoreCase(actionName) && checkECPossible(elasticityCapability)) {
 				if (!elasticityCapability.getName().toLowerCase().contains("scalein") || (elasticityCapability.getName().toLowerCase().contains("scalein")&&target.getAllRelatedNodesOfType(RelationshipType.HOSTED_ON_RELATIONSHIP, NodeType.VIRTUAL_MACHINE).size()>1)){
 				String[] primitives = elasticityCapability
 						.getPrimitiveOperations().split(";");
