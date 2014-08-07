@@ -50,7 +50,8 @@ public  class ServiceTopologyXML {
     protected List<String> associatedIps = new ArrayList<String>();
     @XmlElement(name = "ServiceUnit")
 	private List<ServiceUnitXML> components;
-  
+    @XmlElement (name="Properties", required=false)
+    private List<PropertyXML> properties = new ArrayList<PropertyXML>();
 	@XmlElement(name = "LinearRelationship")
 		private List<LinearRelationshipXML> linearRelationships;
           
@@ -135,5 +136,19 @@ public  class ServiceTopologyXML {
 	public void setAssociatedIps(List<String> associatedIps) {
 		this.associatedIps = associatedIps;
 	}
+
+    /**
+     * @return the properties
+     */
+    public List<PropertyXML> getProperties() {
+        return properties;
+    }
+
+    /**
+     * @param properties the properties to set
+     */
+    public void setProperties(List<PropertyXML> properties) {
+        this.properties = properties;
+    }
 
 }

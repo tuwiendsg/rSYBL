@@ -108,7 +108,8 @@ public  class ServiceUnitXML {
 		private SYBLAnnotationXML syblAnnotationXML;
           @XmlElement(name = "LinearRelationship")
 		private List<LinearRelationshipXML> linearRelationships;
-          
+              @XmlElement (name="Properties", required=false)
+    private List<PropertyXML> properties = new ArrayList<PropertyXML>();
     /**
      * @return the linearRelationships
      */
@@ -244,6 +245,20 @@ public  class ServiceUnitXML {
 	public void setInitializationSequence(InitializationSequenceXML initializationSequence) {
 		this.initializationSequence = initializationSequence;
 	}
+
+    /**
+     * @return the properties
+     */
+    public List<PropertyXML> getProperties() {
+        return properties;
+    }
+
+    /**
+     * @param properties the properties to set
+     */
+    public void setProperties(List<PropertyXML> properties) {
+        this.properties = properties;
+    }
 
 
 
