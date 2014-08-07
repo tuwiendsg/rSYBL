@@ -89,10 +89,14 @@ public class ControlService {
 		//TODO implement this, have to replace deployment conf 
 	}
 	public void start(){
+                
 		startSYBLProcessingAndPlanning();
+                dependencyGraph.setControlState();
 	}
 	
 	public void stop(){
+                
+                dependencyGraph.setWaitState();
 		if (planningAlgorithm != null)
 			planningAlgorithm.stop();
 		if (syblService != null)

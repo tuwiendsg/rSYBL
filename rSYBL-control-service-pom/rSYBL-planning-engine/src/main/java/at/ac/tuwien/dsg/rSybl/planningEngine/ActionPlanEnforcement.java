@@ -37,6 +37,10 @@ public class ActionPlanEnforcement {
 	}
 
 	public void enforceResult(ArrayList<Pair<ActionEffect, Integer>> result,DependencyGraph dependencyGraph) {
+            if (!dependencyGraph.isInControlState()){
+                PlanningLogger.logger.info("Not enforcing action due to breakpoint ");
+                return;
+            }
 		PlanningLogger.logger.info("Number of actions to enforce" +result.size());
 		List<ArrayList<Pair<ActionEffect, Integer>>> paralelRes = parallellizeResult(result);
                 for (ArrayList<Pair<ActionEffect, Integer>> actionsToEnf : paralelRes){

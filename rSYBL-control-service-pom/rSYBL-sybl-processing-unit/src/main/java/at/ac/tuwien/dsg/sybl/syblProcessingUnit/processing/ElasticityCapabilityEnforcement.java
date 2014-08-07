@@ -64,7 +64,10 @@ return targets;
 	public void enforceActionGivenPrimitives(
 			
 			String actionName,Node target, DependencyGraph dependencyGraph) {
-		
+		 if (!dependencyGraph.isInControlState()){
+                SYBLDirectivesEnforcementLogger.logger.info("Not enforcing action due to breakpoint ");
+                return;
+            }
 		for (ElasticityCapability elasticityCapability : target.getElasticityCapabilities()) {
 			if (elasticityCapability.getName().equalsIgnoreCase(actionName) && checkECPossible(elasticityCapability)) {
 				if (!elasticityCapability.getName().toLowerCase().contains("scalein") || (elasticityCapability.getName().toLowerCase().contains("scalein")&&target.getAllRelatedNodesOfType(RelationshipType.HOSTED_ON_RELATIONSHIP, NodeType.VIRTUAL_MACHINE).size()>1)){

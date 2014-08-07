@@ -35,13 +35,22 @@ import com.sun.org.apache.xalan.internal.xsltc.dom.CurrentNodeListFilter;
 
 
 public class DependencyGraph implements Serializable{
-
+        private String STATE="CONTROL"; //wait
 	private Node cloudService;
 
 	public Node getCloudService() {
 		return cloudService;
 	}
-
+        public boolean isInControlState(){
+            if (STATE.toLowerCase().equalsIgnoreCase("control")) return true;
+            else return false;
+        }
+        public void setControlState(){
+            STATE="CONTROL";
+        }
+        public void setWaitState(){
+            STATE="WAIT";
+        }
 	public void setCloudService(Node cloudService) {
 		this.cloudService = cloudService;
 	}

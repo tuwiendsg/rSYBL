@@ -16,6 +16,8 @@ import at.ac.tuwien.dsg.rSybl.planningEngine.staticData.ActionEffects;
 import at.ac.tuwien.dsg.rSybl.planningEngine.utils.Configuration;
 import at.ac.tuwien.dsg.rSybl.planningEngine.utils.PlanningLogger;
 import java.util.ArrayList;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 public class PlanningHeuristicSearch implements PlanningAlgorithmInterface {
 
@@ -39,6 +41,18 @@ public class PlanningHeuristicSearch implements PlanningAlgorithmInterface {
     }
 
     public void stop() {
+          boolean ok= false;
+        while (!ok){
+            if (enforcementAPI.getPluginsExecutingActions().size()>0){
+                try {
+                    Thread.sleep(1000);
+                } catch (InterruptedException ex) {
+                    Logger.getLogger(PlanningGreedyAlgorithm.class.getName()).log(Level.SEVERE, null, ex);
+                }
+            }else{
+                ok=true;
+            }
+        }
         currentThread.stop();
     }
 
@@ -217,6 +231,8 @@ public class PlanningHeuristicSearch implements PlanningAlgorithmInterface {
     @Override
     public void run() {
         while (true) {
+                        if (dependencyGraph.isInControlState()){
+
             Node cloudService = monitoringAPI.getControlledService();
 
             dependencyGraph.setCloudService(cloudService);
@@ -250,7 +266,7 @@ public class PlanningHeuristicSearch implements PlanningAlgorithmInterface {
                 e.printStackTrace();
             }
         }
-
+        }
     }
 
     @Override

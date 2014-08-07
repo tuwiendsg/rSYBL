@@ -42,6 +42,8 @@ import at.ac.tuwien.dsg.rSybl.planningEngine.utils.Configuration;
 import at.ac.tuwien.dsg.rSybl.planningEngine.staticData.ActionEffect;
 import at.ac.tuwien.dsg.rSybl.planningEngine.staticData.ActionEffects;
 import at.ac.tuwien.dsg.rSybl.planningEngine.utils.PlanningLogger;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 public class PlanningGreedyAlgorithm implements PlanningAlgorithmInterface {
 
@@ -373,6 +375,7 @@ public class PlanningGreedyAlgorithm implements PlanningAlgorithmInterface {
     @Override
 	public void run() {
         while (true) {
+            if (dependencyGraph.isInControlState()){
             try {
                 Thread.sleep(REFRESH_PERIOD);
             } catch (InterruptedException e) {
@@ -390,7 +393,7 @@ public class PlanningGreedyAlgorithm implements PlanningAlgorithmInterface {
             contextRepresentation.initializeContext();
 
             findAndExecuteBestActions();
-
+            }
         }
     }
 
@@ -401,6 +404,18 @@ public class PlanningGreedyAlgorithm implements PlanningAlgorithmInterface {
 
     @Override
 	public void stop() {
+        boolean ok= false;
+        while (!ok){
+            if (enforcementAPI.getPluginsExecutingActions().size()>0){
+                try {
+                    Thread.sleep(1000);
+                } catch (InterruptedException ex) {
+                    Logger.getLogger(PlanningGreedyAlgorithm.class.getName()).log(Level.SEVERE, null, ex);
+                }
+            }else{
+                ok=true;
+            }
+        }
         t.stop();
     }
 

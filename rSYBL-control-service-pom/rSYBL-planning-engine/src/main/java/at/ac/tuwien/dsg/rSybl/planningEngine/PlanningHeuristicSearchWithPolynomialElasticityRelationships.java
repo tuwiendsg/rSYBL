@@ -18,6 +18,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.SortedMap;
 import java.util.TreeMap;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  *
@@ -44,6 +46,18 @@ public class PlanningHeuristicSearchWithPolynomialElasticityRelationships implem
     }
 
     public void stop() {
+          boolean ok= false;
+        while (!ok){
+            if (enforcementAPI.getPluginsExecutingActions().size()>0){
+                try {
+                    Thread.sleep(1000);
+                } catch (InterruptedException ex) {
+                    Logger.getLogger(PlanningGreedyAlgorithm.class.getName()).log(Level.SEVERE, null, ex);
+                }
+            }else{
+                ok=true;
+            }
+        }
         currentThread.stop();
     }
 
@@ -222,6 +236,8 @@ public class PlanningHeuristicSearchWithPolynomialElasticityRelationships implem
     @Override
     public void run() {
         while (true) {
+                        if (dependencyGraph.isInControlState()){
+
             Node cloudService = monitoringAPI.getControlledService();
 
             dependencyGraph.setCloudService(cloudService);
@@ -254,7 +270,7 @@ public class PlanningHeuristicSearchWithPolynomialElasticityRelationships implem
                 // TODO Auto-generated catch block
                 e.printStackTrace();
             }
-        }
+        }}
 
     }
 
