@@ -15,17 +15,21 @@ import at.ac.tuwien.dsg.csdg.inputProcessing.multiLevelModel.primitives.Elastici
 import at.ac.tuwien.dsg.csdg.inputProcessing.multiLevelModel.primitives.ElasticityPrimitiveDependency;
 import at.ac.tuwien.dsg.csdg.inputProcessing.multiLevelModel.primitives.ElasticityPrimitivesDescription;
 import at.ac.tuwien.dsg.csdg.inputProcessing.multiLevelModel.primitives.ServiceElasticityPrimitives;
+import at.ac.tuwien.dsg.csdg.outputProcessing.OutputProcessing;
+import at.ac.tuwien.dsg.csdg.outputProcessing.OutputProcessingFactory;
+import at.ac.tuwien.dsg.csdg.outputProcessing.OutputProcessingInterface;
 import at.ac.tuwien.dsg.rSybl.cloudInteractionUnit.api.EnforcementAPIInterface;
 import at.ac.tuwien.dsg.rSybl.planningEngine.ContextRepresentation.Pair;
 
 import at.ac.tuwien.dsg.rSybl.planningEngine.staticData.ActionEffect;
 import at.ac.tuwien.dsg.rSybl.planningEngine.utils.PlanningLogger;
+import java.util.HashMap;
 
 public class ActionPlanEnforcement {
 
-	EnforcementAPIInterface enforcementAPI = null;
-        
-	ElasticityPrimitivesDescription primitivesDescription = null;
+	private EnforcementAPIInterface enforcementAPI = null;
+        private OutputProcessingInterface outputProcessing=null;
+	private ElasticityPrimitivesDescription primitivesDescription = null;
 	public ActionPlanEnforcement(EnforcementAPIInterface apiInterface) {
 		enforcementAPI = apiInterface;
 		try{
@@ -34,9 +38,22 @@ public class ActionPlanEnforcement {
 		}catch(Exception e){
 			PlanningLogger.logger.error("Failed to load enabled primitives, working with default case");
 		}
+                outputProcessing=OutputProcessingFactory.createNewOutputProcessing();
+                
 	}
 
 	public void enforceResult(ArrayList<Pair<ActionEffect, Integer>> result,DependencyGraph dependencyGraph) {
+           HashMap<Node, ElasticityCapability> capabilities = new HashMap<Node,ElasticityCapability>();
+            for (Pair<ActionEffect,Integer> pair: result){
+                for (ElasticityCapability elasticityCapability : pair.getFirst().getTargetedEntity().getElasticityCapabilities()) {
+                    if (checkECPossible(pair.getFirst())){
+			if (elasticityCapability.getName().equalsIgnoreCase(pair.getFirst().getActionType())) {
+                                capabilities.put(dependencyGraph.getNodeWithID(pair.getFirst().getTargetedEntityID()),  elasticityCapability);
+                        }
+                        }
+                }
+            }
+            outputProcessing.saveActionPlan(capabilities);
             if (!dependencyGraph.isInControlState()){
                 PlanningLogger.logger.info("Not enforcing action due to breakpoint ");
                 return;

@@ -81,6 +81,12 @@ public class Configuration {
     public static String getPrimitivesDescriptionFile(){
     	return configuration.getProperty("PrimitivesDescription");
     }
+    public static String getFileForStoringActionPlans(){
+        return configuration.getProperty("ActionPlans");
+    }
+    public static String getOutputProcessingClass(){
+        return configuration.getProperty("OutputProcessingClass");
+    }
     public static String getCloudServiceTOSCADescription()
     {
     	
