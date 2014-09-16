@@ -65,14 +65,16 @@ public class UtilsMain {
 	 InputProcessing inputProc = new InputProcessing();
 	 //DependencyGraph dependencyGraph=inputProc.loadDependencyGraphFromFile();
 	 //System.out.println(dependencyGraph.graphToString());
-		new UtilsMain().writeDefaultData();
+		//new UtilsMain().writeDefaultData();
+         new UtilsMain().load();
 	}
 	
 	public void load(){
             try{
              JAXBContext jc = JAXBContext.newInstance(CloudServiceXML.class );
        Unmarshaller u = jc.createUnmarshaller();
-       Object o = u.unmarshal( new File( "serviceDescription.xml" ) );
+       CloudServiceXML o = (CloudServiceXML) u.unmarshal( new File( "newServiceDescription.xml" ) );
+       System.out.println(o.getId());
             }catch(Exception e){
                 e.printStackTrace();
             }
@@ -266,8 +268,8 @@ public class UtilsMain {
 			   Marshaller m = jc.createMarshaller();
 			   CloudServiceXML c = new CloudServiceXML();
 			   c.setId("M2MDaaS");
-			    ServiceTopologyXML ioTTopology = new ServiceTopologyXML();
-                            ioTTopology.setId("LocalSensorServiceTopology");
+//			    ServiceTopologyXML ioTTopology = new ServiceTopologyXML();
+//                            ioTTopology.setId("LocalSensorServiceTopology");
                              ServiceUnitXML queue = new ServiceUnitXML();
                              queue.setId("QueueServiceUnit");
 			   ServiceUnitXML local = new ServiceUnitXML();
@@ -343,7 +345,7 @@ public class UtilsMain {
 			   ServiceTopologyXML mainTopology = new ServiceTopologyXML();
 			   List<ServiceTopologyXML> topologies = new ArrayList<ServiceTopologyXML>();
 			   topologies.add(webServiceTopology);
-                           topologies.add(ioTTopology);
+                          // topologies.add(ioTTopology);
 			   dataServiceTopology.setId("DataServiceTopology");
 			   topologies.add(dataServiceTopology);
 			   mainTopology.setId("MainTopology");

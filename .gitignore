@@ -1,0 +1,10 @@
+/rSYBL-control-service-pom/rSYBL-cloud-application-dependency-graph/target/
+/rSYBL-control-service-pom/rSYBL-data-processing-unit/target/
+/rSYBL-control-service-pom/rSYBL-cloud-interaction-unit/target/
+/rSYBL-control-service-pom/rSYBL-sybl-processing-unit/target/
+/rSYBL-control-service-pom/rSYBL-planning-engine/target/
+/rSYBL-control-service-pom/rSYBL-analysis-engine/target/
+/rSYBL-control-service-pom/rSYBL-analysis-engine-tar/target/
+/rSYBL-control-service-pom/rSYBL-client/target/
+*.pem
+rSYBL-control-service-pom/rSYBL-cloud-interaction-unit/src/main/resources/a.wadl

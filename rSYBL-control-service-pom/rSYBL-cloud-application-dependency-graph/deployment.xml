@@ -1,7 +1,41 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
-<DeploymentDescription AccessIP="localhost" CloudServiceID="">
-    <DeploymentUnit defaultImage="" defaultFlavor="" serviceUnitID="">
-        <AssociatedVM IP="" UUID=""/>
-        <ElasticityCapability Name="scaleIn" PrimitiveOperationsSequence="M2MDaaS.decommissionWS;dryRun.scaleIn" Endpoint="" Type=""/>
+<DeploymentDescription CloudServiceID="M2MDaaS" AccessIP="128.130.172.215">
+<DeploymentUnit defaultImage="" defaultFlavor="" serviceUnitID="QueueServiceUnit">
+		<Artifact Name="queue">
+                <AssociatedVM IP="10.99.0.33"/>
+        </Artifact>
+        
+    </DeploymentUnit>
+	  <DeploymentUnit defaultImage="" defaultFlavor="" serviceUnitID="LocalProcessingServiceUnit">
+		 <Artifact Name="localproc">
+		 <AssociatedVM IP="10.99.0.57" />
+		 </Artifact>
+        <ElasticityCapability Name="scaleIn" PrimitiveOperationsSequence="Salsa.scaleIn" Endpoint="" Type=""/>
+		<ElasticityCapability Name="scaleOut" PrimitiveOperationsSequence="Salsa.scaleOut" Endpoint="" Type=""/>
+    </DeploymentUnit>
+	  <DeploymentUnit defaultImage="" defaultFlavor="" serviceUnitID="LoadBalancerServiceUnit">
+		<Artifact Name="HAProxy">
+        <AssociatedVM IP="109.231.122.200" UUID="314e15d7-3dba-367a-ae33-6e664a5df668"/>
+		</Artifact>
+    </DeploymentUnit>
+	  <DeploymentUnit defaultImage="a019970f-5442-3c52-970a-bc9c0c2ad45f" defaultFlavor="" serviceUnitID="EventProcessingServiceUnit">
+	  <Artifact Name="ProcWS">
+		<AssociatedVM IP="109.231.122.171" UUID="3ad26d94-0303-32f7-9ed8-aba4f235c1b2"/>
+		</Artifact>
+        <ElasticityCapability Name="scaleIn" PrimitiveOperationsSequence="FCO.scaleIn" Endpoint="" Type=""/>
+		<ElasticityCapability Name="scaleOut" PrimitiveOperationsSequence="FCO.scaleOut" Endpoint="" Type=""/>
+    </DeploymentUnit>
+	  <DeploymentUnit defaultImage="" defaultFlavor="" serviceUnitID="DataControllerServiceUnit">
+	  <Artifact Name="CassandraSeed">
+        <AssociatedVM IP="109.231.122.208" UUID=""/>
+		</Artifact>
+    </DeploymentUnit>
+  <DeploymentUnit defaultImage="22670567-395f-3245-b596-29c17d34ddc0" defaultFlavor="" serviceUnitID="DataNodeServiceUnit">
+		<Artifact Name="CassandraNode">
+        <AssociatedVM IP="109.231.122.246" UUID="cf22240b-9514-34c8-acf1-e774e2462bda"/>
+		</Artifact>
+        <ElasticityCapability Name="scaleIn" PrimitiveOperationsSequence="FCO.scaleIn" Endpoint="" Type=""/>
+		<ElasticityCapability Name="scaleOut" PrimitiveOperationsSequence="FCO.scaleOut" Endpoint="" Type=""/>
     </DeploymentUnit>
 </DeploymentDescription>
+

@@ -39,8 +39,10 @@ public class DeploymentUnit {
  private String defaultFlavor="";
  @XmlAttribute(name = "serviceUnitID")
  private String serviceUnitID="";
- @XmlElement(name = "AssociatedVM")
- private List<AssociatedVM> associatedVMs=new ArrayList<AssociatedVM>();
+   @XmlElement(name="AssociatedVM")
+ private List<AssociatedVM> associatedVMs = new ArrayList<AssociatedVM>();
+ @XmlElement(name = "Artifact")
+ private List<Artifact> artifacts=new ArrayList<Artifact>();
  @XmlElement(name = "ElasticityCapability")
  private List<ElasticityCapability> elasticityCapabilities=new ArrayList<ElasticityCapability>();
 public String getDefaultFlavor() {
@@ -61,14 +63,14 @@ public String getServiceUnitID() {
 public void setServiceUnitID(String serviceUnitID) {
 	this.serviceUnitID = serviceUnitID;
 }
-public List<AssociatedVM> getAssociatedVM() {
-	return associatedVMs;
+public List<Artifact> getArtifacts() {
+	return artifacts;
 }
-public void setAssociatedVM(List<AssociatedVM> associatedVMs) {
-	this.associatedVMs = associatedVMs;
+public void setArtifacts(List<Artifact> associatedVMs) {
+	this.artifacts = associatedVMs;
 }
-public void addAssociatedVM(AssociatedVM associatedVMs) {
-	this.associatedVMs.add(associatedVMs);
+public void addArtifact(Artifact associatedVMs) {
+	this.artifacts.add(associatedVMs);
 }
 public List<ElasticityCapability> getElasticityCapabilities() {
 	return elasticityCapabilities;
@@ -79,4 +81,18 @@ public void setElasticityCapabilities(List<ElasticityCapability> elasticityCapab
 public void addElasticityCapability(ElasticityCapability elasticityCapability){
 	this.elasticityCapabilities.add(elasticityCapability);
 }
+
+    /**
+     * @return the associatedVMs
+     */
+    public List<AssociatedVM> getAssociatedVMs() {
+        return associatedVMs;
+    }
+
+    /**
+     * @param associatedVMs the associatedVMs to set
+     */
+    public void setAssociatedVMs(List<AssociatedVM> associatedVMs) {
+        this.associatedVMs = associatedVMs;
+    }
 }

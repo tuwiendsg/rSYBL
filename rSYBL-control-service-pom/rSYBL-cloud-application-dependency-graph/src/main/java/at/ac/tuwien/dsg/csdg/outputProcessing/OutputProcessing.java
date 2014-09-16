@@ -8,6 +8,7 @@ import at.ac.tuwien.dsg.csdg.Node;
 import at.ac.tuwien.dsg.csdg.elasticityInformation.ElasticityCapability;
 import at.ac.tuwien.dsg.csdg.utils.Configuration;
 import at.ac.tuwien.dsg.csdg.utils.DependencyGraphLogger;
+import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.util.Date;
@@ -25,7 +26,12 @@ public class OutputProcessing implements OutputProcessingInterface {
     
     static {
         try {
-            fstream = new FileWriter(Configuration.getFileForStoringActionPlans());
+    
+	
+            if (Configuration.getFileForStoringActionPlans()!=null && !Configuration.getFileForStoringActionPlans().equalsIgnoreCase(""))
+              fstream = new FileWriter(Configuration.getFileForStoringActionPlans());
+            else
+                fstream = new FileWriter("actionplans.csv");
         } catch (IOException ex) {
             Logger.getLogger(OutputProcessing.class.getName()).log(Level.SEVERE, null, ex);
         }
@@ -38,7 +44,10 @@ public class OutputProcessing implements OutputProcessingInterface {
     public void saveActionPlan(HashMap<Node,ElasticityCapability> actionPlan) {
        	try {
 				  Date date = new Date();
-			
+			 if (Configuration.getFileForStoringActionPlans()!=null && !Configuration.getFileForStoringActionPlans().equalsIgnoreCase(""))
+              fstream = new FileWriter(Configuration.getFileForStoringActionPlans(),true);
+            else
+                fstream = new FileWriter("actionplans.csv",true);
 					/**
 					 * monitoring sequence
 					 */
@@ -55,7 +64,7 @@ public class OutputProcessing implements OutputProcessingInterface {
                                   
                                   
 				  fstream.append(toWrite+'\n');
-				  
+				  fstream.close();
 				  
         }catch(Exception e){
             try {

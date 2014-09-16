@@ -308,10 +308,11 @@ public class DependencyGraph implements Serializable{
 		
 		while (unexploredNodes.size() > 0) {
 			Node n = unexploredNodes.get(0);
-			message+=n.toString();
+			message+=n.toString()+" \n ";
 			unexploredNodes
 						.addAll(n
 								.getAllRelatedNodes());
+             
 			unexploredNodes.remove(0);
 
 		}

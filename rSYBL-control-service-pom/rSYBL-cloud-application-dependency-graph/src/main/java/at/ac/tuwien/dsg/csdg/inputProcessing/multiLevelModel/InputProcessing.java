@@ -55,12 +55,18 @@ import at.ac.tuwien.dsg.csdg.inputProcessing.multiLevelModel.abstractModelXML.SY
 import at.ac.tuwien.dsg.csdg.inputProcessing.multiLevelModel.abstractModelXML.SYBLDirectiveMappingFromXML;
 import at.ac.tuwien.dsg.csdg.inputProcessing.multiLevelModel.abstractModelXML.ServiceTopologyXML;
 import at.ac.tuwien.dsg.csdg.inputProcessing.multiLevelModel.abstractModelXML.ServiceUnitXML;
+import at.ac.tuwien.dsg.csdg.inputProcessing.multiLevelModel.deploymentDescription.Artifact;
 import at.ac.tuwien.dsg.csdg.inputProcessing.multiLevelModel.deploymentDescription.AssociatedVM;
+import at.ac.tuwien.dsg.csdg.inputProcessing.multiLevelModel.deploymentDescription.Container;
 import at.ac.tuwien.dsg.csdg.inputProcessing.multiLevelModel.deploymentDescription.DeploymentDescription;
 import at.ac.tuwien.dsg.csdg.inputProcessing.multiLevelModel.deploymentDescription.DeploymentUnit;
 import at.ac.tuwien.dsg.csdg.inputProcessing.multiLevelModel.primitives.ElasticityPrimitivesDescription;
 import at.ac.tuwien.dsg.csdg.utils.Configuration;
 import at.ac.tuwien.dsg.csdg.utils.DependencyGraphLogger;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 public class InputProcessing {
 
@@ -172,7 +178,7 @@ public class InputProcessing {
         elasticityRelationship.setConfidence(linearRelationshipXML.getConfidence());
         elasticityRelationship.setCurrentElasticityMetric(linearRelationshipXML.getMetricName());
         elasticityRelationship.setServicePartID(linearRelationshipXML.getServicePartID());
-       
+
         for (LinearRelationshipXML.Monom m : linearRelationshipXML.getDependencyMonoms()) {
             PolynomialElasticityRelationship.Monom monom = elasticityRelationship.new Monom();
             monom.setCoefficient(m.getCoefficient());
@@ -368,7 +374,7 @@ public class InputProcessing {
                 elasticityMetric.setMetricName(linearRelationshipXML.getMetricName());
                 elasticityMetric.setServicePartID(linearRelationshipXML.getServicePartID());
                 elasticityMetric.addRelationship(mapToPolynomialRel(linearRelationshipXML));
-                
+
                 cloudService.addElasticityMetric(elasticityMetric);
             }
         }
@@ -430,16 +436,16 @@ public class InputProcessing {
                         elReq.setAnnotation(mapFromXMLAnnotationToSYBLAnnotation(serviceUnitXML.getId(), serviceUnitXML.getXMLAnnotation(), AnnotationType.SERVICE_UNIT));
                         serviceUnit.getElasticityRequirements().add(elReq);
                     }
-                     if (serviceUnitXML.getLinearRelationships()!=null && serviceUnitXML.getLinearRelationships().size()>0){
-            for (LinearRelationshipXML linearRelationshipXML:serviceUnitXML.getLinearRelationships()){
-                ElasticityMetric elasticityMetric = new ElasticityMetric();
-                elasticityMetric.setMetricName(linearRelationshipXML.getMetricName());
-                elasticityMetric.setServicePartID(linearRelationshipXML.getServicePartID());
-                elasticityMetric.addRelationship(mapToPolynomialRel(linearRelationshipXML));
-                serviceUnit.addElasticityMetric(elasticityMetric);
-                
-            }
-        }
+                    if (serviceUnitXML.getLinearRelationships() != null && serviceUnitXML.getLinearRelationships().size() > 0) {
+                        for (LinearRelationshipXML linearRelationshipXML : serviceUnitXML.getLinearRelationships()) {
+                            ElasticityMetric elasticityMetric = new ElasticityMetric();
+                            elasticityMetric.setMetricName(linearRelationshipXML.getMetricName());
+                            elasticityMetric.setServicePartID(linearRelationshipXML.getServicePartID());
+                            elasticityMetric.addRelationship(mapToPolynomialRel(linearRelationshipXML));
+                            serviceUnit.addElasticityMetric(elasticityMetric);
+
+                        }
+                    }
 
 //                    if (serviceUnitXML.getActions() != null && !serviceUnitXML.getActions().isEmpty()) {
 //                        for (ActionXML actionXML : serviceUnitXML.getActions()) {
@@ -494,14 +500,14 @@ public class InputProcessing {
         for (Entry<Node, SimpleRelationship> entry : serviceTopologiesFirst.entrySet()) {
             cloudService.addNode(entry.getKey(), entry.getValue());
         }
-        
+
         graph.setCloudService(cloudService);
         for (SimpleRelationship rel : specialRelationships) {
             graph.getNodeWithID(rel.getSourceElement()).addNode(graph.getNodeWithID(rel.getTargetElement()), rel);
         }
-        for (Relationship rel: graph.findAllElasticityRelationshipsAssociatedToMetrics()){
-            PolynomialElasticityRelationship elasticityRelationship =(PolynomialElasticityRelationship) rel;
-            
+        for (Relationship rel : graph.findAllElasticityRelationshipsAssociatedToMetrics()) {
+            PolynomialElasticityRelationship elasticityRelationship = (PolynomialElasticityRelationship) rel;
+
             graph.getNodeWithID(elasticityRelationship.getServicePartID()).addNodes(graph.findAllRelatedNodesForPolynomialRel(elasticityRelationship), elasticityRelationship);
         }
 
@@ -521,19 +527,76 @@ public class InputProcessing {
                     node.getStaticInformation().put("DefaultImage", deploymentUnit.getDefaultImage());
                 }
 
-                if (deploymentUnit.getAssociatedVM() != null && deploymentUnit.getAssociatedVM().size() > 0) {
-                    for (AssociatedVM associatedVM : deploymentUnit.getAssociatedVM()) {
-                        Node vmNode = new Node();
-                        vmNode.setId(associatedVM.getIp());
-                        vmNode.getStaticInformation().put("UUID", associatedVM.getUuid());
-                        vmNode.setNodeType(NodeType.VIRTUAL_MACHINE);
-                        SimpleRelationship vmRel = new SimpleRelationship();
-                        vmRel.setSourceElement(node.getId());
-                        vmRel.setTargetElement(vmNode.getId());
-                        vmRel.setType(RelationshipType.HOSTED_ON_RELATIONSHIP);
+                if (deploymentUnit.getArtifacts() != null && deploymentUnit.getArtifacts().size() > 0) {
+                    for (Artifact artifact : deploymentUnit.getArtifacts()) {
+                        Node artifactNode = new Node();
+                        artifactNode.setNodeType(NodeType.ARTIFACT);
+                        artifactNode.setId(artifact.getName());
+                        artifactNode.getStaticInformation().put("Name", artifact.getName());
+                        artifactNode.getStaticInformation().put("Path", artifact.getPath());
+                        artifactNode.getStaticInformation().put("DownloadPath", artifact.getDownloadPath());
+                        if (artifact.getContainer() != null) {
+                            Node containerNode = new Node();
+                          
+                            Container container = artifact.getContainer();
+                            containerNode.setNodeType(NodeType.CONTAINER);
+                            containerNode.setId(container.getId());
+                            containerNode.getStaticInformation().put("Name", container.getName());
+                            containerNode.getStaticInformation().put("Path", container.getPath());
+                            AssociatedVM associatedVM = container.getVm();
+                            if (associatedVM!=null){
+                            Node vmNode = new Node();
+                            vmNode.setId(associatedVM.getIp());
+                            vmNode.getStaticInformation().put("UUID", associatedVM.getUuid());
+                            vmNode.setNodeType(NodeType.VIRTUAL_MACHINE);
+                            SimpleRelationship vmRel = new SimpleRelationship();
+                            vmRel.setSourceElement(artifactNode.getId());
+                            vmRel.setTargetElement(vmNode.getId());
+                            vmRel.setType(RelationshipType.HOSTED_ON_RELATIONSHIP);
+                            containerNode.addNode(vmNode, vmRel);
+                            }
+                            SimpleRelationship containerRel = new SimpleRelationship();
+                            containerRel.setSourceElement(artifactNode.getId());
+                            containerRel.setTargetElement(containerNode.getId());
+                            containerRel.setType(RelationshipType.HOSTED_ON_RELATIONSHIP);
+                            artifactNode.addNode(containerNode, containerRel);
+                            
+                        } else {
+                            if (artifact.getAssociatedVM() != null) {
+                                AssociatedVM associatedVM = artifact.getAssociatedVM();
+                                Node vmNode = new Node();
+                                vmNode.setId(associatedVM.getIp());
+                                vmNode.getStaticInformation().put("UUID", associatedVM.getUuid());
+                                vmNode.setNodeType(NodeType.VIRTUAL_MACHINE);
+                                SimpleRelationship vmRel = new SimpleRelationship();
+                                vmRel.setSourceElement(artifactNode.getId());
+                                vmRel.setTargetElement(vmNode.getId());
+                                vmRel.setType(RelationshipType.HOSTED_ON_RELATIONSHIP);
+                                artifactNode.addNode(vmNode, vmRel);
+                            }
+                        }
 
-                        node.addNode(vmNode, vmRel);
+                        SimpleRelationship artifactRel = new SimpleRelationship();
+                        artifactRel.setSourceElement(node.getId());
+                        artifactRel.setTargetElement(artifactNode.getId());
+                        artifactRel.setType(RelationshipType.HOSTED_ON_RELATIONSHIP);
+                        node.addNode(artifactNode, artifactRel);
                     }
+                }
+                if (deploymentUnit.getAssociatedVMs()!=null){
+                for (AssociatedVM associatedVM : deploymentUnit.getAssociatedVMs()){
+                         Node vmNode = new Node();
+                                vmNode.setId(associatedVM.getIp());
+                                
+                                vmNode.getStaticInformation().put("UUID", associatedVM.getUuid());
+                                vmNode.setNodeType(NodeType.VIRTUAL_MACHINE);
+                                SimpleRelationship vmRel = new SimpleRelationship();
+                                vmRel.setSourceElement(node.getId());
+                                vmRel.setTargetElement(vmNode.getId());
+                                vmRel.setType(RelationshipType.HOSTED_ON_RELATIONSHIP);
+                                node.addNode(vmNode, vmRel);
+                    }
+                }
                     for (at.ac.tuwien.dsg.csdg.inputProcessing.multiLevelModel.deploymentDescription.ElasticityCapability elasticityCapability : deploymentUnit.getElasticityCapabilities()) {
                         ElasticityCapability newElasticityCapability = new ElasticityCapability();
                         newElasticityCapability.setName(elasticityCapability.getName());
@@ -543,7 +606,7 @@ public class InputProcessing {
                         node.addElasticityCapability(newElasticityCapability);
                     }
 
-                }
+                
             } else {
                 DependencyGraphLogger.logger.error("Cannot find node " + deploymentUnit.getServiceUnitID() + ". Current graph is " + graph.graphToString());
 
@@ -583,7 +646,7 @@ public class InputProcessing {
                 Unmarshaller u = jc.createUnmarshaller();
 
                 File f = new File(Configuration.getPrimitivesDescriptionFile());
-                elasticityPrimitivesDescription = (ElasticityPrimitivesDescription) u.unmarshal(new File(Configuration.getPrimitivesDescriptionFile()));
+                elasticityPrimitivesDescription = (ElasticityPrimitivesDescription) u.unmarshal(new FileInputStream(Configuration.getPrimitivesDescriptionFile()));
 
             } catch (Exception e1) {
                 e1.printStackTrace();
@@ -598,8 +661,11 @@ public class InputProcessing {
         try {
             jc = JAXBContext.newInstance(ElasticityPrimitivesDescription.class);
             Unmarshaller u = jc.createUnmarshaller();
-
-            elasticityPrimitivesDescription = (ElasticityPrimitivesDescription) u.unmarshal(new StringReader(elasticityPrimitives));
+            try {
+                elasticityPrimitivesDescription = (ElasticityPrimitivesDescription) u.unmarshal(new FileInputStream(elasticityPrimitives));
+            } catch (FileNotFoundException ex) {
+                Logger.getLogger(InputProcessing.class.getName()).log(Level.SEVERE, null, ex);
+            }
         } catch (JAXBException e) {
             DependencyGraphLogger.logger.info(e.getStackTrace().toString());
         }

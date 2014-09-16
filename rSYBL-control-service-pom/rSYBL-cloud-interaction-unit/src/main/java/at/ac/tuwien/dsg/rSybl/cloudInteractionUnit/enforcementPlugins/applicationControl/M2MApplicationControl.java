@@ -12,6 +12,7 @@ import java.util.logging.Logger;
 import at.ac.tuwien.dsg.csdg.DependencyGraph;
 import at.ac.tuwien.dsg.csdg.Node;
 import at.ac.tuwien.dsg.csdg.Node.NodeType;
+import at.ac.tuwien.dsg.csdg.Relationship;
 import at.ac.tuwien.dsg.csdg.Relationship.RelationshipType;
 import at.ac.tuwien.dsg.rSybl.cloudInteractionUnit.enforcementPlugins.interfaces.EnforcementInterface;
 import at.ac.tuwien.dsg.rSybl.cloudInteractionUnit.utils.Configuration;
@@ -40,6 +41,10 @@ public class M2MApplicationControl implements EnforcementInterface{
 			String ip1="";
 			for (Node node:dependencyGraph.getAllServiceUnits()){
 				if (node.getId().contains("Load")){
+                                    if (node.getAllRelatedNodesOfType(RelationshipType.HOSTED_ON_RELATIONSHIP,NodeType.ARTIFACT)!=null && node.getAllRelatedNodesOfType(RelationshipType.HOSTED_ON_RELATIONSHIP,NodeType.ARTIFACT).size()>0){
+                                        Node artifact = node.getAllRelatedNodesOfType(RelationshipType.HOSTED_ON_RELATIONSHIP,NodeType.ARTIFACT).get(0);
+                                        ip1 = artifact.getAllRelatedNodesOfType(RelationshipType.HOSTED_ON_RELATIONSHIP, NodeType.VIRTUAL_MACHINE).get(0).getId();
+                                    }else
 					ip1=node.getAllRelatedNodesOfType(RelationshipType.HOSTED_ON_RELATIONSHIP, NodeType.VIRTUAL_MACHINE).get(0).getId();
 				}
 			}         
@@ -49,8 +54,13 @@ public class M2MApplicationControl implements EnforcementInterface{
 	   		String ip1="";
 			for (Node node:dependencyGraph.getAllServiceUnits()){
 				if (node.getId().contains("Controller")){
-					ip1=node.getAllRelatedNodesOfType(RelationshipType.HOSTED_ON_RELATIONSHIP, NodeType.VIRTUAL_MACHINE).get(0).getId();
-				}
+                                     if (node.getAllRelatedNodesOfType(RelationshipType.HOSTED_ON_RELATIONSHIP,NodeType.ARTIFACT)!=null && node.getAllRelatedNodesOfType(RelationshipType.HOSTED_ON_RELATIONSHIP,NodeType.ARTIFACT).size()>0){
+                                        Node artifact = node.getAllRelatedNodesOfType(RelationshipType.HOSTED_ON_RELATIONSHIP,NodeType.ARTIFACT).get(0);
+					ip1=artifact.getAllRelatedNodesOfType(RelationshipType.HOSTED_ON_RELATIONSHIP, NodeType.VIRTUAL_MACHINE).get(0).getId();
+                                     }else{
+                                        ip1=node.getAllRelatedNodesOfType(RelationshipType.HOSTED_ON_RELATIONSHIP, NodeType.VIRTUAL_MACHINE).get(0).getId(); 
+                                     }
+                                     }
 			}    
 	   	   
 	   		   cmd = "decomissionCassandra "+ip1+" "+ip;

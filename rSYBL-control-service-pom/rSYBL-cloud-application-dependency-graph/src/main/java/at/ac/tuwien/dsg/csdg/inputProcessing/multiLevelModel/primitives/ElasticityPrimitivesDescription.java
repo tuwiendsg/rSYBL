@@ -57,6 +57,7 @@ import at.ac.tuwien.dsg.csdg.elasticityInformation.elasticityRequirements.SYBLEl
 
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlRootElement(name="ElasticityPrimitivesDescription", namespace="")
+@XmlType(name="ElasticityPrimitivesDescription",propOrder="elasticityPrimitives")
 public class ElasticityPrimitivesDescription implements Serializable{
 	@XmlElement(name = "ServiceElasticityPrimitives")
 	private List<ServiceElasticityPrimitives> elasticityPrimitives = new ArrayList<ServiceElasticityPrimitives>();

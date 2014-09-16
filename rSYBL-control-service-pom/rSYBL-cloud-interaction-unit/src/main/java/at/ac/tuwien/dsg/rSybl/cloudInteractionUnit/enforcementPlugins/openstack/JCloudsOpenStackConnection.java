@@ -540,12 +540,36 @@ public class JCloudsOpenStackConnection {
 	}
 	public void scaleIn(Node toBeScaled) {
 	
-			
-		 if (toBeScaled.getAllRelatedNodesOfType(RelationshipType.HOSTED_ON_RELATIONSHIP,NodeType.VIRTUAL_MACHINE).size()>1){
+		           
+                                      Node artifact = null;
+                      Node container = null;
+                      Node toBeScaledArtifactorContainer = toBeScaled;
+                            if (toBeScaled.getAllRelatedNodesOfType(RelationshipType.HOSTED_ON_RELATIONSHIP, NodeType.ARTIFACT) != null && toBeScaled.getAllRelatedNodesOfType(RelationshipType.HOSTED_ON_RELATIONSHIP, NodeType.ARTIFACT).size() > 0) {
+                       artifact= toBeScaled.getAllRelatedNodesOfType(RelationshipType.HOSTED_ON_RELATIONSHIP, NodeType.ARTIFACT).get(0);
+                       
+                      if (artifact.getAllRelatedNodesOfType(RelationshipType.HOSTED_ON_RELATIONSHIP, NodeType.CONTAINER) != null && artifact.getAllRelatedNodesOfType(RelationshipType.HOSTED_ON_RELATIONSHIP, NodeType.CONTAINER).size() > 0) {
+                      
+                       container= artifact.getAllRelatedNodesOfType(RelationshipType.HOSTED_ON_RELATIONSHIP, NodeType.CONTAINER).get(0);
+                      }
+                      }
+                              boolean ok = false;
+		 if (artifact==null && container==null){
+	                 ok = toBeScaled.getAllRelatedNodesOfType(RelationshipType.HOSTED_ON_RELATIONSHIP, NodeType.VIRTUAL_MACHINE).size()>1;
+                     }else{
+                         if (container==null){
+                           ok = artifact.getAllRelatedNodesOfType(RelationshipType.HOSTED_ON_RELATIONSHIP, NodeType.VIRTUAL_MACHINE).size()>1;
+                            toBeScaledArtifactorContainer = artifact;
+                         }else
+                         {
+                              ok = container.getAllRelatedNodesOfType(RelationshipType.HOSTED_ON_RELATIONSHIP, NodeType.VIRTUAL_MACHINE).size()>1;
+                                toBeScaledArtifactorContainer = container;
+                         }
+                     }	
+		 if (ok){
 			 int tryRemove=0;
 			 boolean removed=false;
-			 while (!removed&&toBeScaled.getAllRelatedNodesOfType(RelationshipType.HOSTED_ON_RELATIONSHIP, NodeType.VIRTUAL_MACHINE).size()>tryRemove){
-			 Node toBeRemoved = toBeScaled.getAllRelatedNodesOfType(RelationshipType.HOSTED_ON_RELATIONSHIP, NodeType.VIRTUAL_MACHINE).get(tryRemove);
+			 while (!removed&&toBeScaledArtifactorContainer.getAllRelatedNodesOfType(RelationshipType.HOSTED_ON_RELATIONSHIP, NodeType.VIRTUAL_MACHINE).size()>tryRemove){
+			 Node toBeRemoved = toBeScaledArtifactorContainer.getAllRelatedNodesOfType(RelationshipType.HOSTED_ON_RELATIONSHIP, NodeType.VIRTUAL_MACHINE).get(tryRemove);
 			 FluentIterable<? extends Server> servers=serverApi.listInDetail().concat();
 			 for (Server server: servers) {
 		         //  if( server.getName().equalsIgnoreCase(toBeScaled.getId())){
@@ -556,37 +580,11 @@ public class JCloudsOpenStackConnection {
 		        	   RuntimeLogger.logger.info("Trying to remove node "+toBeRemoved.getId());
 		        	   if (ip.equalsIgnoreCase(toBeRemoved.getId())){
 		        		   RuntimeLogger.logger.info("Removing node "+ip);
-		        	   if (toBeScaled.getId().equalsIgnoreCase("EventProcessingServiceUnit"))
-		        		   cmd = "decomissionWS " + ip ;
-		        	   else
-		        		   cmd = "decomissionCassandra "+ip;
+		        	   
 		        	   				
 
-		               if (!(controlledService.getStaticInformation("AccessIP").equals("localhost")))
-		           	try {
-		           		 executeAndExpectNothing((String)controlledService.getStaticInformation("AccessIP"), Configuration.getCertificatePath(), cmd);
-		           	} catch (JSchException e1) {
-		           		// TODO Auto-generated catch block
-		           		e1.printStackTrace();
-		           	}
-		               else
-		               {
-		            	   try {
-							Process p = Runtime.getRuntime().exec(cmd);
-							int exitVal = p.waitFor();
-						} catch (IOException | InterruptedException e) {
-							// TODO Auto-generated catch block
-							e.printStackTrace();
-						}
-		               }
-		               try {
-		   				Thread.sleep(70000);
-		   			} catch (InterruptedException e) {
-		   				// TODO Auto-generated catch block
-		   				e.printStackTrace();
-		   			}
 		               
-		               toBeScaled.removeNode(toBeRemoved);
+		               toBeScaledArtifactorContainer.removeNode(toBeRemoved);
 		               
 		        	   serverApi.delete(server.getId());
 		        	   removed=true;
@@ -607,9 +605,32 @@ public class JCloudsOpenStackConnection {
 
 
 	public void scaleIn(Node toBeScaled, String ipToBeScaled) {
-	
+	    Node artifact = null;
+                      Node container = null;
+                      Node toBeScaledArtifactorContainer = toBeScaled;
+                            if (toBeScaled.getAllRelatedNodesOfType(RelationshipType.HOSTED_ON_RELATIONSHIP, NodeType.ARTIFACT) != null && toBeScaled.getAllRelatedNodesOfType(RelationshipType.HOSTED_ON_RELATIONSHIP, NodeType.ARTIFACT).size() > 0) {
+                       artifact= toBeScaled.getAllRelatedNodesOfType(RelationshipType.HOSTED_ON_RELATIONSHIP, NodeType.ARTIFACT).get(0);
+                       
+                      if (artifact.getAllRelatedNodesOfType(RelationshipType.HOSTED_ON_RELATIONSHIP, NodeType.CONTAINER) != null && artifact.getAllRelatedNodesOfType(RelationshipType.HOSTED_ON_RELATIONSHIP, NodeType.CONTAINER).size() > 0) {
+                      
+                       container= artifact.getAllRelatedNodesOfType(RelationshipType.HOSTED_ON_RELATIONSHIP, NodeType.CONTAINER).get(0);
+                      }
+                      }
+                              boolean ok = false;
+		 if (artifact==null && container==null){
+	                 ok = toBeScaled.getAllRelatedNodesOfType(RelationshipType.HOSTED_ON_RELATIONSHIP, NodeType.VIRTUAL_MACHINE).size()>1;
+                     }else{
+                         if (container==null){
+                           ok = artifact.getAllRelatedNodesOfType(RelationshipType.HOSTED_ON_RELATIONSHIP, NodeType.VIRTUAL_MACHINE).size()>1;
+                            toBeScaledArtifactorContainer = artifact;
+                         }else
+                         {
+                              ok = container.getAllRelatedNodesOfType(RelationshipType.HOSTED_ON_RELATIONSHIP, NodeType.VIRTUAL_MACHINE).size()>1;
+                                toBeScaledArtifactorContainer = container;
+                         }
+                     }	
 			
-		 if (toBeScaled.getAllRelatedNodesOfType(RelationshipType.HOSTED_ON_RELATIONSHIP,NodeType.VIRTUAL_MACHINE).size()>1){
+		 if (ok){
 
 			 boolean removed=false;
 			

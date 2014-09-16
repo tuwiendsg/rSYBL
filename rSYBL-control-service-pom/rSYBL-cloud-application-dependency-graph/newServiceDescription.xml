@@ -1,1 +1,35 @@
-<?xml version="1.0" encoding="UTF-8" standalone="yes"?><CloudService id="M2MDaaS"><ServiceTopology id="MainTopology"><ServiceTopology id="WebServiceTopology"><Relationship type="DATA" id="DataRelationship"><source>LoadBalancer</source><target>WebService</target><metricSource>dataIoT</metricSource><metricTarget>dataCloud</metricTarget></Relationship><ServiceUnit id="LoadBalancer"/><ServiceUnit id="WebService"><SYBLDirective Constraints="" Monitoring="" Priorities="" Strategies="St1:STRATEGY CASE responseTime &lt; 360 ms AND throughput_average &lt; 300 : scalein"/></ServiceUnit><SYBLDirective Constraints="Co3:CONSTRAINT responseTime &lt; 450 ms" Monitoring="" Priorities="" Strategies=""/></ServiceTopology><ServiceTopology id="LocalSensorServiceTopology"/><ServiceTopology id="DataServiceTopology"><ServiceTopology id="DataServiceTopology"><Relationship><source>CassandraController</source><target>CassandraNode</target></Relationship><ServiceUnit id="CassandraController"/><ServiceUnit id="CassandraNode"/></ServiceTopology><SYBLDirective Constraints="Co1:CONSTRAINT latency.average &lt; 30 ms; Co2:CONSTRAINT cpu.usage &lt; 80 %" Monitoring="" Priorities="" Strategies=""/></ServiceTopology></ServiceTopology><SYBLDirective Constraints="Co4:CONSTRAINT cost.PerHour &gt; 60 Euro; Co5:CONSTRAINT cost.PerClientPerHour &lt; 3 Euro" Monitoring="" Priorities="" Strategies=""/></CloudService>
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<CloudService id="M2MDaaS">
+    <ServiceTopology id="MainTopology">
+        <Relationship>
+            <source>LocalSensorServiceTopology</source>
+            <target>EventProcessingServiceTopology</target>
+        </Relationship>
+
+        <ServiceTopology id="EventProcessingServiceTopology">
+            <SYBLDirective Constraints="Co4:CONSTRAINT costPerRequests &lt; 0.3; Co3:CONSTRAINT responseTime &lt; 20 ms" Monitoring="" Priorities="" Strategies=""/>
+          
+			<Relationship>
+                <source>LoadBalancerServiceUnit</source>
+                <target>EventProcessingServiceUnit</target>
+            </Relationship>
+            <ServiceUnit id="LoadBalancerServiceUnit"/>
+            <ServiceUnit id="EventProcessingServiceUnit">
+                <SYBLDirective Constraints="" Monitoring="" Priorities="" Strategies="St2:STRATEGY CASE responseTime &lt; 10 ms AND throughput &lt; 20 : scalein"/>
+            </ServiceUnit>
+            
+        </ServiceTopology>
+        <ServiceTopology id="DataEndServiceTopology">
+            <SYBLDirective Constraints="Co2:CONSTRAINT cpuUsage &lt; 90 %" Monitoring="" Priorities="" Strategies=""/>
+            <Relationship>
+                <source>DataControllerServiceUnit</source>
+                <target>DataNodeServiceUnit</target>
+            </Relationship>
+            <ServiceUnit id="DataControllerServiceUnit"/>
+            <ServiceUnit id="DataNodeServiceUnit">
+                <SYBLDirective Constraints="" Monitoring="" Priorities="" Strategies="St3:STRATEGY CASE cpuUsage &lt; 40 : scalein"/>
+            </ServiceUnit>
+        </ServiceTopology>
+    </ServiceTopology>
+</CloudService>
+

@@ -176,19 +176,43 @@ public class EnforcementOpenstackAPI implements EnforcementInterface{
 				DependencyGraph graph=new DependencyGraph();
 				graph.setCloudService(controlledService);
 				String ip= cloudsOpenStackConnection.scaleOutAndWaitUntilNewServerBoots( o );
+                              
 				if (!ip.equalsIgnoreCase("err")){
+                                    
+                                      Node artifact = null;
+                      Node container = null;
+                            if (o.getAllRelatedNodesOfType(RelationshipType.HOSTED_ON_RELATIONSHIP, NodeType.ARTIFACT) != null && o.getAllRelatedNodesOfType(RelationshipType.HOSTED_ON_RELATIONSHIP, NodeType.ARTIFACT).size() > 0) {
+                       artifact= o.getAllRelatedNodesOfType(RelationshipType.HOSTED_ON_RELATIONSHIP, NodeType.ARTIFACT).get(0);
+                      if (artifact.getAllRelatedNodesOfType(RelationshipType.HOSTED_ON_RELATIONSHIP, NodeType.CONTAINER) != null && artifact.getAllRelatedNodesOfType(RelationshipType.HOSTED_ON_RELATIONSHIP, NodeType.CONTAINER).size() > 0) {
+                      
+                       container= artifact.getAllRelatedNodesOfType(RelationshipType.HOSTED_ON_RELATIONSHIP, NodeType.CONTAINER).get(0);
+                      }
+                      }
+                            
 				Node node = new Node();
 	            node.setId(ip);
 	            
 	            node.getStaticInformation().put("IP",ip);
 	            node.setNodeType(NodeType.VIRTUAL_MACHINE);
 	            SimpleRelationship rel = new SimpleRelationship();
-	            rel.setSourceElement(o.getId());
+	            
 	            rel.setTargetElement(node.getId());
 	            rel.setType(RelationshipType.HOSTED_ON_RELATIONSHIP);
 	            RuntimeLogger.logger.info("Adding to "+o.getId()+" vm with ip "+ip);
 	            
-	            o.addNode(node,rel);
+	            
+                    if (artifact==null & container==null){
+                        rel.setSourceElement(o.getId());
+                        o.addNode(node,rel);
+                    }else{
+                        if (container==null){
+                           rel.setSourceElement(artifact.getId());
+                        artifact.addNode(node,rel); 
+                        }else{
+                            rel.setSourceElement(container.getId());
+                        container.addNode(node,rel); 
+                        }
+                    }
 	            res=true;
 				}else{
 					res=false;
@@ -203,7 +227,6 @@ public class EnforcementOpenstackAPI implements EnforcementInterface{
 				boolean res=false;
 				DependencyGraph d = new DependencyGraph();
 				d.setCloudService(controlledService);
-				if (d.getNodeWithID(o.getId()).getAllRelatedNodesOfType(RelationshipType.HOSTED_ON_RELATIONSHIP,NodeType.VIRTUAL_MACHINE).size()>0){
 				RuntimeLogger.logger.info(d.graphToString());
 				RuntimeLogger.logger.info("Will delete this.....: "+d.getNodeWithID(o.getId()));
 				Node tobeRemoved = d.getNodeWithID(o.getId());
@@ -211,9 +234,7 @@ public class EnforcementOpenstackAPI implements EnforcementInterface{
 				RuntimeLogger.logger.info(d.graphToString());
 	            monitoring.refreshServiceStructure(controlledService);
 	            res=true;
-				}else{
-					res=false;
-				}
+				
 
 				return res;		
 	}
@@ -221,7 +242,9 @@ public class EnforcementOpenstackAPI implements EnforcementInterface{
 				boolean res=false;
 				DependencyGraph d = new DependencyGraph();
 				d.setCloudService(controlledService);
-				if (d.getNodeWithID(o.getId()).getAllRelatedNodesOfType(RelationshipType.HOSTED_ON_RELATIONSHIP,NodeType.VIRTUAL_MACHINE).size()>0){
+                       
+                       
+                 
 				RuntimeLogger.logger.info(d.graphToString());
 				RuntimeLogger.logger.info("Will delete this.....: "+d.getNodeWithID(o.getId()));
 				Node tobeRemoved = d.getNodeWithID(o.getId());
@@ -229,9 +252,7 @@ public class EnforcementOpenstackAPI implements EnforcementInterface{
 				RuntimeLogger.logger.info(d.graphToString());
 	            monitoring.refreshServiceStructure(controlledService);
 	            res=true;
-				}else{
-					res=false;
-				}
+				
 
 				return res;		
 	}
@@ -395,8 +416,30 @@ public class EnforcementOpenstackAPI implements EnforcementInterface{
 			}
 			res=true;
 		}
-		
-		if (arg0.getAllRelatedNodesOfType(RelationshipType.HOSTED_ON_RELATIONSHIP, NodeType.VIRTUAL_MACHINE).size()>1){
+		Node artifact = null;
+                      Node container = null;
+                            if (arg0.getAllRelatedNodesOfType(RelationshipType.HOSTED_ON_RELATIONSHIP, NodeType.ARTIFACT) != null && arg0.getAllRelatedNodesOfType(RelationshipType.HOSTED_ON_RELATIONSHIP, NodeType.ARTIFACT).size() > 0) {
+                       artifact= arg0.getAllRelatedNodesOfType(RelationshipType.HOSTED_ON_RELATIONSHIP, NodeType.ARTIFACT).get(0);
+                      if (artifact.getAllRelatedNodesOfType(RelationshipType.HOSTED_ON_RELATIONSHIP, NodeType.CONTAINER) != null && artifact.getAllRelatedNodesOfType(RelationshipType.HOSTED_ON_RELATIONSHIP, NodeType.CONTAINER).size() > 0) {
+                      
+                       container= artifact.getAllRelatedNodesOfType(RelationshipType.HOSTED_ON_RELATIONSHIP, NodeType.CONTAINER).get(0);
+                      }
+                      }
+                            boolean ok = false;
+		 if (artifact==null && container==null){
+	                 ok = arg0.getAllRelatedNodesOfType(RelationshipType.HOSTED_ON_RELATIONSHIP, NodeType.VIRTUAL_MACHINE).size()>1;
+                     }else{
+                         if (container==null){
+                           ok = artifact.getAllRelatedNodesOfType(RelationshipType.HOSTED_ON_RELATIONSHIP, NodeType.VIRTUAL_MACHINE).size()>1;
+
+                         }else
+                         {
+                              ok = container.getAllRelatedNodesOfType(RelationshipType.HOSTED_ON_RELATIONSHIP, NodeType.VIRTUAL_MACHINE).size()>1;
+ 
+                         }
+                     }
+                 
+		if (ok){
 			//RuntimeLogger.logger.info("Scaling in "+arg0.getId());
 			//monitoring.enforcingActionStarted("ScaleIn",arg0 );
 			
@@ -450,8 +493,30 @@ public class EnforcementOpenstackAPI implements EnforcementInterface{
 			}
 			res=true;
 		}
-		
-		if (arg0.getAllRelatedNodesOfType(RelationshipType.HOSTED_ON_RELATIONSHIP, NodeType.VIRTUAL_MACHINE).size()>1){
+		Node artifact = null;
+                      Node container = null;
+                            if (arg0.getAllRelatedNodesOfType(RelationshipType.HOSTED_ON_RELATIONSHIP, NodeType.ARTIFACT) != null && arg0.getAllRelatedNodesOfType(RelationshipType.HOSTED_ON_RELATIONSHIP, NodeType.ARTIFACT).size() > 0) {
+                       artifact= arg0.getAllRelatedNodesOfType(RelationshipType.HOSTED_ON_RELATIONSHIP, NodeType.ARTIFACT).get(0);
+                      if (artifact.getAllRelatedNodesOfType(RelationshipType.HOSTED_ON_RELATIONSHIP, NodeType.CONTAINER) != null && artifact.getAllRelatedNodesOfType(RelationshipType.HOSTED_ON_RELATIONSHIP, NodeType.CONTAINER).size() > 0) {
+                      
+                       container= artifact.getAllRelatedNodesOfType(RelationshipType.HOSTED_ON_RELATIONSHIP, NodeType.CONTAINER).get(0);
+                      }
+                      }
+                            boolean ok = false;
+		 if (artifact==null && container==null){
+	                 ok = arg0.getAllRelatedNodesOfType(RelationshipType.HOSTED_ON_RELATIONSHIP, NodeType.VIRTUAL_MACHINE).size()>1;
+                     }else{
+                         if (container==null){
+                           ok = artifact.getAllRelatedNodesOfType(RelationshipType.HOSTED_ON_RELATIONSHIP, NodeType.VIRTUAL_MACHINE).size()>1;
+
+                         }else
+                         {
+                              ok = container.getAllRelatedNodesOfType(RelationshipType.HOSTED_ON_RELATIONSHIP, NodeType.VIRTUAL_MACHINE).size()>1;
+ 
+                         }
+                     }
+                 
+		if (ok){
 			//RuntimeLogger.logger.info("Scaling in "+arg0.getId());
 			//monitoring.enforcingActionStarted("ScaleIn",arg0 );
 			

@@ -37,7 +37,7 @@ import at.ac.tuwien.dsg.csdg.elasticityInformation.elasticityRequirements.SYBLAn
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "ServiceTopology", propOrder = {
 	    "componentTopology",
-	    "relationships","associatedIps","components","linearRelationships","syblAnnotationXML",
+	    "relationships","associatedIps","components","properties","linearRelationships","syblAnnotationXML",
 	})
 public  class ServiceTopologyXML {
 
