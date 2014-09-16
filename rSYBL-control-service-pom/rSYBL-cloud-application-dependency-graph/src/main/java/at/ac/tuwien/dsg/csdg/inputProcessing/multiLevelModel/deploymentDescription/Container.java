@@ -19,7 +19,8 @@ public class Container {
     private String path = "";
     @XmlElement(name = "AssociatedVM")
     private AssociatedVM vm = new AssociatedVM();
-
+ @XmlElement(name = "ElasticityCapability")
+ private List<ElasticityCapability> elasticityCapabilities=new ArrayList<ElasticityCapability>();
     public String getName() {
         return name;
     }
@@ -63,4 +64,19 @@ public class Container {
     public void setId(String id) {
         this.id = id;
     }
+
+    /**
+     * @return the elasticityCapabilities
+     */
+    public List<ElasticityCapability> getElasticityCapabilities() {
+        return elasticityCapabilities;
+    }
+
+    /**
+     * @param elasticityCapabilities the elasticityCapabilities to set
+     */
+    public void setElasticityCapabilities(List<ElasticityCapability> elasticityCapabilities) {
+        this.elasticityCapabilities = elasticityCapabilities;
+    }
+    
 }

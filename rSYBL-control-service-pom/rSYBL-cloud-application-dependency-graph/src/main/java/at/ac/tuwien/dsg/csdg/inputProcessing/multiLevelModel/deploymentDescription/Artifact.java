@@ -1,5 +1,7 @@
 package at.ac.tuwien.dsg.csdg.inputProcessing.multiLevelModel.deploymentDescription;
 
+import java.util.ArrayList;
+import java.util.List;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlAttribute;
@@ -21,7 +23,8 @@ public class Artifact {
     private Container container;
     @XmlElement(name="AssociatedVM")
     private AssociatedVM associatedVM;
-    
+     @XmlElement(name = "ElasticityCapability")
+ private List<ElasticityCapability> elasticityCapabilities=new ArrayList<ElasticityCapability>();
     public String getName() {
         return name;
     }
@@ -92,5 +95,19 @@ public class Artifact {
      */
     public void setId(String id) {
         this.id = id;
+    }
+
+    /**
+     * @return the elasticityCapabilities
+     */
+    public List<ElasticityCapability> getElasticityCapabilities() {
+        return elasticityCapabilities;
+    }
+
+    /**
+     * @param elasticityCapabilities the elasticityCapabilities to set
+     */
+    public void setElasticityCapabilities(List<ElasticityCapability> elasticityCapabilities) {
+        this.elasticityCapabilities = elasticityCapabilities;
     }
 }

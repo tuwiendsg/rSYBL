@@ -537,30 +537,37 @@ public class InputProcessing {
                         artifactNode.getStaticInformation().put("DownloadPath", artifact.getDownloadPath());
                         if (artifact.getContainer() != null) {
                             Node containerNode = new Node();
-                          
+
                             Container container = artifact.getContainer();
                             containerNode.setNodeType(NodeType.CONTAINER);
                             containerNode.setId(container.getId());
                             containerNode.getStaticInformation().put("Name", container.getName());
                             containerNode.getStaticInformation().put("Path", container.getPath());
                             AssociatedVM associatedVM = container.getVm();
-                            if (associatedVM!=null){
-                            Node vmNode = new Node();
-                            vmNode.setId(associatedVM.getIp());
-                            vmNode.getStaticInformation().put("UUID", associatedVM.getUuid());
-                            vmNode.setNodeType(NodeType.VIRTUAL_MACHINE);
-                            SimpleRelationship vmRel = new SimpleRelationship();
-                            vmRel.setSourceElement(artifactNode.getId());
-                            vmRel.setTargetElement(vmNode.getId());
-                            vmRel.setType(RelationshipType.HOSTED_ON_RELATIONSHIP);
-                            containerNode.addNode(vmNode, vmRel);
+                            if (associatedVM != null) {
+                                Node vmNode = new Node();
+                                vmNode.setId(associatedVM.getIp());
+                                vmNode.getStaticInformation().put("UUID", associatedVM.getUuid());
+                                vmNode.setNodeType(NodeType.VIRTUAL_MACHINE);
+                                SimpleRelationship vmRel = new SimpleRelationship();
+                                vmRel.setSourceElement(artifactNode.getId());
+                                vmRel.setTargetElement(vmNode.getId());
+                                vmRel.setType(RelationshipType.HOSTED_ON_RELATIONSHIP);
+                                containerNode.addNode(vmNode, vmRel);
                             }
                             SimpleRelationship containerRel = new SimpleRelationship();
                             containerRel.setSourceElement(artifactNode.getId());
                             containerRel.setTargetElement(containerNode.getId());
                             containerRel.setType(RelationshipType.HOSTED_ON_RELATIONSHIP);
                             artifactNode.addNode(containerNode, containerRel);
-                            
+                            for (at.ac.tuwien.dsg.csdg.inputProcessing.multiLevelModel.deploymentDescription.ElasticityCapability elasticityCapability : container.getElasticityCapabilities()) {
+                                ElasticityCapability newElasticityCapability = new ElasticityCapability();
+                                newElasticityCapability.setName(elasticityCapability.getName());
+                                newElasticityCapability.setCallType(elasticityCapability.getType());
+                                newElasticityCapability.setEndpoint(elasticityCapability.getScript());
+                                newElasticityCapability.setPrimitiveOperations(elasticityCapability.getPrimitiveOperations());
+                                containerNode.addElasticityCapability(newElasticityCapability);
+                            }
                         } else {
                             if (artifact.getAssociatedVM() != null) {
                                 AssociatedVM associatedVM = artifact.getAssociatedVM();
@@ -574,6 +581,14 @@ public class InputProcessing {
                                 vmRel.setType(RelationshipType.HOSTED_ON_RELATIONSHIP);
                                 artifactNode.addNode(vmNode, vmRel);
                             }
+                            for (at.ac.tuwien.dsg.csdg.inputProcessing.multiLevelModel.deploymentDescription.ElasticityCapability elasticityCapability : artifact.getElasticityCapabilities()) {
+                                ElasticityCapability newElasticityCapability = new ElasticityCapability();
+                                newElasticityCapability.setName(elasticityCapability.getName());
+                                newElasticityCapability.setCallType(elasticityCapability.getType());
+                                newElasticityCapability.setEndpoint(elasticityCapability.getScript());
+                                newElasticityCapability.setPrimitiveOperations(elasticityCapability.getPrimitiveOperations());
+                                artifactNode.addElasticityCapability(newElasticityCapability);
+                            }
                         }
 
                         SimpleRelationship artifactRel = new SimpleRelationship();
@@ -583,30 +598,38 @@ public class InputProcessing {
                         node.addNode(artifactNode, artifactRel);
                     }
                 }
-                if (deploymentUnit.getAssociatedVMs()!=null){
-                for (AssociatedVM associatedVM : deploymentUnit.getAssociatedVMs()){
-                         Node vmNode = new Node();
-                                vmNode.setId(associatedVM.getIp());
-                                
-                                vmNode.getStaticInformation().put("UUID", associatedVM.getUuid());
-                                vmNode.setNodeType(NodeType.VIRTUAL_MACHINE);
-                                SimpleRelationship vmRel = new SimpleRelationship();
-                                vmRel.setSourceElement(node.getId());
-                                vmRel.setTargetElement(vmNode.getId());
-                                vmRel.setType(RelationshipType.HOSTED_ON_RELATIONSHIP);
-                                node.addNode(vmNode, vmRel);
+                if (deploymentUnit.getAssociatedVMs() != null) {
+                    for (AssociatedVM associatedVM : deploymentUnit.getAssociatedVMs()) {
+                        Node vmNode = new Node();
+                        vmNode.setId(associatedVM.getIp());
+
+                        vmNode.getStaticInformation().put("UUID", associatedVM.getUuid());
+                        vmNode.setNodeType(NodeType.VIRTUAL_MACHINE);
+                        SimpleRelationship vmRel = new SimpleRelationship();
+                        vmRel.setSourceElement(node.getId());
+                        vmRel.setTargetElement(vmNode.getId());
+                        vmRel.setType(RelationshipType.HOSTED_ON_RELATIONSHIP);
+                        node.addNode(vmNode, vmRel);
+                        for (at.ac.tuwien.dsg.csdg.inputProcessing.multiLevelModel.deploymentDescription.ElasticityCapability elasticityCapability : associatedVM.getElasticityCapabilities()) {
+                                ElasticityCapability newElasticityCapability = new ElasticityCapability();
+                                newElasticityCapability.setName(elasticityCapability.getName());
+                                newElasticityCapability.setCallType(elasticityCapability.getType());
+                                newElasticityCapability.setEndpoint(elasticityCapability.getScript());
+                                newElasticityCapability.setPrimitiveOperations(elasticityCapability.getPrimitiveOperations());
+                                vmNode.addElasticityCapability(newElasticityCapability);
+                            }
                     }
                 }
-                    for (at.ac.tuwien.dsg.csdg.inputProcessing.multiLevelModel.deploymentDescription.ElasticityCapability elasticityCapability : deploymentUnit.getElasticityCapabilities()) {
-                        ElasticityCapability newElasticityCapability = new ElasticityCapability();
-                        newElasticityCapability.setName(elasticityCapability.getName());
-                        newElasticityCapability.setCallType(elasticityCapability.getType());
-                        newElasticityCapability.setEndpoint(elasticityCapability.getScript());
-                        newElasticityCapability.setPrimitiveOperations(elasticityCapability.getPrimitiveOperations());
-                        node.addElasticityCapability(newElasticityCapability);
-                    }
+                for (at.ac.tuwien.dsg.csdg.inputProcessing.multiLevelModel.deploymentDescription.ElasticityCapability elasticityCapability : deploymentUnit.getElasticityCapabilities()) {
+                    ElasticityCapability newElasticityCapability = new ElasticityCapability();
+                    newElasticityCapability.setName(elasticityCapability.getName());
+                    newElasticityCapability.setCallType(elasticityCapability.getType());
+                    newElasticityCapability.setEndpoint(elasticityCapability.getScript());
+                    newElasticityCapability.setPrimitiveOperations(elasticityCapability.getPrimitiveOperations());
+                    node.addElasticityCapability(newElasticityCapability);
+                }
 
-                
+
             } else {
                 DependencyGraphLogger.logger.error("Cannot find node " + deploymentUnit.getServiceUnitID() + ". Current graph is " + graph.graphToString());
 
