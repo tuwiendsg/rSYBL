@@ -19,6 +19,9 @@ public class ControlCoordination {
 	public void refreshApplicationDeploymentDescription(String deploymentNew){
 		
 	}
+        public void triggerHealthFixServicePart(String servicePartID, String serviceID){
+            controls.get(serviceID).triggerHealthFix(servicePartID);
+        }
 	public void prepareControl(String cloudServiceId){
 		ControlService controlService=new ControlService();
 		controls.put(cloudServiceId, controlService);

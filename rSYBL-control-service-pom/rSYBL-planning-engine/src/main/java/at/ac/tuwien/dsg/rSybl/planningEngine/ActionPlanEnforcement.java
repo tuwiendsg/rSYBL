@@ -30,7 +30,6 @@ public class ActionPlanEnforcement {
     private EnforcementAPIInterface enforcementAPI = null;
     private OutputProcessingInterface outputProcessing = null;
     private ElasticityPrimitivesDescription primitivesDescription = null;
-
     public ActionPlanEnforcement(EnforcementAPIInterface apiInterface) {
         enforcementAPI = apiInterface;
         try {
@@ -42,7 +41,7 @@ public class ActionPlanEnforcement {
         outputProcessing = OutputProcessingFactory.createNewOutputProcessing();
 
     }
-
+    
     public void enforceResult(ArrayList<Pair<ActionEffect, Integer>> result, DependencyGraph dependencyGraph) {
         HashMap<Node, ElasticityCapability> capabilities = new HashMap<Node, ElasticityCapability>();
         for (Pair<ActionEffect, Integer> pair : result) {
@@ -113,7 +112,46 @@ public class ActionPlanEnforcement {
 //
 //		}
     }
+    public void enforceElasticityCapabilityFromNode(ElasticityCapability capability, Node n, DependencyGraph dependencyGraph){
+          EnforceElasticityCapabilityInThread enforceActionInThread = new EnforceElasticityCapabilityInThread(capability,n, dependencyGraph);
 
+                Thread t = new Thread(enforceActionInThread);
+                t.start();
+            
+    }
+    
+    public class EnforceElasticityCapabilityInThread implements Runnable {
+
+        ElasticityCapability elasticityCapability;
+        DependencyGraph dependencyGraph;
+        Node node ;
+        public EnforceElasticityCapabilityInThread(ElasticityCapability actionEffect,Node node, DependencyGraph dependencyGraph) {
+            this.elasticityCapability = actionEffect;
+            this.node=node;
+            this.dependencyGraph = dependencyGraph;
+        }
+
+        @Override
+        public void run() {
+            PlanningLogger.logger.info("Executing action from thread......................... " + elasticityCapability.getName() + " on " + node.getId());
+  
+                    
+                        String[] primitives = elasticityCapability
+                                .getPrimitiveOperations().split(";");
+                        for (int i = 0; i < primitives.length; i++) {
+                            if (!enforcePrimitive( primitives[i], node, dependencyGraph)) {
+                                PlanningLogger.logger.info("Failed Enforcing " + primitives[i] + ", cancelling the entire elasticity capability " + elasticityCapability.getName() + "-" +node.getId());
+                                break;
+                            } else {
+                                PlanningLogger.logger.info("Successfully enforced " + primitives[i] + ", continuing with capability " + elasticityCapability.getName() + "-" +node.getId());
+
+                            }
+                        }
+                    }
+                    //}
+       
+    }
+    
     public class EnforceActionInThread implements Runnable {
 
         ActionEffect actionEffect;
@@ -137,7 +175,7 @@ public class ActionPlanEnforcement {
                         String[] primitives = elasticityCapability
                                 .getPrimitiveOperations().split(";");
                         for (int i = 0; i < primitives.length; i++) {
-                            if (!enforcePrimitive(primitivesDescription, primitives[i],
+                            if (!enforcePrimitive( primitives[i],
                                     actionEffect.getTargetedEntity(), dependencyGraph)) {
                                 PlanningLogger.logger.info("Failed Enforcing " + primitives[i] + ", cancelling the entire elasticity capability " + actionEffect.getActionType() + "-" + actionEffect.getTargetedEntityID());
                                 break;
@@ -247,7 +285,7 @@ public class ActionPlanEnforcement {
                 String[] primitives = elasticityCapability
                         .getPrimitiveOperations().split(";");
                 for (int i = 0; i < primitives.length; i++) {
-                    if (!enforcePrimitive(primitivesDescription, primitives[i],
+                    if (!enforcePrimitive( primitives[i],
                             actionEffect.getTargetedEntity(), dependencyGraph)) {
                         PlanningLogger.logger.info("Failed Enforcing " + primitives[i] + ", cancelling the entire elasticity capability " + actionEffect.getActionType() + "-" + actionEffect.getTargetedEntityID());
                         break;
@@ -441,7 +479,7 @@ public class ActionPlanEnforcement {
     }
 
     public boolean enforcePrimitive(
-            ElasticityPrimitivesDescription primitivesDescription,
+            
             String primitive, Node node, DependencyGraph dependencyGraph) {
         String target = "";
         String actionName = primitive;
@@ -565,7 +603,7 @@ public class ActionPlanEnforcement {
                                 }
                                 for (ElasticityPrimitiveDependency elasticityPrimitiveDependency : beforePrimitives) {
                                     // check before primitives
-                                    boolean x = enforcePrimitive(primitivesDescription,
+                                    boolean x = enforcePrimitive(
                                             elasticityPrimitiveDependency
                                             .getPrimitiveID(), node,
                                             dependencyGraph);
@@ -595,7 +633,7 @@ public class ActionPlanEnforcement {
 
                                 for (ElasticityPrimitiveDependency elasticityPrimitiveDependency : afterPrimitives) {
                                     // check before primitives
-                                    boolean x = enforcePrimitive(primitivesDescription,
+                                    boolean x = enforcePrimitive(
                                             elasticityPrimitiveDependency
                                             .getPrimitiveID(), node,
                                             dependencyGraph);

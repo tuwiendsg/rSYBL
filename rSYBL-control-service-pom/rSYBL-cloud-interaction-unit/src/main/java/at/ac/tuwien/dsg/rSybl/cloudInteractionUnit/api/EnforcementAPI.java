@@ -57,7 +57,9 @@ public class EnforcementAPI {
 	public EnforcementAPI() {
 
 	}
-
+        public boolean containsElasticityCapability(Node controlledService, String capability){
+            return offeredCapabilities.containsElasticityCapability(controlledService, capability);
+        }
 	public void setControlledService(Node controlledService, String className) {
 		this.className = className;
 		this.controlledService = controlledService;
@@ -135,7 +137,12 @@ public class EnforcementAPI {
 			while (!checkIfMetrics) {
 				boolean myMetrics = true;
 				RuntimeLogger.logger.info("Waiting for action....");
-
+                                try {
+					Thread.sleep(15000);
+				} catch (InterruptedException ex) {
+					// TODO Auto-generated catch block
+					ex.printStackTrace();
+				}
 				for (String metricName : metrics) {
 					try {
 						RuntimeLogger.logger.info("Metric "
@@ -192,7 +199,12 @@ public class EnforcementAPI {
 			while (!checkIfMetrics) {
 				boolean myMetrics = true;
 				RuntimeLogger.logger.info("Waiting for action....");
-
+                                 try {
+					Thread.sleep(15000);
+				} catch (InterruptedException ex) {
+					// TODO Auto-generated catch block
+					ex.printStackTrace();
+				}
 				for (String metricName : metrics) {
 					try {
 						RuntimeLogger.logger.info("Metric "
@@ -247,6 +259,13 @@ public class EnforcementAPI {
 		boolean checkIfMetrics = false;
 		while (!checkIfMetrics) {
 			boolean myMetrics = true;
+                        
+                         try {
+					Thread.sleep(15000);
+				} catch (InterruptedException ex) {
+					// TODO Auto-generated catch block
+					ex.printStackTrace();
+				}
 			RuntimeLogger.logger.info("Waiting for action....");
 			for (String metricName : metrics) {
 				try {
@@ -341,6 +360,12 @@ public class EnforcementAPI {
 			boolean checkIfMetrics = false;
 			while (!checkIfMetrics) {
 				boolean myMetrics = true;
+                                 try {
+					Thread.sleep(15000);
+				} catch (InterruptedException ex) {
+					// TODO Auto-generated catch block
+					ex.printStackTrace();
+				}
 				RuntimeLogger.logger.info("Waiting for action....");
 
 				for (String metricName : metrics) {

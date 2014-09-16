@@ -50,6 +50,7 @@ import at.ac.tuwien.dsg.rSybl.cloudInteractionUnit.api.MultipleEnforcementAPIs;
 import at.ac.tuwien.dsg.rSybl.cloudInteractionUnit.utils.RuntimeLogger;
 import at.ac.tuwien.dsg.rSybl.dataProcessingUnit.api.MonitoringAPI;
 import at.ac.tuwien.dsg.rSybl.dataProcessingUnit.api.MonitoringAPIInterface;
+import at.ac.tuwien.dsg.rSybl.planningEngine.HealthWatch;
 import at.ac.tuwien.dsg.rSybl.planningEngine.PlanningAlgorithmInterface;
 import at.ac.tuwien.dsg.rSybl.planningEngine.PlanningGreedyAlgorithm;
 import at.ac.tuwien.dsg.rSybl.planningEngine.PlanningGreedyAlgorithmWithPolynomialElasticityRelationships;
@@ -62,7 +63,7 @@ public class ControlService {
 	private SYBLService syblService;
 	private MonitoringAPIInterface monitoringAPI;
 	private EnforcementAPIInterface enforcementAPI;
-
+        private HealthWatch healthWatch;
 	private DependencyGraph dependencyGraph;
 	private PlanningAlgorithmInterface planningAlgorithm;
 	private String applicationDescription = "";
@@ -84,7 +85,9 @@ public class ControlService {
 
 	  
 	}
-	
+	public void triggerHealthFix(String servicePartID){
+            healthWatch.triggerHealthFix(servicePartID);
+        }
 	public void refreshApplicationDeploymentDescription(String deployment){
 		//TODO implement this, have to replace deployment conf 
 	}
@@ -176,7 +179,8 @@ public class ControlService {
 	
 			planningAlgorithm.start();
 			AnalysisLogger.logger.info("Planning algorithm started");
-                        
+                        healthWatch = new HealthWatch(monitoringAPI, enforcementAPI, dependencyGraph);
+                        AnalysisLogger.logger.info("Health watch started");
 //			for (Node node1:dependencyGraph.getAllServiceUnits()){
 //				try{
 //				MonitoringThread monitoringThread = new MonitoringThread(node1, monitoringAPI);

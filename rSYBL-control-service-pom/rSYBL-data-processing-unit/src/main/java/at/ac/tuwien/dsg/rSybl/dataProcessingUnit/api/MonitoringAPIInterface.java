@@ -90,4 +90,6 @@ public interface MonitoringAPIInterface {
     public List<String> getOngoingActionNodeID();
 
     public boolean checkIfMetricsValid(Node node);
+    
+    public boolean checkHealthy(Node node);
 }

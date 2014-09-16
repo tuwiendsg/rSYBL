@@ -44,6 +44,7 @@ import at.ac.tuwien.dsg.rSybl.analysisEngine.main.ControlCoordination;
 import at.ac.tuwien.dsg.rSybl.analysisEngine.main.ControlService;
 import at.ac.tuwien.dsg.rSybl.analysisEngine.main.ControlServiceFactory;
 import at.ac.tuwien.dsg.rSybl.analysisEngine.utils.AnalysisLogger;
+import javax.ws.rs.PathParam;
 
 
 @Singleton
@@ -62,6 +63,12 @@ public class SyblControlWS {
 	public String test(){
 		return "Test working";
 	}
+        @PUT
+        @Path("/{id}/onDemandControl/unhealthy")
+        @Consumes("plain/txt")
+        public void checkUnhealthyState(String servicePartID,@PathParam("id")String id){
+            controlCoordination.triggerHealthFixServicePart(servicePartID, servicePartID);
+        }
 	
 	 @PUT
 	 @Path("/processAnotation")

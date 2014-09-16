@@ -418,4 +418,9 @@ public class MonitoringAPI implements MonitoringAPIInterface {
         offeredMonitoringMetrics.submitCompositionRules();
     }
 
+    @Override
+    public boolean checkHealthy(Node node) {
+       return checkIfMetricsValid(node);
+    }
+
 }

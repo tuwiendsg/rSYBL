@@ -238,7 +238,14 @@ public class Node implements Serializable {
             return null;
         }
     }
-
+    public List<ElasticityCapability> getElasticityCapabilitiesByKeyword(String keyword){
+        ArrayList<ElasticityCapability> capabilities = new ArrayList<ElasticityCapability>();
+        for (ElasticityCapability elasticityCapability:elasticityCapabilities){
+            if (elasticityCapability.getName().toLowerCase().contains(keyword.toLowerCase()))
+                capabilities.add(elasticityCapability);
+        }
+    return capabilities;
+    }
     public ArrayList<Node> getAllRelatedNodesOfType(RelationshipType relationshipType, NodeType nodeType) {
         if (relationships == null || relationships.entrySet().size() == 0) {
             //GraphLogger.logger.info("Populating relationships map");
