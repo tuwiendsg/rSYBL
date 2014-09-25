@@ -911,7 +911,7 @@ public class MELA_API3 implements MonitoringInterface {
         URL url = null;
         HttpURLConnection connection = null;
         try {
-            url = new URL(REST_API_URL + "/" + controlService.getId() + "/servicerequirements");
+            url = new URL(REST_API_URL + "/" + controlService.getId() + "/requirements");
             connection = (HttpURLConnection) url.openConnection();
             connection.setDoOutput(true);
             connection.setInstanceFollowRedirects(false);
