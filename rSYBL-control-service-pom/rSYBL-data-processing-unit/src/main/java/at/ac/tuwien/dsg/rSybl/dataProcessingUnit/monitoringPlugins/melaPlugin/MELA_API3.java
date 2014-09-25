@@ -185,7 +185,7 @@ public class MELA_API3 implements MonitoringInterface {
         URL url = null;
         HttpURLConnection connection = null;
         try {
-            url = new URL(REST_API_URL + "/" + controlService.getId() + "/monitoringdataXML");
+            url = new URL(REST_API_URL + "/" + controlService.getId() + "/monitoringdata/xml");
             connection = (HttpURLConnection) url.openConnection();
             connection.setRequestMethod("GET");
             connection.setRequestProperty("Content-Type", "application/xml");
@@ -255,7 +255,7 @@ public class MELA_API3 implements MonitoringInterface {
         while (notConnected) {
             try {
                 RuntimeLogger.logger.info("Trying to connect to MELA ...");
-                url = new URL(REST_API_URL + "/servicedescription");
+                url = new URL(REST_API_URL + "/service");
                 connection = (HttpURLConnection) url.openConnection();
                 connection.setDoOutput(true);
                 connection.setInstanceFollowRedirects(false);
@@ -322,7 +322,7 @@ public class MELA_API3 implements MonitoringInterface {
         URL url = null;
         HttpURLConnection connection = null;
         try {
-            url = new URL(REST_API_URL + "/" + controlService.getId() + "/servicedescription");
+            url = new URL(REST_API_URL + "/" + controlService.getId() + "/service");
             connection = (HttpURLConnection) url.openConnection();
             connection.setDoOutput(true);
             connection.setInstanceFollowRedirects(false);
@@ -530,7 +530,8 @@ public class MELA_API3 implements MonitoringInterface {
         try {
             this.ongoingAction.add(actionName);
             this.actionTargetEntity.add(actionTargetEntity.getId());
-            url = new URL(REST_API_URL + "/" + controlService.getId() + "/addexecutingactions");
+            url = new URL(REST_API_URL + "/" + controlService.getId() + "/" + actionTargetEntity.getId()
+                    + "executingaction/" + actionName);
             connection = (HttpURLConnection) url.openConnection();
             connection.setDoOutput(true);
             connection.setInstanceFollowRedirects(false);
@@ -580,11 +581,14 @@ public class MELA_API3 implements MonitoringInterface {
         URL url = null;
         HttpURLConnection connection = null;
         try {
-            url = new URL(REST_API_URL + "/" + controlService.getId() + "/removeexecutingactions");
+
+            url = new URL(REST_API_URL + "/" + controlService.getId() + "/" + actionTargetEntity.getId()
+                    + "executingaction/" + actionName);
+
             connection = (HttpURLConnection) url.openConnection();
             connection.setDoOutput(true);
             connection.setInstanceFollowRedirects(false);
-            connection.setRequestMethod("POST");
+            connection.setRequestMethod("DELETE");
             connection.setRequestProperty("Content-Type", "application/xml");
             connection.setRequestProperty("Accept", "application/xml");
 
@@ -751,8 +755,6 @@ public class MELA_API3 implements MonitoringInterface {
                             MonitoredElement serviceUnitElement = new MonitoredElement();
                             serviceTopologyElement.setId(serviceUnit.getId());
                             serviceTopologyElement.setLevel(MonitoredElement.MonitoredElementLevel.SERVICE_TOPOLOGY);
-
-
 
                             serviceTopologyElement.addElement(serviceUnitElement);
 
