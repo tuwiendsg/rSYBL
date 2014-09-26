@@ -14,7 +14,7 @@ if __name__=='__main__':
     #read composition rules file
 	headers={'Content-Type':'application/xml; charset=utf-8','Accept':'application/xml, multipart/related'}
 	#############Prepare for rSYBL control, new application to be controlled is being described
-	connection.request('PUT', url+'/prepareControl', body=CLOUD_APPLICATION_ID,headers=headers,)
+	connection.request('PUT', url+'/'+CLOUD_APPLICATION_ID+'/prepareControl', body=CLOUD_APPLICATION_ID,headers=headers,)
 	result = connection.getresponse()
 	print result.read()
 	########################Current DeploymentDescription
@@ -22,7 +22,7 @@ if __name__=='__main__':
     #read composition rules file
 	composition_file = open("./newDeploymentDescription.xml", "r")
 	body_content =  composition_file.read()
-	connection.request('PUT', url+'/serviceDeployment', body=body_content,headers=headers,)
+	connection.request('PUT', url+'/'+CLOUD_APPLICATION_ID+'/deployment', body=body_content,headers=headers,)
 	result = connection.getresponse()
 	print result.read()
 	#######################Current Application Description - e.g., requirements, structural stuff..
@@ -30,14 +30,14 @@ if __name__=='__main__':
     #read service description file
 	composition_file = open("./serviceDescription.xml", "r")
 	body_content =  composition_file.read()
-	connection.request('PUT', url+'/serviceDescription', body=body_content,headers=headers,)
+	connection.request('PUT', url+'/'+CLOUD_APPLICATION_ID+'/description', body=body_content,headers=headers,)
 	result = connection.getresponse()
 	print result.read()
 
         #read composition rules file
 	composition_file = open("./compositionRules.xml", "r")
 	body_content =  composition_file.read()
-	connection.request('PUT', url+'/metricsCompositionRules', body=body_content,headers=headers,)
+	connection.request('PUT', url+'/'+CLOUD_APPLICATION_ID+'/metricsCompositionRules', body=body_content,headers=headers,)
 	result = connection.getresponse()
 	print result.read()
 
@@ -45,12 +45,12 @@ if __name__=='__main__':
        #read elasticity capabilities effects file
 	composition_file = open("./effects.json", "r")
 	body_content =  composition_file.read()
-	connection.request('PUT', url+'/elasticityCapabilitiesEffects', body=body_content,headers=headers,)
+	connection.request('PUT', url+'/'+CLOUD_APPLICATION_ID+'/elasticityCapabilitiesEffects', body=body_content,headers=headers,)
 	result = connection.getresponse()
 	print result.read()
         
         headers={'Content-Type':'application/xml; charset=utf-8','Accept':'application/xml, multipart/related'}
-        connection.request('PUT', url+'/startControl', body=CLOUD_APPLICATION_ID,headers=headers,)
+        connection.request('PUT', url+'/'+CLOUD_APPLICATION_ID+'/startControl', body=CLOUD_APPLICATION_ID,headers=headers,)
 	result = connection.getresponse()
 	print result.read()
       

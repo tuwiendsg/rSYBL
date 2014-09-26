@@ -46,34 +46,34 @@ public class SYBLControlClient {
     
     public void modifyAppDescription(String applicationID, String newAppDescription, String appDeployment, String effects) {
         stopApplication(applicationID);
-        initialInstantiationLifecycle(newAppDescription, appDeployment, effects, compRules);
+        initialInstantiationLifecycle(applicationID,newAppDescription, appDeployment, effects, compRules);
     }
     
-    public void initialInstantiationLifecycle(String appDescription, String appDeployment, String effects, String compRules) {
+    public void initialInstantiationLifecycle(String id,String appDescription, String appDeployment, String effects, String compRules) {
         this.compRules = compRules;
-        setApplicationDescription(appDescription);
-        setApplicationDeployment(appDeployment);
-        setElasticityCapabilitiesEffects(effects);
-        setMetricsCompositionRules(compRules);
+        setApplicationDescription(id,appDescription);
+        setApplicationDeployment(id,appDeployment);
+        setElasticityCapabilitiesEffects(id,effects);
+        setMetricsCompositionRules(id,compRules);
     }
 
-    public void setApplicationDescription(String appDescription) {
+    public void setApplicationDescription(String id,String appDescription) {
         
-        callPUT(appDescription, "serviceDescription");        
+        callPUT(appDescription, id+"/description");        
         
         
-        
-    }
-    
-    public void setApplicationDeployment(String appDescription) {
-        callPUT(appDescription, "serviceDeployment");        
         
     }
     
-    public void setMetricsCompositionRules(String rules) {
+    public void setApplicationDeployment(String id,String appDescription) {
+        callPUT(appDescription, id+"/deployment");        
+        
+    }
+    
+    public void setMetricsCompositionRules(String id,String rules) {
         
         
-        callPUT(rules, "metricsCompositionRules");
+        callPUT(rules, id+"/metricsCompositionRules");
         
         
     }
@@ -171,16 +171,16 @@ public class SYBLControlClient {
     }
     
     public void startApplication(String applicationID) {
-        callPUT(applicationID, "startControl");
+        callPUT(applicationID, applicationID+"/startControl");
     }
 
     public void stopApplication(String applicationID) {
-        callPUT(applicationID, "stopControl");
+        callPUT(applicationID, applicationID+"/stopControl");
     }
 
-    public void setElasticityCapabilitiesEffects(String effects) {
+    public void setElasticityCapabilitiesEffects(String id,String effects) {
         
-        callPUT(effects, "elasticityCapabilitiesEffects");
+        callPUT(effects, id+"/elasticityCapabilitiesEffects");
         
         
     }

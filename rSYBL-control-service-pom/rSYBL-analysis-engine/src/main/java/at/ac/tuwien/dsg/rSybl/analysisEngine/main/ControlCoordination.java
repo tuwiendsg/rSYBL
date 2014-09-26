@@ -30,16 +30,29 @@ public class ControlCoordination {
 	public void setApplicationDeploymentDescription(String deployment){
 		controls.get(currentControls).setApplicationDeployment(deployment);
 	}
+        	public void setApplicationDeploymentDescription(String currentControls,String deployment){
+		controls.get(currentControls).setApplicationDeployment(deployment);
+	}
 	public void setElasticityCapabilitiesEffects(String effects){
 		//AnalysisLogger.logger.info("Setting the effects for "+currentControls);
 		controls.get(currentControls).setEffects(effects);
 	}
-	public void setMetricComposition(String composition){
+        public void setElasticityCapabilitiesEffects(String currentControls,String effects){
+		//AnalysisLogger.logger.info("Setting the effects for "+currentControls);
+		controls.get(currentControls).setEffects(effects);
+	}
+	public void setMetricComposition(String currentControls, String composition){
 		//AnalysisLogger.logger.info("Setting the metric composition rules for "+currentControls);
 		controls.get(currentControls).setMetricCompositionRules(composition);
 	}
-	
+	public void setMetricComposition( String composition){
+		//AnalysisLogger.logger.info("Setting the metric composition rules for "+currentControls);
+		controls.get(currentControls).setMetricCompositionRules(composition);
+	}
 	public void setApplicationDescriptionInfo(String descriptionInfo){
+		controls.get(currentControls).setApplicationDescriptionInfo(descriptionInfo);
+	}
+        public void setApplicationDescriptionInfo(String currentControls,String descriptionInfo){
 		controls.get(currentControls).setApplicationDescriptionInfo(descriptionInfo);
 	}
 	public void startControl(String cloudServiceId){
@@ -67,6 +80,9 @@ public class ControlCoordination {
 		controls.get(currentControls).replaceEffects(effects);
 	}
 	public void replaceCompositionRules(String compositionRules){
+		controls.get(currentControls).replaceCompositionRules(compositionRules);
+	}
+        public void replaceCompositionRules(String currentControls,String compositionRules){
 		controls.get(currentControls).replaceCompositionRules(compositionRules);
 	}
 	public void replaceRequirements(String cloudServiceId,String requirements){
