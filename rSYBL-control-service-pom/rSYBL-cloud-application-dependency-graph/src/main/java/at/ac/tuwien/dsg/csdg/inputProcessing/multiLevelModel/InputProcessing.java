@@ -310,6 +310,7 @@ public class InputProcessing {
                 dataElasticityDependency.setTargetElement(relationshipXML.getTarget());
                 dataElasticityDependency.setDataMeasurementSource(relationshipXML.getMetricSource());
                 dataElasticityDependency.setDataMeasurementTarget(relationshipXML.getMetricTarget());
+                
                 ElasticityRequirement requirement = new ElasticityRequirement();
                 if (relationshipXML.getSyblAnnotationXML() != null) {
                     requirement.setAnnotation(mapFromXMLAnnotationToSYBLAnnotation(relationshipXML.getRelationshipID(), relationshipXML.getSyblAnnotationXML(), AnnotationType.RELATIONSHIP));
