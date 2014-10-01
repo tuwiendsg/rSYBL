@@ -170,7 +170,7 @@ public class SyblControlWS {
 		controlCoordination.replaceRequirements(cloudServiceId, requirements); 
 	}
 	 @POST
-	 @Path("/{id}/elasticityCapabilityEffects")
+	 @Path("/{id}/elasticityCapabilitiesEffects")
 	 @Consumes("application/json")
 	public void replaceEffects(String effects){
 		 controlCoordination.replaceEffects(effects);
