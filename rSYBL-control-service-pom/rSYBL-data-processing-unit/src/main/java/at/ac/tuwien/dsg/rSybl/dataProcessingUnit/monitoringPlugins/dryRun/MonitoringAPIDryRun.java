@@ -199,4 +199,14 @@ public class MonitoringAPIDryRun  implements MonitoringInterface{
 		return false;
 	}
 
+    @Override
+    public void sendMessageToAnalysisService(String message) {
+       
+    }
+
+    @Override
+    public void sendControlIncapacityMessage(String message, List<ElasticityRequirement> cause) {
+        
+    }
+
 }

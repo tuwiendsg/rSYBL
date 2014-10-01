@@ -350,9 +350,12 @@ public class PlanningGreedyAlgorithmWithPolynomialElasticityRelationships implem
             numberOfRemainingConstraints -= lastFixed;
 
         }
-        
+        if (result.size()==0){
+            monitoringAPI.sendMessageToAnalysisService("Requirements"+contextRepresentation.getViolatedConstraints()+" are violated, and rSYBL can't solve the problem.");
+        }else{
         ActionPlanEnforcement actionPlanEnforcement = new ActionPlanEnforcement(enforcementAPI);
         actionPlanEnforcement.enforceResult(result,dependencyGraph);
+        }
     }
 
     @Override

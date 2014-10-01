@@ -132,6 +132,7 @@ public class PlanningHeuristicSearch implements PlanningAlgorithmInterface {
                 searchContext.remove(bestContext);
                 for (List<ActionEffect> list : actionEffects.values()) {
                     for (ActionEffect action : list) {
+                        if (!actionsSoFar.contains(action)){
                         MonitoredCloudService monitoredCloudService = contextRepresentation.getMonitoredCloudService().clone();
 
                         ContextRepresentation beforeActionContextRepresentation = new ContextRepresentation(monitoredCloudService, monitoringAPI);
@@ -216,6 +217,7 @@ public class PlanningHeuristicSearch implements PlanningAlgorithmInterface {
                         contextRepresentation.setCS_UNHEALTHY_STATE(unhealthy);
 
                     }
+                }
                 }
                 contextRepresentation.setPREVIOUS_CS_UNHEALTHY_STATE(prev);
                 int i = actionsSoFar.size() - 1;

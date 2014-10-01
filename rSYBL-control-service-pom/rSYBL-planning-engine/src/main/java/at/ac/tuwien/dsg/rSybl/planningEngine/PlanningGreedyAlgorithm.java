@@ -48,7 +48,7 @@ import java.util.logging.Logger;
 public class PlanningGreedyAlgorithm implements PlanningAlgorithmInterface {
 
     private Thread t;
-    private boolean toCleanup = true;
+
     private ContextRepresentation contextRepresentation;
     private MonitoringAPIInterface monitoringAPI;
     private EnforcementAPIInterface enforcementAPI;
@@ -233,7 +233,7 @@ public class PlanningGreedyAlgorithm implements PlanningAlgorithmInterface {
         ArrayList<Pair<ActionEffect, Integer>> result = new ArrayList<Pair<ActionEffect, Integer>>();
 
         int numberOfRemainingConstraints = numberOfBrokenConstraints;
-        if (!strategiesThatNeedToBeImproved.equalsIgnoreCase("") || numberOfBrokenConstraints > 0) {
+        if (!strategiesThatNeedToBeImproved.equalsIgnoreCase("") || numberOfBrokenConstraints > 0 && lastFixed!=0) {
 //		while (contextRepresentation.countViolatedConstraints() > 0
 //				&& numberOfRemainingConstraints > 0 && lastFixed>0) {
             Date date = new Date();
@@ -355,7 +355,6 @@ public class PlanningGreedyAlgorithm implements PlanningAlgorithmInterface {
                         }
                     }
                 }
-                toCleanup = true;
             }
 
             int maxAction = -20;
@@ -407,7 +406,9 @@ public class PlanningGreedyAlgorithm implements PlanningAlgorithmInterface {
             numberOfRemainingConstraints -= lastFixed;
 
         }
-
+        if (result.size()==0){
+            monitoringAPI.sendMessageToAnalysisService("Requirements"+contextRepresentation.getViolatedConstraints()+" are violated, and rSYBL can't solve the problem.");
+        }
         ActionPlanEnforcement actionPlanEnforcement = new ActionPlanEnforcement(enforcementAPI);
         actionPlanEnforcement.enforceResult(result, dependencyGraph);
     }

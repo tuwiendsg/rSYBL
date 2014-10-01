@@ -591,6 +591,16 @@ Double retValue = 0.0;
 		return false;
 	}
 
+    @Override
+    public void sendMessageToAnalysisService(String message) {
+      
+    }
+
+    @Override
+    public void sendControlIncapacityMessage(String message, List<ElasticityRequirement> cause) {
+       
+    }
+
 	
 
 	

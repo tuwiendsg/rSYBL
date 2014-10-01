@@ -423,4 +423,14 @@ public class MonitoringAPI implements MonitoringAPIInterface {
        return checkIfMetricsValid(node);
     }
 
+    @Override
+    public void sendMessageToAnalysisService(String message) {
+        offeredMonitoringMetrics.sendMessageToAnalysisService(message);
+    }
+
+    @Override
+    public void sendControlIncapacityMessage(String message, List<ElasticityRequirement> cause) {
+        offeredMonitoringMetrics.sendControlIncapacityMessage(message, cause);
+    }
+
 }

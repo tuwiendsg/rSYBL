@@ -92,4 +92,8 @@ public interface MonitoringAPIInterface {
     public boolean checkIfMetricsValid(Node node);
     
     public boolean checkHealthy(Node node);
+    
+    public void sendMessageToAnalysisService(String message);
+    
+    public void sendControlIncapacityMessage(String message, List<ElasticityRequirement> cause);
 }

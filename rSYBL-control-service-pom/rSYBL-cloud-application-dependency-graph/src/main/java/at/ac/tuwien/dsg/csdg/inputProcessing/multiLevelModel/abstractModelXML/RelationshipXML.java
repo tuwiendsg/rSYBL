@@ -47,7 +47,8 @@ public class RelationshipXML {
     protected String target;
     @XmlElement(name = "SYBLDirective")
 	private SYBLAnnotationXML syblDirective;
-
+    public static final  String[] relationshipTypes={"COMPOSITION_RELATIONSHIP","HOSTED_ON_RELATIONSHIP", "ASSOCIATED_AT_RUNTIME_RELATIONSHIP", "RUNS_ON", "MASTER_OF", "PEER_OF", "CONTROL","DATA","LOAD","INSTANTIATION","POLYNIMIAL_RELATIONSHIP"};
+    
     @XmlAttribute(name = "type")
     protected String type;
     @XmlElement(name = "metricSource")
