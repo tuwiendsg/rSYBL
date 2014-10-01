@@ -106,7 +106,7 @@ public class SyblControlWS {
 	}
 	 
 	 @PUT
-	 @Path("/{id}/metricsCompositionRules")
+	 @Path("/{id}/compositionRules")
 	 @Consumes("application/xml")
 	public void setMetricsComposition(@PathParam("id")String cloudServiceId,String composition){
 		 controlCoordination.setMetricComposition(cloudServiceId,composition);
