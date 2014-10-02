@@ -1,0 +1,68 @@
+### BEGIN INIT INFO
+# Provides:         rSybl service
+# Required-Start:
+# Required-Stop:
+# Default-Start:     2 3 4 5
+# Default-Stop:      0 1 6
+# Short-Description: Start rsybl Data Service daemon
+# Description:       To start-stop rsybl-DS
+### END INIT INFO
+
+RUN_MODE="daemons"
+. /etc/profile
+JAVA=$(which java)
+NAME=dmm-service
+DAEMONDIR=/opt/dmm-service
+DAEMON=rSYBL-analysis-engine-1.0-SNAPSHOT-exec-war.jar
+PIDDIR=/tmp
+PIDFILE=$PIDDIR/dmm-service.pid
+rsybl_HTTP_PORT=8280
+LOG_DIR=/tmp/dmm-service
+
+test -x $JAVA -a -f $DAEMONDIR/$DAEMON || echo "test -x $JAVA -a -f $DAEMONDIR/$DAEMON failed"  
+test -x $JAVA -a -f $DAEMONDIR/$DAEMON || exit 0
+
+. /etc/init.d/functions
+
+case "$1" in
+	start)
+		mkdir -p $LOG_DIR
+		cd $DAEMONDIR
+                daemon --pidfile=$PIDFILE $JAVA -DLOG_DIR=$LOG_DIR -jar $DAEMON -httpPort $rsybl_HTTP_PORT > $LOG_DIR/rsybl.log  2>&1 &
+		RETVAL=$?
+                echo
+		[ $RETVAL = 0 ] && touch /var/lock/rsybl-data-service-daemon
+		;;
+	stop)
+		echo "Stopping rsybl-service daemon"
+		#killproc --pidfile $PIDFILE
+		pid=`ps -ef | grep $DAEMON | tr -s ' '  | cut -f2 -d ' ' | head -n 2`
+		echo $pid
+		sudo kill -9 $pid
+		RETVAL=$?
+   		echo
+                [ $RETVAL = 0 ] && rm -f /var/lock/rsybl-data-service-daemon
+ 		;;
+	restart)
+		$0 stop
+		sleep 1
+		$0 start
+		;;
+	status)
+		pidofproc -p $PIDFILE $JAVA >/dev/null
+		status=$?
+		if [ $status -eq 0 ]; then
+			echo "rsybl-service is running"
+		else
+			echo "rsybl-service is not running"
+		fi
+		exit $status
+		;;
+	*)
+		echo "Usage: $0 {start|stop|restart|status}"
+		exit 1
+		;;
+esac
+ 
+exit 0
+
