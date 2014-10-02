@@ -8,3 +8,4 @@
 /rSYBL-control-service-pom/rSYBL-client/target/
 *.pem
 rSYBL-control-service-pom/rSYBL-cloud-interaction-unit/src/main/resources/a.wadl
+rSYBL-control-service-pom/rSYBL-cloud-interaction-unit/src/main/java/com/extl/jade/user/ObjectFactory.java

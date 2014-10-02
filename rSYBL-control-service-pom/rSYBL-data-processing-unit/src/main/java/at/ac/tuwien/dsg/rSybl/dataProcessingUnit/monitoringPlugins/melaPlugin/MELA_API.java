@@ -677,7 +677,7 @@ public class MELA_API implements MonitoringInterface {
         while (notConnected) {
             try {
                 RuntimeLogger.logger.info("Trying to connect to MELA ...");
-                url = new URL(REST_API_URL + controlService.getId()+"/events");
+                url = new URL(REST_API_URL + "/"+controlService.getId()+"/events");
                 connection = (HttpURLConnection) url.openConnection();
                 connection.setDoOutput(true);
                 connection.setInstanceFollowRedirects(false);
@@ -737,7 +737,7 @@ public class MELA_API implements MonitoringInterface {
         while (notConnected) {
             try {
                 RuntimeLogger.logger.info("Trying to connect to MELA ...");
-                url = new URL(REST_API_URL + controlService.getId()+"/events");
+                url = new URL(REST_API_URL + "/"+controlService.getId()+"/events");
                 connection = (HttpURLConnection) url.openConnection();
                 connection.setDoOutput(true);
                 connection.setInstanceFollowRedirects(false);
