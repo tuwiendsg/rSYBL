@@ -8,41 +8,51 @@
 # Description:       To start-stop rsybl-DS
 ### END INIT INFO
 
+ 
+
 RUN_MODE="daemons"
-. /etc/profile
-JAVA=$(which java)
-NAME=dmm-service
-DAEMONDIR=/opt/dmm-service
-DAEMON=rSYBL-analysis-engine-1.0-SNAPSHOT-exec-war.jar
-PIDDIR=/tmp
-PIDFILE=$PIDDIR/dmm-service.pid
-rsybl_HTTP_PORT=8280
-LOG_DIR=/tmp/dmm-service
+
+JAVA=
+NAME=rSYBL-service
+DAEMONDIR=./
+DAEMON=rSYBL-analysis-engine-0.1-SNAPSHOT-war-exec.jar
+PIDDIR=/tmp/
+PIDFILE=$PIDDIR/rSYBL-service.pid
+rSYBL_HTTP_PORT=8081
+LOG_DIR=/tmp/rSYBL
 
 test -x $JAVA -a -f $DAEMONDIR/$DAEMON || echo "test -x $JAVA -a -f $DAEMONDIR/$DAEMON failed"  
 test -x $JAVA -a -f $DAEMONDIR/$DAEMON || exit 0
 
-. /etc/init.d/functions
+. /lib/lsb/init-functions
 
 case "$1" in
 	start)
-		mkdir -p $LOG_DIR
-		cd $DAEMONDIR
-                daemon --pidfile=$PIDFILE $JAVA -DLOG_DIR=$LOG_DIR -jar $DAEMON -httpPort $rsybl_HTTP_PORT > $LOG_DIR/rsybl.log  2>&1 &
-		RETVAL=$?
-                echo
-		[ $RETVAL = 0 ] && touch /var/lock/rsybl-data-service-daemon
+		log_daemon_msg "Starting rSYBL daemon"
+		log_progress_msg "rSYBL"
+		# Make sure we have our PIDDIR, even if it's on a tmpfs
+		# install -o root -g root -m 755 -d $PIDDIR
+        if ! start-stop-daemon --start --chdir $DAEMONDIR --quiet --pidfile $PIDFILE --make-pidfile --background --exec $JAVA -- -DLOG_DIR=$LOG_DIR -jar $DAEMON -httpPort $rSYBL_HTTP_PORT; then
+		    log_end_msg 1
+		    exit 1
+		fi
+		log_end_msg 0
 		;;
 	stop)
-		echo "Stopping rsybl-service daemon"
-		#killproc --pidfile $PIDFILE
-		pid=`ps -ef | grep $DAEMON | tr -s ' '  | cut -f2 -d ' ' | head -n 2`
-		echo $pid
-		sudo kill -9 $pid
-		RETVAL=$?
-   		echo
-                [ $RETVAL = 0 ] && rm -f /var/lock/rsybl-data-service-daemon
- 		;;
+		log_daemon_msg "Stopping rSYBL daemon"
+		log_progress_msg "rSYBL"
+
+		start-stop-daemon --stop --quiet --pidfile $PIDFILE
+		# Wait a little and remove stale PID file
+		sleep 1
+		if [ -f $PIDFILE ] && ! ps h `cat $PIDFILE` > /dev/null
+		then
+			# Stale PID file (rSYBL was succesfully stopped),
+			# remove it
+			rm -f $PIDFILE
+		fi
+		log_end_msg 0
+		;;
 	restart)
 		$0 stop
 		sleep 1
@@ -52,9 +62,9 @@ case "$1" in
 		pidofproc -p $PIDFILE $JAVA >/dev/null
 		status=$?
 		if [ $status -eq 0 ]; then
-			echo "rsybl-service is running"
+			log_success_msg "rSYBL is running"
 		else
-			echo "rsybl-service is not running"
+			log_failure_msg "rSYBL is not running"
 		fi
 		exit $status
 		;;
@@ -65,4 +75,5 @@ case "$1" in
 esac
  
 exit 0
+
 
