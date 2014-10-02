@@ -18,7 +18,7 @@ DAEMONDIR=./
 DAEMON=rSYBL-analysis-engine-0.1-SNAPSHOT-war-exec.jar
 PIDDIR=/tmp/
 PIDFILE=$PIDDIR/rSYBL-service.pid
-rSYBL_HTTP_PORT=8081
+rSYBL_HTTP_PORT=8280
 LOG_DIR=/tmp/rSYBL
 
 test -x $JAVA -a -f $DAEMONDIR/$DAEMON || echo "test -x $JAVA -a -f $DAEMONDIR/$DAEMON failed"  
