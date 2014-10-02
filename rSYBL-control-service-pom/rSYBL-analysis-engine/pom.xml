@@ -241,6 +241,9 @@
                         <configuration>
                             <target>
                                <copy file="${basedir}/rSYBL-service" tofile="${basedir}/target/rSYBL-service"/>
+                               <copy todir="${basedir}/target">
+									<fileset dir="${basedir}/src/main/resources" includes="**/*"/>
+			       </copy>
                             </target>
                         </configuration>
                         <goals>
