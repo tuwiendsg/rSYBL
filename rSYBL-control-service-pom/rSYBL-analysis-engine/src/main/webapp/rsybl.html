@@ -1,0 +1,1549 @@
+
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta http-equiv="Content-Type" content="text/html;charset=utf-8">
+        <title>rSYBL</title>
+        <script type="text/javascript" src="http://d3js.org/d3.v3.js"></script>
+
+        <style type="text/css">
+
+            .node circle {
+                cursor: pointer;
+                fill: #fff;
+                stroke: steelblue;
+                stroke-width: 1.5px;
+            }
+
+            .node text {
+                font: 10px sans-serif;
+            }
+
+            path.link {
+                fill: none;
+                stroke: #ccc;
+                stroke-dasharray: 3.3;
+                stroke-width: 1.5px;
+            }
+
+            path.metricLink {
+                fill: none;
+                stroke: #A31E39;
+                stroke-width: 3px;
+            }
+
+            #A{
+                position:absolute;
+                top:50%;
+                left:50%;
+            }
+            #chart{
+                width: 60%;
+                height: 100%;
+                float: left;
+            }
+            #serviceinfo{
+                width:100%;
+                height: 90%;
+            }
+            #serviceStructure{
+                width:100%;
+                height:100%;
+            }
+            #requirementsEdit{
+                width: 30%;
+                height: 100%;
+                float: left;
+
+            }
+            #logo{
+                width:100%;
+                height: 10%;
+            }
+            #text{
+                width:400px;
+                height:500px;
+                font-size:14pt;
+            }
+           
+        </style>
+    </head>
+    <body>
+        <div id="serviceStructure" align="center">
+            <div id="logo">
+                <img height="80" src="img/logo.png"/>
+                <h2>Currently managed services:</h2>
+                <select id="service" name="service" onChange="checkservice(this);">
+
+                </select>
+            </div>
+            <div id ="serviceinfo">
+                <div align="center" id="requirementsEdit"><h2>Here you can edit the requirements:</h2> 
+                    <p>Choose format in which you want to edit: <select name="format" id="format" onchange="checkformat(this);">
+                            <option value="xml" selected="selected">xml</option>
+                               <option value="sybl">SYBL</option> 
+                                <option value="xmlsybl">XML SYBL</option> 
+                           </select></p>
+                    <textarea id="text" ></textarea> <br>
+                   
+                    <input type="submit" onclick="submitRequirements()" value="Replace Requirements">
+                </div>
+                <div id="chart"><h2>Cloud service</h2></div>
+            </div>
+            <div id="A"></div>
+
+        </div>
+        <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>
+        <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
+
+
+        <script src="scripts/spin.js" type="text/javascript"></script>
+        <script src="scripts/toastr.js" type="text/javascript"></script>
+        <link href="css/toastr.css" rel="stylesheet"/>
+
+        <script type="text/javascript">
+
+            //set notification thing options
+            toastr.options = {
+                "closeButton": false,
+                "debug": false,
+                "positionClass": "toast-top-right",
+                "onclick": null,
+                "showDuration": "300",
+                "hideDuration": "1000",
+                "timeOut": "12000",
+                "extendedTimeOut": "1000",
+                "showEasing": "swing",
+                "hideEasing": "linear",
+                "showMethod": "fadeIn",
+                "hideMethod": "fadeOut"
+            };
+            var events = [];
+            //var query = window.location.search.substring(1);
+            //var vars = query.split("&");
+            var serviceID=""
+            
+            var format="xml";
+            function checkservice(dropdown){
+                serviceID=dropdown.options[dropdown.selectedIndex].value;
+               
+                refreshServiceDescription();
+                refreshMonitoringData();
+            }
+            function checkformat(dropdown){
+                format=dropdown.options[dropdown.selectedIndex].value;
+                if (format=="xml")
+                    refreshServiceDescription();
+                if (format=="sybl")
+                    document.getElementById("text").value="";
+                if (format=="xmlsybl"){
+                    document.getElementById("text").value="";
+                    getRequirementsXMLSYBL();
+                }
+                
+            }
+            function submitRequirements(){
+                if (format=="xml") updateServiceDescription();
+                if (format=="sybl") replaceRequirementsSYBL();
+                if (format=="xmlsybl") replaceRequirementsXMLSYBL();
+            }
+            function contains(children, child) {
+                for (var index = 0; index < children.length; index++) {
+                    if (children[index].name == child.name) {
+                        return 0;
+                    }
+                }
+                return -1;
+            }
+
+            function updateTextOnNode(node, new_root, change) {
+//
+//                if (node.actionName || new_root.actionName) {
+//                    //node.name = new_root.name + ": " + new_root.actionName;
+//                    node.attention = new_root.attention;
+//                    node.actionName = new_root.actionName;
+//                }
+//
+//                node.name = new_root.name;
+//                if (!node.children) {
+//                    node.children = [];
+//                }
+
+
+//                //check if some new nodes have appeared
+//                if (node.children.length < new_root.children.length) {
+//                    //for all new children
+//                    for (var index = 0; index < new_root.children.length; index++) {
+//                        //if the children are not metrics
+//                        if (new_root.children[index].type.match(/SERVIC.*|V.*/g)) {
+//                            //if new root child DOES NOT ALLREADY EXIST
+//                            if (contains(node.children, new_root.children[index]) == -1) {
+//                                node.children.push(new_root.children[index]);
+//                                update(node);
+//                                change = 0;
+//                            }
+//                        }
+//                    }
+//                }
+//
+//                //check if nodes need to be removed
+//                if (node.children.length > new_root.children.length) {
+//                    for (var index = 0; index < node.children.length; index++) {
+//                        if (node.children[index].type.match(/SERVIC.*|V.*/g)) {
+//                            if (contains(new_root.children, node.children[index]) == -1) {
+//                                node.children.splice(index, 1);
+//                                change = 0;
+//                            }
+//                        }
+//                    }
+//                }
+
+                //remove all metrics, requirements and conditions so that they can be updated
+                if (node.children!=null)
+                for (var index = 0; index < node.children.length; index++) {
+                    var oldEntry = node.children[index];
+                    if (!oldEntry.type.match(/SERVIC.*|V.*/g)) {
+                        node.children.splice(index, 1);
+                        //start over
+                        index = -1;
+                    }
+                }
+
+
+                //add all new metrics so that they can be updated
+                if (new_root.children!=null)
+                for (var index = 0; index < new_root.children.length; index++) {
+                    var newEntry = new_root.children[index];
+                    if (!newEntry.type.match(/SERVIC.*|V.*/g)) {
+                        node.children.push(newEntry);
+                    }
+                }
+
+                //update all children not metrics
+                if (node.children!=null)               
+                for (var index = 0; index < node.children.length; index++) {
+                    var oldEntry = node.children[index];
+                    if (oldEntry.type.match(/SERVIC.*|V.*/g)) {
+                        //find the element int the new children that matches this
+                        for (var indexNew = 0; indexNew < new_root.children.length; indexNew++) {
+                            var newEntry = new_root.children[indexNew];
+                            if (newEntry.type.match(/SERVIC.*|V.*/g)) {
+                                if (oldEntry.name == newEntry.name) {
+                                    updateTextOnNode(oldEntry, newEntry);
+                                }
+                            }
+                        }
+                    }
+                }
+
+            }
+
+
+            var selectedMetric;
+            var simpleComponentIcon = "m 5,10 c 1.7265,0.251 5.7035,0.0355 4.8055,2.6145 -0.9305,2.0335 -3.066,3.827 0.214,4.8855 1.9925,0.6435 10.717,1.143 9.7905,-2.5835 -1.1255,-1.2255 -2.5535,-2.4125 -1.2315,-4.0245 2.8935,-0.552 5.8135,-0.9665 8.747,-1.2365 2.779,-0.2555 5.01138,-0.3785 7.80388,-0.3535 0,0 0.0342,-28.8233 0,-28.782 l -42.17988,0 c -0.7375,3.8525 -0.9175,8.9665 1.1535,10.61 3.0355,1.834 7.6995,-3.225 9.5015,0.7885 1.384,3.0825 -0.1075,8.324 -4.242,6.515 -4.9185,-2.1525 -7.189,0.88 -6.7055,6.19 0.1545,1.6955 0.472,3.214 0.701,4.702 3.891,-0.081 7.791,0.114 11.642,0.6745 z";
+
+            var complexComponentIcon = "m -10,0 c 3.73224,-0.7459 8.66496,-0.9953 8.05062,0.63028 l -0.81288,2.33051 c 0.0832,1.10156 6.73944,1.38304 6.33894,-0.31885 0,0 -1.18264,-2.45972 -0.99342,-2.50527 -0.0569,-0.88313 8.32576,-0.86545 8.32576,-0.86545 0.78063,1.41974 -0.96421,4.29648 -0.50291,5.19887 1.09973,2.15125 4.95457,0.51254 5.20531,0.70421 0.63103,0.48237 0.96734,3.49919 -0.33288,3.38175 -2.20415,-0.19909 -6.72157,-1.93952 -4.27491,6.24781 l 21.61861,0.3644 -0.33114,-16.07925 c -2.69909,-0.38953 -8.50495,0.33626 -8.33363,1.04589 0.94358,3.90859 -2.59923,4.22934 -5.08229,3.00142 -0.66963,-0.36714 0.47037,-2.20109 0.10252,-2.99309 -0.78827,-1.28418 -3.69368,-0.8065 -8.16329,-0.96312 0,0 -0.70958,-4.82833 -0.42575,-5.05608 2.19333,-0.41775 5.58828,0.77701 5.69185,-2.38338 0.29332,-2.55231 -2.1638,-2.06746 -4.59029,-1.46068 -1.2562,0.31413 -1.57753,-3.06109 -1.19597,-5.67595 l -20.34134,0.0911 0.0473,30.38204 42.43301,-0.1822 0.18922,-30.29094 -22.42279,0";
+            var requirement ;
+            var warningTriangle = "m -25,10 11.66727,-22.45064 11.66726,22.45064 z";
+            var sphere = "m 0,0 a 10.253048,9.8994951 0 1 1 -4e-5,-0.003";
+            var octogon = "m 0,-5 6.63341,-7.14443 11.95156,0 6.46184,7.14443 0,8.97271 -6.46184,6.58185 -11.95156,0 -6.63341,-6.58185 z";
+            var auxRect = "m -32,5 0,-13.25825 30.14043,0 0,13.25825 z"
+
+            var margin = {top: 10, right: 120, bottom: 20, left: 140},
+            width = window.innerWidth*0.6,
+            height = window.innerHeight*0.8 - 100, //850
+            i = 0,
+            duration = 500,
+            depth = width / 6,
+            root, metrics;
+
+            var opts = {
+                lines: 20, // The number of lines to draw
+                length: 7, // The length of each line
+                width: 10, // The line thickness
+                radius: 100, // The radius of the inner circle
+                corners: 1, // Corner roundness (0..1)
+                rotate: 0, // The rotation offset
+                color: '#000', // #rgb or #rrggbb
+                speed: 1, // Rounds per second
+                trail: 60, // Afterglow percentage
+                shadow: false, // Whether to render a shadow
+                hwaccel: false, // Whether to use hardware acceleration
+                className: 'spinner', // The CSS class to assign to the spinner
+                zIndex: 2e9, // The z-index (defaults to 2000000000)
+                top: 'auto', // Top position relative to parent in px
+                left: 'auto', // Left position relative to parent in px
+                visibility: true
+            };
+
+            var loadingSpinner = new Spinner(opts);
+
+            var tree = d3.layout.tree()
+            .size([height, width]);
+
+            var diagonal = d3.svg.diagonal()
+            .projection(function(d) {
+                return [d.y, d.x];
+            });
+
+            var vis = d3.select("#chart").append("svg")
+            .attr("width", width + margin.right + margin.left)
+            .attr("height", height + margin.top + margin.bottom)
+            .append("g")
+            .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
+
+
+            function expandTree(rootNode) {
+                var expanded = [];
+
+                expanded.push(rootNode);
+                if (rootNode.children) {
+                    for (var i = 0; i < rootNode.children.length; i++) {
+                        var expandedChildren = expandTree(rootNode.children[i]);
+                        for (var j = 0; j < expandedChildren.length; j++) {
+                            expanded.push(expandedChildren[j]);
+                        }
+                    }
+                }
+
+                return expanded;
+            }
+
+
+            function clean(d, nodeType) {
+
+                var children = d.children;
+                if (children) {
+                    for (var i = children.length - 1; i--; ) {
+                        if (children[i].name == nodeType)
+                            children[i].remove()
+                    }
+
+                    for (var i = children.length - 1; i--; ) {
+                        clean(children[i], nodeType);
+                    }
+                }
+            }
+
+
+            function updateText(source) {
+
+                // Compute the new tree layout.
+                var nodes = tree.nodes(root).reverse();
+
+                //                // Normalize for fixed-depth.
+                nodes.forEach(function(d) {
+                    if (d.type == "requirement") {
+                        d.y = 0.8 * (d.depth * depth);
+                    } else if (!d.type.match(/SERVIC.*|V.*/g) || (d.type == "requirement")) {
+                        if (d.parent.children) {
+                            var hasComplexChildren;
+                            var children = d.parent.children;
+                            if (children) {
+                                for (var i = children.length - 1; i--; ) {
+                                    if (children[i].type.match(/SERVIC.*|V.*/g)) {
+                                        hasComplexChildren = true;
+                                        break;
+                                    }
+                                }
+                                d.y = 0.85 * d.depth * depth;
+                            }
+                        }
+
+                    } else {
+                        d.y = d.depth * depth;
+                    }
+                });
+
+                // Update the nodes…
+                var node = vis.selectAll("g.node")
+                .data(nodes, function(d) {
+                    return d.id || (d.id = ++i);
+                });
+
+                node.selectAll("text")
+                .text(function(d) {
+                    if (d.attention) {
+                        return d.name + ": " + d.actionName;
+                    } else if (d.type == "VM") {
+                        return "VM:" + d.name;
+                    } else {
+                        return d.name;
+                    }
+                });
+
+                // Enter any new nodes at the parent's previous position.
+                var nodeEnter = node.enter().append("g")
+                .attr("class", "node")
+                .attr("transform", function(d) {
+                    return "translate(" + (d.parent.y0) + "," + d.parent.x0 + ")";
+                })
+                .attr("display", function(d) {
+                    if (d.name == "SubComponents") {
+                        return "none";
+                    } else {
+                        return "yes"
+                    }
+                    ;
+                })
+                .on("click", function(d) {
+                    if (!d.type.match(/SERVIC.*|V.*/g)) {
+                        setSelectedMetricOneLevel(d);
+                        if (d.type=="requirement"){
+                            click(d);
+                        }
+                    }
+                    else {
+                        click(d);
+                    }
+                })
+                .on("dblclick", setSelectedMetric);
+
+
+                nodeEnter.append("path")
+                .attr("d", function(d) {
+                    if (d.type == "SERVICE" || d.type == "SERVICE_TOPOLOGY" || d.type == "SERVICE_UNIT") {
+                        return simpleComponentIcon;
+                    }
+
+                    else if (d.type == "metric") {
+                        return auxRect;
+                    }
+                    else if (d.type == "auxiliaryMetric") {
+                        return auxRect;
+                    }
+                    else if (d.type == "requirement") {
+                        if (d.attention) {
+                            return warningTriangle;
+                        } else {
+                            return sphere;
+                        }
+                        ;
+                    }
+                    else if (d.name == "SubComponents") {
+                        return complexComponentIcon;
+                    }
+                }
+            )
+                .attr("stroke", "black")
+                .attr("stroke-width", 1)
+                .attr("fill", function(d) {
+                    if (d.type == "metric") {
+                        return "gray";
+                    } else
+                        return "red";
+                });
+
+                nodeEnter.append("svn:image")
+                .attr("xlink:href", function(d) {
+                    if (d.type == "VM") {
+                        return "./vm.png";
+                    } else {
+                        return null;
+                    }
+                })
+                .attr("width", 30)
+                .attr("height", 30)
+                .attr("dx", -15)
+                .attr("y", -15);
+
+                // Transition nodes to their new position.
+                var nodeUpdate = node.transition()
+
+                .duration(function(d) {
+                    if (d.type.match(/SERVIC.*|V.*/g)) {
+                        return duration;
+                    } else {
+                        return 0;
+                    }
+                })
+                .attr("transform", function(d) {
+                    if (d.type != "requirement") {
+                        return "translate(" + d.y + "," + d.x + ")";
+                    } else {
+                        return "translate(" + d.y + "," + d.x + ")";
+                    }
+                })
+
+                //console.log(node.name)
+
+
+                nodeUpdate.select("path")
+                .attr("r", function(d) {
+                    return d.value ? 0 : 4.5;
+                })
+                .style("stroke", function(d) {
+                    if (d.attention) {
+                        return "#909090";
+                    } else {
+                        return "#909090"
+                    }
+                    ;
+                })
+                .style("fill", function(d) {
+                    if (d.type == "metric") {
+                        return "gray";
+                    } else {
+                        if (d.attention) {
+                            return "#D13F31";
+                        } else {
+                            if (d.type == "requirement") {
+                                if (d.fulfilled) {
+                                    return "#1F7872"
+                                } else {
+                                    return "#D13F31";
+                                }
+
+                            } else {
+                                return "#72B095";
+                            }
+                        }
+                    }
+                }
+            );
+
+
+                nodeUpdate.select("text")
+                .attr("text-anchor", "end")
+                .attr("dy", -5)
+                .attr("dx", -15)
+                .style("font-size", function(d) {
+                    return (d.type == "metric") ? 14 : 18;
+                })
+                .attr("font-style", function(d) {
+                    return d.children ? "normal" : "italic";
+                })
+                .style("fill-opacity", 1)
+                .text(function(d) {
+                    if (d.attention) {
+                        return d.name + ": " + d.actionName;
+                    } else if (d.type == "VM") {
+                        return "VM:" + d.name;
+                    } else {
+                        return d.name;
+                    }
+                });
+
+                // Transition exiting nodes to the parent's new position.
+                var nodeExit = node.exit().transition()
+                .duration(function(d) {
+                    if (d.type.match(/SERVIC.*|V.*/g)) {
+                        return duration;
+                    } else {
+                        return 0;
+                    }
+                })
+                .attr("transform", function(d) {
+                    return "translate(" + source.y + "," + source.x + ")";
+                })
+                .remove();
+
+                nodeExit.select("circle")
+                .attr("r", function(d) {
+                    return d.value ? 0 : 8;
+                });
+
+                nodeExit.select("text")
+                .attr("text-anchor", function(d) {
+                    return d.value || d.ip || d.children ? "end" : "start";
+                })
+                .attr("dy", -5)
+                .style("font-size", function(d) {
+                    return (d.type == "metric") ? 14 : 18;
+                })
+                .attr("font-style", function(d) {
+                    return d.children ? "normal" : "italic";
+                })
+                .style("fill-opacity", 1e-6);
+
+                nodeEnter.append("text")
+                .attr("dx", function(d) {
+                    return d.value ? 10 : 5;
+                })
+                .attr("dy", function(d) {
+                    return d.value ? 0 : 10;
+                })
+                .style("font-size", function(d) {
+                    return (d.type == "metric") ? 14 : 18;
+                })
+                .attr("text-anchor", function(d) {
+                    return d.ip ? "end" : "start";
+                })
+                .attr("font-style", function(d) {
+                    return d.children ? "normal" : "italic";
+                })
+                .text(function(d) {
+                    if (d.attention) {
+                        return d.name + ": " + d.actionName;
+                    } else if (d.type == "VM") {
+                        return "VM:" + d.name;
+                    } else {
+                        return d.name;
+                    }
+                });
+
+                // Update the links…
+                var link = vis.selectAll("path.link")
+                .data([], function(d) {
+                    return d.target.id;
+                });
+                link.exit().remove();
+
+
+                link = vis.selectAll("path.link")
+                .data(tree.links(nodes), function(d) {
+                    return d.target.id;
+                });
+
+                // Enter any new links at the parent's previous position.
+                link.enter().insert("path", "g")
+                .attr("class", "link")
+                .attr("d", function(d) {
+                    var o = {x: source.x, y: source.y};
+                    return diagonal({source: o, target: o});
+                })
+                .style("stroke-dasharray", function(d) {
+                    if (d.target.type == "metric") {
+                        return "0";
+                    }
+                    else if (d.target.type == "requirement") {
+                        return "3.3";
+                    }
+                    else if (d.target.type == "auxiliaryMetric") {
+                        return "3.3";
+                    }
+                    else {
+                        return "1";
+                    }
+                })
+                .style("stroke", function(d) {
+                    if (d.target.type == "requirement") {
+                        if (d.target.attention) {
+                            return "#E00000";
+                        }
+                        else {
+                            return "#00E096";
+                        }
+                    } else {
+                        return "#ccc";
+                    }
+                })
+                .style("stroke-width", function(d) {
+                    if (d.target.type == "requirement") {
+                        return "1";
+                    }
+                    else if (d.target.type == "auxiliaryMetric") {
+                        return "0.5";
+                    }
+                    else {
+                        return "1";
+                    }
+                })
+                ;
+
+                // Transition links to their new position.
+                link.transition()
+                .duration(0)
+                .attr("d", diagonal);
+
+                // Transition exiting nodes to the parent's new position.
+                link.exit().transition()
+                .duration(0)
+                .attr("d", function(d) {
+                    var o = {x: source.x, y: source.y};
+                    return diagonal({source: o, target: o});
+                })
+                .remove();
+
+                // Stash the old positions for transition.
+                nodes.forEach(function(d) {
+                    d.x0 = d.x;
+                    d.y0 = d.y;
+                });
+            }
+
+            function update(source) {
+
+                // Compute the new tree layout.
+                var nodes = tree.nodes(root).reverse();
+
+                // Normalize for fixed-depth.
+                nodes.forEach(function(d) {
+                    if (d.type == "requirement") {
+                        d.y = 0.8 * (d.depth * depth);
+                    } else if (!d.type.match(/SERVIC.*|V.*/g)) {
+                        if (d.parent.children) {
+                            var hasComplexChildren;
+                            var children = d.parent.children;
+                            if (children) {
+                                for (var i = children.length - 1; i--; ) {
+                                    if (children[i].type.match(/SERVIC.*|V.*/g)) {
+                                        hasComplexChildren = true;
+                                        break;
+                                    }
+                                }
+                                //                                if(hasComplexChildren){
+                                d.y = 0.85 * d.depth * depth;
+                                //                                    if(d.y == 0){
+                                //                                        d.y = 0.9*d.depth* depth;
+                                //                                        d.x = d.x + 50;
+                                //                                    }
+                                //                                }else{
+                                //                                    d.y=(0.9*d.depth)* depth;
+                                //                                }
+                            }
+                        }
+
+                    } else {
+                        d.y = d.depth * depth;
+                    }
+                });
+
+                // Update the nodes…
+                var node = vis.selectAll("g.node")
+                .data(nodes, function(d) {
+                    return d.id || (d.id = ++i);
+                });
+
+
+                // Enter any new nodes at the parent's previous position.
+                var nodeEnter = node.enter().append("g")
+                .attr("class", "node")
+                .attr("transform", function(d) {
+                    //                    if (d.type != "requirement") {
+                    return "translate(" + source.y + "," + source.x + ")";
+                    //                    }
+                    //                    else {
+                    //                        return "translate(" + (d.parent.y0) + "," + d.parent.x0 + ")";
+                    //                    }
+                })
+                .attr("display", function(d) {
+                    if (d.name == "SubComponents") {
+                        return "none";
+                    } else {
+                        return "yes"
+                    }
+                })
+                .on("click", function(d) {
+                    if (!d.type.match(/SERVIC.*|V.*/g)) {
+                        setSelectedMetricOneLevel(d);
+                    }
+                    else {
+                        click(d);
+                    }
+                })
+                .on("dblclick", setSelectedMetric);
+
+                nodeEnter.append("path")
+                .attr("d", function(d) {
+                    if (d.type == "SERVICE" || d.type == "SERVICE_TOPOLOGY" || d.type == "SERVICE_UNIT") {
+                        return simpleComponentIcon;
+                    }
+
+                    else if (d.type == "metric") {
+                        return auxRect;
+                    }
+                    else if (d.type == "auxiliaryMetric") {
+                        return auxRect;
+                    }
+                    else if (d.type == "requirement") {
+                        if (d.attention) {
+                            return warningTriangle;
+                        } else {
+                            return sphere;
+                        }
+                        ;
+                    }
+                    else if (d.name == "SubComponents") {
+                        return complexComponentIcon;
+                    }
+                }
+            )
+                .attr("stroke", "black")
+                .attr("stroke-width", 1)
+                .attr("fill", function(d) {
+                    if (d.type == "metric") {
+                        return "red";
+                    }
+                    else {
+                        if (d.type == "requirement") {
+                            if (d.fulfilled) {
+                                return "#1F7872"
+                            } else {
+                                return "#D13F31";
+                            }
+
+                        } else {
+                            return "#72B095";
+                        }
+                    }
+                });
+
+                nodeEnter.append("svn:image")
+                .attr("xlink:href", function(d) {
+                    if (d.type == "VM") {
+                        return "./vm.png";
+                    } else {
+                        return null;
+                    }
+                })
+                .attr("width", 30)
+                .attr("height", 30)
+                .attr("dx", -15)
+                .attr("y", -15);
+
+
+                nodeEnter.append("text")
+                .attr("dx", function(d) {
+                    return d.value ? 40 : -10;
+                })
+                .attr("y", function(d) {
+                    return d.value ? -10 : -5;
+                })
+                .attr("text-anchor", function(d) {
+                    return  d.ip || d.children ? "end" : "start";
+                })
+                .style("font-size", function(d) {
+                    return (d.type == "metric") ? 14 : 19;
+                })
+                .attr("font-style", function(d) {
+                    return d.children ? "normal" : "italic";
+                })
+                .style("fill-opacity", 1e-6)
+                .text(function(d) {
+                    if (d.attention) {
+                        return d.name + ": " + d.actionName;
+                    } else if (d.type == "VM") {
+                        return "VM:" + d.name;
+                    } else {
+                        return d.name;
+                    }
+                });
+
+
+                // Transition nodes to their new position.
+                var nodeUpdate = node.transition()
+
+                .duration(duration)
+                .attr("transform", function(d) {
+                    //                    if (d.type != "requirement") {
+                    return "translate(" + d.y + "," + d.x + ")";
+                    //                    } else {
+                    //                        return "translate(" + d.y + "," + d.x + ")";
+                    //                    }
+                })
+                //.attr("transform", function(d) { return "translate(" + d.y + "," + d.x + ")"; });
+                //console.log(node.name)
+
+                nodeUpdate.select("circle")
+                .attr("r", function(d) {
+                    return d.value ? 0 : 8;
+                })
+                .style("stroke", function(d) {
+                    if (d.attention) {
+                        return "#909090";
+                    } else {
+                        return "#909090"
+                    }
+                    ;
+                })
+                .style("fill", function(d) {
+                    if (d.attention) {
+                        return "#E00000";
+                    } else {
+                        return "#CCFFFF";
+                    }
+                });
+
+                nodeUpdate.select("rect")
+                .attr("r", function(d) {
+                    return d.value ? 0 : 4.5;
+                })
+                .style("stroke", function(d) {
+                    if (d.attention) {
+                        return "#909090";
+                    } else {
+                        return "#909090"
+                    }
+                    ;
+                })
+                .style("fill", function(d) {
+                    if (d.attention) {
+                        return "#FF6666";
+                    } else {
+                        return "#CCFFFF";
+                    }
+                });
+
+                nodeUpdate.select("text")
+                .attr("text-anchor", function(d) {
+                    return   d.ip || d.children ? "end" : "start";
+                })
+                .attr("dy", -5)
+                .attr("dx", -15)
+                .style("font-size", function(d) {
+                    return (d.type == "metric") ? 14 : 19;
+                })
+                .attr("font-style", function(d) {
+                    return d.children ? "normal" : "italic";
+                })
+                .style("fill-opacity", 1);
+
+                // Transition exiting nodes to the parent's new position.
+                var nodeExit = node.exit().transition()
+                .duration(duration)
+                .attr("transform", function(d) {
+                    return "translate(" + source.y + "," + source.x + ")";
+                })
+                .remove();
+
+                nodeExit.select("circle")
+                .attr("r", function(d) {
+                    return d.value ? 0 : 8;
+                });
+
+                nodeExit.select("text")
+                .attr("text-anchor", function(d) {
+                    return   d.ip || d.children ? "end" : "start";
+                })
+                .attr("dy", -5)
+                .style("font-size", function(d) {
+                    return (d.type == "metric") ? 14 : 19;
+                })
+                .attr("font-style", function(d) {
+                    return d.children ? "normal" : "italic";
+                })
+                .style("fill-opacity", 1e-6);
+
+
+                // Update the links…
+                var link = vis.selectAll("path.link")
+                .data([], function(d) {
+                    return d.target.id;
+                });
+                link.exit().remove();
+
+
+                link = vis.selectAll("path.link")
+                .data(tree.links(nodes), function(d) {
+                    return d.target.id;
+                });
+
+                //TODO: test if works without this.
+                // Enter any new links at the parent's previous position.
+                link.enter().insert("path", "g")
+                .attr("class", "link")
+                .attr("d", function(d) {
+                    if (d.target.type == "metric") {
+                        var o = {x: source.x, y: source.y};
+                        return diagonal({source: o, target: o});
+                    } else {
+                        var o = {x: source.x, y: source.y};
+                        return diagonal({source: o, target: o});
+                    }
+                })
+                .style("stroke-dasharray", function(d) {
+                    if (d.target.type == "metric") {
+                        return "0";
+                    }
+                    else if (d.target.type == "requirement") {
+                        return "3.3";
+                    }
+                    else if (d.target.type == "auxiliaryMetric") {
+                        return "3.3";
+                    }
+                    else {
+                        return "1";
+                    }
+                })
+                .style("stroke", function(d) {
+                    if (d.target.type == "requirement") {
+                        if (d.target.attention) {
+                            return "#E00000";
+                        }
+                        else {
+                            return "#00E096";
+                        }
+                    } else {
+                        return "#ccc";
+                    }
+                })
+                .style("stroke-width", function(d) {
+                    if (d.target.type == "requirement") {
+                        return "1";
+                    }
+                    else if (d.target.type == "auxiliaryMetric") {
+                        return "0.5";
+                    }
+                    else {
+                        return "1";
+                    }
+                })
+                ;
+
+                // Transition links to their new position.
+                link.transition()
+                .duration(duration)
+                .attr("d", diagonal);
+
+                // Transition exiting nodes to the parent's new position.
+                link.exit().transition()
+                .duration(duration)
+                .attr("d", function(d) {
+                    var o = {x: source.x, y: source.y};
+                    return diagonal({source: o, target: o});
+                })
+                .remove();
+
+                // Stash the old positions for transition.
+                nodes.forEach(function(d) {
+                    d.x0 = d.x;
+                    d.y0 = d.y;
+                });
+            }
+
+            //open el Space only for non VMs
+            function click(d) {
+                if (d.type=="requirement"){
+                    textarea=document.getElementById("text");
+                    textarea.value+=d.name;
+                }
+                //                if (d.type != "VM") {
+                //                    var win = window.open("elasticitySpace.html?" + serviceID + "&" + d.name + "&" + d.type, '_blank');
+                //                    //var win = window.open("elasticityPathway.html?"+ serviceID + "&" + d.name + "&" + d.type, '_blank');
+                //                }
+            }
+
+            var fullPath = false;
+            function setSelectedMetric(s) {
+                
+                //vis.selectAll("path.metricLink").remove();
+
+                //make it a toggle. If the same metric is clicked twice do not redraw
+                if (requirement != s) {
+                    requirement = s;
+                    highlightMetricsSources(requirement);
+                } else {
+                    requirement = null;
+                }
+                if (format=="sybl"){
+                    document.getElementById("text").value+=requirement.name+"\n";
+                }
+                if (format=="xml"){
+                    varNewReq=requirement.name.bold();
+                    document.getElementById("text").value.replace(requirement.name,varNewReq);
+               
+                }
+                fullPath = true;
+
+            }
+
+
+            function setSelectedMetricOneLevel(s) {
+
+                //vis.selectAll("path.metricLink").remove();
+
+                //make it a toggle. If the same metric is clicked twice do not redraw
+                if (requirement != s) {
+                    requirement = s;
+                    highlightMetricsSourcesOneLevel(requirement);
+                } else {
+                    requirement = null;
+                }
+                fullPath = false;
+
+            }
+
+
+            function showContent(d, show) {
+                if (!show && d.children) {
+                    d._children = d.children;
+                    d.children = null;
+                    update(d);
+                } else if (!d.children) {
+                    d.children = d._children;
+                    d._children = null;
+                    update(d);
+                }
+
+            }
+
+            function drawMetricsLines(source, componentsToLink, link) {
+
+                for (var i = 0; i < componentsToLink.length; i++) {
+
+                    var child = componentsToLink[i];
+
+                    vis.append("path", "g")
+                    .attr("class", "metricLink")
+                    .attr("startAngle", "45")
+
+                    .attr("d", function(d) {
+                        var start = {x: source.x, y: source.y};
+                        var target = {x: child.x, y: child.y};
+
+                        return diagonal({source: start, target: target});
+                    });
+
+
+                }
+
+
+            }
+
+            function highlightMetricsSources(selectedMetric) {
+                if (!metrics || !selectedMetric) {
+                    return
+                }
+
+
+                var source = selectedMetric;
+
+
+
+                var indexOfFirstBracket = source.name.match(/[a-zA-Z]/);
+                var indexOfLastBracket = source.name.match(/ \(/);
+                var sourceMetricName = source.name.slice(indexOfFirstBracket.index, indexOfLastBracket.index);
+
+                var sourceMetricParent = source.parent;
+
+                //traverse metrics and find out what metric we have selected 
+                var compositionRule;
+                for (var i = 0; i < metrics.length; i++) {
+                    metric = metrics [i];
+                    if (metric.name == sourceMetricName) {
+                        //true even if is empty
+                        if (metric.targetMonitoredElementIDs) {
+
+                            //get the targeted element IDS
+                            targetMonitoredElementIDs = metric.targetMonitoredElementIDs;
+
+                            //if the metric level is the same as the clicked metric parent type
+                            if (metric.targetLevel && metric.targetLevel == sourceMetricParent.type) {
+
+                                //if the targete lement IDs == 0 || if the target metric parent name is in the supplied IDs
+                                if (targetMonitoredElementIDs.length == 0 || targetMonitoredElementIDs.indexOf(sourceMetricParent.name) != -1) {
+                                    compositionRule = metric;
+                                    break;
+                                }
+                            }
+                        }
+                    }
+                }
+
+                if (!compositionRule) {
+                    return;
+                }
+
+
+                var sourceMetricParentChildMetrics = [];
+                var ruleChildMetrics = [];
+
+                //1'st go to the targeted element children (children of clicked sourceMetricParent)
+                if (sourceMetricParent.children) {
+                    var children = [];
+                    //need to traverse the children tree
+                    children = children.concat(sourceMetricParent.children);
+                    while (children.length > 0) {
+                        var child = children[0];
+                        //gather all metrics of all children
+                        if (!child.type.match(/SERVIC.*|V.*/g)) {
+                            sourceMetricParentChildMetrics.push(child);
+                        } else {
+                            children = children.concat(child.children);
+                        }
+
+                        //remove first element of the array
+                        children = children.slice(1);
+                    }
+                }
+
+                //here I have gathered all metrics from the target element children
+                //now I search trough them to see which one is actually a component of the selected metric
+                for (var i = 0; i < compositionRule.children.length; i++) {
+                    var ruleChildMetric = compositionRule.children[i];
+                    //for all the children's metrics
+                    for (var j = 0; j < sourceMetricParentChildMetrics.length; j++) {
+                        var childMetric = sourceMetricParentChildMetrics[j];
+
+                        //metric names in D3JS are "value [metricName]" and need to extract the metricName
+                        var childMetricNameIndexOfFirstBracket = childMetric.name.match(/[a-zA-Z]/);
+                        var childMetricNameIndexOfLastBracket = childMetric.name.match(/ \(/);
+                        var childMetricName = childMetric.name.slice(childMetricNameIndexOfFirstBracket.index, childMetricNameIndexOfLastBracket.index);
+
+                        //get the targeted element IDS
+                        targetMonitoredElementIDs = ruleChildMetric.targetMonitoredElementIDs;
+
+                        //if the metric level is the same as the clicked metric parent type
+                        if (ruleChildMetric.targetLevel && ruleChildMetric.targetLevel == childMetric.parent.type) {
+                            //if the targete lement IDs == 0 || if the target metric parent name is in the supplied IDs
+                            if (targetMonitoredElementIDs.length == 0 || targetMonitoredElementIDs.indexOf(childMetric.parent.name) != -1) {
+                                if (ruleChildMetric.name == childMetricName) {
+                                    ruleChildMetrics.push(childMetric);
+
+                                    //show up to rooot (the entire composition flow)
+                                    highlightMetricsSources(childMetric);
+                                }
+                            }
+                        }
+
+
+                    }
+                }
+                //console.log(ruleChildMetrics)
+                drawMetricsLines(selectedMetric, ruleChildMetrics);
+
+            }
+
+
+
+            function highlightMetricsSourcesOneLevel(selectedMetric) {
+                if (!metrics || !selectedMetric) {
+                    return
+                }
+
+
+                var source = selectedMetric;
+
+                var indexOfFirstBracket = source.name.match(/[a-zA-Z]/);
+                var indexOfLastBracket = source.name.match(/ \(/);
+                var sourceMetricName = source.name.slice(indexOfFirstBracket.index, indexOfLastBracket.index);
+
+                var sourceMetricParent = source.parent;
+
+                //traverse metrics and find out what metric we have selected 
+                var compositionRule;
+                for (var i = 0; i < metrics.length; i++) {
+                    metric = metrics [i];
+                    if (metric.name == sourceMetricName) {
+                        //true even if is empty
+                        if (metric.targetMonitoredElementIDs) {
+
+                            //get the targeted element IDS
+                            targetMonitoredElementIDs = metric.targetMonitoredElementIDs;
+
+                            //if the metric level is the same as the clicked metric parent type
+                            if (metric.targetLevel && metric.targetLevel == sourceMetricParent.type) {
+
+                                //if the targete lement IDs == 0 || if the target metric parent name is in the supplied IDs
+                                if (targetMonitoredElementIDs.length == 0 || targetMonitoredElementIDs.indexOf(sourceMetricParent.name) != -1) {
+                                    compositionRule = metric;
+                                    break;
+                                }
+                            }
+                        }
+                    }
+                }
+
+                if (!compositionRule) {
+                    return;
+                }
+
+
+                var sourceMetricParentChildMetrics = [];
+                var ruleChildMetrics = [];
+
+                //1'st go to the targeted element children (children of clicked sourceMetricParent)
+                if (sourceMetricParent.children) {
+                    var children = [];
+                    //need to traverse the children tree
+                    children = children.concat(sourceMetricParent.children);
+                    while (children.length > 0) {
+                        var child = children[0];
+                        //gather all metrics of all children
+                        if (!child.type.match(/SERVIC.*|V.*/g)) {
+                            sourceMetricParentChildMetrics.push(child);
+                        } else {
+                            children = children.concat(child.children);
+                        }
+
+                        //remove first element of the array
+                        children = children.slice(1);
+                    }
+                }
+
+                //here I have gathered all metrics from the target element children
+                //now I search trough them to see which one is actually a component of the selected metric
+                for (var i = 0; i < compositionRule.children.length; i++) {
+                    var ruleChildMetric = compositionRule.children[i];
+                    //for all the children's metrics
+                    for (var j = 0; j < sourceMetricParentChildMetrics.length; j++) {
+                        var childMetric = sourceMetricParentChildMetrics[j];
+
+                        //metric names in D3JS are "value [metricName]" and need to extract the metricName
+                        var childMetricNameIndexOfFirstBracket = childMetric.name.match(/[a-zA-Z]/);
+                        var childMetricNameIndexOfLastBracket = childMetric.name.match(/ \(/);
+                        var childMetricName = childMetric.name.slice(childMetricNameIndexOfFirstBracket.index, childMetricNameIndexOfLastBracket.index);
+
+                        //get the targeted element IDS
+                        targetMonitoredElementIDs = ruleChildMetric.targetMonitoredElementIDs;
+
+                        //if the metric level is the same as the clicked metric parent type
+                        if (ruleChildMetric.targetLevel && ruleChildMetric.targetLevel == childMetric.parent.type) {
+                            //if the targete lement IDs == 0 || if the target metric parent name is in the supplied IDs
+                            if (targetMonitoredElementIDs.length == 0 || targetMonitoredElementIDs.indexOf(childMetric.parent.name) != -1) {
+                                if (ruleChildMetric.name == childMetricName) {
+                                    ruleChildMetrics.push(childMetric);
+                                }
+                            }
+                        }
+
+
+                    }
+                }
+                //console.log(ruleChildMetrics)
+                drawMetricsLines(selectedMetric, ruleChildMetrics);
+
+            }
+          
+            function refreshMonitoringData() {
+                if (serviceID!=""){
+                    reqMonitoringDataObject = null;
+
+
+                    if (window.XMLHttpRequest) {
+                        reqMonitoringDataObject = new XMLHttpRequest();
+                    } else {
+                        reqMonitoringDataObject = new ActiveXObject("Microsoft.XMLHTTP");
+                    }
+
+                    reqMonitoringDataObject.onreadystatechange = processMonitoringDataResponse;
+                    reqMonitoringDataObject.open("GET", "./restWS/" + serviceID + "/structuralData/json", true);
+                    reqMonitoringDataObject.send(null);
+                }
+            }
+
+            function processMonitoringDataResponse() {
+                if (reqMonitoringDataObject.readyState == 4) {
+
+                    try {
+                        new_root = JSON.parse(reqMonitoringDataObject.responseText);
+
+
+
+                        if (new_root.children) {
+                            loadingSpinner.stop();
+                            d3.select("#A").remove();
+                            //                        setTimeout(refreshMonitoringData, 1000);
+                        }
+
+                        //if we have root that changed and is not metric, update its tree
+                        
+                        //root = new_root;
+                        if (root!=null){
+                         updateTextOnNode(root, new_root, true);
+                      //   update(root);
+                        }else{
+                            root=new_root;
+                           update(root);
+                        }    
+                                             
+                        loadingSpinner.stop();
+                    } catch (error) {
+                        console.log(error);
+                        console.log("Error encountered when processing metrics");
+                    }
+                    setTimeout(refreshMonitoringData, 10000);
+                }
+
+            }
+
+
+            
+
+          
+
+            function drawSpinner(spinnerContainer) {
+                var target = document.getElementById(spinnerContainer);
+                //target.style.display = "block";
+                loadingSpinner.spin(target);
+            }
+            function replaceRequirementsXMLSYBL(){
+                 getManagedServices = null;
+                if (window.XMLHttpRequest) {
+                    updateServicesListRequest = new XMLHttpRequest();
+                } else {
+                    updateServicesListRequest = new ActiveXObject("Microsoft.XMLHTTP");
+                }
+               
+                updateServicesListRequest.open("POST", "./restWS/"+serviceID+"/elasticityRequirements/xml", true);
+                
+                updateServicesListRequest.setRequestHeader('Content-type', 'application/xml');
+                updateServicesListRequest.send( document.getElementById("text").value);
+                setTimeout(refreshMonitoringData,4000);
+            
+            }
+            function getRequirementsXMLSYBL(){
+                getManagedServices = null;
+                if (window.XMLHttpRequest) {
+                    refreshXMLSYBL = new XMLHttpRequest();
+                } else {
+                    refreshXMLSYBL = new ActiveXObject("Microsoft.XMLHTTP");
+                }
+
+                refreshXMLSYBL.onreadystatechange = processRequirementsXMLSYBL;
+                refreshXMLSYBL.open("GET", "./restWS/"+serviceID+"/elasticityRequirements/xml", true);
+                refreshXMLSYBL.setRequestHeader('Content-type', 'application/xml');
+                refreshXMLSYBL.send(null);
+
+            }
+            function processRequirementsXMLSYBL(){
+                 if (refreshXMLSYBL.readyState == 4) {
+                    descr = refreshXMLSYBL.responseText;
+                    //                //clear prev list
+               
+                    //
+
+                    // Normalize for fixed-depth.
+                    
+                    if (format=="xmlsybl"){
+                        var x = document.getElementById("text");
+                        x.value=descr;
+                    }
+                    //setTimeout(refreshServiceDescription, 5000);
+                }else{
+                    setTimeout(getRequirementsXMLSYBL, 10000);
+                }
+            }
+            function replaceRequirementsSYBL(){
+                
+                  getManagedServices = null;
+                if (window.XMLHttpRequest) {
+                    replaceRequirementsSYBL = new XMLHttpRequest();
+                } else {
+                    replaceRequirementsSYBL = new ActiveXObject("Microsoft.XMLHTTP");
+                }
+               
+                replaceRequirementsSYBL.open("POST", "./restWS/"+serviceID+"/replaceRequirements/plain", true);
+                
+                replaceRequirementsSYBL.setRequestHeader('Content-type', 'text/plain');
+                replaceRequirementsSYBL.send( document.getElementById("text").value);
+                setTimeout(refreshMonitoringData,4000);
+            }
+            function updateServiceDescription() {
+
+                getManagedServices = null;
+                if (window.XMLHttpRequest) {
+                    updateServicesListRequest = new XMLHttpRequest();
+                } else {
+                    updateServicesListRequest = new ActiveXObject("Microsoft.XMLHTTP");
+                }
+               
+                updateServicesListRequest.open("POST", "./restWS/"+serviceID+"/description", true);
+                
+                updateServicesListRequest.setRequestHeader('Content-type', 'application/xml');
+                updateServicesListRequest.send( document.getElementById("text").value);
+                setTimeout(refreshMonitoringData,4000);
+                
+            }
+            function refreshServiceDescription() {
+
+                getManagedServices = null;
+                if (window.XMLHttpRequest) {
+                    refreshServicesListRequest = new XMLHttpRequest();
+                } else {
+                    refreshServicesListRequest = new ActiveXObject("Microsoft.XMLHTTP");
+                }
+
+                refreshServicesListRequest.onreadystatechange = processRefreshServiceDescription;
+                refreshServicesListRequest.open("GET", "./restWS/"+serviceID+"/description", true);
+                refreshServicesListRequest.setRequestHeader('Content-type', 'application/xml');
+                refreshServicesListRequest.send(null);
+
+            }
+            function processRefreshServiceDescription() {
+                if (refreshServicesListRequest.readyState == 4) {
+                    descr = refreshServicesListRequest.responseText;
+                    //                //clear prev list
+               
+                    //
+
+                    // Normalize for fixed-depth.
+                    
+                    if (format=="xml"){
+                        var x = document.getElementById("text");
+                        x.value=descr;
+                    }
+                    //setTimeout(refreshServiceDescription, 5000);
+                }else{
+                    setTimeout(refreshServiceDescription, 10000);
+                }
+            }
+            
+            function refreshServicesList() {
+
+                getManagedServices = null;
+                if (window.XMLHttpRequest) {
+                    refreshServicesListRequest = new XMLHttpRequest();
+                } else {
+                    refreshServicesListRequest = new ActiveXObject("Microsoft.XMLHTTP");
+                }
+
+                refreshServicesListRequest.onreadystatechange = processRefreshServicesResponse;
+                refreshServicesListRequest.open("GET", "./restWS/elasticservices", true);
+                refreshServicesListRequest.setRequestHeader('Content-type', 'application/xml');
+                refreshServicesListRequest.send(null);
+
+            }
+            function processRefreshServicesResponse() {
+                if (refreshServicesListRequest.readyState == 4) {
+                    serviceIDs = refreshServicesListRequest.responseText.split(",");
+                    //                //clear prev list
+               
+                    //
+
+                    // Normalize for fixed-depth.
+                    var x = document.getElementById("service");
+                    var length = x.options.length;
+                    for (i = 0; i < length; i++) {
+                        x.remove(x.options[i])
+                    }
+                    
+                    serviceIDs.forEach(function(service) {
+                        if (service!=""){
+                            var option = document.createElement("option");
+                            option.text = service;
+                            x.add(option,x[0]);
+                        }
+                    
+                    });
+                    if (serviceID==""){
+                        x.options[x.options.length-1].setAttribute("selected", "selected");
+                        serviceID=x.options[x.options.length-1].text;
+                        refreshMonitoringData();
+                        refreshServiceDescription();
+                    }
+                
+                    setTimeout(refreshServicesList, 10000);
+                }
+            }
+           
+            function processEventsPollingResponse() {
+                if (pollEventsRequest.readyState == 4) {
+
+
+                    try {
+                        events = JSON.parse(pollEventsRequest.responseText);
+                        for (var index = 0; index < events.length; index++) {
+                            toastr.info(events[index].event);
+                        }
+                    }
+                    catch (err) {
+                        console(err.message)
+                        console.log("Error encountered when processing events");
+                    }
+                    setTimeout(pollEvents, 10000);
+                }
+            }
+
+
+            drawSpinner('A');
+            
+            // refreshMetricsCompositionRules();
+            //refreshMonitoringData();
+            // pollEvents();
+            refreshServicesList();
+        </script>
+    </body>
+</html>
+

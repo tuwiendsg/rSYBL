@@ -6,16 +6,24 @@ package at.ac.tuwien.dsg.csdg.outputProcessing;
 
 import at.ac.tuwien.dsg.csdg.Node;
 import at.ac.tuwien.dsg.csdg.elasticityInformation.ElasticityCapability;
+import at.ac.tuwien.dsg.csdg.elasticityInformation.ElasticityRequirement;
+import at.ac.tuwien.dsg.csdg.elasticityInformation.elasticityRequirements.SYBLElasticityRequirementsDescription;
+import at.ac.tuwien.dsg.csdg.elasticityInformation.elasticityRequirements.SYBLSpecification;
+import at.ac.tuwien.dsg.csdg.inputProcessing.multiLevelModel.abstractModelXML.SYBLDirectiveMappingFromXML;
 import at.ac.tuwien.dsg.csdg.utils.Configuration;
 import at.ac.tuwien.dsg.csdg.utils.DependencyGraphLogger;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.io.StringWriter;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map.Entry;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javax.xml.bind.JAXBContext;
+import javax.xml.bind.Marshaller;
 
 /**
  *
@@ -39,6 +47,25 @@ public class OutputProcessing implements OutputProcessingInterface {
     public OutputProcessing(){
      	  
 		 
+    }
+    public String getXMLRequirements(List<ElasticityRequirement> requirement){
+        String reqs="";
+        SYBLElasticityRequirementsDescription bLElasticityRequirementsDescription=new SYBLElasticityRequirementsDescription();
+        for (ElasticityRequirement elasticityRequirement:requirement){
+             bLElasticityRequirementsDescription.getSyblSpecifications().add(SYBLDirectiveMappingFromXML.mapFromSYBLAnnotation(elasticityRequirement.getAnnotation()));
+        }
+        try{
+            
+        JAXBContext jaxbContext = JAXBContext.newInstance(SYBLElasticityRequirementsDescription.class);
+        Marshaller marshaller = jaxbContext.createMarshaller();
+        StringWriter w = new StringWriter();
+
+        marshaller.marshal(bLElasticityRequirementsDescription, w);
+        reqs=w.toString();
+        }catch(Exception e){
+            DependencyGraphLogger.logger.error(e.getMessage());
+        }
+        return reqs;
     }
     @Override
     public void saveActionPlan(HashMap<Node,ElasticityCapability> actionPlan) {

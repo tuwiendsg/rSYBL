@@ -276,4 +276,8 @@ public class PlanningHeuristicSearch implements PlanningAlgorithmInterface {
         // TODO Auto-generated method stub
         ActionEffects.setActionEffects(effects);
     }
+     @Override
+    public void replaceDependencyGraph(DependencyGraph dependencyGraph) {
+        this.dependencyGraph=dependencyGraph;
+    }
 }

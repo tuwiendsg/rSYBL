@@ -98,6 +98,13 @@ public class SyblControlWS {
 	public void setApplicationDescriptionInfo(@PathParam("id")String cloudServiceId,String celar){
 		 controlCoordination.setApplicationDescriptionInfo(cloudServiceId,celar);
 	}
+          @GET
+	 @Path("/{id}/description")
+	 @Produces("application/xml")
+	public String getApplicationDescriptionInfo(@PathParam("id")String cloudServiceId){
+		 return controlCoordination.getApplicationDescriptionInfo(cloudServiceId);
+	}
+          
 	 @PUT
 	 @Path("/{id}/elasticityCapabilitiesEffects")
 	 @Consumes("application/json")
@@ -124,8 +131,8 @@ public class SyblControlWS {
 	 @POST
 	 @Path("/{id}/deployment")
 	 @Consumes("application/xml")
-	public void setApplicationRefreshDeploymentInfo(String celar){
-		 controlCoordination.refreshApplicationDeploymentDescription(celar);
+	public void setApplicationRefreshDeploymentInfo(@PathParam("id")String cloudServiceId,String description){
+		 controlCoordination.refreshApplicationDeploymentDescription(description);
 
 	} 
 	 
@@ -164,17 +171,47 @@ public class SyblControlWS {
 		 controlCoordination.replaceCompositionRules(cloudServiceId,composition);
 	}
 	 @POST
-	 @Path("/{id}/elasticityRequirements")
+	 @Path("/{id}/elasticityRequirements/xml")
 	 @Consumes("application/xml")
 	public void replaceRequirements(@PathParam("id")String cloudServiceId,String requirements){
 		controlCoordination.replaceRequirements(cloudServiceId, requirements); 
 	}
-	 @POST
+         
+         @GET
+	 @Path("/{id}/elasticityRequirements/xml")
+	 @Produces("application/xml")
+	public String getXMLRequirements(@PathParam("id")String cloudServiceId){
+		return controlCoordination.getRequirements(cloudServiceId); 
+	}
+
+          @POST
 	 @Path("/{id}/elasticityCapabilitiesEffects")
 	 @Consumes("application/json")
-	public void replaceEffects(String effects){
-		 controlCoordination.replaceEffects(effects);
+	public void replaceEffects(@PathParam("id") String id,String effects){
+		 controlCoordination.replaceEffects(id,effects);
 	}
+         
+        @GET
+        @Produces(MediaType.APPLICATION_JSON)
+	 @Path("/{id}/structuralData/json")
+	public String getStructuralData(@PathParam("id") String id){
+            return controlCoordination.getJSONStructureOfService(id);
+	}
+        @GET
+        @Produces(MediaType.TEXT_PLAIN)
+	 @Path("/elasticservices")
+	public String getServices(){
+            return controlCoordination.getServices();
+	}
+        
+  
+        @POST
+        @Consumes(MediaType.TEXT_PLAIN)
+	 @Path("/{id}/replaceRequirements/plain")
+	public void replaceRequirementsString(@PathParam("id") String id,String requirement){
+          controlCoordination.replaceRequirementsString(id,requirement);
+	}
+        
 	public UriInfo getContext() {
 		return context;
 	}

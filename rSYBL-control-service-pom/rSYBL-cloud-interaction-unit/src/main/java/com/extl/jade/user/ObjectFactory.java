@@ -233,59 +233,19 @@ public class ObjectFactory {
     }
 
     /**
-     * Create an instance of {@link AttachSSHKey }
+     * Create an instance of {@link ModifyKeyResponse }
      * 
      */
-    public AttachSSHKey createAttachSSHKey() {
-        return new AttachSSHKey();
+    public ModifyKeyResponse createModifyKeyResponse() {
+        return new ModifyKeyResponse();
     }
 
     /**
-     * Create an instance of {@link QueryLimit }
+     * Create an instance of {@link User }
      * 
      */
-    public QueryLimit createQueryLimit() {
-        return new QueryLimit();
-    }
-
-    /**
-     * Create an instance of {@link CreateVDCResponse }
-     * 
-     */
-    public CreateVDCResponse createCreateVDCResponse() {
-        return new CreateVDCResponse();
-    }
-
-    /**
-     * Create an instance of {@link PseudoResource }
-     * 
-     */
-    public PseudoResource createPseudoResource() {
-        return new PseudoResource();
-    }
-
-    /**
-     * Create an instance of {@link RevertToResource }
-     * 
-     */
-    public RevertToResource createRevertToResource() {
-        return new RevertToResource();
-    }
-
-    /**
-     * Create an instance of {@link FetchServer }
-     * 
-     */
-    public FetchServer createFetchServer() {
-        return new FetchServer();
-    }
-
-    /**
-     * Create an instance of {@link KeyList.Content.Entry }
-     * 
-     */
-    public KeyList.Content.Entry createKeyListContentEntry() {
-        return new KeyList.Content.Entry();
+    public User createUser() {
+        return new User();
     }
 
     /**
@@ -297,35 +257,283 @@ public class ObjectFactory {
     }
 
     /**
-     * Create an instance of {@link RenderInvoice }
+     * Create an instance of {@link AttachSubnetResponse }
      * 
      */
-    public RenderInvoice createRenderInvoice() {
-        return new RenderInvoice();
+    public AttachSubnetResponse createAttachSubnetResponse() {
+        return new AttachSubnetResponse();
     }
 
     /**
-     * Create an instance of {@link VirtualResource }
+     * Create an instance of {@link Blob }
      * 
      */
-    public VirtualResource createVirtualResource() {
-        return new VirtualResource();
+    public Blob createBlob() {
+        return new Blob();
     }
 
     /**
-     * Create an instance of {@link ResolvableReference }
+     * Create an instance of {@link ListUnitTransactionSummary }
      * 
      */
-    public ResolvableReference createResolvableReference() {
-        return new ResolvableReference();
+    public ListUnitTransactionSummary createListUnitTransactionSummary() {
+        return new ListUnitTransactionSummary();
     }
 
     /**
-     * Create an instance of {@link Customer }
+     * Create an instance of {@link AggregationField }
      * 
      */
-    public Customer createCustomer() {
-        return new Customer();
+    public AggregationField createAggregationField() {
+        return new AggregationField();
+    }
+
+    /**
+     * Create an instance of {@link CreateImage }
+     * 
+     */
+    public CreateImage createCreateImage() {
+        return new CreateImage();
+    }
+
+    /**
+     * Create an instance of {@link ListReferralPromoCodeResponse }
+     * 
+     */
+    public ListReferralPromoCodeResponse createListReferralPromoCodeResponse() {
+        return new ListReferralPromoCodeResponse();
+    }
+
+    /**
+     * Create an instance of {@link Tax }
+     * 
+     */
+    public Tax createTax() {
+        return new Tax();
+    }
+
+    /**
+     * Create an instance of {@link ModifyServerResponse }
+     * 
+     */
+    public ModifyServerResponse createModifyServerResponse() {
+        return new ModifyServerResponse();
+    }
+
+    /**
+     * Create an instance of {@link PaymentMethodInstance }
+     * 
+     */
+    public PaymentMethodInstance createPaymentMethodInstance() {
+        return new PaymentMethodInstance();
+    }
+
+    /**
+     * Create an instance of {@link ChangeDeploymentInstanceStatus }
+     * 
+     */
+    public ChangeDeploymentInstanceStatus createChangeDeploymentInstanceStatus() {
+        return new ChangeDeploymentInstanceStatus();
+    }
+
+    /**
+     * Create an instance of {@link AttachNetworkInterfaceResponse }
+     * 
+     */
+    public AttachNetworkInterfaceResponse createAttachNetworkInterfaceResponse() {
+        return new AttachNetworkInterfaceResponse();
+    }
+
+    /**
+     * Create an instance of {@link ModifyDeploymentInstance }
+     * 
+     */
+    public ModifyDeploymentInstance createModifyDeploymentInstance() {
+        return new ModifyDeploymentInstance();
+    }
+
+    /**
+     * Create an instance of {@link KeyList.Content.Entry }
+     * 
+     */
+    public KeyList.Content.Entry createKeyListContentEntry() {
+        return new KeyList.Content.Entry();
+    }
+
+    /**
+     * Create an instance of {@link CancelJob }
+     * 
+     */
+    public CancelJob createCancelJob() {
+        return new CancelJob();
+    }
+
+    /**
+     * Create an instance of {@link CreatePaymentMethodInstanceResponse }
+     * 
+     */
+    public CreatePaymentMethodInstanceResponse createCreatePaymentMethodInstanceResponse() {
+        return new CreatePaymentMethodInstanceResponse();
+    }
+
+    /**
+     * Create an instance of {@link WaitForJobResponse }
+     * 
+     */
+    public WaitForJobResponse createWaitForJobResponse() {
+        return new WaitForJobResponse();
+    }
+
+    /**
+     * Create an instance of {@link ListReferralPromoCode }
+     * 
+     */
+    public ListReferralPromoCode createListReferralPromoCode() {
+        return new ListReferralPromoCode();
+    }
+
+    /**
+     * Create an instance of {@link InvoiceSetting }
+     * 
+     */
+    public InvoiceSetting createInvoiceSetting() {
+        return new InvoiceSetting();
+    }
+
+    /**
+     * Create an instance of {@link Resource }
+     * 
+     */
+    public Resource createResource() {
+        return new Resource();
+    }
+
+    /**
+     * Create an instance of {@link FirewallTemplate }
+     * 
+     */
+    public FirewallTemplate createFirewallTemplate() {
+        return new FirewallTemplate();
+    }
+
+    /**
+     * Create an instance of {@link BillingEntityDetails }
+     * 
+     */
+    public BillingEntityDetails createBillingEntityDetails() {
+        return new BillingEntityDetails();
+    }
+
+    /**
+     * Create an instance of {@link ExtilityExceptionInfo }
+     * 
+     */
+    public ExtilityExceptionInfo createExtilityExceptionInfo() {
+        return new ExtilityExceptionInfo();
+    }
+
+    /**
+     * Create an instance of {@link GetResourceTypes }
+     * 
+     */
+    public GetResourceTypes createGetResourceTypes() {
+        return new GetResourceTypes();
+    }
+
+    /**
+     * Create an instance of {@link ListStatementDetailResponse }
+     * 
+     */
+    public ListStatementDetailResponse createListStatementDetailResponse() {
+        return new ListStatementDetailResponse();
+    }
+
+    /**
+     * Create an instance of {@link ModifyVDC }
+     * 
+     */
+    public ModifyVDC createModifyVDC() {
+        return new ModifyVDC();
+    }
+
+    /**
+     * Create an instance of {@link TemplateProtectionPermission }
+     * 
+     */
+    public TemplateProtectionPermission createTemplateProtectionPermission() {
+        return new TemplateProtectionPermission();
+    }
+
+    /**
+     * Create an instance of {@link OpenVNCConnection }
+     * 
+     */
+    public OpenVNCConnection createOpenVNCConnection() {
+        return new OpenVNCConnection();
+    }
+
+    /**
+     * Create an instance of {@link ModifyImage }
+     * 
+     */
+    public ModifyImage createModifyImage() {
+        return new ModifyImage();
+    }
+
+    /**
+     * Create an instance of {@link Job }
+     * 
+     */
+    public Job createJob() {
+        return new Job();
+    }
+
+    /**
+     * Create an instance of {@link SimpleResource }
+     * 
+     */
+    public SimpleResource createSimpleResource() {
+        return new SimpleResource();
+    }
+
+    /**
+     * Create an instance of {@link Snapshot }
+     * 
+     */
+    public Snapshot createSnapshot() {
+        return new Snapshot();
+    }
+
+    /**
+     * Create an instance of {@link LockUserResponse }
+     * 
+     */
+    public LockUserResponse createLockUserResponse() {
+        return new LockUserResponse();
+    }
+
+    /**
+     * Create an instance of {@link RemoveIPResponse }
+     * 
+     */
+    public RemoveIPResponse createRemoveIPResponse() {
+        return new RemoveIPResponse();
+    }
+
+    /**
+     * Create an instance of {@link ProductComponent }
+     * 
+     */
+    public ProductComponent createProductComponent() {
+        return new ProductComponent();
+    }
+
+    /**
+     * Create an instance of {@link CreateVDCResponse }
+     * 
+     */
+    public CreateVDCResponse createCreateVDCResponse() {
+        return new CreateVDCResponse();
     }
 
     /**
@@ -345,619 +553,11 @@ public class ObjectFactory {
     }
 
     /**
-     * Create an instance of {@link DetachNetworkInterface }
-     * 
-     */
-    public DetachNetworkInterface createDetachNetworkInterface() {
-        return new DetachNetworkInterface();
-    }
-
-    /**
-     * Create an instance of {@link ModifyNetworkInterface }
-     * 
-     */
-    public ModifyNetworkInterface createModifyNetworkInterface() {
-        return new ModifyNetworkInterface();
-    }
-
-    /**
-     * Create an instance of {@link ListUnitTransactionSummaryResponse }
-     * 
-     */
-    public ListUnitTransactionSummaryResponse createListUnitTransactionSummaryResponse() {
-        return new ListUnitTransactionSummaryResponse();
-    }
-
-    /**
-     * Create an instance of {@link CreateDeploymentTemplateFromInstance }
-     * 
-     */
-    public CreateDeploymentTemplateFromInstance createCreateDeploymentTemplateFromInstance() {
-        return new CreateDeploymentTemplateFromInstance();
-    }
-
-    /**
-     * Create an instance of {@link GetHypervisorConfigResponse }
-     * 
-     */
-    public GetHypervisorConfigResponse createGetHypervisorConfigResponse() {
-        return new GetHypervisorConfigResponse();
-    }
-
-    /**
-     * Create an instance of {@link PromoCode }
-     * 
-     */
-    public PromoCode createPromoCode() {
-        return new PromoCode();
-    }
-
-    /**
-     * Create an instance of {@link ReferralPromotion }
-     * 
-     */
-    public ReferralPromotion createReferralPromotion() {
-        return new ReferralPromotion();
-    }
-
-    /**
-     * Create an instance of {@link ModifyServer }
-     * 
-     */
-    public ModifyServer createModifyServer() {
-        return new ModifyServer();
-    }
-
-    /**
-     * Create an instance of {@link CreateReferralPromoCode }
-     * 
-     */
-    public CreateReferralPromoCode createCreateReferralPromoCode() {
-        return new CreateReferralPromoCode();
-    }
-
-    /**
-     * Create an instance of {@link ProductPurchase }
-     * 
-     */
-    public ProductPurchase createProductPurchase() {
-        return new ProductPurchase();
-    }
-
-    /**
-     * Create an instance of {@link Permission }
-     * 
-     */
-    public Permission createPermission() {
-        return new Permission();
-    }
-
-    /**
-     * Create an instance of {@link ArrayList }
-     * 
-     */
-    public ArrayList createArrayList() {
-        return new ArrayList();
-    }
-
-    /**
-     * Create an instance of {@link KeyList }
-     * 
-     */
-    public KeyList createKeyList() {
-        return new KeyList();
-    }
-
-    /**
-     * Create an instance of {@link ReferralPromoCode }
-     * 
-     */
-    public ReferralPromoCode createReferralPromoCode() {
-        return new ReferralPromoCode();
-    }
-
-    /**
-     * Create an instance of {@link SshKey }
-     * 
-     */
-    public SshKey createSshKey() {
-        return new SshKey();
-    }
-
-    /**
-     * Create an instance of {@link DryRunResult }
-     * 
-     */
-    public DryRunResult createDryRunResult() {
-        return new DryRunResult();
-    }
-
-    /**
-     * Create an instance of {@link Network }
-     * 
-     */
-    public Network createNetwork() {
-        return new Network();
-    }
-
-    /**
-     * Create an instance of {@link CreateDeploymentTemplateResponse }
-     * 
-     */
-    public CreateDeploymentTemplateResponse createCreateDeploymentTemplateResponse() {
-        return new CreateDeploymentTemplateResponse();
-    }
-
-    /**
-     * Create an instance of {@link RevokeImage }
-     * 
-     */
-    public RevokeImage createRevokeImage() {
-        return new RevokeImage();
-    }
-
-    /**
-     * Create an instance of {@link RevokeResourceResponse }
-     * 
-     */
-    public RevokeResourceResponse createRevokeResourceResponse() {
-        return new RevokeResourceResponse();
-    }
-
-    /**
-     * Create an instance of {@link Transaction }
-     * 
-     */
-    public Transaction createTransaction() {
-        return new Transaction();
-    }
-
-    /**
      * Create an instance of {@link BillingEntityDetails.EmailTemplates.Entry }
      * 
      */
     public BillingEntityDetails.EmailTemplates.Entry createBillingEntityDetailsEmailTemplatesEntry() {
         return new BillingEntityDetails.EmailTemplates.Entry();
-    }
-
-    /**
-     * Create an instance of {@link CreatePaymentMethodInstance }
-     * 
-     */
-    public CreatePaymentMethodInstance createCreatePaymentMethodInstance() {
-        return new CreatePaymentMethodInstance();
-    }
-
-    /**
-     * Create an instance of {@link DeployTemplateResponse }
-     * 
-     */
-    public DeployTemplateResponse createDeployTemplateResponse() {
-        return new DeployTemplateResponse();
-    }
-
-    /**
-     * Create an instance of {@link TemplateProtectionPermission }
-     * 
-     */
-    public TemplateProtectionPermission createTemplateProtectionPermission() {
-        return new TemplateProtectionPermission();
-    }
-
-    /**
-     * Create an instance of {@link CreateFirewallTemplateResponse }
-     * 
-     */
-    public CreateFirewallTemplateResponse createCreateFirewallTemplateResponse() {
-        return new CreateFirewallTemplateResponse();
-    }
-
-    /**
-     * Create an instance of {@link AttachDisk }
-     * 
-     */
-    public AttachDisk createAttachDisk() {
-        return new AttachDisk();
-    }
-
-    /**
-     * Create an instance of {@link OrderedField }
-     * 
-     */
-    public OrderedField createOrderedField() {
-        return new OrderedField();
-    }
-
-    /**
-     * Create an instance of {@link RenderInvoiceResponse }
-     * 
-     */
-    public RenderInvoiceResponse createRenderInvoiceResponse() {
-        return new RenderInvoiceResponse();
-    }
-
-    /**
-     * Create an instance of {@link ModifyFirewallResponse }
-     * 
-     */
-    public ModifyFirewallResponse createModifyFirewallResponse() {
-        return new ModifyFirewallResponse();
-    }
-
-    /**
-     * Create an instance of {@link DetachDiskResponse }
-     * 
-     */
-    public DetachDiskResponse createDetachDiskResponse() {
-        return new DetachDiskResponse();
-    }
-
-    /**
-     * Create an instance of {@link PublishResource }
-     * 
-     */
-    public PublishResource createPublishResource() {
-        return new PublishResource();
-    }
-
-    /**
-     * Create an instance of {@link CancelJob }
-     * 
-     */
-    public CancelJob createCancelJob() {
-        return new CancelJob();
-    }
-
-    /**
-     * Create an instance of {@link ModifyPaymentMethodInstanceResponse }
-     * 
-     */
-    public ModifyPaymentMethodInstanceResponse createModifyPaymentMethodInstanceResponse() {
-        return new ModifyPaymentMethodInstanceResponse();
-    }
-
-    /**
-     * Create an instance of {@link AttachNetworkInterface }
-     * 
-     */
-    public AttachNetworkInterface createAttachNetworkInterface() {
-        return new AttachNetworkInterface();
-    }
-
-    /**
-     * Create an instance of {@link ListUnitTransactionSummary }
-     * 
-     */
-    public ListUnitTransactionSummary createListUnitTransactionSummary() {
-        return new ListUnitTransactionSummary();
-    }
-
-    /**
-     * Create an instance of {@link ModifyDiskResponse }
-     * 
-     */
-    public ModifyDiskResponse createModifyDiskResponse() {
-        return new ModifyDiskResponse();
-    }
-
-    /**
-     * Create an instance of {@link ModifyFirewall }
-     * 
-     */
-    public ModifyFirewall createModifyFirewall() {
-        return new ModifyFirewall();
-    }
-
-    /**
-     * Create an instance of {@link ExtilityExceptionInfo }
-     * 
-     */
-    public ExtilityExceptionInfo createExtilityExceptionInfo() {
-        return new ExtilityExceptionInfo();
-    }
-
-    /**
-     * Create an instance of {@link ListResourcesResponse }
-     * 
-     */
-    public ListResourcesResponse createListResourcesResponse() {
-        return new ListResourcesResponse();
-    }
-
-    /**
-     * Create an instance of {@link BillingEntityDetails.EmailTemplates }
-     * 
-     */
-    public BillingEntityDetails.EmailTemplates createBillingEntityDetailsEmailTemplates() {
-        return new BillingEntityDetails.EmailTemplates();
-    }
-
-    /**
-     * Create an instance of {@link UpdateCustomer }
-     * 
-     */
-    public UpdateCustomer createUpdateCustomer() {
-        return new UpdateCustomer();
-    }
-
-    /**
-     * Create an instance of {@link RemoveIPResponse }
-     * 
-     */
-    public RemoveIPResponse createRemoveIPResponse() {
-        return new RemoveIPResponse();
-    }
-
-    /**
-     * Create an instance of {@link CreateSSHKeyResponse }
-     * 
-     */
-    public CreateSSHKeyResponse createCreateSSHKeyResponse() {
-        return new CreateSSHKeyResponse();
-    }
-
-    /**
-     * Create an instance of {@link AttachDiskResponse }
-     * 
-     */
-    public AttachDiskResponse createAttachDiskResponse() {
-        return new AttachDiskResponse();
-    }
-
-    /**
-     * Create an instance of {@link RevertToResourceResponse }
-     * 
-     */
-    public RevertToResourceResponse createRevertToResourceResponse() {
-        return new RevertToResourceResponse();
-    }
-
-    /**
-     * Create an instance of {@link Server }
-     * 
-     */
-    public Server createServer() {
-        return new Server();
-    }
-
-    /**
-     * Create an instance of {@link ModifyResource }
-     * 
-     */
-    public ModifyResource createModifyResource() {
-        return new ModifyResource();
-    }
-
-    /**
-     * Create an instance of {@link ChangeDeploymentInstanceStatus }
-     * 
-     */
-    public ChangeDeploymentInstanceStatus createChangeDeploymentInstanceStatus() {
-        return new ChangeDeploymentInstanceStatus();
-    }
-
-    /**
-     * Create an instance of {@link Query }
-     * 
-     */
-    public Query createQuery() {
-        return new Query();
-    }
-
-    /**
-     * Create an instance of {@link FetchResourceResponse }
-     * 
-     */
-    public FetchResourceResponse createFetchResourceResponse() {
-        return new FetchResourceResponse();
-    }
-
-    /**
-     * Create an instance of {@link PublishResourceResponse }
-     * 
-     */
-    public PublishResourceResponse createPublishResourceResponse() {
-        return new PublishResourceResponse();
-    }
-
-    /**
-     * Create an instance of {@link CancelTransactionResponse }
-     * 
-     */
-    public CancelTransactionResponse createCancelTransactionResponse() {
-        return new CancelTransactionResponse();
-    }
-
-    /**
-     * Create an instance of {@link ResultRow.ColumnMap.Entry }
-     * 
-     */
-    public ResultRow.ColumnMap.Entry createResultRowColumnMapEntry() {
-        return new ResultRow.ColumnMap.Entry();
-    }
-
-    /**
-     * Create an instance of {@link ModifyVDCResponse }
-     * 
-     */
-    public ModifyVDCResponse createModifyVDCResponse() {
-        return new ModifyVDCResponse();
-    }
-
-    /**
-     * Create an instance of {@link SystemCapabilitySet.MaxLimit.Entry }
-     * 
-     */
-    public SystemCapabilitySet.MaxLimit.Entry createSystemCapabilitySetMaxLimitEntry() {
-        return new SystemCapabilitySet.MaxLimit.Entry();
-    }
-
-    /**
-     * Create an instance of {@link JadeList }
-     * 
-     */
-    public JadeList createJadeList() {
-        return new JadeList();
-    }
-
-    /**
-     * Create an instance of {@link FetchServerResponse }
-     * 
-     */
-    public FetchServerResponse createFetchServerResponse() {
-        return new FetchServerResponse();
-    }
-
-    /**
-     * Create an instance of {@link AddKey }
-     * 
-     */
-    public AddKey createAddKey() {
-        return new AddKey();
-    }
-
-    /**
-     * Create an instance of {@link BillingEntityDetails.StandardEmailSettings }
-     * 
-     */
-    public BillingEntityDetails.StandardEmailSettings createBillingEntityDetailsStandardEmailSettings() {
-        return new BillingEntityDetails.StandardEmailSettings();
-    }
-
-    /**
-     * Create an instance of {@link AttachSubnet }
-     * 
-     */
-    public AttachSubnet createAttachSubnet() {
-        return new AttachSubnet();
-    }
-
-    /**
-     * Create an instance of {@link ListPermissionsResponse }
-     * 
-     */
-    public ListPermissionsResponse createListPermissionsResponse() {
-        return new ListPermissionsResponse();
-    }
-
-    /**
-     * Create an instance of {@link ModifyNetwork }
-     * 
-     */
-    public ModifyNetwork createModifyNetwork() {
-        return new ModifyNetwork();
-    }
-
-    /**
-     * Create an instance of {@link CreateDisk }
-     * 
-     */
-    public CreateDisk createCreateDisk() {
-        return new CreateDisk();
-    }
-
-    /**
-     * Create an instance of {@link PublishImageResponse }
-     * 
-     */
-    public PublishImageResponse createPublishImageResponse() {
-        return new PublishImageResponse();
-    }
-
-    /**
-     * Create an instance of {@link User }
-     * 
-     */
-    public User createUser() {
-        return new User();
-    }
-
-    /**
-     * Create an instance of {@link AddIPResponse }
-     * 
-     */
-    public AddIPResponse createAddIPResponse() {
-        return new AddIPResponse();
-    }
-
-    /**
-     * Create an instance of {@link KeyList.Content }
-     * 
-     */
-    public KeyList.Content createKeyListContent() {
-        return new KeyList.Content();
-    }
-
-    /**
-     * Create an instance of {@link DeploymentTemplate }
-     * 
-     */
-    public DeploymentTemplate createDeploymentTemplate() {
-        return new DeploymentTemplate();
-    }
-
-    /**
-     * Create an instance of {@link BillingEntity }
-     * 
-     */
-    public BillingEntity createBillingEntity() {
-        return new BillingEntity();
-    }
-
-    /**
-     * Create an instance of {@link ResumeTransaction }
-     * 
-     */
-    public ResumeTransaction createResumeTransaction() {
-        return new ResumeTransaction();
-    }
-
-    /**
-     * Create an instance of {@link ListStatementDetail }
-     * 
-     */
-    public ListStatementDetail createListStatementDetail() {
-        return new ListStatementDetail();
-    }
-
-    /**
-     * Create an instance of {@link DeleteResourceResponse }
-     * 
-     */
-    public DeleteResourceResponse createDeleteResourceResponse() {
-        return new DeleteResourceResponse();
-    }
-
-    /**
-     * Create an instance of {@link DeleteUserFromGroup }
-     * 
-     */
-    public DeleteUserFromGroup createDeleteUserFromGroup() {
-        return new DeleteUserFromGroup();
-    }
-
-    /**
-     * Create an instance of {@link ModifyDeploymentInstance }
-     * 
-     */
-    public ModifyDeploymentInstance createModifyDeploymentInstance() {
-        return new ModifyDeploymentInstance();
-    }
-
-    /**
-     * Create an instance of {@link InvoiceSetting.InvoiceHeaders }
-     * 
-     */
-    public InvoiceSetting.InvoiceHeaders createInvoiceSettingInvoiceHeaders() {
-        return new InvoiceSetting.InvoiceHeaders();
-    }
-
-    /**
-     * Create an instance of {@link ModifyGroupResponse }
-     * 
-     */
-    public ModifyGroupResponse createModifyGroupResponse() {
-        return new ModifyGroupResponse();
     }
 
     /**
@@ -969,107 +569,11 @@ public class ObjectFactory {
     }
 
     /**
-     * Create an instance of {@link ModifyKey }
+     * Create an instance of {@link FetchDiskResponse }
      * 
      */
-    public ModifyKey createModifyKey() {
-        return new ModifyKey();
-    }
-
-    /**
-     * Create an instance of {@link AddKeyResponse }
-     * 
-     */
-    public AddKeyResponse createAddKeyResponse() {
-        return new AddKeyResponse();
-    }
-
-    /**
-     * Create an instance of {@link ChangeServerStatusResponse }
-     * 
-     */
-    public ChangeServerStatusResponse createChangeServerStatusResponse() {
-        return new ChangeServerStatusResponse();
-    }
-
-    /**
-     * Create an instance of {@link CreateDeploymentTemplate }
-     * 
-     */
-    public CreateDeploymentTemplate createCreateDeploymentTemplate() {
-        return new CreateDeploymentTemplate();
-    }
-
-    /**
-     * Create an instance of {@link ModifySnapshotResponse }
-     * 
-     */
-    public ModifySnapshotResponse createModifySnapshotResponse() {
-        return new ModifySnapshotResponse();
-    }
-
-    /**
-     * Create an instance of {@link Value }
-     * 
-     */
-    public Value createValue() {
-        return new Value();
-    }
-
-    /**
-     * Create an instance of {@link Image }
-     * 
-     */
-    public Image createImage() {
-        return new Image();
-    }
-
-    /**
-     * Create an instance of {@link PaymentMethodInstance }
-     * 
-     */
-    public PaymentMethodInstance createPaymentMethodInstance() {
-        return new PaymentMethodInstance();
-    }
-
-    /**
-     * Create an instance of {@link ListPermissions }
-     * 
-     */
-    public ListPermissions createListPermissions() {
-        return new ListPermissions();
-    }
-
-    /**
-     * Create an instance of {@link GetMeasuredValuesResponse }
-     * 
-     */
-    public GetMeasuredValuesResponse createGetMeasuredValuesResponse() {
-        return new GetMeasuredValuesResponse();
-    }
-
-    /**
-     * Create an instance of {@link Firewall }
-     * 
-     */
-    public Firewall createFirewall() {
-        return new Firewall();
-    }
-
-    /**
-     * Create an instance of {@link CancelTransaction }
-     * 
-     */
-    public CancelTransaction createCancelTransaction() {
-        return new CancelTransaction();
-    }
-
-    /**
-     * Create an instance of {@link CreateBlob }
-     * 
-     */
-    public CreateBlob createCreateBlob() {
-        return new CreateBlob();
+    public FetchDiskResponse createFetchDiskResponse() {
+        return new FetchDiskResponse();
     }
 
     /**
@@ -1081,875 +585,11 @@ public class ObjectFactory {
     }
 
     /**
-     * Create an instance of {@link UnlockUser }
-     * 
-     */
-    public UnlockUser createUnlockUser() {
-        return new UnlockUser();
-    }
-
-    /**
-     * Create an instance of {@link SimpleResource }
-     * 
-     */
-    public SimpleResource createSimpleResource() {
-        return new SimpleResource();
-    }
-
-    /**
-     * Create an instance of {@link IsPermittedResponse }
-     * 
-     */
-    public IsPermittedResponse createIsPermittedResponse() {
-        return new IsPermittedResponse();
-    }
-
-    /**
-     * Create an instance of {@link Resource }
-     * 
-     */
-    public Resource createResource() {
-        return new Resource();
-    }
-
-    /**
-     * Create an instance of {@link CreateNetworkInterface }
-     * 
-     */
-    public CreateNetworkInterface createCreateNetworkInterface() {
-        return new CreateNetworkInterface();
-    }
-
-    /**
-     * Create an instance of {@link ChangeDeploymentInstanceStatusResponse }
-     * 
-     */
-    public ChangeDeploymentInstanceStatusResponse createChangeDeploymentInstanceStatusResponse() {
-        return new ChangeDeploymentInstanceStatusResponse();
-    }
-
-    /**
-     * Create an instance of {@link CreateNetworkInterfaceResponse }
-     * 
-     */
-    public CreateNetworkInterfaceResponse createCreateNetworkInterfaceResponse() {
-        return new CreateNetworkInterfaceResponse();
-    }
-
-    /**
-     * Create an instance of {@link ListProductPurchases }
-     * 
-     */
-    public ListProductPurchases createListProductPurchases() {
-        return new ListProductPurchases();
-    }
-
-    /**
-     * Create an instance of {@link RemoveIP }
-     * 
-     */
-    public RemoveIP createRemoveIP() {
-        return new RemoveIP();
-    }
-
-    /**
-     * Create an instance of {@link CreateGroup }
-     * 
-     */
-    public CreateGroup createCreateGroup() {
-        return new CreateGroup();
-    }
-
-    /**
-     * Create an instance of {@link SetPermissionsResponse }
-     * 
-     */
-    public SetPermissionsResponse createSetPermissionsResponse() {
-        return new SetPermissionsResponse();
-    }
-
-    /**
-     * Create an instance of {@link DoQuery }
-     * 
-     */
-    public DoQuery createDoQuery() {
-        return new DoQuery();
-    }
-
-    /**
-     * Create an instance of {@link DoQueryResponse }
-     * 
-     */
-    public DoQueryResponse createDoQueryResponse() {
-        return new DoQueryResponse();
-    }
-
-    /**
-     * Create an instance of {@link ListProductPurchasesResponse }
-     * 
-     */
-    public ListProductPurchasesResponse createListProductPurchasesResponse() {
-        return new ListProductPurchasesResponse();
-    }
-
-    /**
-     * Create an instance of {@link WaitForJobResponse }
-     * 
-     */
-    public WaitForJobResponse createWaitForJobResponse() {
-        return new WaitForJobResponse();
-    }
-
-    /**
-     * Create an instance of {@link ModifyServerResponse }
-     * 
-     */
-    public ModifyServerResponse createModifyServerResponse() {
-        return new ModifyServerResponse();
-    }
-
-    /**
-     * Create an instance of {@link MapHolder.Content }
-     * 
-     */
-    public MapHolder.Content createMapHolderContent() {
-        return new MapHolder.Content();
-    }
-
-    /**
-     * Create an instance of {@link EmailTemplate }
-     * 
-     */
-    public EmailTemplate createEmailTemplate() {
-        return new EmailTemplate();
-    }
-
-    /**
-     * Create an instance of {@link Blob }
-     * 
-     */
-    public Blob createBlob() {
-        return new Blob();
-    }
-
-    /**
-     * Create an instance of {@link AttachSubnetResponse }
-     * 
-     */
-    public AttachSubnetResponse createAttachSubnetResponse() {
-        return new AttachSubnetResponse();
-    }
-
-    /**
-     * Create an instance of {@link CreateDiskResponse }
-     * 
-     */
-    public CreateDiskResponse createCreateDiskResponse() {
-        return new CreateDiskResponse();
-    }
-
-    /**
-     * Create an instance of {@link CreateDeploymentTemplateFromInstanceResponse }
-     * 
-     */
-    public CreateDeploymentTemplateFromInstanceResponse createCreateDeploymentTemplateFromInstanceResponse() {
-        return new CreateDeploymentTemplateFromInstanceResponse();
-    }
-
-    /**
-     * Create an instance of {@link CreateNetwork }
-     * 
-     */
-    public CreateNetwork createCreateNetwork() {
-        return new CreateNetwork();
-    }
-
-    /**
-     * Create an instance of {@link ModifyGroup }
-     * 
-     */
-    public ModifyGroup createModifyGroup() {
-        return new ModifyGroup();
-    }
-
-    /**
-     * Create an instance of {@link AddUserToGroupResponse }
-     * 
-     */
-    public AddUserToGroupResponse createAddUserToGroupResponse() {
-        return new AddUserToGroupResponse();
-    }
-
-    /**
-     * Create an instance of {@link RevokeResource }
-     * 
-     */
-    public RevokeResource createRevokeResource() {
-        return new RevokeResource();
-    }
-
-    /**
-     * Create an instance of {@link EmailTemplate.BillingEmailVar.Entry }
-     * 
-     */
-    public EmailTemplate.BillingEmailVar.Entry createEmailTemplateBillingEmailVarEntry() {
-        return new EmailTemplate.BillingEmailVar.Entry();
-    }
-
-    /**
-     * Create an instance of {@link ModifyDeploymentTemplateResponse }
-     * 
-     */
-    public ModifyDeploymentTemplateResponse createModifyDeploymentTemplateResponse() {
-        return new ModifyDeploymentTemplateResponse();
-    }
-
-    /**
-     * Create an instance of {@link EmailTemplate.BillingEmailVar }
-     * 
-     */
-    public EmailTemplate.BillingEmailVar createEmailTemplateBillingEmailVar() {
-        return new EmailTemplate.BillingEmailVar();
-    }
-
-    /**
-     * Create an instance of {@link HypervisorSetting }
-     * 
-     */
-    public HypervisorSetting createHypervisorSetting() {
-        return new HypervisorSetting();
-    }
-
-    /**
-     * Create an instance of {@link Subnet }
-     * 
-     */
-    public Subnet createSubnet() {
-        return new Subnet();
-    }
-
-    /**
      * Create an instance of {@link RevokeImageResponse }
      * 
      */
     public RevokeImageResponse createRevokeImageResponse() {
         return new RevokeImageResponse();
-    }
-
-    /**
-     * Create an instance of {@link UpdateUser }
-     * 
-     */
-    public UpdateUser createUpdateUser() {
-        return new UpdateUser();
-    }
-
-    /**
-     * Create an instance of {@link Job }
-     * 
-     */
-    public Job createJob() {
-        return new Job();
-    }
-
-    /**
-     * Create an instance of {@link DeploymentInstance }
-     * 
-     */
-    public DeploymentInstance createDeploymentInstance() {
-        return new DeploymentInstance();
-    }
-
-    /**
-     * Create an instance of {@link Customer.LimitsMap }
-     * 
-     */
-    public Customer.LimitsMap createCustomerLimitsMap() {
-        return new Customer.LimitsMap();
-    }
-
-    /**
-     * Create an instance of {@link Customer.LimitsMap.Entry }
-     * 
-     */
-    public Customer.LimitsMap.Entry createCustomerLimitsMapEntry() {
-        return new Customer.LimitsMap.Entry();
-    }
-
-    /**
-     * Create an instance of {@link Nic }
-     * 
-     */
-    public Nic createNic() {
-        return new Nic();
-    }
-
-    /**
-     * Create an instance of {@link DryRunTemplate }
-     * 
-     */
-    public DryRunTemplate createDryRunTemplate() {
-        return new DryRunTemplate();
-    }
-
-    /**
-     * Create an instance of {@link Group }
-     * 
-     */
-    public Group createGroup() {
-        return new Group();
-    }
-
-    /**
-     * Create an instance of {@link TestPaymentMethod }
-     * 
-     */
-    public TestPaymentMethod createTestPaymentMethod() {
-        return new TestPaymentMethod();
-    }
-
-    /**
-     * Create an instance of {@link InvoiceSetting.InvoiceHeaders.Entry }
-     * 
-     */
-    public InvoiceSetting.InvoiceHeaders.Entry createInvoiceSettingInvoiceHeadersEntry() {
-        return new InvoiceSetting.InvoiceHeaders.Entry();
-    }
-
-    /**
-     * Create an instance of {@link FilterCondition }
-     * 
-     */
-    public FilterCondition createFilterCondition() {
-        return new FilterCondition();
-    }
-
-    /**
-     * Create an instance of {@link HypervisorConfig.Config }
-     * 
-     */
-    public HypervisorConfig.Config createHypervisorConfigConfig() {
-        return new HypervisorConfig.Config();
-    }
-
-    /**
-     * Create an instance of {@link ModifyResourceResponse }
-     * 
-     */
-    public ModifyResourceResponse createModifyResourceResponse() {
-        return new ModifyResourceResponse();
-    }
-
-    /**
-     * Create an instance of {@link UpdateCustomerResponse }
-     * 
-     */
-    public UpdateCustomerResponse createUpdateCustomerResponse() {
-        return new UpdateCustomerResponse();
-    }
-
-    /**
-     * Create an instance of {@link AggregationFilter }
-     * 
-     */
-    public AggregationFilter createAggregationFilter() {
-        return new AggregationFilter();
-    }
-
-    /**
-     * Create an instance of {@link CreateBlobResponse }
-     * 
-     */
-    public CreateBlobResponse createCreateBlobResponse() {
-        return new CreateBlobResponse();
-    }
-
-    /**
-     * Create an instance of {@link ModifyImage }
-     * 
-     */
-    public ModifyImage createModifyImage() {
-        return new ModifyImage();
-    }
-
-    /**
-     * Create an instance of {@link ModifyKeyResponse }
-     * 
-     */
-    public ModifyKeyResponse createModifyKeyResponse() {
-        return new ModifyKeyResponse();
-    }
-
-    /**
-     * Create an instance of {@link CreateReferralPromoCodeResponse }
-     * 
-     */
-    public CreateReferralPromoCodeResponse createCreateReferralPromoCodeResponse() {
-        return new CreateReferralPromoCodeResponse();
-    }
-
-    /**
-     * Create an instance of {@link OpenVNCConnectionResponse }
-     * 
-     */
-    public OpenVNCConnectionResponse createOpenVNCConnectionResponse() {
-        return new OpenVNCConnectionResponse();
-    }
-
-    /**
-     * Create an instance of {@link ResourceMetadata }
-     * 
-     */
-    public ResourceMetadata createResourceMetadata() {
-        return new ResourceMetadata();
-    }
-
-    /**
-     * Create an instance of {@link GetBlobContent }
-     * 
-     */
-    public GetBlobContent createGetBlobContent() {
-        return new GetBlobContent();
-    }
-
-    /**
-     * Create an instance of {@link ModifyPaymentMethodInstance }
-     * 
-     */
-    public ModifyPaymentMethodInstance createModifyPaymentMethodInstance() {
-        return new ModifyPaymentMethodInstance();
-    }
-
-    /**
-     * Create an instance of {@link UpdateMetadataResponse }
-     * 
-     */
-    public UpdateMetadataResponse createUpdateMetadataResponse() {
-        return new UpdateMetadataResponse();
-    }
-
-    /**
-     * Create an instance of {@link ModifySSHKeyResponse }
-     * 
-     */
-    public ModifySSHKeyResponse createModifySSHKeyResponse() {
-        return new ModifySSHKeyResponse();
-    }
-
-    /**
-     * Create an instance of {@link ModifyVDC }
-     * 
-     */
-    public ModifyVDC createModifyVDC() {
-        return new ModifyVDC();
-    }
-
-    /**
-     * Create an instance of {@link ListResources }
-     * 
-     */
-    public ListResources createListResources() {
-        return new ListResources();
-    }
-
-    /**
-     * Create an instance of {@link FirewallRule }
-     * 
-     */
-    public FirewallRule createFirewallRule() {
-        return new FirewallRule();
-    }
-
-    /**
-     * Create an instance of {@link ListResult }
-     * 
-     */
-    public ListResult createListResult() {
-        return new ListResult();
-    }
-
-    /**
-     * Create an instance of {@link Vdc }
-     * 
-     */
-    public Vdc createVdc() {
-        return new Vdc();
-    }
-
-    /**
-     * Create an instance of {@link Ip }
-     * 
-     */
-    public Ip createIp() {
-        return new Ip();
-    }
-
-    /**
-     * Create an instance of {@link DetachSSHKeyResponse }
-     * 
-     */
-    public DetachSSHKeyResponse createDetachSSHKeyResponse() {
-        return new DetachSSHKeyResponse();
-    }
-
-    /**
-     * Create an instance of {@link ListReferralPromoCodeResponse }
-     * 
-     */
-    public ListReferralPromoCodeResponse createListReferralPromoCodeResponse() {
-        return new ListReferralPromoCodeResponse();
-    }
-
-    /**
-     * Create an instance of {@link ResultRow.ColumnMap }
-     * 
-     */
-    public ResultRow.ColumnMap createResultRowColumnMap() {
-        return new ResultRow.ColumnMap();
-    }
-
-    /**
-     * Create an instance of {@link PaymentMethod }
-     * 
-     */
-    public PaymentMethod createPaymentMethod() {
-        return new PaymentMethod();
-    }
-
-    /**
-     * Create an instance of {@link CancelJobResponse }
-     * 
-     */
-    public CancelJobResponse createCancelJobResponse() {
-        return new CancelJobResponse();
-    }
-
-    /**
-     * Create an instance of {@link CloneResourceResponse }
-     * 
-     */
-    public CloneResourceResponse createCloneResourceResponse() {
-        return new CloneResourceResponse();
-    }
-
-    /**
-     * Create an instance of {@link UpdateUserResponse }
-     * 
-     */
-    public UpdateUserResponse createUpdateUserResponse() {
-        return new UpdateUserResponse();
-    }
-
-    /**
-     * Create an instance of {@link Promotion }
-     * 
-     */
-    public Promotion createPromotion() {
-        return new Promotion();
-    }
-
-    /**
-     * Create an instance of {@link PurchaseUnitsResponse }
-     * 
-     */
-    public PurchaseUnitsResponse createPurchaseUnitsResponse() {
-        return new PurchaseUnitsResponse();
-    }
-
-    /**
-     * Create an instance of {@link CreateSubnet }
-     * 
-     */
-    public CreateSubnet createCreateSubnet() {
-        return new CreateSubnet();
-    }
-
-    /**
-     * Create an instance of {@link ResumeTransactionResponse }
-     * 
-     */
-    public ResumeTransactionResponse createResumeTransactionResponse() {
-        return new ResumeTransactionResponse();
-    }
-
-    /**
-     * Create an instance of {@link FetchDiskResponse }
-     * 
-     */
-    public FetchDiskResponse createFetchDiskResponse() {
-        return new FetchDiskResponse();
-    }
-
-    /**
-     * Create an instance of {@link DeleteReferralPromoCode }
-     * 
-     */
-    public DeleteReferralPromoCode createDeleteReferralPromoCode() {
-        return new DeleteReferralPromoCode();
-    }
-
-    /**
-     * Create an instance of {@link PayInvoiceResponse }
-     * 
-     */
-    public PayInvoiceResponse createPayInvoiceResponse() {
-        return new PayInvoiceResponse();
-    }
-
-    /**
-     * Create an instance of {@link ListUnitTransactionsResponse }
-     * 
-     */
-    public ListUnitTransactionsResponse createListUnitTransactionsResponse() {
-        return new ListUnitTransactionsResponse();
-    }
-
-    /**
-     * Create an instance of {@link ModifySubnet }
-     * 
-     */
-    public ModifySubnet createModifySubnet() {
-        return new ModifySubnet();
-    }
-
-    /**
-     * Create an instance of {@link SetPermissions }
-     * 
-     */
-    public SetPermissions createSetPermissions() {
-        return new SetPermissions();
-    }
-
-    /**
-     * Create an instance of {@link QueryResult }
-     * 
-     */
-    public QueryResult createQueryResult() {
-        return new QueryResult();
-    }
-
-    /**
-     * Create an instance of {@link ListReferralPromoCode }
-     * 
-     */
-    public ListReferralPromoCode createListReferralPromoCode() {
-        return new ListReferralPromoCode();
-    }
-
-    /**
-     * Create an instance of {@link ApplyFirewallTemplateResponse }
-     * 
-     */
-    public ApplyFirewallTemplateResponse createApplyFirewallTemplateResponse() {
-        return new ApplyFirewallTemplateResponse();
-    }
-
-    /**
-     * Create an instance of {@link AggregationField }
-     * 
-     */
-    public AggregationField createAggregationField() {
-        return new AggregationField();
-    }
-
-    /**
-     * Create an instance of {@link FirewallTemplate }
-     * 
-     */
-    public FirewallTemplate createFirewallTemplate() {
-        return new FirewallTemplate();
-    }
-
-    /**
-     * Create an instance of {@link TestPaymentMethodResponse }
-     * 
-     */
-    public TestPaymentMethodResponse createTestPaymentMethodResponse() {
-        return new TestPaymentMethodResponse();
-    }
-
-    /**
-     * Create an instance of {@link ResultRow }
-     * 
-     */
-    public ResultRow createResultRow() {
-        return new ResultRow();
-    }
-
-    /**
-     * Create an instance of {@link MeasuredValue }
-     * 
-     */
-    public MeasuredValue createMeasuredValue() {
-        return new MeasuredValue();
-    }
-
-    /**
-     * Create an instance of {@link SystemCapabilitySet }
-     * 
-     */
-    public SystemCapabilitySet createSystemCapabilitySet() {
-        return new SystemCapabilitySet();
-    }
-
-    /**
-     * Create an instance of {@link GetResourceTypes }
-     * 
-     */
-    public GetResourceTypes createGetResourceTypes() {
-        return new GetResourceTypes();
-    }
-
-    /**
-     * Create an instance of {@link InvoiceItem }
-     * 
-     */
-    public InvoiceItem createInvoiceItem() {
-        return new InvoiceItem();
-    }
-
-    /**
-     * Create an instance of {@link CreateImage }
-     * 
-     */
-    public CreateImage createCreateImage() {
-        return new CreateImage();
-    }
-
-    /**
-     * Create an instance of {@link AttachNetworkInterfaceResponse }
-     * 
-     */
-    public AttachNetworkInterfaceResponse createAttachNetworkInterfaceResponse() {
-        return new AttachNetworkInterfaceResponse();
-    }
-
-    /**
-     * Create an instance of {@link Invoice }
-     * 
-     */
-    public Invoice createInvoice() {
-        return new Invoice();
-    }
-
-    /**
-     * Create an instance of {@link HypervisorConfig.Config.Entry }
-     * 
-     */
-    public HypervisorConfig.Config.Entry createHypervisorConfigConfigEntry() {
-        return new HypervisorConfig.Config.Entry();
-    }
-
-    /**
-     * Create an instance of {@link ListStatementDetailResponse }
-     * 
-     */
-    public ListStatementDetailResponse createListStatementDetailResponse() {
-        return new ListStatementDetailResponse();
-    }
-
-    /**
-     * Create an instance of {@link CreateSnapshot }
-     * 
-     */
-    public CreateSnapshot createCreateSnapshot() {
-        return new CreateSnapshot();
-    }
-
-    /**
-     * Create an instance of {@link PublishTo }
-     * 
-     */
-    public PublishTo createPublishTo() {
-        return new PublishTo();
-    }
-
-    /**
-     * Create an instance of {@link ModifyNetworkResponse }
-     * 
-     */
-    public ModifyNetworkResponse createModifyNetworkResponse() {
-        return new ModifyNetworkResponse();
-    }
-
-    /**
-     * Create an instance of {@link CreateSubnetResponse }
-     * 
-     */
-    public CreateSubnetResponse createCreateSubnetResponse() {
-        return new CreateSubnetResponse();
-    }
-
-    /**
-     * Create an instance of {@link Transaction.RedirectData.Entry }
-     * 
-     */
-    public Transaction.RedirectData.Entry createTransactionRedirectDataEntry() {
-        return new Transaction.RedirectData.Entry();
-    }
-
-    /**
-     * Create an instance of {@link CustomerResource }
-     * 
-     */
-    public CustomerResource createCustomerResource() {
-        return new CustomerResource();
-    }
-
-    /**
-     * Create an instance of {@link UnitTransactionSummary }
-     * 
-     */
-    public UnitTransactionSummary createUnitTransactionSummary() {
-        return new UnitTransactionSummary();
-    }
-
-    /**
-     * Create an instance of {@link InvoiceSetting }
-     * 
-     */
-    public InvoiceSetting createInvoiceSetting() {
-        return new InvoiceSetting();
-    }
-
-    /**
-     * Create an instance of {@link ValueValidator }
-     * 
-     */
-    public ValueValidator createValueValidator() {
-        return new ValueValidator();
-    }
-
-    /**
-     * Create an instance of {@link OpenVNCConnection }
-     * 
-     */
-    public OpenVNCConnection createOpenVNCConnection() {
-        return new OpenVNCConnection();
-    }
-
-    /**
-     * Create an instance of {@link ModifyFirewallTemplate }
-     * 
-     */
-    public ModifyFirewallTemplate createModifyFirewallTemplate() {
-        return new ModifyFirewallTemplate();
-    }
-
-    /**
-     * Create an instance of {@link UpdateMetadata }
-     * 
-     */
-    public UpdateMetadata createUpdateMetadata() {
-        return new UpdateMetadata();
-    }
-
-    /**
-     * Create an instance of {@link GetMeasuredValues }
-     * 
-     */
-    public GetMeasuredValues createGetMeasuredValues() {
-        return new GetMeasuredValues();
     }
 
     /**
@@ -1961,43 +601,11 @@ public class ObjectFactory {
     }
 
     /**
-     * Create an instance of {@link Address }
+     * Create an instance of {@link RenderInvoiceResponse }
      * 
      */
-    public Address createAddress() {
-        return new Address();
-    }
-
-    /**
-     * Create an instance of {@link AddUserToGroup }
-     * 
-     */
-    public AddUserToGroup createAddUserToGroup() {
-        return new AddUserToGroup();
-    }
-
-    /**
-     * Create an instance of {@link IsPermitted }
-     * 
-     */
-    public IsPermitted createIsPermitted() {
-        return new IsPermitted();
-    }
-
-    /**
-     * Create an instance of {@link BillingEntityDetails }
-     * 
-     */
-    public BillingEntityDetails createBillingEntityDetails() {
-        return new BillingEntityDetails();
-    }
-
-    /**
-     * Create an instance of {@link CustomerDetails }
-     * 
-     */
-    public CustomerDetails createCustomerDetails() {
-        return new CustomerDetails();
+    public RenderInvoiceResponse createRenderInvoiceResponse() {
+        return new RenderInvoiceResponse();
     }
 
     /**
@@ -2009,51 +617,27 @@ public class ObjectFactory {
     }
 
     /**
-     * Create an instance of {@link RemoveKey }
+     * Create an instance of {@link InvoiceSetting.InvoiceHeaders }
      * 
      */
-    public RemoveKey createRemoveKey() {
-        return new RemoveKey();
+    public InvoiceSetting.InvoiceHeaders createInvoiceSettingInvoiceHeaders() {
+        return new InvoiceSetting.InvoiceHeaders();
     }
 
     /**
-     * Create an instance of {@link CreateGroupResponse }
+     * Create an instance of {@link FirewallRule }
      * 
      */
-    public CreateGroupResponse createCreateGroupResponse() {
-        return new CreateGroupResponse();
+    public FirewallRule createFirewallRule() {
+        return new FirewallRule();
     }
 
     /**
-     * Create an instance of {@link DeleteReferralPromoCodeResponse }
+     * Create an instance of {@link DetachNetworkInterface }
      * 
      */
-    public DeleteReferralPromoCodeResponse createDeleteReferralPromoCodeResponse() {
-        return new DeleteReferralPromoCodeResponse();
-    }
-
-    /**
-     * Create an instance of {@link ModifySubnetResponse }
-     * 
-     */
-    public ModifySubnetResponse createModifySubnetResponse() {
-        return new ModifySubnetResponse();
-    }
-
-    /**
-     * Create an instance of {@link FetchResource }
-     * 
-     */
-    public FetchResource createFetchResource() {
-        return new FetchResource();
-    }
-
-    /**
-     * Create an instance of {@link FetchDisk }
-     * 
-     */
-    public FetchDisk createFetchDisk() {
-        return new FetchDisk();
+    public DetachNetworkInterface createDetachNetworkInterface() {
+        return new DetachNetworkInterface();
     }
 
     /**
@@ -2065,315 +649,35 @@ public class ObjectFactory {
     }
 
     /**
-     * Create an instance of {@link CreateNetworkResponse }
+     * Create an instance of {@link ModifyServer }
      * 
      */
-    public CreateNetworkResponse createCreateNetworkResponse() {
-        return new CreateNetworkResponse();
+    public ModifyServer createModifyServer() {
+        return new ModifyServer();
     }
 
     /**
-     * Create an instance of {@link Cluster }
+     * Create an instance of {@link Query }
      * 
      */
-    public Cluster createCluster() {
-        return new Cluster();
+    public Query createQuery() {
+        return new Query();
     }
 
     /**
-     * Create an instance of {@link Transaction.RedirectData }
+     * Create an instance of {@link ModifyKey }
      * 
      */
-    public Transaction.RedirectData createTransactionRedirectData() {
-        return new Transaction.RedirectData();
+    public ModifyKey createModifyKey() {
+        return new ModifyKey();
     }
 
     /**
-     * Create an instance of {@link DryRunTemplateResponse }
+     * Create an instance of {@link ChangeServerStatusResponse }
      * 
      */
-    public DryRunTemplateResponse createDryRunTemplateResponse() {
-        return new DryRunTemplateResponse();
-    }
-
-    /**
-     * Create an instance of {@link ResourceKey }
-     * 
-     */
-    public ResourceKey createResourceKey() {
-        return new ResourceKey();
-    }
-
-    /**
-     * Create an instance of {@link ModifyDeploymentInstanceResponse }
-     * 
-     */
-    public ModifyDeploymentInstanceResponse createModifyDeploymentInstanceResponse() {
-        return new ModifyDeploymentInstanceResponse();
-    }
-
-    /**
-     * Create an instance of {@link CloneResource }
-     * 
-     */
-    public CloneResource createCloneResource() {
-        return new CloneResource();
-    }
-
-    /**
-     * Create an instance of {@link HypervisorConfig }
-     * 
-     */
-    public HypervisorConfig createHypervisorConfig() {
-        return new HypervisorConfig();
-    }
-
-    /**
-     * Create an instance of {@link VncConnection }
-     * 
-     */
-    public VncConnection createVncConnection() {
-        return new VncConnection();
-    }
-
-    /**
-     * Create an instance of {@link FetchParameters }
-     * 
-     */
-    public FetchParameters createFetchParameters() {
-        return new FetchParameters();
-    }
-
-    /**
-     * Create an instance of {@link AddIP }
-     * 
-     */
-    public AddIP createAddIP() {
-        return new AddIP();
-    }
-
-    /**
-     * Create an instance of {@link CreatePaymentMethodInstanceResponse }
-     * 
-     */
-    public CreatePaymentMethodInstanceResponse createCreatePaymentMethodInstanceResponse() {
-        return new CreatePaymentMethodInstanceResponse();
-    }
-
-    /**
-     * Create an instance of {@link RemoveKeyResponse }
-     * 
-     */
-    public RemoveKeyResponse createRemoveKeyResponse() {
-        return new RemoveKeyResponse();
-    }
-
-    /**
-     * Create an instance of {@link DeleteUserFromGroupResponse }
-     * 
-     */
-    public DeleteUserFromGroupResponse createDeleteUserFromGroupResponse() {
-        return new DeleteUserFromGroupResponse();
-    }
-
-    /**
-     * Create an instance of {@link PaymentCard }
-     * 
-     */
-    public PaymentCard createPaymentCard() {
-        return new PaymentCard();
-    }
-
-    /**
-     * Create an instance of {@link ModifyDeploymentTemplate }
-     * 
-     */
-    public ModifyDeploymentTemplate createModifyDeploymentTemplate() {
-        return new ModifyDeploymentTemplate();
-    }
-
-    /**
-     * Create an instance of {@link ApplyFirewallTemplate }
-     * 
-     */
-    public ApplyFirewallTemplate createApplyFirewallTemplate() {
-        return new ApplyFirewallTemplate();
-    }
-
-    /**
-     * Create an instance of {@link UnitTransaction }
-     * 
-     */
-    public UnitTransaction createUnitTransaction() {
-        return new UnitTransaction();
-    }
-
-    /**
-     * Create an instance of {@link GetBlobContentResponse }
-     * 
-     */
-    public GetBlobContentResponse createGetBlobContentResponse() {
-        return new GetBlobContentResponse();
-    }
-
-    /**
-     * Create an instance of {@link ProductOffer }
-     * 
-     */
-    public ProductOffer createProductOffer() {
-        return new ProductOffer();
-    }
-
-    /**
-     * Create an instance of {@link CreateSSHKey }
-     * 
-     */
-    public CreateSSHKey createCreateSSHKey() {
-        return new CreateSSHKey();
-    }
-
-    /**
-     * Create an instance of {@link ModifySSHKey }
-     * 
-     */
-    public ModifySSHKey createModifySSHKey() {
-        return new ModifySSHKey();
-    }
-
-    /**
-     * Create an instance of {@link Disk }
-     * 
-     */
-    public Disk createDisk() {
-        return new Disk();
-    }
-
-    /**
-     * Create an instance of {@link AttachSSHKeyResponse }
-     * 
-     */
-    public AttachSSHKeyResponse createAttachSSHKeyResponse() {
-        return new AttachSSHKeyResponse();
-    }
-
-    /**
-     * Create an instance of {@link DetachNetworkInterfaceResponse }
-     * 
-     */
-    public DetachNetworkInterfaceResponse createDetachNetworkInterfaceResponse() {
-        return new DetachNetworkInterfaceResponse();
-    }
-
-    /**
-     * Create an instance of {@link HypervisorConfig.DefaultSettings }
-     * 
-     */
-    public HypervisorConfig.DefaultSettings createHypervisorConfigDefaultSettings() {
-        return new HypervisorConfig.DefaultSettings();
-    }
-
-    /**
-     * Create an instance of {@link CreateVDC }
-     * 
-     */
-    public CreateVDC createCreateVDC() {
-        return new CreateVDC();
-    }
-
-    /**
-     * Create an instance of {@link ModifyFirewallTemplateResponse }
-     * 
-     */
-    public ModifyFirewallTemplateResponse createModifyFirewallTemplateResponse() {
-        return new ModifyFirewallTemplateResponse();
-    }
-
-    /**
-     * Create an instance of {@link ModifyImageResponse }
-     * 
-     */
-    public ModifyImageResponse createModifyImageResponse() {
-        return new ModifyImageResponse();
-    }
-
-    /**
-     * Create an instance of {@link Question }
-     * 
-     */
-    public Question createQuestion() {
-        return new Question();
-    }
-
-    /**
-     * Create an instance of {@link SearchFilter }
-     * 
-     */
-    public SearchFilter createSearchFilter() {
-        return new SearchFilter();
-    }
-
-    /**
-     * Create an instance of {@link PayInvoice }
-     * 
-     */
-    public PayInvoice createPayInvoice() {
-        return new PayInvoice();
-    }
-
-    /**
-     * Create an instance of {@link PublishImage }
-     * 
-     */
-    public PublishImage createPublishImage() {
-        return new PublishImage();
-    }
-
-    /**
-     * Create an instance of {@link Tax }
-     * 
-     */
-    public Tax createTax() {
-        return new Tax();
-    }
-
-    /**
-     * Create an instance of {@link ListUnitTransactions }
-     * 
-     */
-    public ListUnitTransactions createListUnitTransactions() {
-        return new ListUnitTransactions();
-    }
-
-    /**
-     * Create an instance of {@link ProductComponent }
-     * 
-     */
-    public ProductComponent createProductComponent() {
-        return new ProductComponent();
-    }
-
-    /**
-     * Create an instance of {@link ModifySnapshot }
-     * 
-     */
-    public ModifySnapshot createModifySnapshot() {
-        return new ModifySnapshot();
-    }
-
-    /**
-     * Create an instance of {@link CreateFirewallTemplate }
-     * 
-     */
-    public CreateFirewallTemplate createCreateFirewallTemplate() {
-        return new CreateFirewallTemplate();
-    }
-
-    /**
-     * Create an instance of {@link MapHolder.Content.Entry }
-     * 
-     */
-    public MapHolder.Content.Entry createMapHolderContentEntry() {
-        return new MapHolder.Content.Entry();
+    public ChangeServerStatusResponse createChangeServerStatusResponse() {
+        return new ChangeServerStatusResponse();
     }
 
     /**
@@ -2385,91 +689,219 @@ public class ObjectFactory {
     }
 
     /**
-     * Create an instance of {@link GetResourceTypesResponse }
+     * Create an instance of {@link ModifySSHKey }
      * 
      */
-    public GetResourceTypesResponse createGetResourceTypesResponse() {
-        return new GetResourceTypesResponse();
+    public ModifySSHKey createModifySSHKey() {
+        return new ModifySSHKey();
     }
 
     /**
-     * Create an instance of {@link ChangeServerStatus }
+     * Create an instance of {@link ResultRow }
      * 
      */
-    public ChangeServerStatus createChangeServerStatus() {
-        return new ChangeServerStatus();
+    public ResultRow createResultRow() {
+        return new ResultRow();
     }
 
     /**
-     * Create an instance of {@link MapHolder }
+     * Create an instance of {@link PublishTo }
      * 
      */
-    public MapHolder createMapHolder() {
-        return new MapHolder();
+    public PublishTo createPublishTo() {
+        return new PublishTo();
     }
 
     /**
-     * Create an instance of {@link WaitForJob }
+     * Create an instance of {@link Customer.LimitsMap }
      * 
      */
-    public WaitForJob createWaitForJob() {
-        return new WaitForJob();
+    public Customer.LimitsMap createCustomerLimitsMap() {
+        return new Customer.LimitsMap();
     }
 
     /**
-     * Create an instance of {@link CreateImageResponse }
+     * Create an instance of {@link UpdateMetadataResponse }
      * 
      */
-    public CreateImageResponse createCreateImageResponse() {
-        return new CreateImageResponse();
+    public UpdateMetadataResponse createUpdateMetadataResponse() {
+        return new UpdateMetadataResponse();
     }
 
     /**
-     * Create an instance of {@link DetachDisk }
+     * Create an instance of {@link CreateDiskResponse }
      * 
      */
-    public DetachDisk createDetachDisk() {
-        return new DetachDisk();
+    public CreateDiskResponse createCreateDiskResponse() {
+        return new CreateDiskResponse();
     }
 
     /**
-     * Create an instance of {@link ImagePermission }
+     * Create an instance of {@link CreateSSHKeyResponse }
      * 
      */
-    public ImagePermission createImagePermission() {
-        return new ImagePermission();
+    public CreateSSHKeyResponse createCreateSSHKeyResponse() {
+        return new CreateSSHKeyResponse();
     }
 
     /**
-     * Create an instance of {@link LockUserResponse }
+     * Create an instance of {@link OrderedField }
      * 
      */
-    public LockUserResponse createLockUserResponse() {
-        return new LockUserResponse();
+    public OrderedField createOrderedField() {
+        return new OrderedField();
     }
 
     /**
-     * Create an instance of {@link CreateSnapshotResponse }
+     * Create an instance of {@link QueryResult }
      * 
      */
-    public CreateSnapshotResponse createCreateSnapshotResponse() {
-        return new CreateSnapshotResponse();
+    public QueryResult createQueryResult() {
+        return new QueryResult();
     }
 
     /**
-     * Create an instance of {@link SystemCapabilitySet.MaxLimit }
+     * Create an instance of {@link ModifyGroup }
      * 
      */
-    public SystemCapabilitySet.MaxLimit createSystemCapabilitySetMaxLimit() {
-        return new SystemCapabilitySet.MaxLimit();
+    public ModifyGroup createModifyGroup() {
+        return new ModifyGroup();
     }
 
     /**
-     * Create an instance of {@link Snapshot }
+     * Create an instance of {@link PurchaseUnitsResponse }
      * 
      */
-    public Snapshot createSnapshot() {
-        return new Snapshot();
+    public PurchaseUnitsResponse createPurchaseUnitsResponse() {
+        return new PurchaseUnitsResponse();
+    }
+
+    /**
+     * Create an instance of {@link ModifyNetworkInterface }
+     * 
+     */
+    public ModifyNetworkInterface createModifyNetworkInterface() {
+        return new ModifyNetworkInterface();
+    }
+
+    /**
+     * Create an instance of {@link RemoveKey }
+     * 
+     */
+    public RemoveKey createRemoveKey() {
+        return new RemoveKey();
+    }
+
+    /**
+     * Create an instance of {@link EmailTemplate.BillingEmailVar }
+     * 
+     */
+    public EmailTemplate.BillingEmailVar createEmailTemplateBillingEmailVar() {
+        return new EmailTemplate.BillingEmailVar();
+    }
+
+    /**
+     * Create an instance of {@link GetHypervisorConfigResponse }
+     * 
+     */
+    public GetHypervisorConfigResponse createGetHypervisorConfigResponse() {
+        return new GetHypervisorConfigResponse();
+    }
+
+    /**
+     * Create an instance of {@link RevokeImage }
+     * 
+     */
+    public RevokeImage createRevokeImage() {
+        return new RevokeImage();
+    }
+
+    /**
+     * Create an instance of {@link IsPermitted }
+     * 
+     */
+    public IsPermitted createIsPermitted() {
+        return new IsPermitted();
+    }
+
+    /**
+     * Create an instance of {@link ApplyFirewallTemplate }
+     * 
+     */
+    public ApplyFirewallTemplate createApplyFirewallTemplate() {
+        return new ApplyFirewallTemplate();
+    }
+
+    /**
+     * Create an instance of {@link DeleteUserFromGroup }
+     * 
+     */
+    public DeleteUserFromGroup createDeleteUserFromGroup() {
+        return new DeleteUserFromGroup();
+    }
+
+    /**
+     * Create an instance of {@link UpdateUserResponse }
+     * 
+     */
+    public UpdateUserResponse createUpdateUserResponse() {
+        return new UpdateUserResponse();
+    }
+
+    /**
+     * Create an instance of {@link UnlockUser }
+     * 
+     */
+    public UnlockUser createUnlockUser() {
+        return new UnlockUser();
+    }
+
+    /**
+     * Create an instance of {@link DeleteResourceResponse }
+     * 
+     */
+    public DeleteResourceResponse createDeleteResourceResponse() {
+        return new DeleteResourceResponse();
+    }
+
+    /**
+     * Create an instance of {@link SshKey }
+     * 
+     */
+    public SshKey createSshKey() {
+        return new SshKey();
+    }
+
+    /**
+     * Create an instance of {@link BillingEntityDetails.StandardEmailSettings }
+     * 
+     */
+    public BillingEntityDetails.StandardEmailSettings createBillingEntityDetailsStandardEmailSettings() {
+        return new BillingEntityDetails.StandardEmailSettings();
+    }
+
+    /**
+     * Create an instance of {@link ListProductPurchases }
+     * 
+     */
+    public ListProductPurchases createListProductPurchases() {
+        return new ListProductPurchases();
+    }
+
+    /**
+     * Create an instance of {@link GetMeasuredValuesResponse }
+     * 
+     */
+    public GetMeasuredValuesResponse createGetMeasuredValuesResponse() {
+        return new GetMeasuredValuesResponse();
+    }
+
+    /**
+     * Create an instance of {@link DetachNetworkInterfaceResponse }
+     * 
+     */
+    public DetachNetworkInterfaceResponse createDetachNetworkInterfaceResponse() {
+        return new DetachNetworkInterfaceResponse();
     }
 
     /**
@@ -2481,19 +913,435 @@ public class ObjectFactory {
     }
 
     /**
-     * Create an instance of {@link BillingEntityDetails.StandardEmailSettings.Entry }
+     * Create an instance of {@link DoQuery }
      * 
      */
-    public BillingEntityDetails.StandardEmailSettings.Entry createBillingEntityDetailsStandardEmailSettingsEntry() {
-        return new BillingEntityDetails.StandardEmailSettings.Entry();
+    public DoQuery createDoQuery() {
+        return new DoQuery();
     }
 
     /**
-     * Create an instance of {@link CreateServer }
+     * Create an instance of {@link Customer }
      * 
      */
-    public CreateServer createCreateServer() {
-        return new CreateServer();
+    public Customer createCustomer() {
+        return new Customer();
+    }
+
+    /**
+     * Create an instance of {@link ResourceMetadata }
+     * 
+     */
+    public ResourceMetadata createResourceMetadata() {
+        return new ResourceMetadata();
+    }
+
+    /**
+     * Create an instance of {@link QueryLimit }
+     * 
+     */
+    public QueryLimit createQueryLimit() {
+        return new QueryLimit();
+    }
+
+    /**
+     * Create an instance of {@link ChangeDeploymentInstanceStatusResponse }
+     * 
+     */
+    public ChangeDeploymentInstanceStatusResponse createChangeDeploymentInstanceStatusResponse() {
+        return new ChangeDeploymentInstanceStatusResponse();
+    }
+
+    /**
+     * Create an instance of {@link ReferralPromoCode }
+     * 
+     */
+    public ReferralPromoCode createReferralPromoCode() {
+        return new ReferralPromoCode();
+    }
+
+    /**
+     * Create an instance of {@link CreateVDC }
+     * 
+     */
+    public CreateVDC createCreateVDC() {
+        return new CreateVDC();
+    }
+
+    /**
+     * Create an instance of {@link OpenVNCConnectionResponse }
+     * 
+     */
+    public OpenVNCConnectionResponse createOpenVNCConnectionResponse() {
+        return new OpenVNCConnectionResponse();
+    }
+
+    /**
+     * Create an instance of {@link ModifyFirewallResponse }
+     * 
+     */
+    public ModifyFirewallResponse createModifyFirewallResponse() {
+        return new ModifyFirewallResponse();
+    }
+
+    /**
+     * Create an instance of {@link ModifyGroupResponse }
+     * 
+     */
+    public ModifyGroupResponse createModifyGroupResponse() {
+        return new ModifyGroupResponse();
+    }
+
+    /**
+     * Create an instance of {@link AttachDisk }
+     * 
+     */
+    public AttachDisk createAttachDisk() {
+        return new AttachDisk();
+    }
+
+    /**
+     * Create an instance of {@link Image }
+     * 
+     */
+    public Image createImage() {
+        return new Image();
+    }
+
+    /**
+     * Create an instance of {@link FetchServer }
+     * 
+     */
+    public FetchServer createFetchServer() {
+        return new FetchServer();
+    }
+
+    /**
+     * Create an instance of {@link Group }
+     * 
+     */
+    public Group createGroup() {
+        return new Group();
+    }
+
+    /**
+     * Create an instance of {@link AddKey }
+     * 
+     */
+    public AddKey createAddKey() {
+        return new AddKey();
+    }
+
+    /**
+     * Create an instance of {@link PublishImageResponse }
+     * 
+     */
+    public PublishImageResponse createPublishImageResponse() {
+        return new PublishImageResponse();
+    }
+
+    /**
+     * Create an instance of {@link AttachNetworkInterface }
+     * 
+     */
+    public AttachNetworkInterface createAttachNetworkInterface() {
+        return new AttachNetworkInterface();
+    }
+
+    /**
+     * Create an instance of {@link ResumeTransaction }
+     * 
+     */
+    public ResumeTransaction createResumeTransaction() {
+        return new ResumeTransaction();
+    }
+
+    /**
+     * Create an instance of {@link ModifyFirewallTemplate }
+     * 
+     */
+    public ModifyFirewallTemplate createModifyFirewallTemplate() {
+        return new ModifyFirewallTemplate();
+    }
+
+    /**
+     * Create an instance of {@link GetResourceTypesResponse }
+     * 
+     */
+    public GetResourceTypesResponse createGetResourceTypesResponse() {
+        return new GetResourceTypesResponse();
+    }
+
+    /**
+     * Create an instance of {@link RevokeResourceResponse }
+     * 
+     */
+    public RevokeResourceResponse createRevokeResourceResponse() {
+        return new RevokeResourceResponse();
+    }
+
+    /**
+     * Create an instance of {@link ResultRow.ColumnMap }
+     * 
+     */
+    public ResultRow.ColumnMap createResultRowColumnMap() {
+        return new ResultRow.ColumnMap();
+    }
+
+    /**
+     * Create an instance of {@link ModifySnapshotResponse }
+     * 
+     */
+    public ModifySnapshotResponse createModifySnapshotResponse() {
+        return new ModifySnapshotResponse();
+    }
+
+    /**
+     * Create an instance of {@link DeployTemplateResponse }
+     * 
+     */
+    public DeployTemplateResponse createDeployTemplateResponse() {
+        return new DeployTemplateResponse();
+    }
+
+    /**
+     * Create an instance of {@link MeasuredValue }
+     * 
+     */
+    public MeasuredValue createMeasuredValue() {
+        return new MeasuredValue();
+    }
+
+    /**
+     * Create an instance of {@link ModifyFirewallTemplateResponse }
+     * 
+     */
+    public ModifyFirewallTemplateResponse createModifyFirewallTemplateResponse() {
+        return new ModifyFirewallTemplateResponse();
+    }
+
+    /**
+     * Create an instance of {@link ModifyVDCResponse }
+     * 
+     */
+    public ModifyVDCResponse createModifyVDCResponse() {
+        return new ModifyVDCResponse();
+    }
+
+    /**
+     * Create an instance of {@link ListPermissions }
+     * 
+     */
+    public ListPermissions createListPermissions() {
+        return new ListPermissions();
+    }
+
+    /**
+     * Create an instance of {@link IsPermittedResponse }
+     * 
+     */
+    public IsPermittedResponse createIsPermittedResponse() {
+        return new IsPermittedResponse();
+    }
+
+    /**
+     * Create an instance of {@link ResolvableReference }
+     * 
+     */
+    public ResolvableReference createResolvableReference() {
+        return new ResolvableReference();
+    }
+
+    /**
+     * Create an instance of {@link CloneResource }
+     * 
+     */
+    public CloneResource createCloneResource() {
+        return new CloneResource();
+    }
+
+    /**
+     * Create an instance of {@link Ip }
+     * 
+     */
+    public Ip createIp() {
+        return new Ip();
+    }
+
+    /**
+     * Create an instance of {@link CreateDeploymentTemplateFromInstanceResponse }
+     * 
+     */
+    public CreateDeploymentTemplateFromInstanceResponse createCreateDeploymentTemplateFromInstanceResponse() {
+        return new CreateDeploymentTemplateFromInstanceResponse();
+    }
+
+    /**
+     * Create an instance of {@link GetMeasuredValues }
+     * 
+     */
+    public GetMeasuredValues createGetMeasuredValues() {
+        return new GetMeasuredValues();
+    }
+
+    /**
+     * Create an instance of {@link HypervisorConfig.DefaultSettings }
+     * 
+     */
+    public HypervisorConfig.DefaultSettings createHypervisorConfigDefaultSettings() {
+        return new HypervisorConfig.DefaultSettings();
+    }
+
+    /**
+     * Create an instance of {@link AttachSSHKeyResponse }
+     * 
+     */
+    public AttachSSHKeyResponse createAttachSSHKeyResponse() {
+        return new AttachSSHKeyResponse();
+    }
+
+    /**
+     * Create an instance of {@link UpdateCustomerResponse }
+     * 
+     */
+    public UpdateCustomerResponse createUpdateCustomerResponse() {
+        return new UpdateCustomerResponse();
+    }
+
+    /**
+     * Create an instance of {@link InvoiceSetting.InvoiceHeaders.Entry }
+     * 
+     */
+    public InvoiceSetting.InvoiceHeaders.Entry createInvoiceSettingInvoiceHeadersEntry() {
+        return new InvoiceSetting.InvoiceHeaders.Entry();
+    }
+
+    /**
+     * Create an instance of {@link ModifyDiskResponse }
+     * 
+     */
+    public ModifyDiskResponse createModifyDiskResponse() {
+        return new ModifyDiskResponse();
+    }
+
+    /**
+     * Create an instance of {@link AddUserToGroupResponse }
+     * 
+     */
+    public AddUserToGroupResponse createAddUserToGroupResponse() {
+        return new AddUserToGroupResponse();
+    }
+
+    /**
+     * Create an instance of {@link PseudoResource }
+     * 
+     */
+    public PseudoResource createPseudoResource() {
+        return new PseudoResource();
+    }
+
+    /**
+     * Create an instance of {@link Vdc }
+     * 
+     */
+    public Vdc createVdc() {
+        return new Vdc();
+    }
+
+    /**
+     * Create an instance of {@link FetchParameters }
+     * 
+     */
+    public FetchParameters createFetchParameters() {
+        return new FetchParameters();
+    }
+
+    /**
+     * Create an instance of {@link DeleteUserFromGroupResponse }
+     * 
+     */
+    public DeleteUserFromGroupResponse createDeleteUserFromGroupResponse() {
+        return new DeleteUserFromGroupResponse();
+    }
+
+    /**
+     * Create an instance of {@link VirtualResource }
+     * 
+     */
+    public VirtualResource createVirtualResource() {
+        return new VirtualResource();
+    }
+
+    /**
+     * Create an instance of {@link DeleteReferralPromoCode }
+     * 
+     */
+    public DeleteReferralPromoCode createDeleteReferralPromoCode() {
+        return new DeleteReferralPromoCode();
+    }
+
+    /**
+     * Create an instance of {@link CreateNetwork }
+     * 
+     */
+    public CreateNetwork createCreateNetwork() {
+        return new CreateNetwork();
+    }
+
+    /**
+     * Create an instance of {@link Value }
+     * 
+     */
+    public Value createValue() {
+        return new Value();
+    }
+
+    /**
+     * Create an instance of {@link Invoice }
+     * 
+     */
+    public Invoice createInvoice() {
+        return new Invoice();
+    }
+
+    /**
+     * Create an instance of {@link ModifyPaymentMethodInstanceResponse }
+     * 
+     */
+    public ModifyPaymentMethodInstanceResponse createModifyPaymentMethodInstanceResponse() {
+        return new ModifyPaymentMethodInstanceResponse();
+    }
+
+    /**
+     * Create an instance of {@link ListResult }
+     * 
+     */
+    public ListResult createListResult() {
+        return new ListResult();
+    }
+
+    /**
+     * Create an instance of {@link ResourceKey }
+     * 
+     */
+    public ResourceKey createResourceKey() {
+        return new ResourceKey();
+    }
+
+    /**
+     * Create an instance of {@link CreateDeploymentTemplate }
+     * 
+     */
+    public CreateDeploymentTemplate createCreateDeploymentTemplate() {
+        return new CreateDeploymentTemplate();
+    }
+
+    /**
+     * Create an instance of {@link ListUnitTransactionsResponse }
+     * 
+     */
+    public ListUnitTransactionsResponse createListUnitTransactionsResponse() {
+        return new ListUnitTransactionsResponse();
     }
 
     /**
@@ -2505,11 +1353,1163 @@ public class ObjectFactory {
     }
 
     /**
+     * Create an instance of {@link Subnet }
+     * 
+     */
+    public Subnet createSubnet() {
+        return new Subnet();
+    }
+
+    /**
+     * Create an instance of {@link HypervisorConfig.Config }
+     * 
+     */
+    public HypervisorConfig.Config createHypervisorConfigConfig() {
+        return new HypervisorConfig.Config();
+    }
+
+    /**
+     * Create an instance of {@link ProductOffer }
+     * 
+     */
+    public ProductOffer createProductOffer() {
+        return new ProductOffer();
+    }
+
+    /**
+     * Create an instance of {@link HypervisorConfig.Config.Entry }
+     * 
+     */
+    public HypervisorConfig.Config.Entry createHypervisorConfigConfigEntry() {
+        return new HypervisorConfig.Config.Entry();
+    }
+
+    /**
+     * Create an instance of {@link ModifySnapshot }
+     * 
+     */
+    public ModifySnapshot createModifySnapshot() {
+        return new ModifySnapshot();
+    }
+
+    /**
+     * Create an instance of {@link AggregationFilter }
+     * 
+     */
+    public AggregationFilter createAggregationFilter() {
+        return new AggregationFilter();
+    }
+
+    /**
+     * Create an instance of {@link FetchResource }
+     * 
+     */
+    public FetchResource createFetchResource() {
+        return new FetchResource();
+    }
+
+    /**
+     * Create an instance of {@link AttachSSHKey }
+     * 
+     */
+    public AttachSSHKey createAttachSSHKey() {
+        return new AttachSSHKey();
+    }
+
+    /**
+     * Create an instance of {@link UnitTransactionSummary }
+     * 
+     */
+    public UnitTransactionSummary createUnitTransactionSummary() {
+        return new UnitTransactionSummary();
+    }
+
+    /**
+     * Create an instance of {@link CreateServer }
+     * 
+     */
+    public CreateServer createCreateServer() {
+        return new CreateServer();
+    }
+
+    /**
+     * Create an instance of {@link PublishResource }
+     * 
+     */
+    public PublishResource createPublishResource() {
+        return new PublishResource();
+    }
+
+    /**
+     * Create an instance of {@link HypervisorConfig }
+     * 
+     */
+    public HypervisorConfig createHypervisorConfig() {
+        return new HypervisorConfig();
+    }
+
+    /**
+     * Create an instance of {@link KeyList.Content }
+     * 
+     */
+    public KeyList.Content createKeyListContent() {
+        return new KeyList.Content();
+    }
+
+    /**
+     * Create an instance of {@link SetPermissionsResponse }
+     * 
+     */
+    public SetPermissionsResponse createSetPermissionsResponse() {
+        return new SetPermissionsResponse();
+    }
+
+    /**
+     * Create an instance of {@link CloneResourceResponse }
+     * 
+     */
+    public CloneResourceResponse createCloneResourceResponse() {
+        return new CloneResourceResponse();
+    }
+
+    /**
+     * Create an instance of {@link TestPaymentMethodResponse }
+     * 
+     */
+    public TestPaymentMethodResponse createTestPaymentMethodResponse() {
+        return new TestPaymentMethodResponse();
+    }
+
+    /**
+     * Create an instance of {@link ModifyResource }
+     * 
+     */
+    public ModifyResource createModifyResource() {
+        return new ModifyResource();
+    }
+
+    /**
+     * Create an instance of {@link CreateNetworkInterface }
+     * 
+     */
+    public CreateNetworkInterface createCreateNetworkInterface() {
+        return new CreateNetworkInterface();
+    }
+
+    /**
+     * Create an instance of {@link ModifyPaymentMethodInstance }
+     * 
+     */
+    public ModifyPaymentMethodInstance createModifyPaymentMethodInstance() {
+        return new ModifyPaymentMethodInstance();
+    }
+
+    /**
+     * Create an instance of {@link PublishImage }
+     * 
+     */
+    public PublishImage createPublishImage() {
+        return new PublishImage();
+    }
+
+    /**
+     * Create an instance of {@link InvoiceItem }
+     * 
+     */
+    public InvoiceItem createInvoiceItem() {
+        return new InvoiceItem();
+    }
+
+    /**
+     * Create an instance of {@link BillingEntityDetails.EmailTemplates }
+     * 
+     */
+    public BillingEntityDetails.EmailTemplates createBillingEntityDetailsEmailTemplates() {
+        return new BillingEntityDetails.EmailTemplates();
+    }
+
+    /**
+     * Create an instance of {@link DryRunTemplate }
+     * 
+     */
+    public DryRunTemplate createDryRunTemplate() {
+        return new DryRunTemplate();
+    }
+
+    /**
+     * Create an instance of {@link ChangeServerStatus }
+     * 
+     */
+    public ChangeServerStatus createChangeServerStatus() {
+        return new ChangeServerStatus();
+    }
+
+    /**
+     * Create an instance of {@link ImagePermission }
+     * 
+     */
+    public ImagePermission createImagePermission() {
+        return new ImagePermission();
+    }
+
+    /**
+     * Create an instance of {@link DryRunTemplateResponse }
+     * 
+     */
+    public DryRunTemplateResponse createDryRunTemplateResponse() {
+        return new DryRunTemplateResponse();
+    }
+
+    /**
+     * Create an instance of {@link ModifyFirewall }
+     * 
+     */
+    public ModifyFirewall createModifyFirewall() {
+        return new ModifyFirewall();
+    }
+
+    /**
+     * Create an instance of {@link CancelTransaction }
+     * 
+     */
+    public CancelTransaction createCancelTransaction() {
+        return new CancelTransaction();
+    }
+
+    /**
+     * Create an instance of {@link DetachDiskResponse }
+     * 
+     */
+    public DetachDiskResponse createDetachDiskResponse() {
+        return new DetachDiskResponse();
+    }
+
+    /**
+     * Create an instance of {@link MapHolder }
+     * 
+     */
+    public MapHolder createMapHolder() {
+        return new MapHolder();
+    }
+
+    /**
+     * Create an instance of {@link ListResources }
+     * 
+     */
+    public ListResources createListResources() {
+        return new ListResources();
+    }
+
+    /**
+     * Create an instance of {@link CreateSubnet }
+     * 
+     */
+    public CreateSubnet createCreateSubnet() {
+        return new CreateSubnet();
+    }
+
+    /**
+     * Create an instance of {@link Network }
+     * 
+     */
+    public Network createNetwork() {
+        return new Network();
+    }
+
+    /**
+     * Create an instance of {@link ApplyFirewallTemplateResponse }
+     * 
+     */
+    public ApplyFirewallTemplateResponse createApplyFirewallTemplateResponse() {
+        return new ApplyFirewallTemplateResponse();
+    }
+
+    /**
+     * Create an instance of {@link CustomerResource }
+     * 
+     */
+    public CustomerResource createCustomerResource() {
+        return new CustomerResource();
+    }
+
+    /**
+     * Create an instance of {@link FetchDisk }
+     * 
+     */
+    public FetchDisk createFetchDisk() {
+        return new FetchDisk();
+    }
+
+    /**
+     * Create an instance of {@link AttachSubnet }
+     * 
+     */
+    public AttachSubnet createAttachSubnet() {
+        return new AttachSubnet();
+    }
+
+    /**
+     * Create an instance of {@link RemoveIP }
+     * 
+     */
+    public RemoveIP createRemoveIP() {
+        return new RemoveIP();
+    }
+
+    /**
+     * Create an instance of {@link CreateDisk }
+     * 
+     */
+    public CreateDisk createCreateDisk() {
+        return new CreateDisk();
+    }
+
+    /**
+     * Create an instance of {@link CancelTransactionResponse }
+     * 
+     */
+    public CancelTransactionResponse createCancelTransactionResponse() {
+        return new CancelTransactionResponse();
+    }
+
+    /**
+     * Create an instance of {@link TestPaymentMethod }
+     * 
+     */
+    public TestPaymentMethod createTestPaymentMethod() {
+        return new TestPaymentMethod();
+    }
+
+    /**
+     * Create an instance of {@link MapHolder.Content.Entry }
+     * 
+     */
+    public MapHolder.Content.Entry createMapHolderContentEntry() {
+        return new MapHolder.Content.Entry();
+    }
+
+    /**
+     * Create an instance of {@link ResumeTransactionResponse }
+     * 
+     */
+    public ResumeTransactionResponse createResumeTransactionResponse() {
+        return new ResumeTransactionResponse();
+    }
+
+    /**
+     * Create an instance of {@link CustomerDetails }
+     * 
+     */
+    public CustomerDetails createCustomerDetails() {
+        return new CustomerDetails();
+    }
+
+    /**
+     * Create an instance of {@link AttachDiskResponse }
+     * 
+     */
+    public AttachDiskResponse createAttachDiskResponse() {
+        return new AttachDiskResponse();
+    }
+
+    /**
+     * Create an instance of {@link CreateDeploymentTemplateResponse }
+     * 
+     */
+    public CreateDeploymentTemplateResponse createCreateDeploymentTemplateResponse() {
+        return new CreateDeploymentTemplateResponse();
+    }
+
+    /**
+     * Create an instance of {@link PaymentMethod }
+     * 
+     */
+    public PaymentMethod createPaymentMethod() {
+        return new PaymentMethod();
+    }
+
+    /**
+     * Create an instance of {@link DeploymentTemplate }
+     * 
+     */
+    public DeploymentTemplate createDeploymentTemplate() {
+        return new DeploymentTemplate();
+    }
+
+    /**
+     * Create an instance of {@link Transaction.RedirectData }
+     * 
+     */
+    public Transaction.RedirectData createTransactionRedirectData() {
+        return new Transaction.RedirectData();
+    }
+
+    /**
+     * Create an instance of {@link Promotion }
+     * 
+     */
+    public Promotion createPromotion() {
+        return new Promotion();
+    }
+
+    /**
+     * Create an instance of {@link CreateReferralPromoCodeResponse }
+     * 
+     */
+    public CreateReferralPromoCodeResponse createCreateReferralPromoCodeResponse() {
+        return new CreateReferralPromoCodeResponse();
+    }
+
+    /**
+     * Create an instance of {@link ListProductPurchasesResponse }
+     * 
+     */
+    public ListProductPurchasesResponse createListProductPurchasesResponse() {
+        return new ListProductPurchasesResponse();
+    }
+
+    /**
+     * Create an instance of {@link KeyList }
+     * 
+     */
+    public KeyList createKeyList() {
+        return new KeyList();
+    }
+
+    /**
+     * Create an instance of {@link CreateDeploymentTemplateFromInstance }
+     * 
+     */
+    public CreateDeploymentTemplateFromInstance createCreateDeploymentTemplateFromInstance() {
+        return new CreateDeploymentTemplateFromInstance();
+    }
+
+    /**
+     * Create an instance of {@link PublishResourceResponse }
+     * 
+     */
+    public PublishResourceResponse createPublishResourceResponse() {
+        return new PublishResourceResponse();
+    }
+
+    /**
+     * Create an instance of {@link ListStatementDetail }
+     * 
+     */
+    public ListStatementDetail createListStatementDetail() {
+        return new ListStatementDetail();
+    }
+
+    /**
+     * Create an instance of {@link CancelJobResponse }
+     * 
+     */
+    public CancelJobResponse createCancelJobResponse() {
+        return new CancelJobResponse();
+    }
+
+    /**
+     * Create an instance of {@link WaitForJob }
+     * 
+     */
+    public WaitForJob createWaitForJob() {
+        return new WaitForJob();
+    }
+
+    /**
+     * Create an instance of {@link Customer.LimitsMap.Entry }
+     * 
+     */
+    public Customer.LimitsMap.Entry createCustomerLimitsMapEntry() {
+        return new Customer.LimitsMap.Entry();
+    }
+
+    /**
+     * Create an instance of {@link CreateSnapshot }
+     * 
+     */
+    public CreateSnapshot createCreateSnapshot() {
+        return new CreateSnapshot();
+    }
+
+    /**
+     * Create an instance of {@link ModifyResourceResponse }
+     * 
+     */
+    public ModifyResourceResponse createModifyResourceResponse() {
+        return new ModifyResourceResponse();
+    }
+
+    /**
+     * Create an instance of {@link AddIP }
+     * 
+     */
+    public AddIP createAddIP() {
+        return new AddIP();
+    }
+
+    /**
+     * Create an instance of {@link DetachSSHKeyResponse }
+     * 
+     */
+    public DetachSSHKeyResponse createDetachSSHKeyResponse() {
+        return new DetachSSHKeyResponse();
+    }
+
+    /**
+     * Create an instance of {@link DryRunResult }
+     * 
+     */
+    public DryRunResult createDryRunResult() {
+        return new DryRunResult();
+    }
+
+    /**
+     * Create an instance of {@link ModifyDeploymentTemplate }
+     * 
+     */
+    public ModifyDeploymentTemplate createModifyDeploymentTemplate() {
+        return new ModifyDeploymentTemplate();
+    }
+
+    /**
+     * Create an instance of {@link ModifyDeploymentInstanceResponse }
+     * 
+     */
+    public ModifyDeploymentInstanceResponse createModifyDeploymentInstanceResponse() {
+        return new ModifyDeploymentInstanceResponse();
+    }
+
+    /**
+     * Create an instance of {@link EmailTemplate.BillingEmailVar.Entry }
+     * 
+     */
+    public EmailTemplate.BillingEmailVar.Entry createEmailTemplateBillingEmailVarEntry() {
+        return new EmailTemplate.BillingEmailVar.Entry();
+    }
+
+    /**
+     * Create an instance of {@link Disk }
+     * 
+     */
+    public Disk createDisk() {
+        return new Disk();
+    }
+
+    /**
+     * Create an instance of {@link Transaction }
+     * 
+     */
+    public Transaction createTransaction() {
+        return new Transaction();
+    }
+
+    /**
+     * Create an instance of {@link CreateReferralPromoCode }
+     * 
+     */
+    public CreateReferralPromoCode createCreateReferralPromoCode() {
+        return new CreateReferralPromoCode();
+    }
+
+    /**
+     * Create an instance of {@link ReferralPromotion }
+     * 
+     */
+    public ReferralPromotion createReferralPromotion() {
+        return new ReferralPromotion();
+    }
+
+    /**
+     * Create an instance of {@link SearchFilter }
+     * 
+     */
+    public SearchFilter createSearchFilter() {
+        return new SearchFilter();
+    }
+
+    /**
+     * Create an instance of {@link GetBlobContent }
+     * 
+     */
+    public GetBlobContent createGetBlobContent() {
+        return new GetBlobContent();
+    }
+
+    /**
+     * Create an instance of {@link ValueValidator }
+     * 
+     */
+    public ValueValidator createValueValidator() {
+        return new ValueValidator();
+    }
+
+    /**
+     * Create an instance of {@link CreateBlob }
+     * 
+     */
+    public CreateBlob createCreateBlob() {
+        return new CreateBlob();
+    }
+
+    /**
+     * Create an instance of {@link MapHolder.Content }
+     * 
+     */
+    public MapHolder.Content createMapHolderContent() {
+        return new MapHolder.Content();
+    }
+
+    /**
+     * Create an instance of {@link AddIPResponse }
+     * 
+     */
+    public AddIPResponse createAddIPResponse() {
+        return new AddIPResponse();
+    }
+
+    /**
+     * Create an instance of {@link FilterCondition }
+     * 
+     */
+    public FilterCondition createFilterCondition() {
+        return new FilterCondition();
+    }
+
+    /**
+     * Create an instance of {@link PromoCode }
+     * 
+     */
+    public PromoCode createPromoCode() {
+        return new PromoCode();
+    }
+
+    /**
+     * Create an instance of {@link FetchServerResponse }
+     * 
+     */
+    public FetchServerResponse createFetchServerResponse() {
+        return new FetchServerResponse();
+    }
+
+    /**
+     * Create an instance of {@link CreateGroupResponse }
+     * 
+     */
+    public CreateGroupResponse createCreateGroupResponse() {
+        return new CreateGroupResponse();
+    }
+
+    /**
+     * Create an instance of {@link ModifyNetworkResponse }
+     * 
+     */
+    public ModifyNetworkResponse createModifyNetworkResponse() {
+        return new ModifyNetworkResponse();
+    }
+
+    /**
+     * Create an instance of {@link HypervisorSetting }
+     * 
+     */
+    public HypervisorSetting createHypervisorSetting() {
+        return new HypervisorSetting();
+    }
+
+    /**
+     * Create an instance of {@link Firewall }
+     * 
+     */
+    public Firewall createFirewall() {
+        return new Firewall();
+    }
+
+    /**
+     * Create an instance of {@link PayInvoiceResponse }
+     * 
+     */
+    public PayInvoiceResponse createPayInvoiceResponse() {
+        return new PayInvoiceResponse();
+    }
+
+    /**
+     * Create an instance of {@link ModifyNetwork }
+     * 
+     */
+    public ModifyNetwork createModifyNetwork() {
+        return new ModifyNetwork();
+    }
+
+    /**
+     * Create an instance of {@link CreateFirewallTemplateResponse }
+     * 
+     */
+    public CreateFirewallTemplateResponse createCreateFirewallTemplateResponse() {
+        return new CreateFirewallTemplateResponse();
+    }
+
+    /**
+     * Create an instance of {@link ModifyImageResponse }
+     * 
+     */
+    public ModifyImageResponse createModifyImageResponse() {
+        return new ModifyImageResponse();
+    }
+
+    /**
+     * Create an instance of {@link RemoveKeyResponse }
+     * 
+     */
+    public RemoveKeyResponse createRemoveKeyResponse() {
+        return new RemoveKeyResponse();
+    }
+
+    /**
+     * Create an instance of {@link ModifySSHKeyResponse }
+     * 
+     */
+    public ModifySSHKeyResponse createModifySSHKeyResponse() {
+        return new ModifySSHKeyResponse();
+    }
+
+    /**
+     * Create an instance of {@link DoQueryResponse }
+     * 
+     */
+    public DoQueryResponse createDoQueryResponse() {
+        return new DoQueryResponse();
+    }
+
+    /**
+     * Create an instance of {@link PaymentCard }
+     * 
+     */
+    public PaymentCard createPaymentCard() {
+        return new PaymentCard();
+    }
+
+    /**
+     * Create an instance of {@link ModifyDeploymentTemplateResponse }
+     * 
+     */
+    public ModifyDeploymentTemplateResponse createModifyDeploymentTemplateResponse() {
+        return new ModifyDeploymentTemplateResponse();
+    }
+
+    /**
+     * Create an instance of {@link GetBlobContentResponse }
+     * 
+     */
+    public GetBlobContentResponse createGetBlobContentResponse() {
+        return new GetBlobContentResponse();
+    }
+
+    /**
+     * Create an instance of {@link AddKeyResponse }
+     * 
+     */
+    public AddKeyResponse createAddKeyResponse() {
+        return new AddKeyResponse();
+    }
+
+    /**
+     * Create an instance of {@link CreateFirewallTemplate }
+     * 
+     */
+    public CreateFirewallTemplate createCreateFirewallTemplate() {
+        return new CreateFirewallTemplate();
+    }
+
+    /**
      * Create an instance of {@link DeployTemplate }
      * 
      */
     public DeployTemplate createDeployTemplate() {
         return new DeployTemplate();
+    }
+
+    /**
+     * Create an instance of {@link Permission }
+     * 
+     */
+    public Permission createPermission() {
+        return new Permission();
+    }
+
+    /**
+     * Create an instance of {@link ProductPurchase }
+     * 
+     */
+    public ProductPurchase createProductPurchase() {
+        return new ProductPurchase();
+    }
+
+    /**
+     * Create an instance of {@link DeleteReferralPromoCodeResponse }
+     * 
+     */
+    public DeleteReferralPromoCodeResponse createDeleteReferralPromoCodeResponse() {
+        return new DeleteReferralPromoCodeResponse();
+    }
+
+    /**
+     * Create an instance of {@link JadeList }
+     * 
+     */
+    public JadeList createJadeList() {
+        return new JadeList();
+    }
+
+    /**
+     * Create an instance of {@link ListUnitTransactionSummaryResponse }
+     * 
+     */
+    public ListUnitTransactionSummaryResponse createListUnitTransactionSummaryResponse() {
+        return new ListUnitTransactionSummaryResponse();
+    }
+
+    /**
+     * Create an instance of {@link BillingEntityDetails.StandardEmailSettings.Entry }
+     * 
+     */
+    public BillingEntityDetails.StandardEmailSettings.Entry createBillingEntityDetailsStandardEmailSettingsEntry() {
+        return new BillingEntityDetails.StandardEmailSettings.Entry();
+    }
+
+    /**
+     * Create an instance of {@link DeploymentInstance }
+     * 
+     */
+    public DeploymentInstance createDeploymentInstance() {
+        return new DeploymentInstance();
+    }
+
+    /**
+     * Create an instance of {@link SystemCapabilitySet.MaxLimit.Entry }
+     * 
+     */
+    public SystemCapabilitySet.MaxLimit.Entry createSystemCapabilitySetMaxLimitEntry() {
+        return new SystemCapabilitySet.MaxLimit.Entry();
+    }
+
+    /**
+     * Create an instance of {@link ResultRow.ColumnMap.Entry }
+     * 
+     */
+    public ResultRow.ColumnMap.Entry createResultRowColumnMapEntry() {
+        return new ResultRow.ColumnMap.Entry();
+    }
+
+    /**
+     * Create an instance of {@link UpdateMetadata }
+     * 
+     */
+    public UpdateMetadata createUpdateMetadata() {
+        return new UpdateMetadata();
+    }
+
+    /**
+     * Create an instance of {@link SystemCapabilitySet.MaxLimit }
+     * 
+     */
+    public SystemCapabilitySet.MaxLimit createSystemCapabilitySetMaxLimit() {
+        return new SystemCapabilitySet.MaxLimit();
+    }
+
+    /**
+     * Create an instance of {@link CreateGroup }
+     * 
+     */
+    public CreateGroup createCreateGroup() {
+        return new CreateGroup();
+    }
+
+    /**
+     * Create an instance of {@link ListResourcesResponse }
+     * 
+     */
+    public ListResourcesResponse createListResourcesResponse() {
+        return new ListResourcesResponse();
+    }
+
+    /**
+     * Create an instance of {@link EmailTemplate }
+     * 
+     */
+    public EmailTemplate createEmailTemplate() {
+        return new EmailTemplate();
+    }
+
+    /**
+     * Create an instance of {@link CreateSSHKey }
+     * 
+     */
+    public CreateSSHKey createCreateSSHKey() {
+        return new CreateSSHKey();
+    }
+
+    /**
+     * Create an instance of {@link UpdateCustomer }
+     * 
+     */
+    public UpdateCustomer createUpdateCustomer() {
+        return new UpdateCustomer();
+    }
+
+    /**
+     * Create an instance of {@link Question }
+     * 
+     */
+    public Question createQuestion() {
+        return new Question();
+    }
+
+    /**
+     * Create an instance of {@link AddUserToGroup }
+     * 
+     */
+    public AddUserToGroup createAddUserToGroup() {
+        return new AddUserToGroup();
+    }
+
+    /**
+     * Create an instance of {@link RevertToResource }
+     * 
+     */
+    public RevertToResource createRevertToResource() {
+        return new RevertToResource();
+    }
+
+    /**
+     * Create an instance of {@link PayInvoice }
+     * 
+     */
+    public PayInvoice createPayInvoice() {
+        return new PayInvoice();
+    }
+
+    /**
+     * Create an instance of {@link CreateNetworkInterfaceResponse }
+     * 
+     */
+    public CreateNetworkInterfaceResponse createCreateNetworkInterfaceResponse() {
+        return new CreateNetworkInterfaceResponse();
+    }
+
+    /**
+     * Create an instance of {@link ListUnitTransactions }
+     * 
+     */
+    public ListUnitTransactions createListUnitTransactions() {
+        return new ListUnitTransactions();
+    }
+
+    /**
+     * Create an instance of {@link Address }
+     * 
+     */
+    public Address createAddress() {
+        return new Address();
+    }
+
+    /**
+     * Create an instance of {@link CreateSubnetResponse }
+     * 
+     */
+    public CreateSubnetResponse createCreateSubnetResponse() {
+        return new CreateSubnetResponse();
+    }
+
+    /**
+     * Create an instance of {@link Server }
+     * 
+     */
+    public Server createServer() {
+        return new Server();
+    }
+
+    /**
+     * Create an instance of {@link RevertToResourceResponse }
+     * 
+     */
+    public RevertToResourceResponse createRevertToResourceResponse() {
+        return new RevertToResourceResponse();
+    }
+
+    /**
+     * Create an instance of {@link CreatePaymentMethodInstance }
+     * 
+     */
+    public CreatePaymentMethodInstance createCreatePaymentMethodInstance() {
+        return new CreatePaymentMethodInstance();
+    }
+
+    /**
+     * Create an instance of {@link BillingEntity }
+     * 
+     */
+    public BillingEntity createBillingEntity() {
+        return new BillingEntity();
+    }
+
+    /**
+     * Create an instance of {@link VncConnection }
+     * 
+     */
+    public VncConnection createVncConnection() {
+        return new VncConnection();
+    }
+
+    /**
+     * Create an instance of {@link SystemCapabilitySet }
+     * 
+     */
+    public SystemCapabilitySet createSystemCapabilitySet() {
+        return new SystemCapabilitySet();
+    }
+
+    /**
+     * Create an instance of {@link RevokeResource }
+     * 
+     */
+    public RevokeResource createRevokeResource() {
+        return new RevokeResource();
+    }
+
+    /**
+     * Create an instance of {@link UpdateUser }
+     * 
+     */
+    public UpdateUser createUpdateUser() {
+        return new UpdateUser();
+    }
+
+    /**
+     * Create an instance of {@link Transaction.RedirectData.Entry }
+     * 
+     */
+    public Transaction.RedirectData.Entry createTransactionRedirectDataEntry() {
+        return new Transaction.RedirectData.Entry();
+    }
+
+    /**
+     * Create an instance of {@link RenderInvoice }
+     * 
+     */
+    public RenderInvoice createRenderInvoice() {
+        return new RenderInvoice();
+    }
+
+    /**
+     * Create an instance of {@link ModifySubnetResponse }
+     * 
+     */
+    public ModifySubnetResponse createModifySubnetResponse() {
+        return new ModifySubnetResponse();
+    }
+
+    /**
+     * Create an instance of {@link DetachDisk }
+     * 
+     */
+    public DetachDisk createDetachDisk() {
+        return new DetachDisk();
+    }
+
+    /**
+     * Create an instance of {@link ModifySubnet }
+     * 
+     */
+    public ModifySubnet createModifySubnet() {
+        return new ModifySubnet();
+    }
+
+    /**
+     * Create an instance of {@link CreateBlobResponse }
+     * 
+     */
+    public CreateBlobResponse createCreateBlobResponse() {
+        return new CreateBlobResponse();
+    }
+
+    /**
+     * Create an instance of {@link CreateSnapshotResponse }
+     * 
+     */
+    public CreateSnapshotResponse createCreateSnapshotResponse() {
+        return new CreateSnapshotResponse();
+    }
+
+    /**
+     * Create an instance of {@link ListPermissionsResponse }
+     * 
+     */
+    public ListPermissionsResponse createListPermissionsResponse() {
+        return new ListPermissionsResponse();
+    }
+
+    /**
+     * Create an instance of {@link UnitTransaction }
+     * 
+     */
+    public UnitTransaction createUnitTransaction() {
+        return new UnitTransaction();
+    }
+
+    /**
+     * Create an instance of {@link CreateImageResponse }
+     * 
+     */
+    public CreateImageResponse createCreateImageResponse() {
+        return new CreateImageResponse();
+    }
+
+    /**
+     * Create an instance of {@link FetchResourceResponse }
+     * 
+     */
+    public FetchResourceResponse createFetchResourceResponse() {
+        return new FetchResourceResponse();
+    }
+
+    /**
+     * Create an instance of {@link Cluster }
+     * 
+     */
+    public Cluster createCluster() {
+        return new Cluster();
+    }
+
+    /**
+     * Create an instance of {@link Nic }
+     * 
+     */
+    public Nic createNic() {
+        return new Nic();
+    }
+
+    /**
+     * Create an instance of {@link ArrayList }
+     * 
+     */
+    public ArrayList createArrayList() {
+        return new ArrayList();
+    }
+
+    /**
+     * Create an instance of {@link CreateNetworkResponse }
+     * 
+     */
+    public CreateNetworkResponse createCreateNetworkResponse() {
+        return new CreateNetworkResponse();
+    }
+
+    /**
+     * Create an instance of {@link SetPermissions }
+     * 
+     */
+    public SetPermissions createSetPermissions() {
+        return new SetPermissions();
     }
 
     /**

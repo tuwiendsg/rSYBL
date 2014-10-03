@@ -31,8 +31,11 @@ import at.ac.tuwien.dsg.csdg.Relationship.RelationshipType;
 import at.ac.tuwien.dsg.csdg.elasticityInformation.ElasticityMetric;
 import at.ac.tuwien.dsg.csdg.elasticityInformation.ElasticityRequirement;
 import com.sun.org.apache.xalan.internal.xsltc.dom.CurrentNodeListFilter;
+import java.util.Map;
+import javax.xml.bind.annotation.XmlEnumValue;
 
-
+import org.json.simple.JSONArray;
+import org.json.simple.JSONObject;
 
 public class DependencyGraph implements Serializable{
         private String STATE="CONTROL"; //wait
@@ -318,4 +321,132 @@ public class DependencyGraph implements Serializable{
 		}
 		return message;
 	}
+        private String convertLevel(NodeType nodeType){
+            if (nodeType==NodeType.CLOUD_SERVICE) return "SERVICE";
+                        if (nodeType==NodeType.SERVICE_TOPOLOGY) return "SERVICE_TOPOLOGY";
+            if (nodeType==NodeType.SERVICE_UNIT) return "SERVICE_UNIT";
+            if (nodeType==NodeType.VIRTUAL_MACHINE) return "VM";
+
+            return "SERVICE_UNIT";
+        }
+        private static class MyPair {
+
+        public Node node;
+        public JSONObject jsonObject;
+
+        private MyPair() {
+        }
+
+        public MyPair(Node node, JSONObject jsonObject) {
+            this.node = node;
+            this.jsonObject = jsonObject;
+        }
+    }
+        public String getStructuralDataInJSON(){
+             JSONObject root = new JSONObject();
+            root.put("name", cloudService.getId());
+            root.put("type", "" + convertLevel(cloudService.getNodeType()));
+
+            List<MyPair> processing = new ArrayList<MyPair>();
+            processing.add(new MyPair(cloudService, root));
+
+            while (!processing.isEmpty()) {
+                MyPair myPair = processing.remove(0);
+                JSONObject object = myPair.jsonObject;
+                Node element = myPair.node;
+
+                JSONArray children = (JSONArray) object.get("children");
+                if (children == null) {
+                    children = new JSONArray();
+                    object.put("children", children);
+                }
+
+                //add children
+                for (Node child : element.getAllRelatedNodes()) {
+                    JSONObject childElement = new JSONObject();
+                    if (child.getNodeType()!=NodeType.VIRTUAL_MACHINE){
+                    childElement.put("name", child.getId());
+                    
+                    childElement.put("type", "" + convertLevel(child.getNodeType()));
+                    JSONArray childrenChildren = new JSONArray();
+                    childElement.put("children", childrenChildren);
+                    
+                    processing.add(new MyPair(child, childElement));
+                    children.add(childElement);
+                }
+                }
+                for (ElasticityRequirement req:element.getElasticityRequirements()){
+                    JSONObject childElement = new JSONObject();
+                    String content= "";
+                    String id="Req_"+element.getId();
+                    if (req!=null && req.getAnnotation()!=null && req.getAnnotation().getConstraints()!=null && !req.getAnnotation().getConstraints().equalsIgnoreCase("")){
+                        content+=req.getAnnotation().getConstraints();
+                        
+                    }
+                    if (req!=null && req.getAnnotation()!=null && req.getAnnotation().getStrategies()!=null && !req.getAnnotation().getStrategies().equalsIgnoreCase("")){
+                        content+=req.getAnnotation().getStrategies();
+                        
+                    }
+                    childElement.put("name", content);
+                    
+                    childElement.put("type", "requirement");
+                    JSONArray childrenChildren = new JSONArray();
+                    childElement.put("children", childrenChildren);
+                    
+                   
+                    children.add(childElement);
+                }
+
+                           }
+            
+           
+            return root.toJSONString();
+            
+        }
+       public void replaceRequirement(String requirement){
+           String[] splitReq=requirement.split(":");
+           String reqID= splitReq[0];
+           String reqtype=splitReq[1].trim().split(" ")[0];
+           if (reqtype.equalsIgnoreCase("constraint")){
+              for(ElasticityRequirement elasticityRequirement: getAllElasticityRequirements()){
+                  if (elasticityRequirement.getAnnotation().getConstraints().split(":")[0].equalsIgnoreCase(reqID)){
+                      ElasticityRequirement newReq=elasticityRequirement;
+                      newReq.getAnnotation().setConstraints(requirement);
+                      Node n=getNodeWithID(elasticityRequirement.getAnnotation().getEntityID());
+                      n.getElasticityRequirements().remove(elasticityRequirement);
+                      n.getElasticityRequirements().add(newReq);
+                      
+                  }
+              }
+           }else
+           {
+               if (reqtype.equalsIgnoreCase("strategy")){
+                     for(ElasticityRequirement elasticityRequirement: getAllElasticityRequirements()){
+                  if (elasticityRequirement.getAnnotation().getStrategies().split(":")[0].equalsIgnoreCase(reqID)){
+                      ElasticityRequirement newReq=elasticityRequirement;
+                      newReq.getAnnotation().setStrategies(requirement);
+                      Node n=getNodeWithID(elasticityRequirement.getAnnotation().getEntityID());
+                      n.getElasticityRequirements().remove(elasticityRequirement);
+                      n.getElasticityRequirements().add(newReq);
+                      
+                  }
+              }
+               }else{
+                   if (reqtype.equalsIgnoreCase("monitoring")){
+                        for(ElasticityRequirement elasticityRequirement: getAllElasticityRequirements()){
+                  if (elasticityRequirement.getAnnotation().getMonitoring().split(":")[0].equalsIgnoreCase(reqID)){
+                      ElasticityRequirement newReq=elasticityRequirement;
+                      newReq.getAnnotation().setMonitoring(requirement);
+                      Node n=getNodeWithID(elasticityRequirement.getAnnotation().getEntityID());
+                      n.getElasticityRequirements().remove(elasticityRequirement);
+                      n.getElasticityRequirements().add(newReq);
+                      
+                  }
+                   }
+               }
+               
+           }
+           
+       }
+       }
 }
