@@ -9,3 +9,6 @@
 *.pem
 rSYBL-control-service-pom/rSYBL-cloud-interaction-unit/src/main/resources/a.wadl
 rSYBL-control-service-pom/rSYBL-cloud-interaction-unit/src/main/java/com/extl/jade/user/ObjectFactory.java
+rSYBL-control-service-pom/rSYBL-analysis-engine/src/main/resources/config/Log4j.properties
+rSYBL-control-service-pom/rSYBL-analysis-engine/src/main/resources/config/Log4j.properties
+rSYBL-control-service-pom/rSYBL-cloud-interaction-unit/src/main/java/com/extl/jade/user/ObjectFactory.java

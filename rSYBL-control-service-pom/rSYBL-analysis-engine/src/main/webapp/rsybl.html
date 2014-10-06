@@ -45,6 +45,7 @@
             #serviceinfo{
                 width:100%;
                 height: 90%;
+                
             }
             #serviceStructure{
                 width:100%;
@@ -78,7 +79,7 @@
                 </select>
             </div>
             <div id ="serviceinfo">
-                
+
                 <div align="center" id="requirementsEdit"><h2>Here you can edit the requirements:</h2> 
                     <p>Choose format in which you want to edit: <select name="format" id="format" onchange="checkformat(this);">
                             <option value="xml" selected="selected">xml</option>
@@ -104,711 +105,766 @@
 
         <script type="text/javascript">
 
-                        //set notification thing options
-                        toastr.options = {
-                            "closeButton": false,
-                            "debug": false,
-                            "positionClass": "toast-top-right",
-                            "onclick": null,
-                            "showDuration": "300",
-                            "hideDuration": "1000",
-                            "timeOut": "12000",
-                            "extendedTimeOut": "1000",
-                            "showEasing": "swing",
-                            "hideEasing": "linear",
-                            "showMethod": "fadeIn",
-                            "hideMethod": "fadeOut"
-                        };
-                        var events = [];
-                        //var query = window.location.search.substring(1);
-                        //var vars = query.split("&");
-                        var serviceID = ""
+            //set notification thing options
+            toastr.options = {
+                "closeButton": false,
+                "debug": false,
+                "positionClass": "toast-top-right",
+                "onclick": null,
+                "showDuration": "300",
+                "hideDuration": "1000",
+                "timeOut": "12000",
+                "extendedTimeOut": "1000",
+                "showEasing": "swing",
+                "hideEasing": "linear",
+                "showMethod": "fadeIn",
+                "hideMethod": "fadeOut"
+            };
+            var events = [];
+            //var query = window.location.search.substring(1);
+            //var vars = query.split("&");
+            var serviceID = ""
 
-                        var format = "xml";
-                        function checkservice(dropdown) {
-                            serviceID = dropdown.options[dropdown.selectedIndex].value;
+            var format = "xml";
+            function checkservice(dropdown) {
+                serviceID = dropdown.options[dropdown.selectedIndex].value;
+                if (format=="xml")
+                    refreshServiceDescription();
+                setTimeout(refreshServiceStructureDisplayed,1000);
+            }
+            function checkformat(dropdown) {
+                format = dropdown.options[dropdown.selectedIndex].value;
+                if (format == "xml")
+                    refreshServiceDescription();
+                if (format == "sybl")
+                    document.getElementById("text").value = "";
+                if (format == "xmlsybl") {
+                    document.getElementById("text").value = "";
+                    getRequirementsXMLSYBL();
+                }
 
-                            refreshServiceDescription();
-                            refreshServiceStructureDisplayed();
+            }
+            function checkRequirements(){
+                dropdown=document.getElementById("format");
+                checkformat(dropdown);
+            }
+            function submitRequirements() {
+
+                if (format == "xml") {
+                    drawSpinner('A');
+                    updateServiceDescription();
+
+                }
+                if (format == "sybl") {
+                    drawSpinner('A');
+                    replaceRequirementsSYBL();
+
+                }
+                if (format == "xmlsybl") {
+                    drawSpinner('A');
+                    replaceRequirementsXMLSYBL();
+                    
+                }
+            }
+            function stopSpinner(){
+                loadingSpinner.stop();
+                    d3.select("#A").selectAll("*").remove();
+            }
+
+            var selectedMetric;
+            var simpleComponentIcon = "m 5,10 c 1.7265,0.251 5.7035,0.0355 4.8055,2.6145 -0.9305,2.0335 -3.066,3.827 0.214,4.8855 1.9925,0.6435 10.717,1.143 9.7905,-2.5835 -1.1255,-1.2255 -2.5535,-2.4125 -1.2315,-4.0245 2.8935,-0.552 5.8135,-0.9665 8.747,-1.2365 2.779,-0.2555 5.01138,-0.3785 7.80388,-0.3535 0,0 0.0342,-28.8233 0,-28.782 l -42.17988,0 c -0.7375,3.8525 -0.9175,8.9665 1.1535,10.61 3.0355,1.834 7.6995,-3.225 9.5015,0.7885 1.384,3.0825 -0.1075,8.324 -4.242,6.515 -4.9185,-2.1525 -7.189,0.88 -6.7055,6.19 0.1545,1.6955 0.472,3.214 0.701,4.702 3.891,-0.081 7.791,0.114 11.642,0.6745 z";
+
+            var complexComponentIcon = "m -10,0 c 3.73224,-0.7459 8.66496,-0.9953 8.05062,0.63028 l -0.81288,2.33051 c 0.0832,1.10156 6.73944,1.38304 6.33894,-0.31885 0,0 -1.18264,-2.45972 -0.99342,-2.50527 -0.0569,-0.88313 8.32576,-0.86545 8.32576,-0.86545 0.78063,1.41974 -0.96421,4.29648 -0.50291,5.19887 1.09973,2.15125 4.95457,0.51254 5.20531,0.70421 0.63103,0.48237 0.96734,3.49919 -0.33288,3.38175 -2.20415,-0.19909 -6.72157,-1.93952 -4.27491,6.24781 l 21.61861,0.3644 -0.33114,-16.07925 c -2.69909,-0.38953 -8.50495,0.33626 -8.33363,1.04589 0.94358,3.90859 -2.59923,4.22934 -5.08229,3.00142 -0.66963,-0.36714 0.47037,-2.20109 0.10252,-2.99309 -0.78827,-1.28418 -3.69368,-0.8065 -8.16329,-0.96312 0,0 -0.70958,-4.82833 -0.42575,-5.05608 2.19333,-0.41775 5.58828,0.77701 5.69185,-2.38338 0.29332,-2.55231 -2.1638,-2.06746 -4.59029,-1.46068 -1.2562,0.31413 -1.57753,-3.06109 -1.19597,-5.67595 l -20.34134,0.0911 0.0473,30.38204 42.43301,-0.1822 0.18922,-30.29094 -22.42279,0";
+            var requirement;
+            var warningTriangle = "m -25,10 11.66727,-22.45064 11.66726,22.45064 z";
+            var sphere = "m 0,0 a 10.253048,9.8994951 0 1 1 -4e-5,-0.003";
+            var octogon = "m 0,-5 6.63341,-7.14443 11.95156,0 6.46184,7.14443 0,8.97271 -6.46184,6.58185 -11.95156,0 -6.63341,-6.58185 z";
+            var auxRect = "m -32,5 0,-13.25825 30.14043,0 0,13.25825 z"
+
+            var margin = {top: 10, right: 120, bottom: 20, left: 140},
+            width = window.innerWidth * 0.6,
+            height = window.innerHeight * 0.8 - 100, //850
+            i = 0,
+            duration = 500,
+            depth = width / 3.5,
+            metrics;
+
+            var opts = {
+                lines: 20, // The number of lines to draw
+                length: 7, // The length of each line
+                width: 10, // The line thickness
+                radius: 100, // The radius of the inner circle
+                corners: 1, // Corner roundness (0..1)
+                rotate: 0, // The rotation offset
+                color: '#000', // #rgb or #rrggbb
+                speed: 1, // Rounds per second
+                trail: 60, // Afterglow percentage
+                shadow: false, // Whether to render a shadow
+                hwaccel: false, // Whether to use hardware acceleration
+                className: 'spinner', // The CSS class to assign to the spinner
+                zIndex: 2e9, // The z-index (defaults to 2000000000)
+                top: 'auto', // Top position relative to parent in px
+                left: 'auto', // Left position relative to parent in px
+                visibility: true
+            };
+
+            var loadingSpinner = new Spinner(opts);
+
+            var tree = d3.layout.tree()
+            .size([height, width]);
+
+            var diagonal = d3.svg.diagonal()
+            .projection(function(d) {
+                return [d.y, d.x];
+            });
+
+            var vis = d3.select("#chart").append("svg")
+            .attr("width", width + margin.right + margin.left)
+            .attr("height", height + margin.top + margin.bottom)
+            .append("g")
+            .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
+
+
+
+            function update(source) {
+
+                // Compute the new tree layout.
+                var nodes = tree.nodes(source).reverse();
+
+                // Normalize for fixed-depth.
+                nodes.forEach(function(d) {
+                    if (d.type == "requirement") {
+                        d.y = 0.8 * (d.depth * depth);
+                    } else if (d.type == "SERVICE_TOPOLOGY") {
+                        d.y = 0.8 *  d.depth * depth;
+
+                    } else if (d.type == "SERVICE_UNIT") {
+                        d.y =   d.depth * depth;
+
+                    } else {
+                        d.y = d.depth * depth;
+                    }
+                });
+
+                // Update the nodes…
+                var node = vis.selectAll("g.node")
+                .data(nodes, function(d) {
+                    return d.id || (d.id = ++i);
+                });
+
+
+                // Enter any new nodes at the parent's previous position.
+                var nodeEnter = node.enter().append("g")
+                .attr("class", "node")
+                .attr("transform", function(d) {
+                    //                    if (d.type != "requirement") {
+                    return "translate(" + source.y + "," + source.x + ")";
+                    //                    }
+                    //                    else {
+                    //                        return "translate(" + (d.parent.y0) + "," + d.parent.x0 + ")";
+                    //                    }
+                })
+                .attr("display", function(d) {
+                    if (d.name == "SubComponents") {
+                        return "none";
+                    } else {
+                        return "yes"
+                    }
+                })
+                .on("click", click);
+
+                nodeEnter.append("path")
+                .attr("d", function(d) {
+                    if (d.type == "SERVICE" || d.type == "SERVICE_TOPOLOGY" || d.type == "SERVICE_UNIT") {
+                        return simpleComponentIcon;
+                    }
+
+                    else if (d.type == "metric") {
+                        return auxRect;
+                    }
+                    else if (d.type == "auxiliaryMetric") {
+                        return auxRect;
+                    }
+                    else if (d.type == "requirement") {
+                        if (d.attention) {
+                            return warningTriangle;
+                        } else {
+                            return sphere;
                         }
-                        function checkformat(dropdown) {
-                            format = dropdown.options[dropdown.selectedIndex].value;
-                            if (format == "xml")
-                                refreshServiceDescription();
-                            if (format == "sybl")
-                                document.getElementById("text").value = "";
-                            if (format == "xmlsybl") {
-                                document.getElementById("text").value = "";
-                                getRequirementsXMLSYBL();
-                            }
-
-                        }
-                        function submitRequirements() {
-
-                            if (format == "xml") {
-                                drawSpinner('A');
-                                updateServiceDescription();
-                            }
-                            if (format == "sybl") {
-                                drawSpinner('A');
-                                replaceRequirementsSYBL();
-                            }
-                            if (format == "xmlsybl") {
-                                drawSpinner('A');
-                                replaceRequirementsXMLSYBL();
-                            }
-                        }
-
-
-                        var selectedMetric;
-                        var simpleComponentIcon = "m 5,10 c 1.7265,0.251 5.7035,0.0355 4.8055,2.6145 -0.9305,2.0335 -3.066,3.827 0.214,4.8855 1.9925,0.6435 10.717,1.143 9.7905,-2.5835 -1.1255,-1.2255 -2.5535,-2.4125 -1.2315,-4.0245 2.8935,-0.552 5.8135,-0.9665 8.747,-1.2365 2.779,-0.2555 5.01138,-0.3785 7.80388,-0.3535 0,0 0.0342,-28.8233 0,-28.782 l -42.17988,0 c -0.7375,3.8525 -0.9175,8.9665 1.1535,10.61 3.0355,1.834 7.6995,-3.225 9.5015,0.7885 1.384,3.0825 -0.1075,8.324 -4.242,6.515 -4.9185,-2.1525 -7.189,0.88 -6.7055,6.19 0.1545,1.6955 0.472,3.214 0.701,4.702 3.891,-0.081 7.791,0.114 11.642,0.6745 z";
-
-                        var complexComponentIcon = "m -10,0 c 3.73224,-0.7459 8.66496,-0.9953 8.05062,0.63028 l -0.81288,2.33051 c 0.0832,1.10156 6.73944,1.38304 6.33894,-0.31885 0,0 -1.18264,-2.45972 -0.99342,-2.50527 -0.0569,-0.88313 8.32576,-0.86545 8.32576,-0.86545 0.78063,1.41974 -0.96421,4.29648 -0.50291,5.19887 1.09973,2.15125 4.95457,0.51254 5.20531,0.70421 0.63103,0.48237 0.96734,3.49919 -0.33288,3.38175 -2.20415,-0.19909 -6.72157,-1.93952 -4.27491,6.24781 l 21.61861,0.3644 -0.33114,-16.07925 c -2.69909,-0.38953 -8.50495,0.33626 -8.33363,1.04589 0.94358,3.90859 -2.59923,4.22934 -5.08229,3.00142 -0.66963,-0.36714 0.47037,-2.20109 0.10252,-2.99309 -0.78827,-1.28418 -3.69368,-0.8065 -8.16329,-0.96312 0,0 -0.70958,-4.82833 -0.42575,-5.05608 2.19333,-0.41775 5.58828,0.77701 5.69185,-2.38338 0.29332,-2.55231 -2.1638,-2.06746 -4.59029,-1.46068 -1.2562,0.31413 -1.57753,-3.06109 -1.19597,-5.67595 l -20.34134,0.0911 0.0473,30.38204 42.43301,-0.1822 0.18922,-30.29094 -22.42279,0";
-                        var requirement;
-                        var warningTriangle = "m -25,10 11.66727,-22.45064 11.66726,22.45064 z";
-                        var sphere = "m 0,0 a 10.253048,9.8994951 0 1 1 -4e-5,-0.003";
-                        var octogon = "m 0,-5 6.63341,-7.14443 11.95156,0 6.46184,7.14443 0,8.97271 -6.46184,6.58185 -11.95156,0 -6.63341,-6.58185 z";
-                        var auxRect = "m -32,5 0,-13.25825 30.14043,0 0,13.25825 z"
-
-                        var margin = {top: 10, right: 120, bottom: 20, left: 140},
-                        width = window.innerWidth * 0.6,
-                                height = window.innerHeight * 0.8 - 100, //850
-                                i = 0,
-                                duration = 500,
-                                depth = width / 3.5,
-                                metrics;
-
-                        var opts = {
-                            lines: 20, // The number of lines to draw
-                            length: 7, // The length of each line
-                            width: 10, // The line thickness
-                            radius: 100, // The radius of the inner circle
-                            corners: 1, // Corner roundness (0..1)
-                            rotate: 0, // The rotation offset
-                            color: '#000', // #rgb or #rrggbb
-                            speed: 1, // Rounds per second
-                            trail: 60, // Afterglow percentage
-                            shadow: false, // Whether to render a shadow
-                            hwaccel: false, // Whether to use hardware acceleration
-                            className: 'spinner', // The CSS class to assign to the spinner
-                            zIndex: 2e9, // The z-index (defaults to 2000000000)
-                            top: 'auto', // Top position relative to parent in px
-                            left: 'auto', // Left position relative to parent in px
-                            visibility: true
-                        };
-
-                        var loadingSpinner = new Spinner(opts);
-
-                        var tree = d3.layout.tree()
-                                .size([height, width]);
-
-                        var diagonal = d3.svg.diagonal()
-                                .projection(function(d) {
-                                    return [d.y, d.x];
-                                });
-
-                        var vis = d3.select("#chart").append("svg")
-                                .attr("width", width + margin.right + margin.left)
-                                .attr("height", height + margin.top + margin.bottom)
-                                .append("g")
-                                .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
-
-
-
-                        function update(source) {
-
-                            // Compute the new tree layout.
-                            var nodes = tree.nodes(source).reverse();
-
-                            // Normalize for fixed-depth.
-                            nodes.forEach(function(d) {
-                                if (d.type == "requirement") {
-                                    d.y = 0.8 * (d.depth * depth);
-                                } else if (d.type == "SERVICE_TOPOLOGY") {
-                                    d.y = 0.8 *  d.depth * depth;
-
-                                } else if (d.type == "SERVICE_UNIT") {
-                                    d.y =   d.depth * depth;
-
-                                } else {
-                                    d.y = d.depth * depth;
-                                }
-                            });
-
-                            // Update the nodes…
-                            var node = vis.selectAll("g.node")
-                                    .data(nodes, function(d) {
-                                        return d.id || (d.id = ++i);
-                                    });
-
-
-                            // Enter any new nodes at the parent's previous position.
-                            var nodeEnter = node.enter().append("g")
-                                    .attr("class", "node")
-                                    .attr("transform", function(d) {
-                                        //                    if (d.type != "requirement") {
-                                        return "translate(" + source.y + "," + source.x + ")";
-                                        //                    }
-                                        //                    else {
-                                        //                        return "translate(" + (d.parent.y0) + "," + d.parent.x0 + ")";
-                                        //                    }
-                                    })
-                                    .attr("display", function(d) {
-                                        if (d.name == "SubComponents") {
-                                            return "none";
-                                        } else {
-                                            return "yes"
-                                        }
-                                    })
-                                    .on("click", click);
-
-                            nodeEnter.append("path")
-                                    .attr("d", function(d) {
-                                        if (d.type == "SERVICE" || d.type == "SERVICE_TOPOLOGY" || d.type == "SERVICE_UNIT") {
-                                            return simpleComponentIcon;
-                                        }
-
-                                        else if (d.type == "metric") {
-                                            return auxRect;
-                                        }
-                                        else if (d.type == "auxiliaryMetric") {
-                                            return auxRect;
-                                        }
-                                        else if (d.type == "requirement") {
-                                            if (d.attention) {
-                                                return warningTriangle;
-                                            } else {
-                                                return sphere;
-                                            }
-                                            ;
-                                        }
-                                        else if (d.name == "SubComponents") {
-                                            return complexComponentIcon;
-                                        }
-                                    }
-                                    )
-                                    .attr("stroke", "black")
-                                    .attr("stroke-width", 1)
-                                    .attr("fill", function(d) {
-                                        if (d.type == "metric") {
-                                            return "red";
-                                        }
-                                        else {
-                                            if (d.type == "requirement") {
-                                                if (d.fulfilled) {
-                                                    return "#1F7872"
-                                                } else {
-                                                    return "#D13F31";
-                                                }
-
-                                            } else {
-                                                return "#72B095";
-                                            }
-                                        }
-                                    });
-
-                            nodeEnter.append("svn:image")
-                                    .attr("xlink:href", function(d) {
-                                        if (d.type == "VM") {
-                                            return "./vm.png";
-                                        } else {
-                                            return null;
-                                        }
-                                    })
-                                    .attr("width", 30)
-                                    .attr("height", 30)
-                                    .attr("dx", -15)
-                                    .attr("y", -15);
-
-
-                            nodeEnter.append("text")
-                                    .attr("dx", function(d) {
-                                        return d.value ? 40 : 10;
-                                    })
-                                    .attr("y", function(d) {
-                                        return d.value ? -10 : -5;
-                                    })
-                                    .attr("text-anchor", function(d) {
-                                        return  d.ip || d.children ? "end" : "start";
-                                    })
-                                    .style("font-size", function(d) {
-                                        return (d.type == "metric") ? 14 : 19;
-                                    })
-                                    .attr("font-style", function(d) {
-                                        return d.children ? "normal" : "italic";
-                                    })
-                                    .style("fill-opacity", 1e-6)
-                                    .text(function(d) {
-                                        if (d.attention) {
-                                            return d.name + ": " + d.actionName;
-                                        } else if (d.type == "VM") {
-                                            return "VM:" + d.name;
-                                        } else {
-                                            return d.name;
-                                        }
-                                    });
-
-
-                            // Transition nodes to their new position.
-                            var nodeUpdate = node.transition()
-
-                                    .duration(duration)
-                                    .attr("transform", function(d) {
-                                        //                    if (d.type != "requirement") {
-                                        return "translate(" + d.y + "," + d.x + ")";
-                                        //                    } else {
-                                        //                        return "translate(" + d.y + "," + d.x + ")";
-                                        //                    }
-                                    })
-                            //.attr("transform", function(d) { return "translate(" + d.y + "," + d.x + ")"; });
-                            //console.log(node.name)
-
-                            nodeUpdate.select("circle")
-                                    .attr("r", function(d) {
-                                        return d.value ? 0 : 8;
-                                    })
-                                    .style("stroke", function(d) {
-                                        if (d.attention) {
-                                            return "#909090";
-                                        } else {
-                                            return "#909090"
-                                        }
-                                        ;
-                                    })
-                                    .style("fill", function(d) {
-                                        if (d.attention) {
-                                            return "#E00000";
-                                        } else {
-                                            return "#CCFFFF";
-                                        }
-                                    });
-
-                            nodeUpdate.select("rect")
-                                    .attr("r", function(d) {
-                                        return d.value ? 0 : 4.5;
-                                    })
-                                    .style("stroke", function(d) {
-                                        if (d.attention) {
-                                            return "#909090";
-                                        } else {
-                                            return "#909090"
-                                        }
-                                        ;
-                                    })
-                                    .style("fill", function(d) {
-                                        if (d.attention) {
-                                            return "#FF6666";
-                                        } else {
-                                            return "#CCFFFF";
-                                        }
-                                    });
-
-                            nodeUpdate.select("text")
-                                    .attr("text-anchor", function(d) {
-                                        return   d.type == "requirement" ? "start" : "end";
-                                    })
-                                    .attr("dy", -5)
-                                    .attr("dx", -15)
-                                    .style("font-size", function(d) {
-                                        return (d.type == "metric") ? 14 : 19;
-                                    })
-                                    .attr("font-style", function(d) {
-                                        return d.children ? "normal" : "italic";
-                                    })
-                                    .style("fill-opacity", 1);
-
-                            // Transition exiting nodes to the parent's new position.
-                            var nodeExit = node.exit().transition()
-                                    .duration(duration)
-                                    .attr("transform", function(d) {
-                                        return "translate(" + source.y + "," + source.x + ")";
-                                    })
-                                    .remove();
-
-                            nodeExit.select("circle")
-                                    .attr("r", function(d) {
-                                        return d.value ? 0 : 8;
-                                    });
-
-                            nodeExit.select("text")
-                                    .attr("text-anchor", function(d) {
-                                        return   d.ip || d.children ? "end" : "start";
-                                    })
-                                    .attr("dy", -5)
-                                    .style("font-size", function(d) {
-                                        return (d.type == "metric") ? 14 : 19;
-                                    })
-                                    .attr("font-style", function(d) {
-                                        return d.children ? "normal" : "italic";
-                                    })
-                                    .style("fill-opacity", 1e-6);
-
-
-                            // Update the links…
-                            var link = vis.selectAll("path.link")
-                                    .data([], function(d) {
-                                        return d.target.id;
-                                    });
-                            link.exit().remove();
-
-
-                            link = vis.selectAll("path.link")
-                                    .data(tree.links(nodes), function(d) {
-                                        return d.target.id;
-                                    });
-
-                            //TODO: test if works without this.
-                            // Enter any new links at the parent's previous position.
-                            link.enter().insert("path", "g")
-                                    .attr("class", "link")
-                                    .attr("d", function(d) {
-                                        if (d.target.type == "metric") {
-                                            var o = {x: source.x, y: source.y};
-                                            return diagonal({source: o, target: o});
-                                        } else {
-                                            var o = {x: source.x, y: source.y};
-                                            return diagonal({source: o, target: o});
-                                        }
-                                    })
-                                    .style("stroke-dasharray", function(d) {
-                                        if (d.target.type == "metric") {
-                                            return "0";
-                                        }
-                                        else if (d.target.type == "requirement") {
-                                            return "3.3";
-                                        }
-                                        else if (d.target.type == "auxiliaryMetric") {
-                                            return "3.3";
-                                        }
-                                        else {
-                                            return "1";
-                                        }
-                                    })
-                                    .style("stroke", function(d) {
-                                        if (d.target.type == "requirement") {
-                                            if (d.target.attention) {
-                                                return "#E00000";
-                                            }
-                                            else {
-                                                return "#00E096";
-                                            }
-                                        } else {
-                                            return "#ccc";
-                                        }
-                                    })
-                                    .style("stroke-width", function(d) {
-                                        if (d.target.type == "requirement") {
-                                            return "1";
-                                        }
-                                        else if (d.target.type == "auxiliaryMetric") {
-                                            return "0.5";
-                                        }
-                                        else {
-                                            return "1";
-                                        }
-                                    })
-                                    ;
-
-                            // Transition links to their new position.
-                            link.transition()
-                                    .duration(duration)
-                                    .attr("d", diagonal);
-
-                            // Transition exiting nodes to the parent's new position.
-                            link.exit().transition()
-                                    .duration(duration)
-                                    .attr("d", function(d) {
-                                        var o = {x: source.x, y: source.y};
-                                        return diagonal({source: o, target: o});
-                                    })
-                                    .remove();
-
-                            // Stash the old positions for transition.
-                            nodes.forEach(function(d) {
-                                d.x0 = d.x;
-                                d.y0 = d.y;
-                            });
-                        }
-
-                        //open el Space only for non VMs
-                        function click(d) {
-                            if (d.type == "requirement") {
-                                textarea = document.getElementById("text");
-                                textarea.value += d.name;
-                            }
-                            //                if (d.type != "VM") {
-                            //                    var win = window.open("elasticitySpace.html?" + serviceID + "&" + d.name + "&" + d.type, '_blank');
-                            //                    //var win = window.open("elasticityPathway.html?"+ serviceID + "&" + d.name + "&" + d.type, '_blank');
-                            //                }
-                        }
-
-
-
-
-                        function showContent(d, show) {
-                            if (!show && d.children) {
-                                d._children = d.children;
-                                d.children = null;
-                                update(d);
-                            } else if (!d.children) {
-                                d.children = d._children;
-                                d._children = null;
-                                update(d);
-                            }
-
-                        }
-
-
-
-                        function refreshServiceStructureDisplayed() {
-                            if (serviceID != "") {
-                                reqServiceStructuObject = null;
-
-
-                                if (window.XMLHttpRequest) {
-                                    reqServiceStructuObject = new XMLHttpRequest();
-                                } else {
-                                    reqServiceStructuObject = new ActiveXObject("Microsoft.XMLHTTP");
-                                }
-
-                                reqServiceStructuObject.onreadystatechange = refreshServiceStructureResponseProcessing;
-                                reqServiceStructuObject.open("GET", "./restWS/" + serviceID + "/structuralData/json", true);
-                                reqServiceStructuObject.send(null);
-                            }
-                        }
-
-                        function refreshServiceStructureResponseProcessing() {
-                            if (reqServiceStructuObject.readyState == 4) {
-
-                                try {
-                                    new_root = JSON.parse(reqServiceStructuObject.responseText);
-
-
-
-                                    if (new_root.children) {
-                                        loadingSpinner.stop();
-                                        d3.select("#A").selectAll("*").remove();
-                                        //                        setTimeout(refreshMonitoringData, 1000);
-                                    }
-
-                                    //if we have root that changed and is not metric, update its tree
-                                    vis.selectAll("*").remove();
-                                    update(new_root);
-
-
-                                    loadingSpinner.stop();
-                                } catch (error) {
-                                    console.log(error);
-                                    console.log("Error encountered when processing service struct");
-                                }
-                            }
-
-                        }
-
-
-
-
-
-
-                        function drawSpinner(spinnerContainer) {
-                            var target = document.getElementById(spinnerContainer);
-                            //target.style.display = "block";
-                            loadingSpinner.spin(target);
-                        }
-                        function replaceRequirementsXMLSYBL() {
-                            getManagedServices = null;
-                            if (window.XMLHttpRequest) {
-                                updateServicesListRequest = new XMLHttpRequest();
+                        ;
+                    }
+                    else if (d.name == "SubComponents") {
+                        return complexComponentIcon;
+                    }
+                }
+            )
+                .attr("stroke", "black")
+                .attr("stroke-width", 1)
+                .attr("fill", function(d) {
+                    if (d.type == "metric") {
+                        return "red";
+                    }
+                    else {
+                        if (d.type == "requirement") {
+                            if (d.fulfilled) {
+                                return "#1F7872"
                             } else {
-                                updateServicesListRequest = new ActiveXObject("Microsoft.XMLHTTP");
+                                return "#D13F31";
                             }
 
-                            updateServicesListRequest.open("POST", "./restWS/" + serviceID + "/elasticityRequirements/xml", true);
+                        } else {
+                            return "#72B095";
+                        }
+                    }
+                });
 
-                            updateServicesListRequest.setRequestHeader('Content-type', 'application/xml');
-                            updateServicesListRequest.send(document.getElementById("text").value);
-//                            setTimeout(refreshMonitoringData, 4000);
-                            getRequirementsXMLSYBL();
+                nodeEnter.append("svn:image")
+                .attr("xlink:href", function(d) {
+                    if (d.type == "VM") {
+                        return "./vm.png";
+                    } else {
+                        return null;
+                    }
+                })
+                .attr("width", 30)
+                .attr("height", 30)
+                .attr("dx", -15)
+                .attr("y", -15);
 
 
+                nodeEnter.append("text")
+                .attr("dx", function(d) {
+                    return d.value ? 40 : 10;
+                })
+                .attr("y", function(d) {
+                    return d.value ? -10 : -5;
+                })
+                .attr("text-anchor", function(d) {
+                    return  d.ip || d.children ? "end" : "start";
+                })
+                .style("font-size", function(d) {
+                    return (d.type == "metric") ? 14 : 19;
+                })
+                .attr("font-style", function(d) {
+                    return d.children ? "normal" : "italic";
+                })
+                .style("fill-opacity", 1e-6)
+                .text(function(d) {
+                    if (d.attention) {
+                        return d.name + ": " + d.actionName;
+                    } else if (d.type == "VM") {
+                        return "VM:" + d.name;
+                    } else {
+                        return d.name;
+                    }
+                });
+
+
+                // Transition nodes to their new position.
+                var nodeUpdate = node.transition()
+
+                .duration(duration)
+                .attr("transform", function(d) {
+                    //                    if (d.type != "requirement") {
+                    return "translate(" + d.y + "," + d.x + ")";
+                    //                    } else {
+                    //                        return "translate(" + d.y + "," + d.x + ")";
+                    //                    }
+                })
+                //.attr("transform", function(d) { return "translate(" + d.y + "," + d.x + ")"; });
+                //console.log(node.name)
+
+                nodeUpdate.select("circle")
+                .attr("r", function(d) {
+                    return d.value ? 0 : 8;
+                })
+                .style("stroke", function(d) {
+                    if (d.attention) {
+                        return "#909090";
+                    } else {
+                        return "#909090"
+                    }
+                    ;
+                })
+                .style("fill", function(d) {
+                    if (d.attention) {
+                        return "#E00000";
+                    } else {
+                        return "#CCFFFF";
+                    }
+                });
+
+                nodeUpdate.select("rect")
+                .attr("r", function(d) {
+                    return d.value ? 0 : 4.5;
+                })
+                .style("stroke", function(d) {
+                    if (d.attention) {
+                        return "#909090";
+                    } else {
+                        return "#909090"
+                    }
+                    ;
+                })
+                .style("fill", function(d) {
+                    if (d.attention) {
+                        return "#FF6666";
+                    } else {
+                        return "#CCFFFF";
+                    }
+                });
+
+                nodeUpdate.select("text")
+                .attr("text-anchor", function(d) {
+                    return   d.type == "requirement" ? "start" : "end";
+                })
+                .attr("dy", -5)
+                .attr("dx", -15)
+                .style("font-size", function(d) {
+                    return (d.type == "metric") ? 14 : 19;
+                })
+                .attr("font-style", function(d) {
+                    return d.children ? "normal" : "italic";
+                })
+                .style("fill-opacity", 1);
+
+                // Transition exiting nodes to the parent's new position.
+                var nodeExit = node.exit().transition()
+                .duration(duration)
+                .attr("transform", function(d) {
+                    return "translate(" + source.y + "," + source.x + ")";
+                })
+                .remove();
+
+                nodeExit.select("circle")
+                .attr("r", function(d) {
+                    return d.value ? 0 : 8;
+                });
+
+                nodeExit.select("text")
+                .attr("text-anchor", function(d) {
+                    return   d.ip || d.children ? "end" : "start";
+                })
+                .attr("dy", -5)
+                .style("font-size", function(d) {
+                    return (d.type == "metric") ? 14 : 19;
+                })
+                .attr("font-style", function(d) {
+                    return d.children ? "normal" : "italic";
+                })
+                .style("fill-opacity", 1e-6);
+
+
+                // Update the links…
+                var link = vis.selectAll("path.link")
+                .data([], function(d) {
+                    return d.target.id;
+                });
+                link.exit().remove();
+
+
+                link = vis.selectAll("path.link")
+                .data(tree.links(nodes), function(d) {
+                    return d.target.id;
+                });
+
+                //TODO: test if works without this.
+                // Enter any new links at the parent's previous position.
+                link.enter().insert("path", "g")
+                .attr("class", "link")
+                .attr("d", function(d) {
+                    if (d.target.type == "metric") {
+                        var o = {x: source.x, y: source.y};
+                        return diagonal({source: o, target: o});
+                    } else {
+                        var o = {x: source.x, y: source.y};
+                        return diagonal({source: o, target: o});
+                    }
+                })
+                .style("stroke-dasharray", function(d) {
+                    if (d.target.type == "metric") {
+                        return "0";
+                    }
+                    else if (d.target.type == "requirement") {
+                        return "3.3";
+                    }
+                    else if (d.target.type == "auxiliaryMetric") {
+                        return "3.3";
+                    }
+                    else {
+                        return "1";
+                    }
+                })
+                .style("stroke", function(d) {
+                    if (d.target.type == "requirement") {
+                        if (d.target.attention) {
+                            return "#E00000";
+                        }
+                        else {
+                            return "#00E096";
+                        }
+                    } else {
+                        return "#ccc";
+                    }
+                })
+                .style("stroke-width", function(d) {
+                    if (d.target.type == "requirement") {
+                        return "1";
+                    }
+                    else if (d.target.type == "auxiliaryMetric") {
+                        return "0.5";
+                    }
+                    else {
+                        return "1";
+                    }
+                })
+                ;
+
+                // Transition links to their new position.
+                link.transition()
+                .duration(duration)
+                .attr("d", diagonal);
+
+                // Transition exiting nodes to the parent's new position.
+                link.exit().transition()
+                .duration(duration)
+                .attr("d", function(d) {
+                    var o = {x: source.x, y: source.y};
+                    return diagonal({source: o, target: o});
+                })
+                .remove();
+
+                // Stash the old positions for transition.
+                nodes.forEach(function(d) {
+                    d.x0 = d.x;
+                    d.y0 = d.y;
+                });
+            }
+
+            //open el Space only for non VMs
+            function click(d) {
+                if (d.type == "requirement" && format=="sybl") {
+
+                    if (!document.getElementById("text").value.indexOf(d.name)>-1){
+                    textarea = document.getElementById("text");
+                    textarea.value += d.name;
+                    }}
+//                else{
+//                   if (d.type == "requirement") {
+//                    var constraintName= d.name;
+//                    constraintName=constraintName.replace("<","&lt;");
+//                    constraintName=constraintName.replace(">","&gt;");
+//                    if (document.getElementById("text").value.indexOf(constraintName)>-1){
+//
+//                    textarea = document.getElementById("text");
+//                    res= textarea.value.replace(constraintName,"<b>"+d.name+"</b>");
+//                    textarea.value=res;
+//                    }
+//                }
+//        }
+                //                if (d.type != "VM") {
+                //                    var win = window.open("elasticitySpace.html?" + serviceID + "&" + d.name + "&" + d.type, '_blank');
+                //                    //var win = window.open("elasticityPathway.html?"+ serviceID + "&" + d.name + "&" + d.type, '_blank');
+                //                }
+            }
+
+
+
+
+            function showContent(d, show) {
+                if (!show && d.children) {
+                    d._children = d.children;
+                    d.children = null;
+                    update(d);
+                } else if (!d.children) {
+                    d.children = d._children;
+                    d._children = null;
+                    update(d);
+                }
+
+            }
+
+
+
+            function refreshServiceStructureDisplayed() {
+                if (serviceID != "") {
+                    reqServiceStructuObject = null;
+
+
+                    if (window.XMLHttpRequest) {
+                        reqServiceStructuObject = new XMLHttpRequest();
+                    } else {
+                        reqServiceStructuObject = new ActiveXObject("Microsoft.XMLHTTP");
+                    }
+
+                    reqServiceStructuObject.onreadystatechange = refreshServiceStructureResponseProcessing;
+                    reqServiceStructuObject.open("GET", "./restWS/" + serviceID + "/structuralData/json", true);
+                    reqServiceStructuObject.send(null);
+                }
+            }
+
+            function refreshServiceStructureResponseProcessing() {
+                if (reqServiceStructuObject.readyState == 4) {
+
+                    try {
+                        new_root = JSON.parse(reqServiceStructuObject.responseText);
+
+
+
+                        if (new_root.children) {
+                            loadingSpinner.stop();
+                            d3.select("#A").selectAll("*").remove();
+                            //                        setTimeout(refreshMonitoringData, 1000);
                         }
 
-                        function replaceRequirementsSYBL() {
+                        //if we have root that changed and is not metric, update its tree
+                        vis.selectAll("*").remove();
+                        update(new_root);
 
-                            getManagedServices = null;
-                            if (window.XMLHttpRequest) {
-                                replaceRequirementsSYBL = new XMLHttpRequest();
-                            } else {
-                                replaceRequirementsSYBL = new ActiveXObject("Microsoft.XMLHTTP");
-                            }
 
-                            replaceRequirementsSYBL.open("POST", "./restWS/" + serviceID + "/replaceRequirements/plain", true);
+                        loadingSpinner.stop();
+                    } catch (error) {
+                        console.log(error);
+                        console.log("Error encountered when processing service struct");
+                    }
+                    if (document.getElementById("text").value=="")            
+                        getRequirementsXMLSYBL(); 
+                          
 
-                            replaceRequirementsSYBL.setRequestHeader('Content-type', 'text/plain');
-                            replaceRequirementsSYBL.send(document.getElementById("text").value);
-                            getRequirementsXMLSYBL();
+                }
+            }
 
+
+
+
+
+
+            function drawSpinner(spinnerContainer) {
+                var target = document.getElementById(spinnerContainer);
+                //target.style.display = "block";
+                loadingSpinner.spin(target);
+            }
+            function replaceRequirementsXMLSYBL() {
+                getManagedServices = null;
+                if (window.XMLHttpRequest) {
+                    updateServicesListRequest = new XMLHttpRequest();
+                } else {
+                    updateServicesListRequest = new ActiveXObject("Microsoft.XMLHTTP");
+                }
+
+                updateServicesListRequest.open("POST", "./restWS/" + serviceID + "/elasticityRequirements/xml", true);
+
+                updateServicesListRequest.setRequestHeader('Content-type', 'application/xml');
+                updateServicesListRequest.send(document.getElementById("text").value);
+                //                            setTimeout(refreshMonitoringData, 4000);
+                //getRequirementsXMLSYBL();
+                setTimeout(refreshServiceStructureDisplayed,5000);
+
+            }
+
+            function replaceRequirementsSYBL() {
+
+                getManagedServices = null;
+                if (window.XMLHttpRequest) {
+                    replaceRequirementsSYBL = new XMLHttpRequest();
+                } else {
+                    replaceRequirementsSYBL = new ActiveXObject("Microsoft.XMLHTTP");
+                }
+
+                replaceRequirementsSYBL.open("POST", "./restWS/" + serviceID + "/replaceRequirements/plain", true);
+
+                replaceRequirementsSYBL.setRequestHeader('Content-type', 'text/plain');
+                replaceRequirementsSYBL.send(document.getElementById("text").value);
+                //getRequirementsXMLSYBL();
+                setTimeout(refreshServiceStructureDisplayed,5000);
+
+            }
+            function updateServiceDescription() {
+
+                getManagedServices = null;
+                if (window.XMLHttpRequest) {
+                    updateServicesListRequest = new XMLHttpRequest();
+                } else {
+                    updateServicesListRequest = new ActiveXObject("Microsoft.XMLHTTP");
+                }
+
+                updateServicesListRequest.open("POST", "./restWS/" + serviceID + "/description", true);
+
+                updateServicesListRequest.setRequestHeader('Content-type', 'application/xml');
+                updateServicesListRequest.send(document.getElementById("text").value);
+                setTimeout(refreshServiceStructureDisplayed,5000);
+                
+            }
+
+
+            function getRequirementsXMLSYBL() {
+                if (serviceID!=""){
+                    getManagedServices = null;
+                    if (window.XMLHttpRequest) {
+                        refreshXMLSYBL = new XMLHttpRequest();
+                    } else {
+                        refreshXMLSYBL = new ActiveXObject("Microsoft.XMLHTTP");
+                    }
+
+                    refreshXMLSYBL.onreadystatechange = processRequirementsXMLSYBL;
+                    refreshXMLSYBL.open("GET", "./restWS/" + serviceID + "/elasticityRequirements/xml", true);
+                    refreshXMLSYBL.setRequestHeader('Content-type', 'application/xml');
+                    refreshXMLSYBL.send(null);
+                }
+            }
+            function processRequirementsXMLSYBL() {
+                if (refreshXMLSYBL.readyState == 4) {
+                    descr = refreshXMLSYBL.responseText;
+                    //                //clear prev list
+
+                    //
+
+                    // Normalize for fixed-depth.
+
+                    if (format == "xmlsybl") {
+                        var x = document.getElementById("text");
+                        x.value = descr;
+                    }
+                              
+                    //setTimeout(refreshServiceDescription, 5000);
+                }
+            }
+
+
+            function refreshServiceDescription() {
+                if (serviceID!=""){
+                    getManagedServices = null;
+                    if (window.XMLHttpRequest) {
+                        refreshServicesListRequest = new XMLHttpRequest();
+                    } else {
+                        refreshServicesListRequest = new ActiveXObject("Microsoft.XMLHTTP");
+                    }
+
+                    refreshServicesListRequest.onreadystatechange = processRefreshServiceDescription;
+                    refreshServicesListRequest.open("GET", "./restWS/" + serviceID + "/description", true);
+                    refreshServicesListRequest.setRequestHeader('Content-type', 'application/xml');
+                    refreshServicesListRequest.send(null);
+                }
+            }
+            function processRefreshServiceDescription() {
+                if (refreshServicesListRequest.readyState == 4) {
+                    descr = refreshServicesListRequest.responseText;
+                    //                //clear prev list
+
+                    //
+
+                    // Normalize for fixed-depth.
+
+                    if (format == "xml") {
+                        var x = document.getElementById("text");
+                        x.value = descr;
+                    }
+                    //setTimeout(refreshServiceDescription, 5000);
+                } 
+            }
+
+            function refreshServicesList() {
+
+                getManagedServices = null;
+                if (window.XMLHttpRequest) {
+                    refreshServicesListRequest = new XMLHttpRequest();
+                } else {
+                    refreshServicesListRequest = new ActiveXObject("Microsoft.XMLHTTP");
+                }
+
+                refreshServicesListRequest.onreadystatechange = processRefreshServicesResponse;
+                refreshServicesListRequest.open("GET", "./restWS/elasticservices", true);
+                refreshServicesListRequest.setRequestHeader('Content-type', 'application/xml');
+                refreshServicesListRequest.send(null);
+
+            }
+            function processRefreshServicesResponse() {
+                if (refreshServicesListRequest.readyState == 4) {
+                    serviceIDs = refreshServicesListRequest.responseText.split(",");
+                    //                //clear prev list
+
+                    //
+                    if (serviceIDs!=""){
+                                
+                        // Normalize for fixed-depth.
+                        var x = document.getElementById("service");
+                        var length = x.options.length;
+                                
+                        for (i = 0; i < length; i++) {
+                            x.remove(x.options[i]);
                         }
-                        function updateServiceDescription() {
-
-                            getManagedServices = null;
-                            if (window.XMLHttpRequest) {
-                                updateServicesListRequest = new XMLHttpRequest();
-                            } else {
-                                updateServicesListRequest = new ActiveXObject("Microsoft.XMLHTTP");
-                            }
-
-                            updateServicesListRequest.open("POST", "./restWS/" + serviceID + "/description", true);
-
-                            updateServicesListRequest.setRequestHeader('Content-type', 'application/xml');
-                            updateServicesListRequest.send(document.getElementById("text").value);
-                            getRequirementsXMLSYBL();
-
-                        }
-
-
-                        function getRequirementsXMLSYBL() {
-                            getManagedServices = null;
-                            if (window.XMLHttpRequest) {
-                                refreshXMLSYBL = new XMLHttpRequest();
-                            } else {
-                                refreshXMLSYBL = new ActiveXObject("Microsoft.XMLHTTP");
-                            }
-
-                            refreshXMLSYBL.onreadystatechange = processRequirementsXMLSYBL;
-                            refreshXMLSYBL.open("GET", "./restWS/" + serviceID + "/elasticityRequirements/xml", true);
-                            refreshXMLSYBL.setRequestHeader('Content-type', 'application/xml');
-                            refreshXMLSYBL.send(null);
-
-                        }
-                        function processRequirementsXMLSYBL() {
-                            if (refreshXMLSYBL.readyState == 4) {
-                                descr = refreshXMLSYBL.responseText;
-                                //                //clear prev list
-
-                                //
-
-                                // Normalize for fixed-depth.
-
-                                if (format == "xmlsybl") {
-                                    var x = document.getElementById("text");
-                                    x.value = descr;
+                        var found = false;
+                        serviceIDs.forEach(function(service) {
+                            if (service != "") {
+                                var option = document.createElement("option");
+                                option.text = service;
+                                x.add(option, x[0]);
+                                if (service==serviceID){
+                                    found=true;
                                 }
+                            }
+
+                        });
+                        if (serviceID != "") {
+                                    
+                            if (found==false){
+                                x.options[x.options.length - 1].setAttribute("selected", "selected");
+                                serviceID = x.options[x.options.length - 1].text;
                                 refreshServiceStructureDisplayed();
-                                //setTimeout(refreshServiceDescription, 5000);
-                            } else {
-//                                setTimeout(getRequirementsXMLSYBL, 10000);
-                            }
-                        }
-
-
-                        function refreshServiceDescription() {
-
-                            getManagedServices = null;
-                            if (window.XMLHttpRequest) {
-                                refreshServicesListRequest = new XMLHttpRequest();
-                            } else {
-                                refreshServicesListRequest = new ActiveXObject("Microsoft.XMLHTTP");
-                            }
-
-                            refreshServicesListRequest.onreadystatechange = processRefreshServiceDescription;
-                            refreshServicesListRequest.open("GET", "./restWS/" + serviceID + "/description", true);
-                            refreshServicesListRequest.setRequestHeader('Content-type', 'application/xml');
-                            refreshServicesListRequest.send(null);
-
-                        }
-                        function processRefreshServiceDescription() {
-                            if (refreshServicesListRequest.readyState == 4) {
-                                descr = refreshServicesListRequest.responseText;
-                                //                //clear prev list
-
-                                //
-
-                                // Normalize for fixed-depth.
-
-                                if (format == "xml") {
-                                    var x = document.getElementById("text");
-                                    x.value = descr;
-                                }
-                                //setTimeout(refreshServiceDescription, 5000);
-                            } else {
-//                                setTimeout(refreshServiceDescription, 10000);
-                            }
-                        }
-
-                        function refreshServicesList() {
-
-                            getManagedServices = null;
-                            if (window.XMLHttpRequest) {
-                                refreshServicesListRequest = new XMLHttpRequest();
-                            } else {
-                                refreshServicesListRequest = new ActiveXObject("Microsoft.XMLHTTP");
-                            }
-
-                            refreshServicesListRequest.onreadystatechange = processRefreshServicesResponse;
-                            refreshServicesListRequest.open("GET", "./restWS/elasticservices", true);
-                            refreshServicesListRequest.setRequestHeader('Content-type', 'application/xml');
-                            refreshServicesListRequest.send(null);
-
-                        }
-                        function processRefreshServicesResponse() {
-                            if (refreshServicesListRequest.readyState == 4) {
-                                serviceIDs = refreshServicesListRequest.responseText.split(",");
-                                //                //clear prev list
-
-                                //
-
-                                // Normalize for fixed-depth.
-                                var x = document.getElementById("service");
-                                var length = x.options.length;
-                                for (i = 0; i < length; i++) {
-                                    x.remove(x.options[i])
-                                }
-
-                                serviceIDs.forEach(function(service) {
-                                    if (service != "") {
-                                        var option = document.createElement("option");
-                                        option.text = service;
-                                        x.add(option, x[0]);
+                                if (format=="xml")
+                                     refreshServiceDescription();
+                            }else{
+                                for (var i=0, n=x.options.length;i<n;i++) {
+                                    if (x.options[i].text==serviceID){
+                                        x.options[i].setAttribute("selected", "selected");
                                     }
 
-                                });
-                                if (serviceID == "") {
-                                    x.options[x.options.length - 1].setAttribute("selected", "selected");
-                                    serviceID = x.options[x.options.length - 1].text;
-                                    refreshServiceStructureDisplayed();
-                                    refreshServiceDescription();
                                 }
-
-                                setTimeout(refreshServicesList, 10000);
+                                         
                             }
+                                    
+                         
+                           
+                        }else{
+                            x.options[x.options.length - 1].setAttribute("selected", "selected");
+                            serviceID = x.options[x.options.length - 1].text;
+                            refreshServiceStructureDisplayed();
+                            if (format=="xml")
+                            refreshServiceDescription();
                         }
+                    }else{
+                        setTimeout(refreshServicesList, 3000);
+                    }
+                }
+            }
 
-                        function processEventsPollingResponse() {
-                            if (pollEventsRequest.readyState == 4) {
+            function processEventsPollingResponse() {
+                if (pollEventsRequest.readyState == 4) {
 
 
-                                try {
-                                    events = JSON.parse(pollEventsRequest.responseText);
-                                    for (var index = 0; index < events.length; index++) {
-                                        toastr.info(events[index].event);
-                                    }
-                                }
-                                catch (err) {
-                                    console(err.message)
-                                    console.log("Error encountered when processing events");
-                                }
-                                setTimeout(pollEvents, 10000);
-                            }
+                    try {
+                        events = JSON.parse(pollEventsRequest.responseText);
+                        for (var index = 0; index < events.length; index++) {
+                            toastr.info(events[index].event);
                         }
+                    }
+                    catch (err) {
+                        console(err.message)
+                        console.log("Error encountered when processing events");
+                    }
+                    setTimeout(pollEvents, 10000);
+                }
+            }
 
 
-                        drawSpinner('A');
-
-                        // refreshMetricsCompositionRules();
-                        //refreshMonitoringData();
-                        // pollEvents();
-                        refreshServicesList();
+            drawSpinner('A');
+            // setInterval(  refreshServiceStructureDisplayed, 4000);
+                        
+            // refreshMetricsCompositionRules();
+            //refreshMonitoringData();
+            // pollEvents();
+            // setInterval(refreshServicesList,4000);
+            refreshServicesList();
         </script>
     </body>
 </html>

@@ -143,6 +143,9 @@ public class ControlService {
     private void replaceDependencyGraph() {
         Node node = new Node();
         node = dependencyGraph.getCloudService();
+                OutputProcessing outputProcessing = new OutputProcessing();
+        
+        applicationDescription= outputProcessing.getCloudServiceXML(dependencyGraph.getCloudService());
         monitoringAPI.setControlledService(node);
 
         monitoringAPI.submitElasticityRequirements(dependencyGraph

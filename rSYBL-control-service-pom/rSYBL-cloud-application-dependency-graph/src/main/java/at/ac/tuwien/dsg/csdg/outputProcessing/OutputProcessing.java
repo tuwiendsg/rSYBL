@@ -5,17 +5,23 @@
 package at.ac.tuwien.dsg.csdg.outputProcessing;
 
 import at.ac.tuwien.dsg.csdg.Node;
+import at.ac.tuwien.dsg.csdg.Relationship;
 import at.ac.tuwien.dsg.csdg.elasticityInformation.ElasticityCapability;
 import at.ac.tuwien.dsg.csdg.elasticityInformation.ElasticityRequirement;
 import at.ac.tuwien.dsg.csdg.elasticityInformation.elasticityRequirements.SYBLElasticityRequirementsDescription;
 import at.ac.tuwien.dsg.csdg.elasticityInformation.elasticityRequirements.SYBLSpecification;
+import at.ac.tuwien.dsg.csdg.inputProcessing.multiLevelModel.abstractModelXML.CloudServiceXML;
+import at.ac.tuwien.dsg.csdg.inputProcessing.multiLevelModel.abstractModelXML.SYBLAnnotationXML;
 import at.ac.tuwien.dsg.csdg.inputProcessing.multiLevelModel.abstractModelXML.SYBLDirectiveMappingFromXML;
+import at.ac.tuwien.dsg.csdg.inputProcessing.multiLevelModel.abstractModelXML.ServiceTopologyXML;
+import at.ac.tuwien.dsg.csdg.inputProcessing.multiLevelModel.abstractModelXML.ServiceUnitXML;
 import at.ac.tuwien.dsg.csdg.utils.Configuration;
 import at.ac.tuwien.dsg.csdg.utils.DependencyGraphLogger;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.StringWriter;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -66,6 +72,52 @@ public class OutputProcessing implements OutputProcessingInterface {
             DependencyGraphLogger.logger.error(e.getMessage());
         }
         return reqs;
+    }
+    private SYBLAnnotationXML getXMLAnnotationGivenReqs(Node n){
+        SYBLAnnotationXML annotationXML= new SYBLAnnotationXML();
+        annotationXML.setConstraints(n.getElasticityRequirements().get(0).getAnnotation().getConstraints());
+        annotationXML.setMonitoring(n.getElasticityRequirements().get(0).getAnnotation().getMonitoring());
+        annotationXML.setStrategies(n.getElasticityRequirements().get(0).getAnnotation().getStrategies());
+
+        return annotationXML;
+    }
+    public String getCloudServiceXML(Node controlledService){
+         String res="";
+        CloudServiceXML cloudServiceXML=new CloudServiceXML();
+        cloudServiceXML.setId(controlledService.getId());
+        cloudServiceXML.setXMLAnnotation(getXMLAnnotationGivenReqs(controlledService));
+        
+        List<Node> toExplore = new ArrayList<Node>();
+        toExplore.addAll(controlledService.getAllRelatedNodesOfType(Relationship.RelationshipType.COMPOSITION_RELATIONSHIP,Node.NodeType.SERVICE_TOPOLOGY));
+        List<ServiceTopologyXML> initialServiceTopologies = new ArrayList<ServiceTopologyXML>();
+        for (Node n : toExplore){
+            ServiceTopologyXML servTopologyXML = new ServiceTopologyXML();
+            servTopologyXML.setId(n.getId());
+            servTopologyXML.setXMLAnnotation(getXMLAnnotationGivenReqs(n));
+            List<ServiceUnitXML> serviceUnits = new ArrayList<ServiceUnitXML>();
+            for (Node servUnit:n.getAllRelatedNodesOfType(Relationship.RelationshipType.COMPOSITION_RELATIONSHIP, Node.NodeType.SERVICE_UNIT)){
+                ServiceUnitXML serviceUnitXML = new ServiceUnitXML();
+                serviceUnitXML.setId(servUnit.getId());
+                serviceUnitXML.setXMLAnnotation(getXMLAnnotationGivenReqs(servUnit));
+               serviceUnits.add(serviceUnitXML);
+            }
+            servTopologyXML.setServiceUnits(serviceUnits);
+            initialServiceTopologies.add(servTopologyXML);
+        }
+        cloudServiceXML.setServiceTopologies(initialServiceTopologies);
+        
+        try{
+            
+        JAXBContext jaxbContext = JAXBContext.newInstance(CloudServiceXML.class);
+        Marshaller marshaller = jaxbContext.createMarshaller();
+        StringWriter w = new StringWriter();
+
+        marshaller.marshal(cloudServiceXML, w);
+        res=w.toString();
+        }catch(Exception e){
+            DependencyGraphLogger.logger.error(e.getMessage());
+        }
+        return res;
     }
     @Override
     public void saveActionPlan(HashMap<Node,ElasticityCapability> actionPlan) {

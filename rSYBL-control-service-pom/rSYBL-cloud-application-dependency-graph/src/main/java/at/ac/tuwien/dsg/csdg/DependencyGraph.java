@@ -30,6 +30,7 @@ import at.ac.tuwien.dsg.csdg.Node.NodeType;
 import at.ac.tuwien.dsg.csdg.Relationship.RelationshipType;
 import at.ac.tuwien.dsg.csdg.elasticityInformation.ElasticityMetric;
 import at.ac.tuwien.dsg.csdg.elasticityInformation.ElasticityRequirement;
+import at.ac.tuwien.dsg.csdg.inputProcessing.multiLevelModel.abstractModelXML.CloudServiceXML;
 import com.sun.org.apache.xalan.internal.xsltc.dom.CurrentNodeListFilter;
 import java.util.Map;
 import javax.xml.bind.annotation.XmlEnumValue;
@@ -449,4 +450,5 @@ public class DependencyGraph implements Serializable{
            
        }
        }
+      
 }
