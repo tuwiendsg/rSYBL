@@ -128,9 +128,10 @@
             var format = "xml";
             function checkservice(dropdown) {
                 serviceID = dropdown.options[dropdown.selectedIndex].value;
-                if (format=="xml")
+                if (format=="xml"){
                     refreshServiceDescription();
-                setTimeout(refreshServiceStructureDisplayed,1000);
+                }
+                    refreshServiceStructureDisplayed();
             }
             function checkformat(dropdown) {
                 format = dropdown.options[dropdown.selectedIndex].value;
@@ -181,13 +182,15 @@
             var octogon = "m 0,-5 6.63341,-7.14443 11.95156,0 6.46184,7.14443 0,8.97271 -6.46184,6.58185 -11.95156,0 -6.63341,-6.58185 z";
             var auxRect = "m -32,5 0,-13.25825 30.14043,0 0,13.25825 z"
 
-            var margin = {top: 10, right: 120, bottom: 20, left: 140},
-            width = window.innerWidth * 0.6,
-            height = window.innerHeight * 0.8 - 100, //850
-            i = 0,
-            duration = 500,
-            depth = width / 3.5,
-            metrics;
+            var margin = {top: 10, right: 120, bottom: 20, left: 140};
+            var width = window.innerWidth * 0.6;
+            var height = window.innerHeight * 0.8 - 100; //850
+	    if (height <= 0){ height = 850;}	
+            if (width <= 0){ width = 450;}
+            var i = 0;
+            var duration = 500;
+            var depth = width / 3.5;
+            var metrics;
 
             var opts = {
                 lines: 20, // The number of lines to draw
@@ -224,10 +227,25 @@
             .append("g")
             .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
 
-
+ 
 
             function update(source) {
+             var w = Math.max(document.documentElement.clientWidth, window.innerWidth || 0)
+             var h = Math.max(document.documentElement.clientHeight, window.innerHeight || 0)
+            width = w * 0.6;
+            height = h * 0.8 - 100; //850
+            d3.select("#chart").selectAll("*").remove();
+	    vis = d3.select("#chart").append("svg")
+            .attr("width", width + margin.right + margin.left)
+            .attr("height", height + margin.top + margin.bottom)
+            .append("g")
+            .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
 
+              
+            
+	    if (height <= 0){ height = 850;}	
+            if (width <= 0){ width = 450;}
+  
                 // Compute the new tree layout.
                 var nodes = tree.nodes(source).reverse();
 
@@ -618,7 +636,7 @@
                         }
 
                         //if we have root that changed and is not metric, update its tree
-                        vis.selectAll("*").remove();
+                        //vis.selectAll("*").remove();
                         update(new_root);
 
 
@@ -793,6 +811,11 @@
                         for (i = 0; i < length; i++) {
                             x.remove(x.options[i]);
                         }
+                        //add empty option
+                        var option = document.createElement("option");
+                        option.text = "";
+                        x.add(option, x[0]);
+ 
                         var found = false;
                         serviceIDs.forEach(function(service) {
                             if (service != "") {
@@ -832,9 +855,9 @@
                             if (format=="xml")
                             refreshServiceDescription();
                         }
-                    }else{
-                        setTimeout(refreshServicesList, 3000);
                     }
+                        setTimeout(refreshServicesList, 5000);
+                    
                 }
             }
 
