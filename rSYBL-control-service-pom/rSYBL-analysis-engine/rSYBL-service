@@ -12,7 +12,7 @@
 
 RUN_MODE="daemons"
 
-JAVA=
+JAVA=$(which java)
 NAME=rSYBL-service
 DAEMONDIR=./
 DAEMON=rSYBL-analysis-engine-0.1-SNAPSHOT-war-exec.jar
