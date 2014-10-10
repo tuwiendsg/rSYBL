@@ -151,12 +151,16 @@
 		}
 
             function removeService(){
+                if (serviceID!="")
+                    {
                 reset();
                 
                 alertify.set({ labels: { ok: "Destroy", cancel: "Cancel" } });
-			alertify.confirm("Confirm destroying the service", function (e) {
+			alertify.confirm("Confirm destroying the service "+serviceID, function (e) {
+                           
 				if (e) {
-                if (window.XMLHttpRequest) {
+                                   
+                              if (window.XMLHttpRequest) {
                     updateServicesListRequest = new XMLHttpRequest();
                 } else {
                     updateServicesListRequest = new ActiveXObject("Microsoft.XMLHTTP");
@@ -188,7 +192,9 @@
                 } else {
                     x = "You pressed Cancel!";
                 }
-                 
+                    }else{
+                    alertify.error("There is no service selected for destroy");
+                    }
             }
             function checkformat(dropdown) {
                 format = dropdown.options[dropdown.selectedIndex].value;
@@ -773,6 +779,7 @@
                 updateServicesListRequest.setRequestHeader('Content-type', 'application/xml');
                 updateServicesListRequest.send(document.getElementById("text").value);
                 setTimeout(refreshServiceStructureDisplayed,5000);
+                
                 }
             }
 
