@@ -33,19 +33,58 @@ import at.ac.tuwien.dsg.csdg.Node.NodeType;
 import at.ac.tuwien.dsg.csdg.Relationship.RelationshipType;
 import at.ac.tuwien.dsg.rSybl.cloudInteractionUnit.enforcementPlugins.flexiant.FlexiantActions;
 import at.ac.tuwien.dsg.rSybl.cloudInteractionUnit.enforcementPlugins.interfaces.EnforcementInterface;
+import at.ac.tuwien.dsg.rSybl.cloudInteractionUnit.utils.Configuration;
 import at.ac.tuwien.dsg.rSybl.cloudInteractionUnit.utils.RuntimeLogger;
 import at.ac.tuwien.dsg.rSybl.dataProcessingUnit.api.MonitoringAPIInterface;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import org.json.simple.JSONArray;
+import org.json.simple.JSONObject;
+import org.json.simple.parser.JSONParser;
 
 public class DryRunEnforcementAPI implements EnforcementInterface {
 
     private Node controlledService;
     private MonitoringAPIInterface monitoring;
-
+    private List<String> parameters = new ArrayList<String>();
+    private double MAX_VIOLATION_DEGREE=3.0;
     public DryRunEnforcementAPI(Node cloudService) {
         // TODO Auto-generated constructor stub
         controlledService = cloudService;
+        readParameters();
     }
-
+    public static void main (String[]args){
+        DryRunEnforcementAPI aPI = new DryRunEnforcementAPI(null);
+        aPI.readParameters();
+    }
+    public void readParameters(){
+        JSONParser parser = new JSONParser();
+		 
+			try {
+				InputStream inputStream = Configuration.class.getClassLoader().getResourceAsStream("config/resources.json");
+				Object obj = parser.parse(new InputStreamReader(inputStream));
+		 
+				JSONObject jsonObject = (JSONObject) obj;
+				
+				for (Object p: jsonObject.keySet()){
+				String pluginName = (String) p;
+                                JSONObject plugin=(JSONObject) jsonObject.get(pluginName);
+                                if (pluginName.toLowerCase().contains("dry")){
+                                for (Object a:plugin.keySet()){
+                                    String actionName= (String)a;
+                                    JSONObject action=(JSONObject) plugin.get(actionName);
+                                    JSONArray jSONArray = (JSONArray) action.get("parameters");
+                                    for (int i=0;i<jSONArray.size();i++){
+                                     parameters.add((String)jSONArray.get(i));
+                                    }
+                                    
+                                }
+                                }
+                                }
+                        }catch(Exception e){
+                            RuntimeLogger.logger.info(e.getMessage());
+                        }
+    }
     public Node findNode(String id) {
         boolean found = false;
         if (!found) {
@@ -97,7 +136,22 @@ public class DryRunEnforcementAPI implements EnforcementInterface {
 
         return null;
     }
+    public boolean scaleOut(double violationDegree, Node arg0){
+        boolean res =true;
+        RuntimeLogger.logger.info("Scaling out ... " + arg0 + " " + arg0.getNodeType()+" violation degree "+violationDegree);
 
+        monitoring.enforcingActionStarted("ScaleOut", arg0);
+
+        Node o = arg0;
+
+
+
+            res = scaleOutComponent(violationDegree,(Node) o);
+
+        monitoring.enforcingActionEnded("ScaleOut", arg0);
+        return res;
+        
+    }
     public boolean scaleOut(Node arg0) {
         RuntimeLogger.logger.info("Scaling out ... " + arg0 + " " + arg0.getNodeType());
 
@@ -176,7 +230,62 @@ public class DryRunEnforcementAPI implements EnforcementInterface {
 //			e.printStackTrace();
 //		}
     }
+ private boolean scaleOutComponent(double violationDegree,Node o) {
+     if (parameters.size()>0){
+        DependencyGraph graph = new DependencyGraph();
+        graph.setCloudService(controlledService);
+        
+        RuntimeLogger.logger.info("~~~~~~~~~~~~~~~~~~~~~~Image from which we create " + (String) o.getStaticInformation("DefaultImage"));
+        String uuid = UUID.randomUUID().toString();
+        Node node = new Node();
+        Random r = new Random();
+        String ip = r.nextInt(256) + "." + r.nextInt(256) + "." + r.nextInt(256) + "." + r.nextInt(256);
+        String vmType = "";
+        if (violationDegree>MAX_VIOLATION_DEGREE) violationDegree=MAX_VIOLATION_DEGREE;
+        
+        int index = (int) (parameters.size()*violationDegree/MAX_VIOLATION_DEGREE)-1;
+        if (index<0)index=0;
+        
+        if (!ip.equalsIgnoreCase("err") && !ip.equalsIgnoreCase("")) {
+            if (o.getAllRelatedNodesOfType(RelationshipType.HOSTED_ON_RELATIONSHIP, NodeType.ARTIFACT) != null && node.getAllRelatedNodesOfType(RelationshipType.HOSTED_ON_RELATIONSHIP, NodeType.ARTIFACT).size() > 0) {
 
+                Node artifact = node.getAllRelatedNodesOfType(RelationshipType.HOSTED_ON_RELATIONSHIP, NodeType.ARTIFACT).get(0);
+                node.getStaticInformation().put("UUID", uuid);
+                node.getStaticInformation().put("IP", ip);
+                node.setId(ip);
+                node.setNodeType(NodeType.VIRTUAL_MACHINE);
+                SimpleRelationship rel = new SimpleRelationship();
+                rel.setSourceElement(artifact.getId());
+                rel.setTargetElement(node.getId());
+                rel.setType(RelationshipType.HOSTED_ON_RELATIONSHIP);
+                
+                RuntimeLogger.logger.info("Adding to " + o.getId() + " vm with ip " + ip+" and of type "+parameters.get(index));
+
+                artifact.addNode(node, rel);
+            } else {
+                node.getStaticInformation().put("UUID", uuid);
+                node.getStaticInformation().put("IP", ip);
+                node.setId(ip);
+                node.setNodeType(NodeType.VIRTUAL_MACHINE);
+                SimpleRelationship rel = new SimpleRelationship();
+                rel.setSourceElement(o.getId());
+                rel.setTargetElement(node.getId());
+                rel.setType(RelationshipType.HOSTED_ON_RELATIONSHIP);
+                RuntimeLogger.logger.info("Adding to " + o.getId() + " vm with ip " + ip+" and of type "+parameters.get(index));
+
+                o.addNode(node, rel);
+            }
+        }
+        RuntimeLogger.logger.info("The controlled service is now " + controlledService.toString());
+        
+         monitoring.refreshServiceStructure(controlledService);
+        return true;
+        }else{
+            return scaleOutComponent(o);
+        }
+       
+    }
+ 
     private boolean scaleOutComponent(Node o) {
         DependencyGraph graph = new DependencyGraph();
         graph.setCloudService(controlledService);

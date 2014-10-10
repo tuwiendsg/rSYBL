@@ -7,7 +7,6 @@ package at.ac.tuwien.dsg.csdg.outputProcessing;
 import at.ac.tuwien.dsg.csdg.utils.Configuration;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import oracle.jrockit.jfr.tools.ConCatRepository;
 
 /**
  *

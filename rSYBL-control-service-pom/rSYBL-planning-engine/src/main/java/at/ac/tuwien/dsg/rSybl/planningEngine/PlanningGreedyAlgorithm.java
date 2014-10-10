@@ -67,6 +67,9 @@ public class PlanningGreedyAlgorithm implements PlanningAlgorithmInterface {
     }
 
     public boolean checkIfActionPossible(ActionEffect actionEffect) {
+        if (actionEffect.isConditional()){
+            if(!actionEffect.evaluateConditions(dependencyGraph, monitoringAPI)) return false;
+        }
         Node entity = dependencyGraph.getNodeWithID(actionEffect.getTargetedEntityID());
         // System.out.println("Targeted entity id "
         // +actionEffect.getTargetedEntityID()+entity);
@@ -136,6 +139,7 @@ public class PlanningGreedyAlgorithm implements PlanningAlgorithmInterface {
             }
         }
         return possible;
+
     }
 
     public void findStrategies() {
@@ -180,7 +184,7 @@ public class PlanningGreedyAlgorithm implements PlanningAlgorithmInterface {
     }
 
     public ActionEffect checkActions(String target) {
-        HashMap<String, List<ActionEffect>> actionEffects = ActionEffects.getActionEffects();
+        HashMap<String, List<ActionEffect>> actionEffects = ActionEffects.getActionConditionalEffects();
         int maxConstraints = 0;
         ActionEffect maxConstraintsAction = null;
         PlanningLogger.logger.info("~~~~~~~~~~~Evaluating complimentary actions for " + target);
@@ -222,7 +226,7 @@ public class PlanningGreedyAlgorithm implements PlanningAlgorithmInterface {
         lastContextRepresentation = new ContextRepresentation(dependencyGraph, monitoringAPI);
         lastContextRepresentation.initializeContext();
         //PlanningLogger.logger.info("Strategies that could be enforced. ... "+strategiesThatNeedToBeImproved+" Violated constraints: "+contextRepresentation.getViolatedConstraints());
-        HashMap<String, List<ActionEffect>> actionEffects = ActionEffects.getActionEffects();
+        HashMap<String, List<ActionEffect>> actionEffects = ActionEffects.getActionConditionalEffects();
 
         int numberOfBrokenConstraints = contextRepresentation
                 .countViolatedConstraints();
@@ -231,7 +235,7 @@ public class PlanningGreedyAlgorithm implements PlanningAlgorithmInterface {
 
         int lastFixed = 1;
         ArrayList<Pair<ActionEffect, Integer>> result = new ArrayList<Pair<ActionEffect, Integer>>();
-
+        double violationDegree = contextRepresentation.evaluateViolationDegree();
         int numberOfRemainingConstraints = numberOfBrokenConstraints;
         if (!strategiesThatNeedToBeImproved.equalsIgnoreCase("") || numberOfBrokenConstraints > 0 && lastFixed!=0) {
 //		while (contextRepresentation.countViolatedConstraints() > 0
@@ -406,11 +410,16 @@ public class PlanningGreedyAlgorithm implements PlanningAlgorithmInterface {
             numberOfRemainingConstraints -= lastFixed;
 
         }
+        for (int i=0;i<result.size();i++){
+            contextRepresentation.doAction(result.get(i).getFirst());
+        }
         if (result.size()==0){
             monitoringAPI.sendMessageToAnalysisService("Requirements"+contextRepresentation.getViolatedConstraints()+" are violated, and rSYBL can't solve the problem.");
-        }
+        }else{
+            
         ActionPlanEnforcement actionPlanEnforcement = new ActionPlanEnforcement(enforcementAPI);
         actionPlanEnforcement.enforceResult(result, dependencyGraph);
+        }
     }
 
     @Override

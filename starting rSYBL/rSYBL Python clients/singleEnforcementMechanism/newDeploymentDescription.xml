@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<DeploymentDescription CloudServiceID="CloudService" AccessIP="localhost">
+	  <DeploymentUnit defaultImage="" defaultFlavor="" serviceUnitID="LoadBalancerServiceUnit">
+        <AssociatedVM IP="4" UUID="44"/>
+    </DeploymentUnit>
+	  <DeploymentUnit defaultImage="" defaultFlavor="" serviceUnitID="EventProcessingServiceUnit">
+        <AssociatedVM IP="3" UUID="33"/>
+        <ElasticityCapability Name="scaleIn" PrimitiveOperationsSequence="M2MDaaS.decommissionWS;dryRun.scaleIn" Endpoint="" Type=""/>
+		<ElasticityCapability Name="scaleOut" PrimitiveOperationsSequence="dryRun.scaleOut" Endpoint="" Type=""/>
+    </DeploymentUnit>
+	  <DeploymentUnit defaultImage="" defaultFlavor="" serviceUnitID="DataControllerServiceUnit">
+        <AssociatedVM IP="2" UUID="22"/>
+    </DeploymentUnit>
+  <DeploymentUnit defaultImage="" defaultFlavor="" serviceUnitID="DataNodeServiceUnit">
+        <AssociatedVM IP="1" UUID="11"/>
+		 <AssociatedVM IP="12" UUID="111"/>
+		  <AssociatedVM IP="13" UUID="1111"/>
+        <ElasticityCapability Name="scaleIn" PrimitiveOperationsSequence="M2MDaaS.decommissionNode;dryRun.scaleIn" Endpoint="" Type=""/>
+		<ElasticityCapability Name="scaleOut" PrimitiveOperationsSequence="dryRun.scaleOut" Endpoint="" Type=""/>
+    </DeploymentUnit>
+</DeploymentDescription>
+

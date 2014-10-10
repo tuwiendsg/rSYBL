@@ -93,7 +93,24 @@ public class EnforcementOpenstackAPI implements EnforcementInterface{
 		
 		return null;
 	}
-	
+	//TODO implement scale in / out on different resources
+        public boolean scaleIn(double violationDegree, Node arg0){
+            boolean res=false;
+            return res;
+            
+        }
+        //TODO implement scale in / out on different resources
+        public boolean scaleIn(double violationDegree, Node arg0, String ip){
+            boolean res=false;
+            return res;
+            
+        }
+        //TODO implement scale in / out on different resources
+        public boolean scaleOut(double violationDegree, Node arg0){
+            boolean res=false;
+            return res;
+            
+        }
 	public boolean scaleOut(Node arg0)   {
 		//monitoring.enforcingActionStarted("ScaleOut",arg0 );
 		boolean res=false;

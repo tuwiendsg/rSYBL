@@ -224,6 +224,12 @@ public class ActionEffects {
 			actionEffect.setActionType((String)myaction);
 			actionEffect.setActionName((String) actions);
 			JSONObject scaleinDescription=(JSONObject) object.get(actions);
+                        if (scaleinDescription.containsKey("conditions")){
+                                          JSONArray conditions=(JSONArray) jsonObject.get("conditions");
+                                          for (int i=0;i<conditions.size();i++){
+                                              actionEffect.addCondition((String)conditions.get(i));
+                                          }
+                                        }
 			String targetUnit = (String) scaleinDescription.get("targetUnit");
 			actionEffect.setTargetedEntityID(targetUnit);
 			
@@ -263,6 +269,84 @@ public class ActionEffects {
 			e1.printStackTrace();
 		}
 	}
+        public static HashMap<String,List<ActionEffect>> getActionConditionalEffects(){
+            if (actionEffects.isEmpty()){
+				PlanningLogger.logger.info("~~~~~~~~~~Action effects is empty, reading the effects ! ");
+			JSONParser parser = new JSONParser();
+		 
+			try {
+				InputStream inputStream = Configuration.class.getClassLoader().getResourceAsStream(Configuration.getEffectsPath());
+				Object obj = parser.parse(new InputStreamReader(inputStream));
+		 
+				JSONObject jsonObject = (JSONObject) obj;
+				
+				for (Object actionName:jsonObject.keySet()){
+					
+					String myaction = (String )actionName;
+					
+					
+					JSONObject object=(JSONObject) jsonObject.get(myaction);
+					
+				for (Object actions: object.keySet()){
+                                        
+                                        
+					ActionEffect actionEffect = new ActionEffect();
+					actionEffect.setActionType((String)myaction);
+					actionEffect.setActionName((String) actions);
+					JSONObject scaleinDescription=(JSONObject) object.get(actions);
+					if (scaleinDescription.containsKey("conditions")){
+                                          JSONArray conditions=(JSONArray) jsonObject.get("conditions");
+                                          for (int i=0;i<conditions.size();i++){
+                                              actionEffect.addCondition((String)conditions.get(i));
+                                          }
+                                        }
+                                        String targetUnit = (String) scaleinDescription.get("targetUnit");
+					actionEffect.setTargetedEntityID(targetUnit);
+					
+					JSONObject effects = (JSONObject) scaleinDescription.get("effects");
+					
+
+					for (Object effectPerUnit:effects.keySet()){
+						//System.out.println(effects.toString());
+						String affectedUnit = (String) effectPerUnit;
+						JSONObject metriceffects=(JSONObject) effects.get(affectedUnit);
+						for (Object metric:metriceffects.keySet()){
+							String metricName=(String)metric;
+							try{
+								actionEffect.setActionEffectForMetric(metricName, (Double)metriceffects.get(metricName), affectedUnit);
+							}catch(Exception e){
+								actionEffect.setActionEffectForMetric(metricName, ((Long)metriceffects.get(metricName)).doubleValue(), affectedUnit);
+								}
+						}
+						 
+						}
+					
+					if (actionEffects.get(actionEffect.getTargetedEntityID())==null ){
+						List <ActionEffect > l = new ArrayList<ActionEffect>();
+						l.add(actionEffect);
+						actionEffects.put(actionEffect.getTargetedEntityID(), l);
+					
+					}else{
+						actionEffects.get(actionEffect.getTargetedEntityID()).add(actionEffect);
+					}
+				}
+				 
+				
+				}
+		 
+				
+			} catch (FileNotFoundException e) {
+				e.printStackTrace();
+			} catch (IOException e) {
+				e.printStackTrace();
+			} catch (ParseException e) {
+				e.printStackTrace();
+			}
+			
+			}
+			return actionEffects;	 
+		     
+        }
 	 public static HashMap<String,List<ActionEffect>> getActionEffects () {
 			if (actionEffects.isEmpty()){
 				PlanningLogger.logger.info("~~~~~~~~~~Action effects is empty, reading the effects ! ");

@@ -124,7 +124,43 @@ public class MultipleEnforcementAPIs implements EnforcementAPIInterface {
 		}
 
 	}
+@Override
+	public boolean scaleout(double violationDegree,Node arg0) {
 
+		EnforcementAPI enforcementAPI = enforcementAPIs.get("");
+		boolean res=false;
+		if (!enforcementAPI.isExecutingControlAction() && arg0 != null) {
+			monitoringAPIInterface.enforcingActionStarted("ScaleOut", arg0);
+			RuntimeLogger.logger
+					.info("Scaling out with default enforcement on node "
+							+ arg0.getId() + " with Enforcement plugin "
+							+ enforcementAPIs.get(""));
+
+			enforcementAPI.setExecutingControlAction(true);
+			res=enforcementAPI.scaleout(violationDegree,arg0);
+			Node controlService = enforcementAPI.getControlledService();
+			for (EnforcementAPI api : enforcementAPIs.values()) {
+				api.refreshControlService(controlService);
+			}
+			RuntimeLogger.logger
+					.info("Finished scaling out with default enforcement on node "
+							+ arg0.getId()
+							+ " with Enforcement plugin "
+							+ enforcementAPIs.get(""));
+			monitoringAPIInterface.enforcingActionEnded("ScaleOut", arg0);
+                        monitoringAPIInterface.refreshCompositionRules();
+
+			if (res)
+			try {
+				Thread.sleep(60000);
+			} catch (InterruptedException ex) {
+				// TODO Auto-generated catch block
+				ex.printStackTrace();
+			}
+			enforcementAPI.setExecutingControlAction(false);
+		}
+		return res;
+	}
 	@Override
 	public boolean scaleout(Node arg0) {
 
@@ -172,6 +208,34 @@ public class MultipleEnforcementAPIs implements EnforcementAPIInterface {
 
 			enforcementAPI.setExecutingControlAction(true);
 			res=enforcementAPI.enforceAction(actionName, e);
+			Node controlService = enforcementAPI.getControlledService();
+			for (EnforcementAPI api : enforcementAPIs.values()) {
+				api.refreshControlService(controlService);
+			}
+
+			monitoringAPIInterface.enforcingActionEnded(actionName, e);
+                                                monitoringAPIInterface.refreshCompositionRules();
+
+			if (res)
+			try {
+				Thread.sleep(60000);
+			} catch (InterruptedException ex) {
+				// TODO Auto-generated catch block
+				ex.printStackTrace();
+			}
+			enforcementAPI.setExecutingControlAction(false);
+		}
+		return res;
+	}
+	@Override
+	public boolean enforceAction(double violationDegree,String actionName, Node e) {
+		boolean res=false;
+		EnforcementAPI enforcementAPI = enforcementAPIs.get("");
+		if (!enforcementAPI.isExecutingControlAction() && e != null) {
+			monitoringAPIInterface.enforcingActionStarted(actionName, e);
+
+			enforcementAPI.setExecutingControlAction(true);
+			res=enforcementAPI.enforceAction(violationDegree,actionName, e);
 			Node controlService = enforcementAPI.getControlledService();
 			for (EnforcementAPI api : enforcementAPIs.values()) {
 				api.refreshControlService(controlService);
@@ -295,6 +359,39 @@ public class MultipleEnforcementAPIs implements EnforcementAPIInterface {
 		}
 		return res;
 	}
+        @Override
+	public boolean scaleout(double violationDegree,String target, Node arg0) {
+		RuntimeLogger.logger.info("----------------------Trying to scale out "+ target + " "+arg0.getId());
+		boolean res=false;
+		EnforcementAPI enforcementAPI = enforcementAPIs.get(target);
+		if (!enforcementAPI.isExecutingControlAction() && arg0 != null) {
+			monitoringAPIInterface.enforcingActionStarted("ScaleOut - "
+					+ target, arg0);
+
+			enforcementAPI.setExecutingControlAction(true);
+			res=enforcementAPI.scaleout(violationDegree,arg0);
+			Node controlService = enforcementAPI.getControlledService();
+			for (EnforcementAPI api : enforcementAPIs.values()) {
+				api.refreshControlService(controlService);
+			}
+			monitoringAPIInterface.enforcingActionEnded("ScaleOut - " + target,
+					arg0);
+                                                monitoringAPIInterface.refreshCompositionRules();
+
+			if (res)
+			try {
+				Thread.sleep(60000);
+			} catch (InterruptedException ex) {
+				// TODO Auto-generated catch block
+				ex.printStackTrace();
+			}
+			enforcementAPI.setExecutingControlAction(false);
+		}else{
+			RuntimeLogger.logger.info("--------------------Not possible. It is already enforcing an action or arg0 is null "+ target + " "+arg0.getId());
+
+		}
+		return res;
+	}
 
 	@Override
 	public boolean enforceAction(String target, String actionName, Node e) {
@@ -308,6 +405,38 @@ public class MultipleEnforcementAPIs implements EnforcementAPIInterface {
 			enforcementAPI.setExecutingControlAction(true);
 
 			res=enforcementAPI.enforceAction(actionName, e);
+			Node controlService = enforcementAPI.getControlledService();
+			for (EnforcementAPI api : enforcementAPIs.values()) {
+				api.refreshControlService(controlService);
+			}
+			monitoringAPIInterface.enforcingActionEnded(actionName + " - "
+					+ target, e);
+                                                monitoringAPIInterface.refreshCompositionRules();
+
+			if (res)
+			try {
+				Thread.sleep(60000);
+			} catch (InterruptedException ex) {
+				// TODO Auto-generated catch block
+				ex.printStackTrace();
+			}
+			enforcementAPI.setExecutingControlAction(false);
+		}
+		return res;
+	}
+
+	@Override
+	public boolean enforceAction(double violationDegree,String target, String actionName, Node e) {
+		RuntimeLogger.logger.info("----------------------Trying to "+actionName+" on "+ target + " "+e);
+		boolean res=false;
+		EnforcementAPI enforcementAPI = enforcementAPIs.get(target);
+		if (!enforcementAPI.isExecutingControlAction() && e != null) {
+			monitoringAPIInterface.enforcingActionStarted(actionName + " - "
+					+ target, e);
+
+			enforcementAPI.setExecutingControlAction(true);
+
+			res=enforcementAPI.enforceAction(violationDegree,actionName, e);
 			Node controlService = enforcementAPI.getControlledService();
 			for (EnforcementAPI api : enforcementAPIs.values()) {
 				api.refreshControlService(controlService);
@@ -413,6 +542,49 @@ public class MultipleEnforcementAPIs implements EnforcementAPIInterface {
             }
             return pluginsExec;
         }
+
+    @Override
+    public boolean enforceAction(double violationDegree, String target, String actionName, Node node, Object[] parameters) {
+        
+		EnforcementAPI enforcementAPI = enforcementAPIs.get(target);
+		RuntimeLogger.logger.info("----------------------Trying to "+actionName+" on "+ target + " "+node+" params ");
+		boolean res=false;
+
+		
+
+		if (!enforcementAPI.isExecutingControlAction() && node != null) {
+			if (!actionName.toLowerCase().contains("scalein")||(actionName.toLowerCase().contains("scalein") && node.getAllRelatedNodesOfType(RelationshipType.HOSTED_ON_RELATIONSHIP).size()>1)  ){
+				enforcementAPI.setExecutingControlAction(true);
+				RuntimeLogger.logger.info("----------------------Enforcing "+actionName+" on "+ target + " "+node.getId()+" params "+parameters.length);
+				monitoringAPIInterface.enforcingActionStarted(actionName
+						+ " - " + target, node);
+
+				res=enforcementAPI.enforceAction(violationDegree,target, actionName, node, parameters);
+				//RuntimeLogger.logger.info("Answer from enforcement plugin with regard to enforcement successful completion is "+res);
+
+				Node controlService = enforcementAPI.getControlledService();
+				for (EnforcementAPI api : enforcementAPIs.values()) {
+					api.refreshControlService(controlService);
+				}
+				monitoringAPIInterface.enforcingActionEnded(actionName + " - "
+						+ target, node);
+                               monitoringAPIInterface.refreshCompositionRules();
+                                         
+				if (res)
+				try {
+					Thread.sleep(60000);
+				} catch (InterruptedException ex) {
+					// TODO Auto-generated catch block
+					ex.printStackTrace();
+				}
+                                
+				enforcementAPI.setExecutingControlAction(false);
+
+			}
+			
+		}
+		return res;
+    }
     
     
 }

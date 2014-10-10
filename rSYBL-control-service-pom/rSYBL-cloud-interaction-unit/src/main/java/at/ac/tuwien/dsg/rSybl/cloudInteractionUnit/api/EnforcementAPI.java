@@ -80,7 +80,112 @@ public class EnforcementAPI {
 	public boolean isExecutingControlAction() {
 		return executingControlAction;
 	}
+        public boolean enforceAction(double violationDegree, String target, String actionName, Node node, Object[] parameters){
+            Method foundMethod = null;
+		boolean res = false;
+		try {
+			for (Method method : Class.forName(className).getMethods()) {
+				if (method.getName().toLowerCase()
+						.contains(actionName.toLowerCase())) {
+					foundMethod = method;
 
+				}
+			}
+
+			if (foundMethod != null) {
+					Class[] partypes = new Class[parameters.length + 2];
+				Object[] myParameters = new Object[parameters.length + 2];
+                                partypes[0] = Double.class;
+				myParameters[0] = violationDegree;
+				
+				partypes[1] = Node.class;
+				myParameters[1] = node;
+				int i = 2;
+				for (Object o : parameters) {
+					partypes[i] = o.getClass();
+					myParameters[i] = o;
+					i += 1;
+
+				}
+
+				Method actionMethod;
+			
+				try {
+					actionMethod = Class.forName(className).getMethod(
+							foundMethod.getName(), partypes);
+
+					res = (boolean) actionMethod.invoke(offeredCapabilities,
+							myParameters);
+				} catch (IllegalAccessException | IllegalArgumentException
+						| InvocationTargetException | NoSuchMethodException
+						| SecurityException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+					res = false;
+				}
+
+			} else {
+				res = false;
+				RuntimeLogger.logger.info("------------Method not found:> "
+						+ foundMethod + " on " + target + " " + node
+						+ " params " + parameters.length);
+
+			}
+                        List<String> metrics = monitoringAPIInterface
+					.getAvailableMetrics(node);
+			boolean checkIfMetrics = false;
+			// monitoringAPIInterface.enforcingActionStarted("ScaleIn", arg0);
+			while (!checkIfMetrics) {
+				boolean myMetrics = true;
+				RuntimeLogger.logger.info("Waiting for action....");
+                                try {
+					Thread.sleep(15000);
+				} catch (InterruptedException ex) {
+					// TODO Auto-generated catch block
+					ex.printStackTrace();
+				}
+				for (String metricName : metrics) {
+					try {
+						RuntimeLogger.logger.info("Metric "
+								+ metricName
+								+ " has value "
+								+ monitoringAPIInterface.getMetricValue(
+										metricName, node));
+
+						if (monitoringAPIInterface.getMetricValue(metricName,
+								node) == null
+								|| monitoringAPIInterface.getMetricValue(
+										metricName, node) < 0) {
+							myMetrics = false;
+							RuntimeLogger.logger.info("~~~~Metric "
+									+ metricName + "smaller than 0");
+						}
+					} catch (Exception e) {
+						myMetrics = false;
+						RuntimeLogger.logger.info("~~~~Metric " + metricName
+								+ "not valid");
+
+					}
+
+				}
+				checkIfMetrics = myMetrics;
+				try {
+					Thread.sleep(10000);
+				} catch (InterruptedException ex) {
+					// TODO Auto-generated catch block
+					ex.printStackTrace();
+				}
+
+			}
+
+		} catch (SecurityException | ClassNotFoundException e1) {
+			// TODO Auto-generated catch block
+			e1.printStackTrace();
+			res = false;
+		}
+
+		return res;
+        }
 	public boolean enforceAction(String target, String actionName, Node node,
 			Object[] parameters) {
 		Method foundMethod = null;
@@ -310,7 +415,65 @@ public class EnforcementAPI {
 				+ " ...");
 		return res;
 	}
+public boolean scaleout(double violationDegree,Node arg0) {
+		boolean res = true;
+		res = offeredCapabilities.scaleOut(violationDegree,arg0);
+		List<String> metrics = monitoringAPIInterface.getAvailableMetrics(arg0);
+		// monitoringAPIInterface.enforcingActionStarted("ScaleOut", arg0);
+		boolean checkIfMetrics = false;
+		while (!checkIfMetrics) {
+			boolean myMetrics = true;
+                        
+                         try {
+					Thread.sleep(15000);
+				} catch (InterruptedException ex) {
+					// TODO Auto-generated catch block
+					ex.printStackTrace();
+				}
+			RuntimeLogger.logger.info("Waiting for action....");
+			for (String metricName : metrics) {
+				try {
+					RuntimeLogger.logger.info("Metric "
+							+ metricName
+							+ " has value "
+							+ monitoringAPIInterface.getMetricValue(metricName,
+									arg0));
+					if (monitoringAPIInterface.getMetricValue(metricName, arg0) == null
+							|| monitoringAPIInterface.getMetricValue(
+									metricName, arg0) < 0) {
+						myMetrics = false;
+						RuntimeLogger.logger.info("~~~Metric " + metricName
+								+ "smaller than 0");
+					}
+				} catch (Exception e) {
+					RuntimeLogger.logger.info("~~~Metric " + metricName
+							+ "does not have a valid value");
 
+				}
+
+			}
+			checkIfMetrics = myMetrics;
+
+			try {
+				Thread.sleep(10000);
+			} catch (InterruptedException ex) {
+				// TODO Auto-generated catch block
+				ex.printStackTrace();
+
+			}
+		}
+		try {
+			Thread.sleep(60000);
+		} catch (InterruptedException ex) {
+			// TODO Auto-generated catch block
+			ex.printStackTrace();
+
+		}
+		// monitoringAPIInterface.enforcingActionEnded("ScaleOut", arg0);
+		RuntimeLogger.logger.info("Finished scaling out " + arg0.getId()
+				+ " ...");
+		return res;
+	}
 	public boolean enforceAction(String actionName, Node e) {
 
 		
@@ -417,7 +580,115 @@ public class EnforcementAPI {
 		
 		
 	}
+public boolean enforceAction(double violationDegree,String actionName, Node e) {
 
+		
+		Method foundMethod = null;
+		boolean res = false;
+		try {
+			for (Method method : Class.forName(className).getMethods()) {
+				if (method.getName().toLowerCase()
+						.equalsIgnoreCase(actionName.toLowerCase())) {
+					foundMethod = method;
+
+				}
+			}
+
+			if (foundMethod != null) {
+					Class[] partypes = new Class[2];
+				Object[] myParameters = new Object[2];
+                                partypes[0] = Double.class;
+				myParameters[0] = violationDegree;
+                                
+				partypes[1] = Node.class;
+				myParameters[1] = e;
+				int i = 2;
+				
+
+				Method actionMethod;
+			
+				try {
+					actionMethod = Class.forName(className).getMethod(
+							foundMethod.getName(), partypes);
+
+					res = (boolean) actionMethod.invoke(offeredCapabilities,
+							myParameters);
+				} catch (IllegalAccessException | IllegalArgumentException
+						| InvocationTargetException | NoSuchMethodException
+						e1) {
+					// TODO Auto-generated catch block
+					e1.printStackTrace();
+					res = false;
+				}
+                                List<String> metrics = monitoringAPIInterface
+					.getAvailableMetrics(e);
+                                try {
+					Thread.sleep(10000);
+				} catch (InterruptedException ex) {
+					// TODO Auto-generated catch block
+					ex.printStackTrace();
+				}
+
+			boolean checkIfMetrics = false;
+			while (!checkIfMetrics) {
+				boolean myMetrics = true;
+                                 try {
+					Thread.sleep(15000);
+				} catch (InterruptedException ex) {
+					// TODO Auto-generated catch block
+					ex.printStackTrace();
+				}
+				RuntimeLogger.logger.info("Waiting for action....");
+
+				for (String metricName : metrics) {
+					try {
+						RuntimeLogger.logger.info("Metric "
+								+ metricName
+								+ " has value "
+								+ monitoringAPIInterface.getMetricValue(
+										metricName, e));
+
+						if (monitoringAPIInterface.getMetricValue(metricName,
+								e) == null
+								|| monitoringAPIInterface.getMetricValue(
+										metricName, e) < 0) {
+							myMetrics = false;
+							RuntimeLogger.logger.info("~~~~Metric "
+									+ metricName + "smaller than 0");
+						}
+					} catch (Exception ex) {
+						myMetrics = false;
+						RuntimeLogger.logger.info("~~~~Metric " + metricName
+								+ "not valid");
+
+					}
+
+				}
+				checkIfMetrics = myMetrics;
+				try {
+					Thread.sleep(10000);
+				} catch (InterruptedException ex) {
+					// TODO Auto-generated catch block
+					ex.printStackTrace();
+				}
+
+			}
+			} else {
+				res = false;
+				
+
+			}
+		} catch (SecurityException | ClassNotFoundException e1) {
+			// TODO Auto-generated catch block
+			e1.printStackTrace();
+			res = false;
+		}
+
+		return res;
+		
+		
+		
+	}
 	public void setMonitoringPlugin(MonitoringAPIInterface monitoringInterface) {
 		monitoringAPIInterface = monitoringInterface;
 		offeredCapabilities.setMonitoringPlugin(monitoringInterface);

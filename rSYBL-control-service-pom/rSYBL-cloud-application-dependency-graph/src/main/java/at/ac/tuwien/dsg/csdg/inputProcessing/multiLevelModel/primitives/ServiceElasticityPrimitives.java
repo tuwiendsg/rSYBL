@@ -32,7 +32,7 @@ import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlType;
 
 @XmlAccessorType(XmlAccessType.FIELD)
-@XmlType(name = "DeploymentUnit")
+@XmlType(name = "ServiceElasticityPrimitives")
 public class ServiceElasticityPrimitives {
 
 	@XmlAttribute(name = "id")

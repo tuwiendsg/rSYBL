@@ -703,4 +703,9 @@ public class EnforcementSALSAAPI implements EnforcementInterface {
         }
         return false;
     }
+
+    @Override
+    public boolean scaleOut(double violationDegree, Node toBeScaled) {
+        throw new UnsupportedOperationException("Not supported yet.");
+    }
 }

@@ -1,0 +1,107 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<tosca:Definitions xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:elasticity="http://www.example.org/NewXMLSchema" xmlns:sybl="http://www.example.org/SYBL" xmlns:tosca="http://docs.oasis-open.org/tosca/ns/2011/12" id="hi">
+  <tosca:ServiceTemplate xsi:type="elasticity:TServiceTemplateExtension" id="hello" name="testApp07" x="10" y="0">
+    <tosca:BoundaryDefinitions xsi:type="elasticity:TBoundaryDefinitionsExtension">
+      <tosca:Properties>
+        <elasticity:ServiceProperties>
+          <elasticity:Version>1.0</elasticity:Version>
+        </elasticity:ServiceProperties>
+      </tosca:Properties>
+    </tosca:BoundaryDefinitions>
+    <tosca:TopologyTemplate>
+      <tosca:NodeTemplate xsi:type="elasticity:TNodeTemplateExtension" id="G1862623789" type="substituteNode_Cassandra"/>
+    </tosca:TopologyTemplate>
+  </tosca:ServiceTemplate>
+  <tosca:ServiceTemplate xsi:type="elasticity:TServiceTemplateExtension" id="G1862623789" name="Cassandra" substitutableNodeType="substituteNode_Cassandra" height="371" width="521" x="170" y="160">
+    <tosca:TopologyTemplate>
+      <tosca:NodeTemplate xsi:type="elasticity:TNodeTemplateExtension" id="C896461122" type="dbserver" maxInstances="-1" minInstances="-1" name="cassandraSeedNode" initInstances="1" x="40" y="190">
+        <tosca:Properties>
+          <elasticity:NodeProperties>
+            <elasticity:Flavor>vcpus:1 ram:1024 disk:20</elasticity:Flavor>
+          </elasticity:NodeProperties>
+        </tosca:Properties>
+        <tosca:DeploymentArtifacts>
+          <tosca:DeploymentArtifact artifactRef="cassandraSeedNodeScript" artifactType="SD" name="seedNode.sh"/>
+          <tosca:DeploymentArtifact artifactRef="cassandraSeedNodeImage" artifactType="VMI" name="Ubuntu 12.04.1 LTS"/>
+        </tosca:DeploymentArtifacts>
+      </tosca:NodeTemplate>
+      <tosca:NodeTemplate xsi:type="elasticity:TNodeTemplateExtension" id="C2124870735" type="dbserver" maxInstances="-1" minInstances="-1" name="cassandraNode" initInstances="1" x="335" y="190">
+        <tosca:Properties>
+          <elasticity:NodeProperties>
+            <elasticity:Flavor>vcpus:1 ram:1024 disk:20</elasticity:Flavor>
+          </elasticity:NodeProperties>
+        </tosca:Properties>
+        <tosca:DeploymentArtifacts>
+          <tosca:DeploymentArtifact artifactRef="cassandraNodeScript" artifactType="SD" name="node.sh"/>
+          <tosca:DeploymentArtifact artifactRef="cassandraNodeImage" artifactType="VMI" name="Ubuntu 12.04.1 LTS"/>
+        </tosca:DeploymentArtifacts>
+      </tosca:NodeTemplate>
+    </tosca:TopologyTemplate>
+  </tosca:ServiceTemplate>
+  <tosca:ArtifactTemplate id="cassandraNodeScript">
+    <tosca:Properties>
+      <elasticity:ScriptArtifactProperties>
+        <elasticity:Language>Shell</elasticity:Language>
+      </elasticity:ScriptArtifactProperties>
+    </tosca:Properties>
+    <tosca:ArtifactReferences>
+      <tosca:ArtifactReference reference="Scripts/ycsbClient.sh"/>
+    </tosca:ArtifactReferences>
+  </tosca:ArtifactTemplate>
+  <tosca:NodeTypeImplementation nodeType="cassandraNode">
+    <tosca:ImplementationArtifacts>
+      <tosca:ImplementationArtifact artifactRef="cassandraNodeScript" artifactType="ScriptArtifact" interfaceName="Lifecycle" operationName="execute"/>
+      <tosca:ImplementationArtifact artifactRef="cassandraNodeScript" artifactType="ScriptArtifact" interfaceName="Lifecycle" operationName="execute"/>
+      <tosca:ImplementationArtifact artifactRef="cassandraNodeScript" artifactType="ScriptArtifact" interfaceName="Lifecycle" operationName="execute"/>
+    </tosca:ImplementationArtifacts>
+  </tosca:NodeTypeImplementation>
+  <tosca:ArtifactTemplate id="cassandraNodeScript">
+    <tosca:Properties>
+      <elasticity:ScriptArtifactProperties>
+        <elasticity:Language>Shell</elasticity:Language>
+      </elasticity:ScriptArtifactProperties>
+    </tosca:Properties>
+    <tosca:ArtifactReferences>
+      <tosca:ArtifactReference reference="Scripts/ycsbClient.sh"/>
+    </tosca:ArtifactReferences>
+  </tosca:ArtifactTemplate>
+  <tosca:ArtifactTemplate id="cassandraSeedNodeScript">
+    <tosca:Properties>
+      <elasticity:ScriptArtifactProperties>
+        <elasticity:Language>Shell</elasticity:Language>
+      </elasticity:ScriptArtifactProperties>
+    </tosca:Properties>
+    <tosca:ArtifactReferences>
+      <tosca:ArtifactReference reference="Scripts/seedNode.sh"/>
+    </tosca:ArtifactReferences>
+  </tosca:ArtifactTemplate>
+  <tosca:NodeTypeImplementation nodeType="cassandraSeedNode">
+    <tosca:ImplementationArtifacts>
+      <tosca:ImplementationArtifact artifactRef="cassandraSeedNodeScript" artifactType="ScriptArtifact" interfaceName="Lifecycle" operationName="execute"/>
+    </tosca:ImplementationArtifacts>
+  </tosca:NodeTypeImplementation>
+  <tosca:ArtifactTemplate id="cassandraNodeScript">
+    <tosca:Properties>
+      <elasticity:ScriptArtifactProperties>
+        <elasticity:Language>Shell</elasticity:Language>
+      </elasticity:ScriptArtifactProperties>
+    </tosca:Properties>
+    <tosca:ArtifactReferences>
+      <tosca:ArtifactReference reference="Scripts/node.sh"/>
+    </tosca:ArtifactReferences>
+  </tosca:ArtifactTemplate>
+  <tosca:ArtifactTemplate id="cassandraSeedNodeImage">
+    <tosca:Properties>
+      <elasticity:ImageArtifactProperties>
+        <elasticity:Description>not_specified</elasticity:Description>
+      </elasticity:ImageArtifactProperties>
+    </tosca:Properties>
+  </tosca:ArtifactTemplate>
+  <tosca:ArtifactTemplate id="cassandraNodeImage">
+    <tosca:Properties>
+      <elasticity:ImageArtifactProperties>
+        <elasticity:Description>not_specified</elasticity:Description>
+      </elasticity:ImageArtifactProperties>
+    </tosca:Properties>
+  </tosca:ArtifactTemplate>
+</tosca:Definitions>

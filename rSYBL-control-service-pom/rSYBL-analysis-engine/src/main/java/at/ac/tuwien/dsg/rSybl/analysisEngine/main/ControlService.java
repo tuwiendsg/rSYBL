@@ -177,11 +177,11 @@ public class ControlService {
         }
         replaceDependencyGraph();
     }
-
+ 
     public void startSYBLProcessingAndPlanning() {
         try {
             InputProcessing inputProcessing = new InputProcessing();
-
+            
             dependencyGraph = inputProcessing.loadDependencyGraphFromStrings(applicationDescription, "", deploymentDescription);
 
             //AnalysisLogger.logger.info("Current graph is "
@@ -233,7 +233,7 @@ public class ControlService {
                 planningAlgorithm = new PlanningHeuristicSearchWithPolynomialElasticityRelationships(
                         dependencyGraph, monitoringAPI, enforcementAPI);
             } else {
-                planningAlgorithm = new PlanningGreedyAlgorithmWithPolynomialElasticityRelationships(
+                planningAlgorithm = new PlanningGreedyAlgorithm(
                         dependencyGraph, monitoringAPI, enforcementAPI);
             }
             if (!effects.equalsIgnoreCase("")) {
@@ -320,7 +320,9 @@ public class ControlService {
         // TODO : continue this, parse tosca and start planning and stuff
         TOSCAProcessing toscaProcessing = new TOSCAProcessing();
         dependencyGraph = toscaProcessing.toscaDescriptionToDependencyGraph();
-        startSYBLProcessingAndPlanning();
+        OutputProcessing outputProcessing = new OutputProcessing();
+        applicationDescription=outputProcessing.getCloudServiceXML(dependencyGraph.getCloudService());
+        //startSYBLProcessingAndPlanning();
     }
 
     public void loadEverythingFromConfigurationFiles() {

@@ -154,7 +154,9 @@ public class ControlCoordination {
             return controls.get(id).getApplicationDescriptionInfo();
         else return "";
     }
-
+    public void setApplicationDescriptionInfoTOSCA(String tosca, String serviceID){
+        controls.get(serviceID).setApplicationDescriptionInfoTOSCABased(tosca);
+    }
     public String getServices() {
         String services = "";
         for (String serv : controls.keySet()) {

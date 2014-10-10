@@ -36,6 +36,8 @@ import at.ac.tuwien.dsg.csdg.Node.NodeType;
 import at.ac.tuwien.dsg.csdg.Relationship.RelationshipType;
 import at.ac.tuwien.dsg.rSybl.dataProcessingUnit.api.MonitoringAPIInterface;
 import at.ac.tuwien.dsg.rSybl.planningEngine.utils.PlanningLogger;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 
 
@@ -45,6 +47,7 @@ public class ActionEffect {
 	private String targetedEntityID;
 	private String actionType;	
 	private HashMap<String,HashMap<String,Double>> effects = new HashMap<String,HashMap<String,Double>>();
+    private List<String> conditions = new ArrayList<String>();
 
 	public void setActionEffectForMetric(String metricName, Double result,String entityID){
 		//PlanningLogger.logger.info("bbb"+entityID+"bbb");
@@ -58,14 +61,20 @@ public class ActionEffect {
 	public Set<String> getAffectedNodes(){
 		return effects.keySet();
 	} 
-	public Double getActionEffectForMetric(String metricName,String entityID){	
+	public Double getActionEffectForMetric(String metricName,String entityID){
+            
 		//PlanningLogger.logger.info("aaa"+entityID+"aaa");
 		if (effects.get(entityID)==null){
 			//PlanningLogger.logger.info("Not found entity "+entityID+" for action "+actionName);
 			return 0.0;
 		}
 		return effects.get(entityID).get(metricName);
+            
 	}
+        public boolean isConditional(){
+            if (conditions.size()>0) return true;
+                else return false;
+        }
 	public Node getTargetedEntity() {
 		return targetedEntity;
 	}
@@ -211,5 +220,50 @@ public class ActionEffect {
 		
 		}
 	}
+        
+    public void addCondition(String condition) {
+        conditions.add(condition);
+    }
+
+    public boolean evaluateConditions(DependencyGraph dependencyGraph, MonitoringAPIInterface monitoringInterface) {
+        boolean ok = true;
+        for (String condition : conditions) {
+
+            if (condition.trim().contains(">")) {
+                String metric = condition.trim().split(">")[0];
+                String value = condition.trim().split(">")[1];
+                double val = Double.parseDouble(value);
+                String target = metric.split(".")[0];
+                String metricName = metric.split(".")[1];
+                try {
+                    if (monitoringInterface.getMetricValue(metricName, dependencyGraph.getNodeWithID(target))<val){
+                        ok = false;
+                        
+                    }
+                } catch (Exception ex) {
+                    PlanningLogger.logger.error(ex.getMessage());
+                }
+            } else {
+                if (condition.trim().contains("<")) {
+                    String metric = condition.trim().split("<")[0];
+                    String value = condition.trim().split("<")[1];
+                    double val = Double.parseDouble(value);
+                    String target = metric.split(".")[0];
+                    String metricName = metric.split(".")[1];
+                    try {
+                    if (monitoringInterface.getMetricValue(metricName, dependencyGraph.getNodeWithID(target))>val){
+                        ok = false;
+                        
+                    }
+                } catch (Exception ex) {
+                    PlanningLogger.logger.error(ex.getMessage());
+                }
+                }
+            }
+        }
+
+        return ok;
+    }
+
 	
 }

@@ -7,13 +7,18 @@
 	<DeploymentUnit serviceUnitID="EventProcessingServiceUnit"
 		defaultFlavor="m1.tiny" defaultImage="99960b2e-7ddd-428f-a85f-6167fceca98d" >
 			<AssociatedVM IP="10.99.0.73"/>
+			<ElasticityCapability Name="scaleOut" PrimitiveOperationsSequence="scaleOut" Endpoint="" Type=""/>
+			<ElasticityCapability Name="scaleIn" PrimitiveOperationsSequence="scaleIn" Endpoint="" Type=""/>
 		</DeploymentUnit>
 	<DeploymentUnit serviceUnitID="DataControllerServiceUnit"
 		defaultFlavor="m1.tiny" defaultImage="9ac8c332-69e7-4ea1-87c2-8c5c8ad0ec92" >
 	        <AssociatedVM IP="10.99.0.44"/>
+			
 	</DeploymentUnit>
 	<DeploymentUnit serviceUnitID="DataNodeServiceUnit"
 		defaultFlavor="m1.tiny" defaultImage="efebc24d-7dac-422a-a6eb-4bb499ee94db" >
 	        <AssociatedVM IP="10.99.0.91"/>
+						<ElasticityCapability Name="scaleOut" PrimitiveOperationsSequence="scaleOut" Endpoint="" Type=""/>
+			<ElasticityCapability Name="scaleIn" PrimitiveOperationsSequence="scaleIn" Endpoint="" Type=""/>
 	</DeploymentUnit>
 </DeploymentDescription>

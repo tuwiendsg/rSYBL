@@ -385,7 +385,15 @@ public class DependencyGraph implements Serializable{
                         
                     }
                     if (req!=null && req.getAnnotation()!=null && req.getAnnotation().getStrategies()!=null && !req.getAnnotation().getStrategies().equalsIgnoreCase("")){
-                        content+=req.getAnnotation().getStrategies();
+                       // if (req.getAnnotation().getStrategies().toLowerCase().contains("and"))
+                        //{
+                          //  int index = req.getAnnotation().getStrategies().toLowerCase().indexOf("and");
+                            
+                      //      content+=req.getAnnotation().getStrategies().substring(0,index)+"\n "+req.getAnnotation().getStrategies().substring(index);
+                       // }
+                       // else{
+                            content+=req.getAnnotation().getStrategies();
+                       // }
                         
                     }
                     childElement.put("name", content);

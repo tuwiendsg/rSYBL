@@ -26,7 +26,7 @@ import com.jcraft.jsch.JSchException;
 import com.jcraft.jsch.Session;
 import com.jcraft.jsch.UserInfo;
 
-public class M2MApplicationControl implements EnforcementInterface{
+public class M2MApplicationControl {
 	private Node controlledService;
 	public M2MApplicationControl(Node cloudService){
 		controlledService=cloudService;
@@ -282,42 +282,27 @@ public class M2MApplicationControl implements EnforcementInterface{
           channel.disconnect();
 
      }
-	@Override
-	public boolean scaleOut(Node toBeScaled) {
-		// TODO Auto-generated method stub
-		return false;
-	}
-	@Override
-	public boolean scaleIn(Node toBeScaled) {
-		// TODO Auto-generated method stub
-		return false;
-	}
-	@Override
+
 	public List<String> getElasticityCapabilities() {
 		// TODO Auto-generated method stub
 		return null;
 	}
-	@Override
 	public boolean enforceAction(String actionName, Node entity) {
 		// TODO Auto-generated method stub
 		return false;
 	}
-	@Override
 	public void setControlledService(Node controlledService) {
 		// TODO Auto-generated method stub
 		
 	}
-	@Override
 	public Node getControlledService() {
 		// TODO Auto-generated method stub
 		return null;
 	}
-	@Override
 	public void setMonitoringPlugin(MonitoringAPIInterface monitoring) {
 		// TODO Auto-generated method stub
 		
 	}
-	@Override
 	public boolean containsElasticityCapability(Node entity, String capability) {
 		// TODO Auto-generated method stub
 		return false;

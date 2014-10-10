@@ -1200,6 +1200,7 @@ public  List<String> simulateRelatedMetrics(){
 	
 	public int evaluateViolationPercentage(){
 		int numberofViolatedConstraints=0;
+                int nbConstraints= 0;
 		for (ElasticityRequirement elReq:dependencyGraph.getAllElasticityRequirements()){
 			SYBLSpecification syblSpecification = SYBLDirectiveMappingFromXML.mapFromSYBLAnnotation(elReq.getAnnotation());
 			//System.out.println("Searching for monitored entity "+syblSpecification.getComponentId());
@@ -1207,15 +1208,125 @@ public  List<String> simulateRelatedMetrics(){
 			if (monitoredEntity==null) PlanningLogger.logger.info("Not finding monitored entity "+monitoredEntity+ " "+syblSpecification.getComponentId());
 
 			for (Constraint constraint:syblSpecification.getConstraint()){
-				if (evaluateCondition(constraint.getCondition(), monitoredEntity) && !evaluateCondition(constraint.getToEnforce(), monitoredEntity))
+				if (evaluateCondition(constraint.getCondition(), monitoredEntity) && !evaluateCondition(constraint.getToEnforce(), monitoredEntity)){
 						numberofViolatedConstraints=numberofViolatedConstraints+1;
-				
+                                }
+				nbConstraints+=1;
 			}
 		}
 		//PlanningLogger.logger.info("Number of violated constraints"+ numberofViolatedConstraints);
-		return numberofViolatedConstraints;
+		return numberofViolatedConstraints/nbConstraints;
 	}
-	
+	public double evaluateViolationDegree(){
+		int numberofViolatedConstraints=0;
+                int nbConstraints= 0;
+                double violationDegree= 0.0;
+		for (ElasticityRequirement elReq:dependencyGraph.getAllElasticityRequirements()){
+			SYBLSpecification syblSpecification = SYBLDirectiveMappingFromXML.mapFromSYBLAnnotation(elReq.getAnnotation());
+			//System.out.println("Searching for monitored entity "+syblSpecification.getComponentId());
+			MonitoredEntity monitoredEntity = findMonitoredEntity(syblSpecification.getComponentId());
+			if (monitoredEntity==null) PlanningLogger.logger.info("Not finding monitored entity "+monitoredEntity+ " "+syblSpecification.getComponentId());
+
+			for (Constraint constraint:syblSpecification.getConstraint()){
+				if (evaluateCondition(constraint.getCondition(), monitoredEntity) && !evaluateCondition(constraint.getToEnforce(), monitoredEntity)){
+						numberofViolatedConstraints=numberofViolatedConstraints+1;
+                                                for (int i=0;i<constraint.getToEnforce().getBinaryRestriction().size();i++){
+                                                    BinaryRestrictionsConjunction binaryRestrictionConjunction = constraint.getToEnforce().getBinaryRestriction().get(i);
+                                                    for (BinaryRestriction  binaryRestriction:binaryRestrictionConjunction.getBinaryRestrictions()){
+                                                        if (binaryRestriction.getLeftHandSide().getMetric()!=null && !binaryRestriction.getLeftHandSide().getMetric().equalsIgnoreCase("")){
+                                                           String metric = binaryRestriction.getLeftHandSide().getMetric();
+                                                           double val=monitoredEntity.getMonitoredValue(metric);
+                                                            double desiredVal= Double.parseDouble(binaryRestriction.getRightHandSide().getNumber());
+                                                               switch(binaryRestriction.getType()){
+                                                                        case "lessThan":
+                                                                            if (val>=desiredVal){
+                                                                                violationDegree+=(val-desiredVal)/desiredVal;
+                                                                            };
+                                                                        break;
+                                                                        case "greaterThan":
+                                                                            if (val<=desiredVal){
+                                                                                 violationDegree+=(desiredVal-val)/desiredVal;
+                                                                            };
+                                                                        break;
+                                                                        case "lessThanOrEqual":
+                                                                            if (val>desiredVal){
+                                                                                violationDegree+=(val-desiredVal)/desiredVal;
+                                                                            };
+                                                                        break;
+                                                                        case "greaterThanOrEqual":
+                                                                            if (val<desiredVal){
+                                                                                violationDegree+=(desiredVal-val)/desiredVal;
+                                                                            };
+                                                                        break;
+                                                                        case "differentThan":
+                                                                            if (val==desiredVal){
+                                                                                violationDegree+=1;
+                                                                            };
+                                                                        break;
+                                                                        case "equals":
+                                                                            if (val!=desiredVal){
+                                                                                 violationDegree+=1;
+                                                                            };
+                                                                        break;
+                                                                        default:
+                                                                            if (val>=desiredVal){
+                                                                                 violationDegree+=(val-desiredVal)/desiredVal;
+                                                                            };
+                                                                                break;
+                                                            }
+                                                           
+                                                        }else{
+                                                             String metric = binaryRestriction.getRightHandSide().getMetric();
+                                                           double val=monitoredEntity.getMonitoredValue(metric);
+                                                            double desiredVal= Double.parseDouble(binaryRestriction.getLeftHandSide().getNumber());
+                                                               switch(binaryRestriction.getType()){
+                                                                        case "lessThan":
+                                                                            if (val>=desiredVal){
+                                                                                violationDegree+=(val-desiredVal)/desiredVal;
+                                                                            };
+                                                                        break;
+                                                                        case "greaterThan":
+                                                                            if (val<=desiredVal){
+                                                                                 violationDegree+=(desiredVal-val)/desiredVal;
+                                                                            };
+                                                                        break;
+                                                                        case "lessThanOrEqual":
+                                                                            if (val>desiredVal){
+                                                                                violationDegree+=(val-desiredVal)/desiredVal;
+                                                                            };
+                                                                        break;
+                                                                        case "greaterThanOrEqual":
+                                                                            if (val<desiredVal){
+                                                                                violationDegree+=(desiredVal-val)/desiredVal;
+                                                                            };
+                                                                        break;
+                                                                        case "differentThan":
+                                                                            if (val==desiredVal){
+                                                                                violationDegree+=1;
+                                                                            };
+                                                                        break;
+                                                                        case "equals":
+                                                                            if (val!=desiredVal){
+                                                                                 violationDegree+=1;
+                                                                            };
+                                                                        break;
+                                                                        default:
+                                                                            if (val>=desiredVal){
+                                                                                 violationDegree+=(val-desiredVal)/desiredVal;
+                                                                            };
+                                                                                break;
+                                                            }
+                                                        }
+                                                    }
+                                                }
+                                               
+                                }
+				nbConstraints+=1;
+			}
+		}
+		//PlanningLogger.logger.info("Number of violated constraints"+ numberofViolatedConstraints);
+		return violationDegree;
+	}
 	public MonitoredCloudService getMonitoredCloudService() {
 		return monitoredCloudService;
 	}
