@@ -261,18 +261,9 @@ public class MELA_API implements MonitoringInterface {
                 connection.setInstanceFollowRedirects(false);
                 connection.setRequestMethod("PUT");
                 connection.setRequestProperty("Content-Type", "application/xml");
-                connection.setRequestProperty("Accept", "application/json");
 
-                //write message body
-                OutputStream os = connection.getOutputStream();
-                JAXBContext jaxbContext = JAXBContext.newInstance(MonitoredElement.class);
-                jaxbContext.createMarshaller().marshal(element, os);
-                StringWriter stringWriter = new StringWriter();
-                jaxbContext.createMarshaller().marshal(element, stringWriter);
+                connection.setRequestProperty("Accept", "text/plain");
 
-                RuntimeLogger.logger.info(stringWriter.toString());
-                os.flush();
-                os.close();
 
                 InputStream errorStream = connection.getErrorStream();
                 if (errorStream != null) {

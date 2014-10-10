@@ -132,6 +132,9 @@
             var format = "xml";
             function checkservice(dropdown) {
                 serviceID = dropdown.options[dropdown.selectedIndex].value;
+                if (serviceID==""){
+                    d3.select("#chart").selectAll("*").remove(); 
+                }
                 if (format=="xml"){
                     refreshServiceDescription();
                 }
@@ -175,7 +178,7 @@
                 serviceID="";
                  d3.select("#chart").selectAll("*").remove(); 
                 refreshServiceStructureDisplayed();
-                refreshServicesList();
+                setTimeout(refreshServicesList,5000);
 					alertify.success("The service was destroyed.");
 				} else {
 					alertify.error("You've clicked Cancel");

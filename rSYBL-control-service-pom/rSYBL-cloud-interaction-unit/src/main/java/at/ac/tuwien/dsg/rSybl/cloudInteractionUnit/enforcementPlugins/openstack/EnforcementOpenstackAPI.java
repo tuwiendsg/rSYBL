@@ -583,5 +583,10 @@ public boolean containsElasticityCapability(Node entity, String capability) {
 	return false;
 }
 
+    @Override
+    public void undeployService(Node serviceID) {
+        throw new UnsupportedOperationException("Not supported yet.");
+    }
+
 
 }

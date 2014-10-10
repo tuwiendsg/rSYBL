@@ -677,4 +677,9 @@ public class DryRunEnforcementAPI implements EnforcementInterface {
         }
         return false;
     }
+
+    @Override
+    public void undeployService(Node serviceID) {
+       
+    }
 }

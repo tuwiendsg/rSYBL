@@ -26,9 +26,15 @@ public class ControlCoordination {
         controls.get(serviceID).triggerHealthFix(servicePartID);
     }
     public void removeService(String cloudServiceId){
+        if (!cloudServiceId.equalsIgnoreCase("") && controls.containsKey(cloudServiceId)){
+            controls.get(cloudServiceId).undeployService();
         controls.get(cloudServiceId).stop();
+        
         controls.remove(cloudServiceId);
+        
+        }
     }
+   
     public void prepareControl(String cloudServiceId) {
         ControlService controlService = new ControlService();
         controls.put(cloudServiceId, controlService);

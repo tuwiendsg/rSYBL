@@ -246,7 +246,6 @@ public void removeService(Node cloudService) {
         element.setId(cloudService.getId());
         element.setLevel(MonitoredElement.MonitoredElementLevel.SERVICE);
 
-        MELA_ClientUtils.convertServiceTopology(element, cloudService);
 
         URL url = null;
         HttpURLConnection connection = null;
@@ -261,17 +260,8 @@ public void removeService(Node cloudService) {
                 connection.setRequestMethod("DELETE");
                 connection.setRequestProperty("Content-Type", "application/xml");
                 connection.setRequestProperty("Accept", "application/json");
-
                 //write message body
-                OutputStream os = connection.getOutputStream();
-                JAXBContext jaxbContext = JAXBContext.newInstance(MonitoredElement.class);
-                jaxbContext.createMarshaller().marshal(element, os);
-                StringWriter stringWriter = new StringWriter();
-                jaxbContext.createMarshaller().marshal(element, stringWriter);
-
-                RuntimeLogger.logger.info(stringWriter.toString());
-                os.flush();
-                os.close();
+            
 
                 InputStream errorStream = connection.getErrorStream();
                 if (errorStream != null) {
@@ -291,11 +281,11 @@ public void removeService(Node cloudService) {
                     }
                 }
 
-                serviceSet = true;
+                serviceSet = false;
                 notConnected = false;
             } catch (Exception e) {
                 //Logger.getLogger(MELA_API.class.getName()).log(Level.WARNING, "Trying to connect to MELA - failing ... . Retrying later");
-                RuntimeLogger.logger.error("Failing to connect to MELA" + e.getMessage());
+                RuntimeLogger.logger.error("Failing to delete service" + e.getMessage());
                 try {
                     Thread.sleep(MONITORING_DATA_REFRESH_INTERVAL * 1000);
                 } catch (InterruptedException e1) {
@@ -1312,7 +1302,7 @@ public void removeService(Node cloudService) {
                 connection.setInstanceFollowRedirects(false);
                 connection.setRequestMethod("POST");
                 connection.setRequestProperty("Content-Type", "text/plain");
-
+            connection.setRequestProperty("Accept", "text/plain");
                 //write message body
                 OutputStream os = connection.getOutputStream();
                 //JAXBContext jaxbContext = JAXBContext.newInstance(MonitoredElement.class);

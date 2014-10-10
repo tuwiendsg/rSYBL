@@ -132,7 +132,9 @@ public class ControlService {
         metricCompositionRules = "";
     }
     
-    
+    public void undeployService(){
+        enforcementAPI.undeployService(dependencyGraph.getCloudService());
+    }
 
     public void setDependencyGraph(DependencyGraph dependencyGraph) {
         this.dependencyGraph = dependencyGraph;

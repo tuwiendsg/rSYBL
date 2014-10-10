@@ -1,6 +1,7 @@
 package at.ac.tuwien.dsg.rSybl.cloudInteractionUnit.enforcementPlugins.salsa.common;
 
 import at.ac.tuwien.dsg.csdg.Node;
+import at.ac.tuwien.dsg.rSybl.cloudInteractionUnit.enforcementPlugins.salsa.EnforcementSALSAAPI;
 import at.ac.tuwien.dsg.rSybl.cloudInteractionUnit.utils.Configuration;
 import at.ac.tuwien.dsg.rSybl.dataProcessingUnit.monitoringPlugins.melaPlugin.MELA_API;
 import at.ac.tuwien.dsg.rSybl.dataProcessingUnit.utils.RuntimeLogger;
@@ -28,7 +29,54 @@ public class DefaultSalsaClient {
         REST_API_URL = Configuration.getEnforcementServiceURL();
         service = cloudService;
     }
+public void undeployService(Node serviceID){
+    URL url = null;
+        HttpURLConnection connection = null;
+        boolean notConnected = true;
+        while (notConnected) {
+            try {
+                RuntimeLogger.logger.info("Trying to connect to Salsa ...");
+                url = new URL(REST_API_URL + "/" + serviceID);
+                connection = (HttpURLConnection) url.openConnection();
+                connection.setDoOutput(true);
+                connection.setInstanceFollowRedirects(false);
+                connection.setRequestMethod("DELETE");
+                connection.setRequestProperty("Content-Type", "application/xml");
+                //connection.setRequestProperty("Accept", "application/json");
+                connection.setRequestProperty("Accept", "text/plain");
+                //write message body
+            
 
+                InputStream errorStream = connection.getErrorStream();
+                if (errorStream != null) {
+                    BufferedReader reader = new BufferedReader(new InputStreamReader(errorStream));
+                    String line;
+                    while ((line = reader.readLine()) != null) {
+                        java.util.logging.Logger.getLogger(EnforcementSALSAAPI.class.getName()).log(java.util.logging.Level.SEVERE, line);
+                    }
+                }
+
+                InputStream inputStream = connection.getInputStream();
+                if (inputStream != null) {
+                    BufferedReader reader = new BufferedReader(new InputStreamReader(inputStream));
+                    String line;
+                    while ((line = reader.readLine()) != null) {
+                        java.util.logging.Logger.getLogger(EnforcementSALSAAPI.class.getName()).log(java.util.logging.Level.SEVERE, line);
+                    }
+                }
+
+                notConnected = false;
+            } catch (Exception e) {
+                //Logger.getLogger(MELA_API.class.getName()).log(Level.WARNING, "Trying to connect to MELA - failing ... . Retrying later");
+                RuntimeLogger.logger.error("Failing to delete service" + e.getMessage());
+                
+            } finally {
+                if (connection != null) {
+                    connection.disconnect();
+                }
+            }
+        }
+}
     public boolean scaleIn(String toScale) {
         URL url = null;
         HttpURLConnection connection = null;

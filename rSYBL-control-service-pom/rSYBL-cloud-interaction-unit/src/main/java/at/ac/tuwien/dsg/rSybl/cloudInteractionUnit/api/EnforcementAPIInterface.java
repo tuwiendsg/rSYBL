@@ -39,7 +39,7 @@ public interface EnforcementAPIInterface {
     public void submitElasticityRequirements(ArrayList<ElasticityRequirement> description);
     
     public boolean scalein(Node arg0);
-
+    public void undeployService(Node service);
     public void setMonitoringPlugin(MonitoringAPIInterface monitoringInterface);
 
     public boolean scaleout(Node arg0);

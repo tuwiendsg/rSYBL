@@ -562,4 +562,9 @@ public class EnforcementFlexiantAPI implements EnforcementInterface {
     public boolean scaleOut(double violationDegree, Node toBeScaled) {
         return scaleOut(toBeScaled);
     }
+
+    @Override
+    public void undeployService(Node serviceID) {
+        throw new UnsupportedOperationException("Not supported yet.");
+    }
 }

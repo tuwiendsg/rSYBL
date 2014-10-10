@@ -14,6 +14,7 @@ import at.ac.tuwien.dsg.csdg.Node;
 import at.ac.tuwien.dsg.csdg.SimpleRelationship;
 import at.ac.tuwien.dsg.csdg.Node.NodeType;
 import at.ac.tuwien.dsg.csdg.Relationship.RelationshipType;
+import at.ac.tuwien.dsg.mela.common.monitoringConcepts.MonitoredElement;
 import at.ac.tuwien.dsg.rSybl.cloudInteractionUnit.enforcementPlugins.applicationControl.M2MApplicationControl;
 import at.ac.tuwien.dsg.rSybl.cloudInteractionUnit.enforcementPlugins.interfaces.EnforcementInterface;
 import at.ac.tuwien.dsg.rSybl.cloudInteractionUnit.enforcementPlugins.salsa.common.DefaultSalsaClient;
@@ -21,6 +22,11 @@ import at.ac.tuwien.dsg.rSybl.cloudInteractionUnit.enforcementPlugins.salsa.comm
 import at.ac.tuwien.dsg.rSybl.cloudInteractionUnit.utils.Configuration;
 import at.ac.tuwien.dsg.rSybl.cloudInteractionUnit.utils.RuntimeLogger;
 import at.ac.tuwien.dsg.rSybl.dataProcessingUnit.api.MonitoringAPIInterface;
+import java.io.BufferedReader;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.net.HttpURLConnection;
+import java.net.URL;
 
 public class EnforcementSALSAAPI implements EnforcementInterface {
 
@@ -108,7 +114,13 @@ public class EnforcementSALSAAPI implements EnforcementInterface {
 
         return null;
     }
+public void undeployService(Node serviceID) {
 
+salsaClient.undeployService(serviceID);
+
+        
+
+    }
     @Override
     public boolean scaleOut(Node arg0) {
         //monitoring.enforcingActionStarted("ScaleOut", arg0);
