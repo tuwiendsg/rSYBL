@@ -209,4 +209,9 @@ public class MonitoringAPIDryRun  implements MonitoringInterface{
         
     }
 
+    @Override
+    public void removeService(Node service) {
+        ;
+    }
+
 }

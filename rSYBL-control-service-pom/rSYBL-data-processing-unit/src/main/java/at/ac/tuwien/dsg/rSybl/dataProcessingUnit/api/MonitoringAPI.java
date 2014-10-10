@@ -432,5 +432,8 @@ public class MonitoringAPI implements MonitoringAPIInterface {
     public void sendControlIncapacityMessage(String message, List<ElasticityRequirement> cause) {
         offeredMonitoringMetrics.sendControlIncapacityMessage(message, cause);
     }
-
+    @Override 
+    public void removeService(Node service){
+        offeredMonitoringMetrics.removeService(service);
+    }
 }

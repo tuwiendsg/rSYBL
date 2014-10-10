@@ -26,7 +26,7 @@ import at.ac.tuwien.dsg.csdg.elasticityInformation.ElasticityRequirement;
 public interface MonitoringInterface {
 
     public Double getCpuUsage(Node node);
-
+    public void removeService(Node service);
     public Double getMemoryAvailable(Node node);
 
     public Double getMemorySize(Node node);

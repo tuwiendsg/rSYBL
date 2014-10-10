@@ -25,7 +25,10 @@ public class ControlCoordination {
     public void triggerHealthFixServicePart(String servicePartID, String serviceID) {
         controls.get(serviceID).triggerHealthFix(servicePartID);
     }
-
+    public void removeService(String cloudServiceId){
+        controls.get(cloudServiceId).stop();
+        controls.remove(cloudServiceId);
+    }
     public void prepareControl(String cloudServiceId) {
         ControlService controlService = new ControlService();
         controls.put(cloudServiceId, controlService);
@@ -120,7 +123,9 @@ public class ControlCoordination {
 
     }
     public String getRequirements(String cloudServiceId){
+        if (controls.containsKey(cloudServiceId))
         return controls.get(cloudServiceId).getXMLRequirements();
+        else return "";
     }
     public void replaceRequirements(String requirements) {
         
@@ -146,7 +151,11 @@ public class ControlCoordination {
     }
 
     public String getJSONStructureOfService(String id) {
+        if (controls.containsKey(id)){
         return controls.get(id).getJSONStructureOfService();
+        }else{
+            return "";
+        }
     }
 
     public String getApplicationDescriptionInfo(String id) {
@@ -155,6 +164,7 @@ public class ControlCoordination {
         else return "";
     }
     public void setApplicationDescriptionInfoTOSCA(String tosca, String serviceID){
+        
         controls.get(serviceID).setApplicationDescriptionInfoTOSCABased(tosca);
     }
     public String getServices() {

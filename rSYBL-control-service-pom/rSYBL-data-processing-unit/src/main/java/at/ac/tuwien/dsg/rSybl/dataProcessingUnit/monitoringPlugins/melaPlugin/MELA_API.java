@@ -1217,7 +1217,76 @@ public class MELA_API implements MonitoringInterface {
         }
         return metrics;
     }
+public void removeService(Node cloudService) {
+        controlService = cloudService;
+        MonitoredElement element = new MonitoredElement();
+        element.setId(cloudService.getId());
+        element.setLevel(MonitoredElement.MonitoredElementLevel.SERVICE);
 
+        MELA_ClientUtils.convertServiceTopology(element, cloudService);
+
+        URL url = null;
+        HttpURLConnection connection = null;
+        boolean notConnected = true;
+        while (notConnected) {
+            try {
+                RuntimeLogger.logger.info("Trying to connect to MELA ...");
+                url = new URL(REST_API_URL + "/" + controlService.getId() );
+                connection = (HttpURLConnection) url.openConnection();
+                connection.setDoOutput(true);
+                connection.setInstanceFollowRedirects(false);
+                connection.setRequestMethod("DELETE");
+                connection.setRequestProperty("Content-Type", "application/xml");
+                connection.setRequestProperty("Accept", "application/json");
+
+                //write message body
+                OutputStream os = connection.getOutputStream();
+                JAXBContext jaxbContext = JAXBContext.newInstance(MonitoredElement.class);
+                jaxbContext.createMarshaller().marshal(element, os);
+                StringWriter stringWriter = new StringWriter();
+                jaxbContext.createMarshaller().marshal(element, stringWriter);
+
+                RuntimeLogger.logger.info(stringWriter.toString());
+                os.flush();
+                os.close();
+
+                InputStream errorStream = connection.getErrorStream();
+                if (errorStream != null) {
+                    BufferedReader reader = new BufferedReader(new InputStreamReader(errorStream));
+                    String line;
+                    while ((line = reader.readLine()) != null) {
+                        Logger.getLogger(MELA_API.class.getName()).log(Level.SEVERE, line);
+                    }
+                }
+
+                InputStream inputStream = connection.getInputStream();
+                if (inputStream != null) {
+                    BufferedReader reader = new BufferedReader(new InputStreamReader(inputStream));
+                    String line;
+                    while ((line = reader.readLine()) != null) {
+                        Logger.getLogger(MELA_API.class.getName()).log(Level.SEVERE, line);
+                    }
+                }
+
+                serviceSet = true;
+                notConnected = false;
+            } catch (Exception e) {
+                //Logger.getLogger(MELA_API.class.getName()).log(Level.WARNING, "Trying to connect to MELA - failing ... . Retrying later");
+                RuntimeLogger.logger.error("Failing to connect to MELA" + e.getMessage());
+                try {
+                    Thread.sleep(MONITORING_DATA_REFRESH_INTERVAL * 1000);
+                } catch (InterruptedException e1) {
+                    // TODO Auto-generated catch block
+                    e1.printStackTrace();
+                }
+            } finally {
+                if (connection != null) {
+                    connection.disconnect();
+                }
+            }
+        }
+
+    }
     public void submitCompositionRules() {
         try {
             Unmarshaller unmarshaller = JAXBContext.newInstance(CompositionRulesConfiguration.class).createUnmarshaller();

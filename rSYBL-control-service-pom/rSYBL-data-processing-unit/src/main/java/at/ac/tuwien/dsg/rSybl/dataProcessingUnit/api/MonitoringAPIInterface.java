@@ -26,7 +26,7 @@ import at.ac.tuwien.dsg.csdg.elasticityInformation.ElasticityRequirement;
 public interface MonitoringAPIInterface {
 
     public void setCompositionRules(String compositionRules);
-
+    public void removeService(Node service);
     public void setCompositionRules();
     
     public void refreshCompositionRules();

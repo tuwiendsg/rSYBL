@@ -116,7 +116,7 @@ public class ControlService {
     }
 
     public void stop() {
-
+        monitoringAPI.removeService(dependencyGraph.getCloudService());
         dependencyGraph.setWaitState();
         if (planningAlgorithm != null) {
             planningAlgorithm.stop();
@@ -131,6 +131,8 @@ public class ControlService {
         effects = "";
         metricCompositionRules = "";
     }
+    
+    
 
     public void setDependencyGraph(DependencyGraph dependencyGraph) {
         this.dependencyGraph = dependencyGraph;

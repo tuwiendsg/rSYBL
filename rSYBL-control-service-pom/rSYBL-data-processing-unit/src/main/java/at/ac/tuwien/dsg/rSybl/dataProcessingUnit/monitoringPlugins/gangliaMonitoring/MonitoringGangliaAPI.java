@@ -601,6 +601,11 @@ Double retValue = 0.0;
        
     }
 
+    @Override
+    public void removeService(Node service) {
+        throw new UnsupportedOperationException("Not supported yet.");
+    }
+
 	
 
 	

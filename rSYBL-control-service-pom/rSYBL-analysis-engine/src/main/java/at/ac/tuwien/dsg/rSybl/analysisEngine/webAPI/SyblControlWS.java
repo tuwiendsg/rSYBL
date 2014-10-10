@@ -44,6 +44,7 @@ import at.ac.tuwien.dsg.rSybl.analysisEngine.main.ControlCoordination;
 import at.ac.tuwien.dsg.rSybl.analysisEngine.main.ControlService;
 import at.ac.tuwien.dsg.rSybl.analysisEngine.main.ControlServiceFactory;
 import at.ac.tuwien.dsg.rSybl.analysisEngine.utils.AnalysisLogger;
+import javax.ws.rs.DELETE;
 import javax.ws.rs.PathParam;
 
 
@@ -97,6 +98,14 @@ public class SyblControlWS {
 	public void setApplicationDescriptionTOSCA(@PathParam("id")String cloudServiceId,String celar){
 		 controlCoordination.setApplicationDescriptionInfoTOSCA(cloudServiceId,celar);
 	}
+            
+             @DELETE
+	 @Path("/{id}")
+	 @Consumes("application/xml")
+	public void removeService(@PathParam("id")String cloudServiceId){
+		 controlCoordination.removeService(cloudServiceId);
+	}
+             
 	 @PUT
 	 @Path("/{id}/description")
 	 @Consumes("application/xml")

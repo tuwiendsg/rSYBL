@@ -424,4 +424,14 @@ public class OfferedMonitoringMetrics implements MonitoringInterface {
             }
         }
     }
+
+    @Override
+    public void removeService(Node cloudService) {
+        Map<Method, MonitoringInterface> methods = manageMonitoringPlugins.getMethods(manageMonitoringPlugins.getAllPlugins(cloudService));
+        for (Method method : methods.keySet()) {
+            if (method.getName().equalsIgnoreCase("removeService")) {
+                methods.get(method).removeService(cloudService);
+            }
+        }
+    }
 }

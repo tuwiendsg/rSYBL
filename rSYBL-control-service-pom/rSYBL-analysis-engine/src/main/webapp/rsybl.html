@@ -5,9 +5,13 @@
         <meta http-equiv="Content-Type" content="text/html;charset=utf-8">
         <title>rSYBL</title>
         <script type="text/javascript" src="http://d3js.org/d3.v3.js"></script>
-
+        <link rel="stylesheet" href="themes/alertify.core.css" />
+	<link rel="stylesheet" href="themes/alertify.default.css" id="toggleCSS" />
+	
         <style type="text/css">
-
+            .alertify-log-custom {
+			background: blue;
+		}
             .node circle {
                 cursor: pointer;
                 fill: #fff;
@@ -76,7 +80,7 @@
                 <h2>Currently managed services:</h2>
                 <select id="service" name="service" onChange="checkservice(this);">
 
-                </select>
+                </select> <input type="submit" onclick="removeService()" value="Destroy Service">
             </div>
             <div id ="serviceinfo">
 
@@ -97,11 +101,11 @@
         </div>
         <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>
         <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
-
-
+        <script src="http://code.jquery.com/jquery-1.9.1.js"></script>
+        <script src="scripts/alertify.min.js"></script>
         <script src="scripts/spin.js" type="text/javascript"></script>
         <script src="scripts/toastr.js" type="text/javascript"></script>
-        <link href="css/toastr.css" rel="stylesheet"/>
+        <link  href="css/toastr.css" rel="stylesheet"/>
 
         <script type="text/javascript">
 
@@ -132,6 +136,59 @@
                     refreshServiceDescription();
                 }
                     refreshServiceStructureDisplayed();
+            }
+            function reset () {
+			$("#toggleCSS").attr("href", "themes/alertify.default.css");
+			alertify.set({
+				labels : {
+					ok     : "OK",
+					cancel : "Cancel"
+				},
+				delay : 5000,
+				buttonReverse : false,
+				buttonFocus   : "ok"
+			});
+		}
+
+            function removeService(){
+                reset();
+                
+                alertify.set({ labels: { ok: "Destroy", cancel: "Cancel" } });
+			alertify.confirm("Confirm destroying the service", function (e) {
+				if (e) {
+                if (window.XMLHttpRequest) {
+                    updateServicesListRequest = new XMLHttpRequest();
+                } else {
+                    updateServicesListRequest = new ActiveXObject("Microsoft.XMLHTTP");
+                }
+
+                updateServicesListRequest.open("DELETE", "./restWS/" + serviceID , true);
+
+                updateServicesListRequest.setRequestHeader('Content-type', 'application/xml');
+                updateServicesListRequest.send(null);
+                //                            setTimeout(refreshMonitoringData, 4000);
+                //getRequirementsXMLSYBL();
+                serviceID="";
+                 d3.select("#chart").selectAll("*").remove(); 
+                refreshServiceStructureDisplayed();
+                refreshServicesList();
+					alertify.success("The service was destroyed.");
+				} else {
+					alertify.error("You've clicked Cancel");
+				}
+			});
+                        
+			
+				
+			return false;
+                var r = confirm("Please confirm removing the service");
+                if (r == true) {
+                    x = "You pressed OK! Removing the service.";
+                
+                } else {
+                    x = "You pressed Cancel!";
+                }
+                 
             }
             function checkformat(dropdown) {
                 format = dropdown.options[dropdown.selectedIndex].value;
@@ -618,6 +675,10 @@
                     reqServiceStructuObject.onreadystatechange = refreshServiceStructureResponseProcessing;
                     reqServiceStructuObject.open("GET", "./restWS/" + serviceID + "/structuralData/json", true);
                     reqServiceStructuObject.send(null);
+                }else{
+                     drawSpinner('A');
+                    document.getElementById("text").value="";            
+                        
                 }
             }
 
@@ -681,7 +742,7 @@
             }
 
             function replaceRequirementsSYBL() {
-
+                if (serviceID!=""){
                 getManagedServices = null;
                 if (window.XMLHttpRequest) {
                     replaceRequirementsSYBL = new XMLHttpRequest();
@@ -695,10 +756,11 @@
                 replaceRequirementsSYBL.send(document.getElementById("text").value);
                 //getRequirementsXMLSYBL();
                 setTimeout(refreshServiceStructureDisplayed,5000);
+                }
 
             }
             function updateServiceDescription() {
-
+                if (serviceID!=""){
                 getManagedServices = null;
                 if (window.XMLHttpRequest) {
                     updateServicesListRequest = new XMLHttpRequest();
@@ -711,7 +773,7 @@
                 updateServicesListRequest.setRequestHeader('Content-type', 'application/xml');
                 updateServicesListRequest.send(document.getElementById("text").value);
                 setTimeout(refreshServiceStructureDisplayed,5000);
-                
+                }
             }
 
 
@@ -886,7 +948,7 @@
             // refreshMetricsCompositionRules();
             //refreshMonitoringData();
             // pollEvents();
-            // setInterval(refreshServicesList,4000);
+           // setInterval(refreshServicesList,4000);
             refreshServicesList();
         </script>
     </body>
