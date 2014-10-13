@@ -656,6 +656,7 @@ public  List<String> simulateRelatedMetrics(){
         
 	public void doAction(ActionEffect action){
 		//PlanningLogger.logger.info("Trying action "+action.getActionName());
+            
 		for (String currentMetric:getMonitoredCloudService().getMonitoredMetrics()){
 			if (action.getActionEffectForMetric(currentMetric,getMonitoredCloudService().getId())!=null){
                          Double oldValue = monitoredCloudService.getMonitoredValue(currentMetric);   
@@ -702,6 +703,33 @@ public  List<String> simulateRelatedMetrics(){
                                         }
 			}
 		}
+	}
+        public void doAction(ActionEffect action, String target){
+		//PlanningLogger.logger.info("Trying action "+action.getActionName());
+                MonitoredEntity monitoredEntity=findMonitoredEntity(target);
+                
+              
+		for (String currentMetric:monitoredEntity.getMonitoredMetrics()){
+			if (action.getActionEffectForMetric(currentMetric,monitoredEntity.getId())!=null){
+                         Double oldValue = monitoredCloudService.getMonitoredValue(currentMetric);   
+                        // PlanningLogger.logger.info("Setting effect for "+getMonitoredCloudService().getId());
+			getMonitoredCloudService().setMonitoredValue(currentMetric, oldValue + action.getActionEffectForMetric(currentMetric,monitoredEntity.getId()) );
+		}
+                }
+		
+	}
+        public void undoAction(ActionEffect action, String target){
+		//PlanningLogger.logger.info("~~~~~~~~~~~~~~Undoing action ~~~ "+action.getActionName());
+                            MonitoredEntity monitoredEntity=findMonitoredEntity(target);
+
+		for (String currentMetric:monitoredEntity.getMonitoredMetrics()){
+			if (action.getActionEffectForMetric(currentMetric,monitoredEntity.getId())!=null){
+                            Double oldValue = monitoredCloudService.getMonitoredValue(currentMetric);
+                            monitoredCloudService.setMonitoredValue(currentMetric, oldValue +(-1)*action.getActionEffectForMetric(currentMetric,monitoredEntity.getId()) );
+                        
+                        }
+                        }
+		
 	}
 	public void undoAction(ActionEffect action){
 		//PlanningLogger.logger.info("~~~~~~~~~~~~~~Undoing action ~~~ "+action.getActionName());

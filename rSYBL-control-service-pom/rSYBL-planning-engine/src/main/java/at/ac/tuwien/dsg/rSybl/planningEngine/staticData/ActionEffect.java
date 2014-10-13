@@ -264,6 +264,21 @@ public class ActionEffect {
 
         return ok;
     }
-
-	
+    
+	public ActionEffect clone(){
+            ActionEffect clone = new ActionEffect();
+            clone.actionName=this.actionName;
+            clone.actionType=this.actionType;
+            clone.targetedEntityID=this.targetedEntityID;
+            clone.targetedEntity=this.targetedEntity;
+            for (String cond:this.conditions){
+                clone.addCondition(cond);
+            }
+            HashMap<String,HashMap<String,Double>> eff = new HashMap<String,HashMap<String,Double>>();
+            for (String target:effects.keySet()){
+                eff.put(target, effects.get(target));
+            }
+            clone.effects=eff;
+            return clone;
+        }
 }

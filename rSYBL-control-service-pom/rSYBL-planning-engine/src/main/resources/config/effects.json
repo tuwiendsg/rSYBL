@@ -1,0 +1,15 @@
+
+{"scaleout":{
+			"effects":{
+				"cpuUsage":-30.0,
+						"cost":0.12
+						}
+					},
+	"scalein":{
+			"effects":{
+						"cpuUsage":30.0,
+						"cost":-0.12
+						}
+        }
+
+}

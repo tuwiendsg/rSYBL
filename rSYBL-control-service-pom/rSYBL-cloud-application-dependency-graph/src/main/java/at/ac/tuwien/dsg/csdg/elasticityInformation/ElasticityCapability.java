@@ -37,6 +37,7 @@ public class ElasticityCapability{
       private String apiMethod;
       private String script;
       private List<String> parameters;
+      private String servicePartID;
 		public String getValue() {
 			return value;
 		}
@@ -85,5 +86,19 @@ public class ElasticityCapability{
 		public void setPrimitiveOperations(String primitiveOperations) {
 			this.primitiveOperations = primitiveOperations;
 		}
+
+    /**
+     * @return the servicePartID
+     */
+    public String getServicePartID() {
+        return servicePartID;
+    }
+
+    /**
+     * @param servicePartID the servicePartID to set
+     */
+    public void setServicePartID(String servicePartID) {
+        this.servicePartID = servicePartID;
+    }
 
 }

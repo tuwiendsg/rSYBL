@@ -30,6 +30,7 @@ import at.ac.tuwien.dsg.csdg.Node;
 import at.ac.tuwien.dsg.csdg.Node.NodeType;
 import at.ac.tuwien.dsg.csdg.Relationship;
 import at.ac.tuwien.dsg.csdg.Relationship.RelationshipType;
+import at.ac.tuwien.dsg.csdg.elasticityInformation.ElasticityCapability;
 import at.ac.tuwien.dsg.csdg.elasticityInformation.ElasticityRequirement;
 import at.ac.tuwien.dsg.csdg.elasticityInformation.elasticityRequirements.Condition;
 import at.ac.tuwien.dsg.csdg.elasticityInformation.elasticityRequirements.SYBLSpecification;
@@ -70,13 +71,14 @@ public class PlanningGreedyAlgorithm implements PlanningAlgorithmInterface {
         if (actionEffect.isConditional()){
             if(!actionEffect.evaluateConditions(dependencyGraph, monitoringAPI)) return false;
         }
-        Node entity = dependencyGraph.getNodeWithID(actionEffect.getTargetedEntityID());
+       
         // System.out.println("Targeted entity id "
         // +actionEffect.getTargetedEntityID()+entity);
 
         boolean possible = true;
         if (actionEffect.getActionType().equalsIgnoreCase("scalein")) {
-            if (entity.getNodeType() == NodeType.CLOUD_SERVICE) {
+             Node entity = dependencyGraph.getNodeWithID(actionEffect.getTargetedEntityID());
+            if (entity!=null && entity.getNodeType() == NodeType.CLOUD_SERVICE) {
                 List<String> ips = entity.getAssociatedIps();
                 // PlanningLogger.logger.info("For action " + actionEffect.getActionName() + entity.getAllRelatedNodesOfType(RelationshipType.HOSTED_ON_RELATIONSHIP, NodeType.VIRTUAL_MACHINE).size() + " hosts");
                 Node artifact = null;
@@ -103,7 +105,7 @@ public class PlanningGreedyAlgorithm implements PlanningAlgorithmInterface {
                     return true;
                 }
             }
-            if (entity.getNodeType() == NodeType.SERVICE_TOPOLOGY) {
+            if (entity!=null && entity.getNodeType() == NodeType.SERVICE_TOPOLOGY) {
 
                 Node master = dependencyGraph.findParentNode(entity.getId());
                 List<String> ips = master.getAssociatedIps();
@@ -185,6 +187,7 @@ public class PlanningGreedyAlgorithm implements PlanningAlgorithmInterface {
 
     public ActionEffect checkActions(String target) {
         HashMap<String, List<ActionEffect>> actionEffects = ActionEffects.getActionConditionalEffects();
+        if (actionEffects.size()>0){
         int maxConstraints = 0;
         ActionEffect maxConstraintsAction = null;
         PlanningLogger.logger.info("~~~~~~~~~~~Evaluating complimentary actions for " + target);
@@ -214,8 +217,210 @@ public class PlanningGreedyAlgorithm implements PlanningAlgorithmInterface {
             PlanningLogger.logger.info("Returning null ");
         }
         return maxConstraintsAction;
-    }
+        }else{
+            HashMap<String, ActionEffect> defaultEffects = ActionEffects.getActionDefaultEffects();
+            int maxConstraints = 0;
+        ActionEffect maxConstraintsAction = null;
+        PlanningLogger.logger.info("~~~~~~~~~~~Evaluating complimentary actions for " + target);
 
+            for (ActionEffect effect : defaultEffects.values()) {
+                boolean checkIfAvailable = false;
+                for (ElasticityCapability capability:dependencyGraph.getNodeWithID(target).getElasticityCapabilities()){
+                    if (capability.getPrimitiveOperations().contains(effect.getActionName())){
+                        checkIfAvailable=true;
+                                      
+                    }
+                }
+                if (checkIfAvailable){
+                     int beforeConstraints = contextRepresentation.countViolatedConstraints();
+                    MonitoredCloudService monitoredCloudService = contextRepresentation.getMonitoredCloudService().clone();
+                    ContextRepresentation beforeContext = new ContextRepresentation(monitoredCloudService, monitoringAPI);
+                    contextRepresentation.doAction(effect,target);
+                    int improvedStrategies = contextRepresentation.countFixedStrategies(beforeContext);
+                    int afterConstraints = contextRepresentation.countViolatedConstraints();
+                    PlanningLogger.logger.info("With " + effect.getActionType() + " on " + effect.getTargetedEntityID() + improvedStrategies + " and constraints  " + (beforeConstraints - afterConstraints) + " violated constraints " + contextRepresentation.getViolatedConstraints());
+                    contextRepresentation.undoAction(effect,target);
+                    if (beforeConstraints - afterConstraints + improvedStrategies > maxConstraints && (beforeConstraints - afterConstraints + improvedStrategies) > 0) {
+                        maxConstraints = beforeConstraints - afterConstraints + improvedStrategies;
+                        maxConstraintsAction = effect;
+                    }
+                
+                    
+                }
+            }
+            if (maxConstraintsAction != null) {
+            PlanningLogger.logger.info("Returning " + maxConstraintsAction.getActionType() + " on " + maxConstraintsAction.getTargetedEntityID());
+        } else {
+            PlanningLogger.logger.info("Returning null ");
+        }
+       
+        return maxConstraintsAction;
+        }
+
+        
+    }
+    public void findAndExecuteBestActionsForDefaultEffects(){
+         strategiesThatNeedToBeImproved = "";
+
+        if (lastContextRepresentation != null) {
+            findStrategies();
+        }
+        lastContextRepresentation = new ContextRepresentation(dependencyGraph, monitoringAPI);
+        lastContextRepresentation.initializeContext();
+        //PlanningLogger.logger.info("Strategies that could be enforced. ... "+strategiesThatNeedToBeImproved+" Violated constraints: "+contextRepresentation.getViolatedConstraints());
+        HashMap<String, ActionEffect> actionEffects = ActionEffects.getActionDefaultEffects();
+        if (actionEffects.size()==0){
+            PlanningLogger.logger.info("Not trying any type of actions, action effect is null");
+            return;
+        }
+        int numberOfBrokenConstraints = contextRepresentation
+                .countViolatedConstraints();
+
+        PlanningLogger.logger.info("Violated constraints number: " + numberOfBrokenConstraints);
+
+        int lastFixed = 1;
+        ArrayList<Pair<ActionEffect, Integer>> result = new ArrayList<Pair<ActionEffect, Integer>>();
+        double violationDegree = contextRepresentation.evaluateViolationDegree();
+        int numberOfRemainingConstraints = numberOfBrokenConstraints;
+        if (!strategiesThatNeedToBeImproved.equalsIgnoreCase("") || numberOfBrokenConstraints > 0 && lastFixed!=0) {
+//		while (contextRepresentation.countViolatedConstraints() > 0
+//				&& numberOfRemainingConstraints > 0 && lastFixed>0) {
+            Date date = new Date();
+            HashMap<Integer, List<Pair<ActionEffect, String>>> fixedDirectives = new HashMap<Integer, List<Pair<ActionEffect, String>>>();
+            HashMap<Integer, List<Pair<ActionEffect, String>>> fixedStrategies = new HashMap<Integer, List<Pair<ActionEffect, String>>>();
+            // PlanningLogger.logger.info("~~~~~~~~~~~Number of actions possible: "+actionEffects.values().size());
+
+                for (ElasticityCapability elasticityCapability:dependencyGraph.getAllElasticityCapabilities()){
+                    String servicePartID = elasticityCapability.getServicePartID();
+                    
+                for (ActionEffect actionEffect : actionEffects.values()) {
+                    if (checkIfActionPossible(actionEffect) && elasticityCapability.getPrimitiveOperations().contains(actionEffect.getActionName())) {
+                        
+                        List<Pair<ActionEffect, String>> foundActions = new ArrayList<Pair<ActionEffect, String>>();
+                        
+
+
+                        for (Pair<ActionEffect, Integer> a : result) {
+                                PlanningLogger.logger.info("Executing the already found action" + a.getFirst().getActionName());
+                                contextRepresentation.doAction(a.getFirst(),((ActionEffect)a.getFirst()).getTargetedEntityID());
+                                PlanningLogger.logger.info("At " + date.getDay() + "_"
+                                        + date.getMonth() + "_" + date.getHours() + "_"
+                                        + date.getMinutes()
+                                        + ". The violated constraints are the following: "
+                                        + contextRepresentation.getViolatedConstraints());
+
+                           
+                        }
+                        int initiallyBrokenConstraints = contextRepresentation
+                                .countViolatedConstraints();
+                        MonitoredCloudService monitoredCloudService = contextRepresentation.getMonitoredCloudService().clone();
+                        ContextRepresentation beforeActionContextRepresentation = new ContextRepresentation(monitoredCloudService, monitoringAPI);
+                        // TODO: Try from 1 to 10 actions of the same type
+//						for (int i = 0; i < 10; i++) {
+//							for (int current = 0; current < i; current++) {
+//								contextRepresentation.doAction(actionEffect);
+//							}
+                        
+                        contextRepresentation.doAction(actionEffect,servicePartID);
+                        
+                        foundActions.add(contextRepresentation.new Pair<ActionEffect, String>(actionEffect, servicePartID));
+
+                        int fixedStr = contextRepresentation.countFixedStrategies(beforeActionContextRepresentation, strategiesThatNeedToBeImproved);
+                        PlanningLogger.logger.info("PlanningAlgorithm: Trying the action " + actionEffect.getActionName() + "constraints violated : " + contextRepresentation.getViolatedConstraints() + " Strategies improved " + contextRepresentation.getImprovedStrategies(beforeActionContextRepresentation, strategiesThatNeedToBeImproved));
+
+                        fixedDirectives
+                                .put(initiallyBrokenConstraints
+                                - contextRepresentation
+                                .countViolatedConstraints() + fixedStr, foundActions);
+                        fixedStrategies
+                                .put(
+                                fixedStr, foundActions);
+                        /////////////////////~~~~~~~~~~~Check complimentary actions needed~~~~~~~~~~~~~~~~//
+                       
+
+
+                        contextRepresentation.undoAction(actionEffect,servicePartID);
+//							for (int current = 0; current < i; current++) {
+//								contextRepresentation.undoAction(actionEffect);
+//							}
+
+//						}
+                        // System.out.println("Action "+actionEffect.getTargetedEntityID()+" "+actionEffect.getActionType()+" fixes "+(numberOfBrokenConstraints-contextRepresentation.countViolatedConstraints())+" constraints.");
+                        for (int i = result.size() - 1; i > 0; i--) {
+                            //System.out.println("Undoing action "
+                            //+ actionEffect.getActionName());
+                                PlanningLogger.logger.info("Undo-ing the already found action" + result.get(i).getFirst().getActionName());
+                                contextRepresentation.undoAction(result.get(i)
+                                        .getFirst(),((ActionEffect)result.get(i).getFirst()).getTargetedEntityID());
+                                                    }
+                    }
+                }
+            
+                }
+            int maxAction = -20;
+            List<Pair<ActionEffect, String>> action = null;
+
+            for (Integer val : fixedDirectives.keySet()) {
+                PlanningLogger.logger.info("fixed directives  " + fixedDirectives.get(val).size());
+                if (val > maxAction) {
+                    maxAction = val;
+                    action = fixedDirectives.get(val);
+                }
+
+            }
+            int minStrat = 0;
+            for (Integer v : fixedStrategies.keySet()) {
+                if (fixedStrategies.get(v).equals(fixedDirectives.get(maxAction)) && minStrat < v) {
+                    minStrat = v;
+                    action = fixedStrategies.get(minStrat);
+                }
+            }
+
+            //	PlanningLogger.logger.info("Found action "+ action);
+            // Find cloudService = SYBLRMI enforce action with action type,
+            if (maxAction > 0 && action != null && !result.contains(action)) {
+                for (Pair<ActionEffect, String> actionEffect : action) {
+
+                        PlanningLogger.logger.info("Found action " + actionEffect.getFirst().getActionName()+
+                                " on "
+                                +  actionEffect.getSecond() + " Number of directives fixed: "
+                                + maxAction);
+                        lastFixed = maxAction;
+                        Node entity = dependencyGraph.getNodeWithID(((ActionEffect) actionEffect.getFirst())
+                                .getTargetedEntityID());
+                        ((ActionEffect) actionEffect.getFirst()).setTargetedEntity(entity);
+                        if (maxAction > 0) {
+                            //  result.add(actionEffect);
+                        }
+                   
+
+                }
+                List<Pair<ActionEffect,Integer>> actions = new ArrayList<Pair<ActionEffect,Integer>>();
+                for (Pair<ActionEffect,String> a:action){
+                    ActionEffect newAction = a.getFirst().clone();
+                    newAction.setTargetedEntityID(a.getSecond());
+                    newAction.setTargetedEntity(dependencyGraph.getNodeWithID(a.getSecond()));
+                    actions.add(contextRepresentation.new Pair<ActionEffect,Integer>(newAction,1));
+                }
+                result.addAll(actions);
+            } else {
+
+                lastFixed = 0;
+            }
+            numberOfRemainingConstraints -= lastFixed;
+
+        }
+        for (int i=0;i<result.size();i++){
+            contextRepresentation.doAction(result.get(i).getFirst());
+        }
+        if (result.size()==0 && contextRepresentation.countViolatedConstraints()>0){
+            monitoringAPI.sendMessageToAnalysisService("Requirements "+contextRepresentation.getViolatedConstraints()+" are violated, and rSYBL can't solve the problem.");
+        }else{
+        
+        ActionPlanEnforcement actionPlanEnforcement = new ActionPlanEnforcement(enforcementAPI);
+        actionPlanEnforcement.enforceResult(result, dependencyGraph);
+        }
+    }
     public void findAndExecuteBestActions() {
 
         strategiesThatNeedToBeImproved = "";
@@ -227,7 +432,10 @@ public class PlanningGreedyAlgorithm implements PlanningAlgorithmInterface {
         lastContextRepresentation.initializeContext();
         //PlanningLogger.logger.info("Strategies that could be enforced. ... "+strategiesThatNeedToBeImproved+" Violated constraints: "+contextRepresentation.getViolatedConstraints());
         HashMap<String, List<ActionEffect>> actionEffects = ActionEffects.getActionConditionalEffects();
-
+        if (actionEffects.size()==0){
+            findAndExecuteBestActionsForDefaultEffects();
+            return;
+        }
         int numberOfBrokenConstraints = contextRepresentation
                 .countViolatedConstraints();
 

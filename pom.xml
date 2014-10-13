@@ -16,14 +16,14 @@
                 <repository>
                         <id>infosys-repo</id>
                         <name>infosys-repo</name>
-                        <uniqueVersion>false</uniqueVersion>
+                        <uniqueVersion>true</uniqueVersion>
                         <url>scp://www.infosys.tuwien.ac.at/web/website/mvn</url>
                 </repository>
                 <snapshotRepository>
                         <id>infosys-repo</id>
                         <name>infosys-repo</name>
                         <url>scp://www.infosys.tuwien.ac.at/web/website/mvn</url>
-                        <uniqueVersion>false</uniqueVersion>
+                        <uniqueVersion>true</uniqueVersion>
                 </snapshotRepository>
         </distributionManagement>
 

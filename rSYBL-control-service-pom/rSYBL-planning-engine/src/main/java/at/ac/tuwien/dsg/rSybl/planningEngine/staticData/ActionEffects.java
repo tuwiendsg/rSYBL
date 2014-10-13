@@ -56,10 +56,11 @@ public class ActionEffects {
 	public static ActionEffect scaleInEffectForCassandraDB = new ActionEffect();
 	public static ActionEffect scaleInEffectForWebServer= new ActionEffect();
 
-	public static HashMap<String,List<ActionEffect>> actionEffects = new HashMap<String,List<ActionEffect>>();
+	public static HashMap<String,List<ActionEffect>> applicationSpecificActionEffects = new HashMap<String,List<ActionEffect>>();
+        public static HashMap<String,ActionEffect> defaultActionEffects = new HashMap<String,ActionEffect>();
 	public static HashMap<String,List<ActionEffect>> getActionEffects(DependencyGraph dependencyGraph,MonitoringAPIInterface syblAPI,ContextRepresentation currentContextRepr){
 		
-	        actionEffects = new HashMap<String,List<ActionEffect>>();
+	        applicationSpecificActionEffects = new HashMap<String,List<ActionEffect>>();
 //		MonitoredEntity cassandraNode = currentContextRepr.findMonitoredEntity("CassandraNode");
 //		MonitoredEntity ycsbClient = currentContextRepr.findMonitoredEntity("YCSBClient");
 		
@@ -118,7 +119,7 @@ public class ActionEffects {
 		{
 		scaleInEffectForCassandraDB.setTargetedEntityID("CassandraNode");
 		scaleInEffectForCassandraDB.setActionEffectForMetric("cpuUsage", 35.0,"CassandraNode");
-        scaleInEffectForCassandraDB.setActionEffectForMetric("latency", 2.0,"YCSBClient");
+                scaleInEffectForCassandraDB.setActionEffectForMetric("latency", 2.0,"YCSBClient");
 		scaleInEffectForCassandraDB.setActionEffectForMetric("cost", -0.12,"CassandraNode");
 		scaleInEffectForCassandraDB.setActionEffectForMetric("cost", -1.0,"CloudService");
 		scaleInEffectForCassandraDB.setActionName("scaleInEffectForDataNode");
@@ -155,56 +156,56 @@ public class ActionEffects {
 
 		}
 		
-		 if (actionEffects.containsKey(scaleOutEffectForCassandraDB.getTargetedEntityID()))
-			 actionEffects.get(scaleOutEffectForCassandraDB.getTargetedEntityID()).add(scaleOutEffectForCassandraDB);
+		 if (applicationSpecificActionEffects.containsKey(scaleOutEffectForCassandraDB.getTargetedEntityID()))
+			 applicationSpecificActionEffects.get(scaleOutEffectForCassandraDB.getTargetedEntityID()).add(scaleOutEffectForCassandraDB);
 		 else{
 			 List <ActionEffect > l = new ArrayList<ActionEffect>();
 			 l.add(scaleOutEffectForCassandraDB);
-			 actionEffects.put(scaleOutEffectForCassandraDB.getTargetedEntityID(), l);
+			 applicationSpecificActionEffects.put(scaleOutEffectForCassandraDB.getTargetedEntityID(), l);
 		 }
 		 
-		 if (actionEffects.containsKey(scaleOutEffectForWebServer.getTargetedEntityID()))
-			 actionEffects.get(scaleOutEffectForWebServer.getTargetedEntityID()).add(scaleOutEffectForWebServer);
+		 if (applicationSpecificActionEffects.containsKey(scaleOutEffectForWebServer.getTargetedEntityID()))
+			 applicationSpecificActionEffects.get(scaleOutEffectForWebServer.getTargetedEntityID()).add(scaleOutEffectForWebServer);
 		 else{
 			 List <ActionEffect > l = new ArrayList<ActionEffect>();
 			 l.add(scaleOutEffectForWebServer);
-			 actionEffects.put(scaleOutEffectForWebServer.getTargetedEntityID(), l);
+			 applicationSpecificActionEffects.put(scaleOutEffectForWebServer.getTargetedEntityID(), l);
 		 }
 		 
 		 
 		 
-		 if (actionEffects.containsKey(scaleInEffectForCassandraDB.getTargetedEntityID()))
-			 actionEffects.get(scaleInEffectForCassandraDB.getTargetedEntityID()).add(scaleInEffectForCassandraDB);
+		 if (applicationSpecificActionEffects.containsKey(scaleInEffectForCassandraDB.getTargetedEntityID()))
+			 applicationSpecificActionEffects.get(scaleInEffectForCassandraDB.getTargetedEntityID()).add(scaleInEffectForCassandraDB);
 		 else{
 			 List <ActionEffect > l = new ArrayList<ActionEffect>();
 			 l.add(scaleInEffectForCassandraDB);
-			 actionEffects.put(scaleInEffectForCassandraDB.getTargetedEntityID(), l);
+			 applicationSpecificActionEffects.put(scaleInEffectForCassandraDB.getTargetedEntityID(), l);
 		 }
 		 
-		 if (actionEffects.containsKey(scaleInEffectForWebServer.getTargetedEntityID()))
-			 actionEffects.get(scaleInEffectForWebServer.getTargetedEntityID()).add(scaleInEffectForWebServer);
+		 if (applicationSpecificActionEffects.containsKey(scaleInEffectForWebServer.getTargetedEntityID()))
+			 applicationSpecificActionEffects.get(scaleInEffectForWebServer.getTargetedEntityID()).add(scaleInEffectForWebServer);
 		 else{
 			 List <ActionEffect > l = new ArrayList<ActionEffect>();
 			 l.add(scaleInEffectForWebServer);
-			 actionEffects.put(scaleInEffectForWebServer.getTargetedEntityID(), l);
+			 applicationSpecificActionEffects.put(scaleInEffectForWebServer.getTargetedEntityID(), l);
 		 }
 	
 		 
 
-		for (Entry<String, List<ActionEffect>> e:actionEffects.entrySet()){
+		for (Entry<String, List<ActionEffect>> e:applicationSpecificActionEffects.entrySet()){
 			for (ActionEffect ef:e.getValue()){
 				
 				ef.refreshMetricsForAboveLevels(dependencyGraph,syblAPI);
 				
 			}
 		}
-		return actionEffects;
+		return applicationSpecificActionEffects;
 	}
 	public static void setActionEffects(String eff){
 		PlanningLogger.logger.info("~~~~~~~~~~Action effects set through web serv, setting the effects ! ");
 
 		JSONParser parser = new JSONParser();
-		actionEffects = new HashMap<String,List<ActionEffect>>();
+		applicationSpecificActionEffects = new HashMap<String,List<ActionEffect>>();
 		Object obj;
 		try {
 			obj = parser.parse(eff);
@@ -251,14 +252,14 @@ public class ActionEffects {
 				 
 				}
 			
-			if (! actionEffects.containsKey(actionEffect.getTargetedEntityID().trim()) ){
+			if (! applicationSpecificActionEffects.containsKey(actionEffect.getTargetedEntityID().trim()) ){
 				List <ActionEffect > l = new ArrayList<ActionEffect>();
 				l.add(actionEffect);
-				actionEffects.put(actionEffect.getTargetedEntityID().trim(), l);
+				applicationSpecificActionEffects.put(actionEffect.getTargetedEntityID().trim(), l);
 				//PlanningLogger.logger.info("New Action effects "+actionEffect.getActionType()+" "+actionEffect.getActionName()+" "+actionEffect.getTargetedEntityID());
 				
 			}else{
-				actionEffects.get(actionEffect.getTargetedEntityID().trim()).add(actionEffect);
+				applicationSpecificActionEffects.get(actionEffect.getTargetedEntityID().trim()).add(actionEffect);
 				//PlanningLogger.logger.info("Adding Action effects "+actionEffect.getActionType()+" "+actionEffect.getActionName()+" "+actionEffect.getTargetedEntityID());
 
 			}
@@ -270,7 +271,7 @@ public class ActionEffects {
 		}
 	}
         public static HashMap<String,List<ActionEffect>> getActionConditionalEffects(){
-            if (actionEffects.isEmpty()){
+            if (applicationSpecificActionEffects.isEmpty()){
 				PlanningLogger.logger.info("~~~~~~~~~~Action effects is empty, reading the effects ! ");
 			JSONParser parser = new JSONParser();
 		 
@@ -321,13 +322,13 @@ public class ActionEffects {
 						 
 						}
 					
-					if (actionEffects.get(actionEffect.getTargetedEntityID())==null ){
+					if (applicationSpecificActionEffects.get(actionEffect.getTargetedEntityID())==null ){
 						List <ActionEffect > l = new ArrayList<ActionEffect>();
 						l.add(actionEffect);
-						actionEffects.put(actionEffect.getTargetedEntityID(), l);
+						applicationSpecificActionEffects.put(actionEffect.getTargetedEntityID(), l);
 					
 					}else{
-						actionEffects.get(actionEffect.getTargetedEntityID()).add(actionEffect);
+						applicationSpecificActionEffects.get(actionEffect.getTargetedEntityID()).add(actionEffect);
 					}
 				}
 				 
@@ -335,20 +336,51 @@ public class ActionEffects {
 				}
 		 
 				
-			} catch (FileNotFoundException e) {
-				e.printStackTrace();
-			} catch (IOException e) {
-				e.printStackTrace();
-			} catch (ParseException e) {
-				e.printStackTrace();
-			}
+			} catch (Exception e) {
+                            
+				PlanningLogger.logger.info("~~~~~~~~~~Retrying reading the effects  ");
+			 parser = new JSONParser();
+		 
+			try {
+				InputStream inputStream = Configuration.class.getClassLoader().getResourceAsStream(Configuration.getEffectsPath());
+				Object obj = parser.parse(new InputStreamReader(inputStream));
+		 
+				JSONObject jsonObject = (JSONObject) obj;
+				
+				for (Object actionName:jsonObject.keySet()){
+					
+					String myaction = (String )actionName;
+					ActionEffect actionEffect = new ActionEffect();
+					actionEffect.setActionType((String)myaction);
+					actionEffect.setActionName((String) myaction);
+					
+					JSONObject object=(JSONObject) jsonObject.get(myaction);
+                                        JSONObject metrics = (JSONObject) object.get("effects");
+					for (Object me:metrics.keySet()){
+                                            String metric = (String) me;
+                                            Double metricEffect = (Double) metrics.get(metric);
+                                            actionEffect.setActionEffectForMetric(metric, metricEffect, "");
+                                            
+                                        }
+				defaultActionEffects.put(myaction, actionEffect);
+				 
+				
+				}
+                                
+			}catch(Exception ex){
+                            PlanningLogger.logger.error("Error when reading the effects!!!!!!!!!!!!!!!!!!"+ex.getMessage());
+                        }
 			
 			}
-			return actionEffects;	 
+            }
+			return applicationSpecificActionEffects;	 
 		     
         }
+        public static HashMap<String,ActionEffect> getActionDefaultEffects(){
+            return defaultActionEffects;
+        }
 	 public static HashMap<String,List<ActionEffect>> getActionEffects () {
-			if (actionEffects.isEmpty()){
+			if (applicationSpecificActionEffects.isEmpty()){
 				PlanningLogger.logger.info("~~~~~~~~~~Action effects is empty, reading the effects ! ");
 			JSONParser parser = new JSONParser();
 		 
@@ -391,13 +423,13 @@ public class ActionEffects {
 						 
 						}
 					
-					if (actionEffects.get(actionEffect.getTargetedEntityID())==null ){
+					if (applicationSpecificActionEffects.get(actionEffect.getTargetedEntityID())==null ){
 						List <ActionEffect > l = new ArrayList<ActionEffect>();
 						l.add(actionEffect);
-						actionEffects.put(actionEffect.getTargetedEntityID(), l);
+						applicationSpecificActionEffects.put(actionEffect.getTargetedEntityID(), l);
 					
 					}else{
-						actionEffects.get(actionEffect.getTargetedEntityID()).add(actionEffect);
+						applicationSpecificActionEffects.get(actionEffect.getTargetedEntityID()).add(actionEffect);
 					}
 				}
 				 
@@ -414,7 +446,7 @@ public class ActionEffects {
 			}
 			
 			}
-			return actionEffects;	 
+			return applicationSpecificActionEffects;	 
 		     }
 	 
 }

@@ -563,6 +563,7 @@ public class InputProcessing {
                             artifactNode.addNode(containerNode, containerRel);
                             for (at.ac.tuwien.dsg.csdg.inputProcessing.multiLevelModel.deploymentDescription.ElasticityCapability elasticityCapability : container.getElasticityCapabilities()) {
                                 ElasticityCapability newElasticityCapability = new ElasticityCapability();
+                                newElasticityCapability.setServicePartID(deploymentUnit.getServiceUnitID());
                                 newElasticityCapability.setName(elasticityCapability.getName());
                                 newElasticityCapability.setCallType(elasticityCapability.getType());
                                 newElasticityCapability.setEndpoint(elasticityCapability.getScript());
@@ -584,6 +585,8 @@ public class InputProcessing {
                             }
                             for (at.ac.tuwien.dsg.csdg.inputProcessing.multiLevelModel.deploymentDescription.ElasticityCapability elasticityCapability : artifact.getElasticityCapabilities()) {
                                 ElasticityCapability newElasticityCapability = new ElasticityCapability();
+                                                                newElasticityCapability.setServicePartID(deploymentUnit.getServiceUnitID());
+
                                 newElasticityCapability.setName(elasticityCapability.getName());
                                 newElasticityCapability.setCallType(elasticityCapability.getType());
                                 newElasticityCapability.setEndpoint(elasticityCapability.getScript());
@@ -613,6 +616,8 @@ public class InputProcessing {
                         node.addNode(vmNode, vmRel);
                         for (at.ac.tuwien.dsg.csdg.inputProcessing.multiLevelModel.deploymentDescription.ElasticityCapability elasticityCapability : associatedVM.getElasticityCapabilities()) {
                                 ElasticityCapability newElasticityCapability = new ElasticityCapability();
+                                                                newElasticityCapability.setServicePartID(deploymentUnit.getServiceUnitID());
+
                                 newElasticityCapability.setName(elasticityCapability.getName());
                                 newElasticityCapability.setCallType(elasticityCapability.getType());
                                 newElasticityCapability.setEndpoint(elasticityCapability.getScript());
@@ -623,6 +628,8 @@ public class InputProcessing {
                 }
                 for (at.ac.tuwien.dsg.csdg.inputProcessing.multiLevelModel.deploymentDescription.ElasticityCapability elasticityCapability : deploymentUnit.getElasticityCapabilities()) {
                     ElasticityCapability newElasticityCapability = new ElasticityCapability();
+                                                    newElasticityCapability.setServicePartID(deploymentUnit.getServiceUnitID());
+
                     newElasticityCapability.setName(elasticityCapability.getName());
                     newElasticityCapability.setCallType(elasticityCapability.getType());
                     newElasticityCapability.setEndpoint(elasticityCapability.getScript());
