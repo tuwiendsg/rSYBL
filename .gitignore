@@ -21,3 +21,5 @@ rSYBL-control-service-pom/rSYBL-analysis-engine/src/main/resources/config/Log4j.
 rSYBL-control-service-pom/rSYBL-cloud-interaction-unit/src/main/java/com/extl/jade/user/ObjectFactory.java
 rSYBL-control-service-pom/rSYBL-planning-engine/config.properties
 rSYBL-control-service-pom/rSYBL-planning-engine/src/main/resources/config.properties
+/rSYBL-local-service-pom/rSYBL-local-communication/target/
+/rSYBL-local-service-pom/rSYBL-local-service/target/

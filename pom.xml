@@ -4,7 +4,7 @@
   
   <groupId>at.ac.tuwien.rSYBL</groupId>
   <artifactId>rSYBL-pom</artifactId>
-  <version>0.1-SNAPSHOT</version>
+  <version>1.0-SNAPSHOT</version>
   <url>https://github.com/rsybl/rsybl-repo</url>
   <packaging>pom</packaging>
   <modules>
