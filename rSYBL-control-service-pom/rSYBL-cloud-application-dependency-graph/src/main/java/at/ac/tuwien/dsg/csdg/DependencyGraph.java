@@ -186,11 +186,11 @@ public class DependencyGraph implements Serializable{
 	public Node findParentNode(String entityID){
 		Node parent = null;
 		Node currentNode = getNodeWithID(entityID);
-		for (Node n: currentNode.getAllRelatedNodes()){
-			SimpleRelationship rel = (SimpleRelationship) currentNode.getRelationshipOfTypeWithNode(RelationshipType.COMPOSITION_RELATIONSHIP,currentNode);
-			if (rel!=null && rel.getTargetElement().equalsIgnoreCase(entityID))
-				parent=n;
-		}
+//		for (Node n: currentNode.getAllRelatedNodes()){
+//			SimpleRelationship rel = (SimpleRelationship) currentNode.getRelationshipOfTypeWithNode(RelationshipType.COMPOSITION_RELATIONSHIP,currentNode);
+//			if (rel!=null && rel.getTargetElement().equalsIgnoreCase(entityID))
+//				parent=n;
+//		}
 		for (Node n: cloudService.getAllRelatedNodes()){
 			if (n.getId().equalsIgnoreCase(entityID)){
 				parent=cloudService;

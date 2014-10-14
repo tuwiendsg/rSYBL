@@ -294,7 +294,7 @@ public class PlanningGreedyAlgorithm implements PlanningAlgorithmInterface {
                     String servicePartID = elasticityCapability.getServicePartID();
                     
                 for (ActionEffect actionEffect : actionEffects.values()) {
-                    if (checkIfActionPossible(actionEffect) && elasticityCapability.getPrimitiveOperations().contains(actionEffect.getActionName())) {
+                    if (checkIfActionPossible(actionEffect) && elasticityCapability.getName().toLowerCase().equalsIgnoreCase(actionEffect.getActionName())) {
                         
                         List<Pair<ActionEffect, String>> foundActions = new ArrayList<Pair<ActionEffect, String>>();
                         
@@ -361,7 +361,7 @@ public class PlanningGreedyAlgorithm implements PlanningAlgorithmInterface {
             List<Pair<ActionEffect, String>> action = null;
 
             for (Integer val : fixedDirectives.keySet()) {
-                PlanningLogger.logger.info("fixed directives  " + fixedDirectives.get(val).size());
+                PlanningLogger.logger.info("fixed directives  " + val);
                 if (val > maxAction) {
                     maxAction = val;
                     action = fixedDirectives.get(val);
@@ -622,7 +622,7 @@ public class PlanningGreedyAlgorithm implements PlanningAlgorithmInterface {
             contextRepresentation.doAction(result.get(i).getFirst());
         }
         if (result.size()==0 && contextRepresentation.countViolatedConstraints()>0){
-            monitoringAPI.sendMessageToAnalysisService("Requirements "+contextRepresentation.getViolatedConstraints()+" are violated, and rSYBL can't solve the problem.");
+            monitoringAPI.sendMessageToAnalysisService("Requirements "+contextRepresentation.getViolatedConstraints()+" are violated, and rSYBL can not solve the problem.");
         }else{
             
         ActionPlanEnforcement actionPlanEnforcement = new ActionPlanEnforcement(enforcementAPI);

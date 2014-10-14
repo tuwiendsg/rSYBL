@@ -271,7 +271,7 @@ public class ActionEffects {
 		}
 	}
         public static HashMap<String,List<ActionEffect>> getActionConditionalEffects(){
-            if (applicationSpecificActionEffects.isEmpty()){
+            if (applicationSpecificActionEffects.isEmpty() && defaultActionEffects.isEmpty()){
 				PlanningLogger.logger.info("~~~~~~~~~~Action effects is empty, reading the effects ! ");
 			JSONParser parser = new JSONParser();
 		 
