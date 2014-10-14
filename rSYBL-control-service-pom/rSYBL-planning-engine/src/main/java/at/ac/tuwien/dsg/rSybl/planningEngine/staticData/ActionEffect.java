@@ -64,7 +64,13 @@ public class ActionEffect {
 	public Double getActionEffectForMetric(String metricName,String entityID){
             
 		//PlanningLogger.logger.info("aaa"+entityID+"aaa");
-		if (effects.get(entityID)==null){
+		
+                if (effects.size()==1){
+                    if (effects.get("")!=null){
+                        return effects.get("").get(metricName);
+                    }
+                }
+                if (effects.get(entityID)==null){
 			//PlanningLogger.logger.info("Not found entity "+entityID+" for action "+actionName);
 			return 0.0;
 		}

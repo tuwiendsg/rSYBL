@@ -414,7 +414,7 @@ public class PlanningGreedyAlgorithm implements PlanningAlgorithmInterface {
             contextRepresentation.doAction(result.get(i).getFirst());
         }
         if (result.size()==0 && contextRepresentation.countViolatedConstraints()>0){
-            monitoringAPI.sendMessageToAnalysisService("Requirements "+contextRepresentation.getViolatedConstraints()+" are violated, and rSYBL can't solve the problem.");
+            monitoringAPI.sendMessageToAnalysisService("Requirements "+contextRepresentation.getViolatedConstraints()+" are violated, and rSYBL can not solve the problem.");
         }else{
         
         ActionPlanEnforcement actionPlanEnforcement = new ActionPlanEnforcement(enforcementAPI);
