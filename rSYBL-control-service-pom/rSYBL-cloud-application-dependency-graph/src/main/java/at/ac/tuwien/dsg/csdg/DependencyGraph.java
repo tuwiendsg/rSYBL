@@ -376,7 +376,8 @@ public class DependencyGraph implements Serializable{
                 }
 
                 //add children
-                for (Node child : element.getAllRelatedNodes()) {
+                if (element.getAllRelatedNodesOfType(RelationshipType.COMPOSITION_RELATIONSHIP)!=null){
+                for (Node child : element.getAllRelatedNodesOfType(RelationshipType.COMPOSITION_RELATIONSHIP)) {
                     JSONObject childElement = new JSONObject();
                     if (child.getNodeType()!=NodeType.VIRTUAL_MACHINE){
                     childElement.put("name", child.getId());
@@ -387,6 +388,7 @@ public class DependencyGraph implements Serializable{
                     
                     processing.add(new MyPair(child, childElement));
                     children.add(childElement);
+                }
                 }
                 }
                 for (ElasticityRequirement req:element.getElasticityRequirements()){
