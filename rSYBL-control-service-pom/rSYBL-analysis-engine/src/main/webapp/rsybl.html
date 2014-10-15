@@ -178,7 +178,7 @@
                 serviceID="";
                  d3.select("#chart").selectAll("*").remove(); 
                 refreshServiceStructureDisplayed();
-                setTimeout(refreshServicesList,5000);
+                refreshServicesList();
 					alertify.success("The service was destroyed.");
 				} else {
 					alertify.error("You've clicked Cancel");
@@ -926,6 +926,13 @@
                             refreshServiceStructureDisplayed();
                             if (format=="xml")
                             refreshServiceDescription();
+                        }
+                    }else{
+                         var x = document.getElementById("service");
+                        var length = x.options.length;
+                                
+                        for (i = 0; i < length; i++) {
+                            x.remove(x.options[i]);
                         }
                     }
                         setTimeout(refreshServicesList, 5000);
