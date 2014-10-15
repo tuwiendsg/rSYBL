@@ -934,6 +934,9 @@
                         for (i = 0; i < length; i++) {
                             x.remove(x.options[i]);
                         }
+                         d3.select("#chart").selectAll("*").remove(); 
+                         document.getElementById("text").value="";
+                        
                     }
                         setTimeout(refreshServicesList, 5000);
                     
