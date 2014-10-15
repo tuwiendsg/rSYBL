@@ -6,12 +6,12 @@
         <title>rSYBL</title>
         <script type="text/javascript" src="http://d3js.org/d3.v3.js"></script>
         <link rel="stylesheet" href="themes/alertify.core.css" />
-	<link rel="stylesheet" href="themes/alertify.default.css" id="toggleCSS" />
-	
+        <link rel="stylesheet" href="themes/alertify.default.css" id="toggleCSS" />
+
         <style type="text/css">
             .alertify-log-custom {
-			background: blue;
-		}
+                background: blue;
+            }
             .node circle {
                 cursor: pointer;
                 fill: #fff;
@@ -49,7 +49,7 @@
             #serviceinfo{
                 width:100%;
                 height: 90%;
-                
+
             }
             #serviceStructure{
                 width:100%;
@@ -138,66 +138,74 @@
                 if (format=="xml"){
                     refreshServiceDescription();
                 }
-                    refreshServiceStructureDisplayed();
+                refreshServiceStructureDisplayed();
             }
             function reset () {
-			$("#toggleCSS").attr("href", "themes/alertify.default.css");
-			alertify.set({
-				labels : {
-					ok     : "OK",
-					cancel : "Cancel"
-				},
-				delay : 5000,
-				buttonReverse : false,
-				buttonFocus   : "ok"
-			});
-		}
+                $("#toggleCSS").attr("href", "themes/alertify.default.css");
+                alertify.set({
+                    labels : {
+                        ok     : "OK",
+                        cancel : "Cancel"
+                    },
+                    delay : 5000,
+                    buttonReverse : false,
+                    buttonFocus   : "ok"
+                });
+            }
 
             function removeService(){
                 if (serviceID!="")
-                    {
-                reset();
+                {
+                    reset();
                 
-                alertify.set({ labels: { ok: "Destroy", cancel: "Cancel" } });
-			alertify.confirm("Confirm destroying the service "+serviceID, function (e) {
+                    alertify.set({ labels: { ok: "Destroy", cancel: "Cancel" } });
+                    alertify.confirm("Confirm destroying the service "+serviceID, function (e) {
                            
-				if (e) {
+                        if (e) {
                                    
-                              if (window.XMLHttpRequest) {
-                    updateServicesListRequest = new XMLHttpRequest();
-                } else {
-                    updateServicesListRequest = new ActiveXObject("Microsoft.XMLHTTP");
-                }
+                            if (window.XMLHttpRequest) {
+                                removeServicesRequest = new XMLHttpRequest();
+                            } else {
+                                removeServicesRequest = new ActiveXObject("Microsoft.XMLHTTP");
+                            }
 
-                updateServicesListRequest.open("DELETE", "./restWS/" + serviceID , true);
+                            removeServicesRequest.open("DELETE", "./restWS/" + serviceID , true);
 
-                updateServicesListRequest.setRequestHeader('Content-type', 'application/xml');
-                updateServicesListRequest.send(null);
-                //                            setTimeout(refreshMonitoringData, 4000);
-                //getRequirementsXMLSYBL();
-                serviceID="";
-                 d3.select("#chart").selectAll("*").remove(); 
-                refreshServiceStructureDisplayed();
-                refreshServicesList();
-					alertify.success("The service was destroyed.");
-				} else {
-					alertify.error("You've clicked Cancel");
-				}
-			});
+                            removeServicesRequest.setRequestHeader('Content-type', 'application/xml');
+                            removeServicesRequest.send(null);
+                            removeServicesRequest.onreadystatechange = finishedRemovingService;
+                            //                            setTimeout(refreshMonitoringData, 4000);
+                            //getRequirementsXMLSYBL();
+                            alertify.log("Waiting to remove service");
+                        } else {
+                            alertify.error("You've clicked Cancel");
+                        }
+                    });
                         
 			
 				
-			return false;
-                var r = confirm("Please confirm removing the service");
-                if (r == true) {
-                    x = "You pressed OK! Removing the service.";
+                    return false;
+                    var r = confirm("Please confirm removing the service");
+                    if (r == true) {
+                        x = "You pressed OK! Removing the service.";
                 
-                } else {
-                    x = "You pressed Cancel!";
-                }
-                    }else{
-                    alertify.error("There is no service selected for destroy");
+                    } else {
+                        x = "You pressed Cancel!";
                     }
+                }else{
+                    alertify.error("There is no service selected for destroy");
+                }
+            }
+            function finishedRemovingService(){
+                if (removeServicesRequest.readyState == 4) {
+               
+                    serviceID="";
+                
+                    d3.select("#chart").selectAll("*").remove(); 
+                    refreshServiceStructureDisplayed();
+                    refreshServicesList();
+                    alertify.success("The service was destroyed.");
+                }
             }
             function checkformat(dropdown) {
                 format = dropdown.options[dropdown.selectedIndex].value;
@@ -235,7 +243,7 @@
             }
             function stopSpinner(){
                 loadingSpinner.stop();
-                    d3.select("#A").selectAll("*").remove();
+                d3.select("#A").selectAll("*").remove();
             }
 
             var selectedMetric;
@@ -251,7 +259,7 @@
             var margin = {top: 10, right: 120, bottom: 20, left: 140};
             var width = window.innerWidth * 0.6;
             var height = window.innerHeight * 0.8 - 100; //850
-	    if (height <= 0){ height = 850;}	
+            if (height <= 0){ height = 850;}	
             if (width <= 0){ width = 450;}
             var i = 0;
             var duration = 500;
@@ -296,21 +304,21 @@
  
 
             function update(source) {
-             var w = Math.max(document.documentElement.clientWidth, window.innerWidth || 0)
-             var h = Math.max(document.documentElement.clientHeight, window.innerHeight || 0)
-            width = w * 0.6;
-            height = h * 0.8 - 100; //850
-            d3.select("#chart").selectAll("*").remove();
-	    vis = d3.select("#chart").append("svg")
-            .attr("width", width + margin.right + margin.left)
-            .attr("height", height + margin.top + margin.bottom)
-            .append("g")
-            .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
+                var w = Math.max(document.documentElement.clientWidth, window.innerWidth || 0)
+                var h = Math.max(document.documentElement.clientHeight, window.innerHeight || 0)
+                width = w * 0.6;
+                height = h * 0.8 - 100; //850
+                d3.select("#chart").selectAll("*").remove();
+                vis = d3.select("#chart").append("svg")
+                .attr("width", width + margin.right + margin.left)
+                .attr("height", height + margin.top + margin.bottom)
+                .append("g")
+                .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
 
               
             
-	    if (height <= 0){ height = 850;}	
-            if (width <= 0){ width = 450;}
+                if (height <= 0){ height = 850;}	
+                if (width <= 0){ width = 450;}
   
                 // Compute the new tree layout.
                 var nodes = tree.nodes(source).reverse();
@@ -630,22 +638,22 @@
                 if (d.type == "requirement" && format=="sybl") {
 
                     if (!document.getElementById("text").value.indexOf(d.name)>-1){
-                    textarea = document.getElementById("text");
-                    textarea.value += d.name;
+                        textarea = document.getElementById("text");
+                        textarea.value += d.name;
                     }}
-//                else{
-//                   if (d.type == "requirement") {
-//                    var constraintName= d.name;
-//                    constraintName=constraintName.replace("<","&lt;");
-//                    constraintName=constraintName.replace(">","&gt;");
-//                    if (document.getElementById("text").value.indexOf(constraintName)>-1){
-//
-//                    textarea = document.getElementById("text");
-//                    res= textarea.value.replace(constraintName,"<b>"+d.name+"</b>");
-//                    textarea.value=res;
-//                    }
-//                }
-//        }
+                //                else{
+                //                   if (d.type == "requirement") {
+                //                    var constraintName= d.name;
+                //                    constraintName=constraintName.replace("<","&lt;");
+                //                    constraintName=constraintName.replace(">","&gt;");
+                //                    if (document.getElementById("text").value.indexOf(constraintName)>-1){
+                //
+                //                    textarea = document.getElementById("text");
+                //                    res= textarea.value.replace(constraintName,"<b>"+d.name+"</b>");
+                //                    textarea.value=res;
+                //                    }
+                //                }
+                //        }
                 //                if (d.type != "VM") {
                 //                    var win = window.open("elasticitySpace.html?" + serviceID + "&" + d.name + "&" + d.type, '_blank');
                 //                    //var win = window.open("elasticityPathway.html?"+ serviceID + "&" + d.name + "&" + d.type, '_blank');
@@ -685,7 +693,7 @@
                     reqServiceStructuObject.open("GET", "./restWS/" + serviceID + "/structuralData/json", true);
                     reqServiceStructuObject.send(null);
                 }else{
-                     drawSpinner('A');
+                    drawSpinner('A');
                     document.getElementById("text").value="";            
                         
                 }
@@ -752,36 +760,36 @@
 
             function replaceRequirementsSYBL() {
                 if (serviceID!=""){
-                getManagedServices = null;
-                if (window.XMLHttpRequest) {
-                    replaceRequirementsSYBL = new XMLHttpRequest();
-                } else {
-                    replaceRequirementsSYBL = new ActiveXObject("Microsoft.XMLHTTP");
-                }
+                    getManagedServices = null;
+                    if (window.XMLHttpRequest) {
+                        replaceRequirementsSYBL = new XMLHttpRequest();
+                    } else {
+                        replaceRequirementsSYBL = new ActiveXObject("Microsoft.XMLHTTP");
+                    }
 
-                replaceRequirementsSYBL.open("POST", "./restWS/" + serviceID + "/replaceRequirements/plain", true);
+                    replaceRequirementsSYBL.open("POST", "./restWS/" + serviceID + "/replaceRequirements/plain", true);
 
-                replaceRequirementsSYBL.setRequestHeader('Content-type', 'text/plain');
-                replaceRequirementsSYBL.send(document.getElementById("text").value);
-                //getRequirementsXMLSYBL();
-                setTimeout(refreshServiceStructureDisplayed,5000);
+                    replaceRequirementsSYBL.setRequestHeader('Content-type', 'text/plain');
+                    replaceRequirementsSYBL.send(document.getElementById("text").value);
+                    //getRequirementsXMLSYBL();
+                    setTimeout(refreshServiceStructureDisplayed,5000);
                 }
 
             }
             function updateServiceDescription() {
                 if (serviceID!=""){
-                getManagedServices = null;
-                if (window.XMLHttpRequest) {
-                    updateServicesListRequest = new XMLHttpRequest();
-                } else {
-                    updateServicesListRequest = new ActiveXObject("Microsoft.XMLHTTP");
-                }
+                    getManagedServices = null;
+                    if (window.XMLHttpRequest) {
+                        updateServicesListRequest = new XMLHttpRequest();
+                    } else {
+                        updateServicesListRequest = new ActiveXObject("Microsoft.XMLHTTP");
+                    }
 
-                updateServicesListRequest.open("POST", "./restWS/" + serviceID + "/description", true);
+                    updateServicesListRequest.open("POST", "./restWS/" + serviceID + "/description", true);
 
-                updateServicesListRequest.setRequestHeader('Content-type', 'application/xml');
-                updateServicesListRequest.send(document.getElementById("text").value);
-                setTimeout(refreshServiceStructureDisplayed,5000);
+                    updateServicesListRequest.setRequestHeader('Content-type', 'application/xml');
+                    updateServicesListRequest.send(document.getElementById("text").value);
+                    setTimeout(refreshServiceStructureDisplayed,5000);
                 
                 }
             }
@@ -907,7 +915,7 @@
                                 serviceID = x.options[x.options.length - 1].text;
                                 refreshServiceStructureDisplayed();
                                 if (format=="xml")
-                                     refreshServiceDescription();
+                                    refreshServiceDescription();
                             }else{
                                 for (var i=0, n=x.options.length;i<n;i++) {
                                     if (x.options[i].text==serviceID){
@@ -925,20 +933,20 @@
                             serviceID = x.options[x.options.length - 1].text;
                             refreshServiceStructureDisplayed();
                             if (format=="xml")
-                            refreshServiceDescription();
+                                refreshServiceDescription();
                         }
                     }else{
-                         var x = document.getElementById("service");
+                        var x = document.getElementById("service");
                         var length = x.options.length;
                                 
                         for (i = 0; i < length; i++) {
                             x.remove(x.options[i]);
                         }
-                         d3.select("#chart").selectAll("*").remove(); 
-                         document.getElementById("text").value="";
+                        d3.select("#chart").selectAll("*").remove(); 
+                        document.getElementById("text").value="";
                         
                     }
-                        setTimeout(refreshServicesList, 5000);
+                    setTimeout(refreshServicesList, 5000);
                     
                 }
             }
@@ -968,7 +976,7 @@
             // refreshMetricsCompositionRules();
             //refreshMonitoringData();
             // pollEvents();
-           // setInterval(refreshServicesList,4000);
+            // setInterval(refreshServicesList,4000);
             refreshServicesList();
         </script>
     </body>
