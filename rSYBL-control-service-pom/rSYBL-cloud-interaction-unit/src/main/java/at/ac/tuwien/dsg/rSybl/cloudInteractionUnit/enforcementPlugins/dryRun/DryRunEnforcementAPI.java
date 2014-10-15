@@ -155,7 +155,7 @@ public class DryRunEnforcementAPI implements EnforcementInterface {
     public boolean scaleOut(Node arg0) {
         RuntimeLogger.logger.info("Scaling out ... " + arg0 + " " + arg0.getNodeType());
 
-        monitoring.enforcingActionStarted("ScaleOut", arg0);
+       // monitoring.enforcingActionStarted("ScaleOut", arg0);
         boolean res = true;
         Node o = arg0;
 
@@ -207,7 +207,7 @@ public class DryRunEnforcementAPI implements EnforcementInterface {
         if (o.getNodeType() == NodeType.SERVICE_UNIT) {
             res = scaleOutComponent((Node) o);
         }
-        monitoring.enforcingActionEnded("ScaleOut", arg0);
+        //monitoring.enforcingActionEnded("ScaleOut", arg0);
         return res;
     }
 

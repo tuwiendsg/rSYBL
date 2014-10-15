@@ -474,6 +474,7 @@ public class ContextRepresentation {
         //PlanningLogger.logger.info("Simulating data load effects ");
         List<String> targetEntities = new ArrayList<String>();
         Node targetNode = dependencyGraph.getNodeWithID(actionEffect.getTargetedEntityID());
+        if (targetNode!=null){
         List<Relationship> affectedDataOfNodes = targetNode.getAllRelationshipsOfType(RelationshipType.DATA);
 
         for (Relationship relationship : affectedDataOfNodes) {
@@ -517,6 +518,8 @@ public class ContextRepresentation {
             }
         }
         return targetEntities;
+        }
+        return null;
 
     }
 
@@ -524,6 +527,7 @@ public class ContextRepresentation {
 
         List<String> targetEntities = new ArrayList<String>();
         Node targetNode = dependencyGraph.getNodeWithID(actionEffect.getTargetedEntityID());
+        if (targetNode!=null){
         List<Relationship> affectedDataOfNodes = targetNode.getAllRelationshipsOfType(RelationshipType.LOAD);
 
         for (Relationship relationship : affectedDataOfNodes) {
@@ -559,12 +563,14 @@ public class ContextRepresentation {
             }
         }
         return targetEntities;
-
+        }
+        return null;
     }
 
     public void undoLoadImpactSimulation(ContextRepresentation beforeContext, ActionEffect actionEffect) {
 
         Node targetNode = dependencyGraph.getNodeWithID(actionEffect.getTargetedEntityID());
+        if (targetNode!=null){
         List<Relationship> affectedDataOfNodes = targetNode.getAllRelationshipsOfType(RelationshipType.LOAD);
 
         for (Relationship relationship : affectedDataOfNodes) {
@@ -597,6 +603,7 @@ public class ContextRepresentation {
 
                 findMonitoredEntity(loadElasticityDependency.getTargetElement()).setMonitoredValue(targetMetric, expectedValueTarget);
             }
+        }
         }
 
     }

@@ -498,6 +498,7 @@ public class PlanningGreedyAlgorithm implements PlanningAlgorithmInterface {
                                 fixedStr, foundActions);
                         /////////////////////~~~~~~~~~~~Check complimentary actions needed~~~~~~~~~~~~~~~~//
                         List<String> targets = contextRepresentation.simulateDataImpact(beforeActionContextRepresentation, actionEffect);
+                        if (targets!=null){
                         for (String target : targets) {
                             ActionEffect dataAction = checkActions(target);
                             if (dataAction != null) {
@@ -521,7 +522,10 @@ public class PlanningGreedyAlgorithm implements PlanningAlgorithmInterface {
                             }
                         }
                         contextRepresentation.undoDataImpactSimulation(beforeActionContextRepresentation, actionEffect);
+                        }
+                        
                         targets = contextRepresentation.simulateLoadImpact(beforeActionContextRepresentation, actionEffect);
+                        if (targets!=null){
                         for (String target : targets) {
                             MonitoredCloudService newMonitoredCloudService = contextRepresentation.getMonitoredCloudService().clone();
                             ContextRepresentation beforeContext = new ContextRepresentation(newMonitoredCloudService, monitoringAPI);
@@ -547,7 +551,7 @@ public class PlanningGreedyAlgorithm implements PlanningAlgorithmInterface {
                         }
 
                         contextRepresentation.undoLoadImpactSimulation(beforeActionContextRepresentation, actionEffect);
-
+                        }
 
                         contextRepresentation.undoAction(actionEffect);
 //							for (int current = 0; current < i; current++) {
