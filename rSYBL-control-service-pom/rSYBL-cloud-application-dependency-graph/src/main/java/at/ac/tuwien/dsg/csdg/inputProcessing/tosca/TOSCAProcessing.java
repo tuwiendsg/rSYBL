@@ -1,8 +1,7 @@
 /**
  * Copyright 2013 Technische Universitat Wien (TUW), Distributed SystemsGroup
- * E184.  *
- * This work was partially supported by the European Commission in terms of the
- * CELAR FP7 project (FP7-ICT-2011-8 #317790).
+ * E184. * This work was partially supported by the European Commission in terms
+ * of the CELAR FP7 project (FP7-ICT-2011-8 #317790).
  *
  * Licensed under the Apache License, Version 2.0 (the "License"); you may not
  * use this file except in compliance with the License. You may obtain a copy of
@@ -66,11 +65,11 @@ import java.util.logging.Logger;
 import sun.misc.IOUtils;
 
 public class TOSCAProcessing {
-
+    
     public Definitions readTOSCADescriptionsFile() {
-
+        
         try {
-
+            
             JAXBContext a = JAXBContext.newInstance(Definitions.class);
             Unmarshaller u = a.createUnmarshaller();
             Definitions def = (Definitions) u.unmarshal(new File("./tosca_sybl_example.xml"));
@@ -83,36 +82,36 @@ public class TOSCAProcessing {
             e.printStackTrace();
             return null;
         }
-
-
+        
+        
     }
-
+    
     public Definitions readTOSCADescriptionsString(String tosca) {
-
+        
         try {
-
+            
             JAXBContext a = JAXBContext.newInstance(Definitions.class);
             Unmarshaller u = a.createUnmarshaller();
             //Definitions	def = (Definitions) u.unmarshal(new File(Configuration.getCloudServiceTOSCADescription()));
 
             Definitions def = (Definitions) u.unmarshal(new StringReader(tosca));
-
+            
             return def;
         } catch (JAXBException e) {
             // TODO Auto-generated catch block
             e.printStackTrace();
             return null;
         }
-
-
+        
+        
     }
-
+    
     private void setElasticityRequirementsForService(Node node, TBoundaryDefinitions reqs) {
         SYBLAnnotation annotation = new SYBLAnnotation();
         ElasticityRequirement elasticityRequirement = new ElasticityRequirement();
-
+        
         for (TPolicy policy : reqs.getPolicies().getPolicy()) {
-
+            
             switch (node.getNodeType()) {
                 case CLOUD_SERVICE:
                     annotation.setAnnotationType(AnnotationType.CLOUD_SERVICE);
@@ -123,7 +122,7 @@ public class TOSCAProcessing {
                 case SERVICE_UNIT:
                     annotation.setAnnotationType(AnnotationType.SERVICE_UNIT);
                     break;
-
+                
             }
             switch (policy.getPolicyType().getLocalPart()) {
                 case "SYBLConstraint":
@@ -135,17 +134,17 @@ public class TOSCAProcessing {
                 case "SYBLMonitoring":
                     annotation.setConstraints(annotation.getMonitoring() + "; " + policy.getName());
                     break;
-
+                
             }
-
+            
         }
         annotation.setEntityID(node.getId());
-
+        
         elasticityRequirement.setAnnotation(annotation);
         node.addElasticityRequirement(elasticityRequirement);
         System.out.println(annotation.getConstraints() + " " + annotation.getStrategies() + " " + annotation.getMonitoring());
     }
-
+    
     private void setElasticityRequirements(Node node, TNodeTemplate.Policies policies) {
         SYBLAnnotation annotation = new SYBLAnnotation();
         ElasticityRequirement elasticityRequirement = new ElasticityRequirement();
@@ -162,29 +161,41 @@ public class TOSCAProcessing {
                 case SERVICE_UNIT:
                     annotation.setAnnotationType(AnnotationType.SERVICE_UNIT);
                     break;
-
+                
             }
             switch (policy.getPolicyType().getLocalPart()) {
-                case "SYBLConstraint":
-                    annotation.setConstraints(annotation.getConstraints() + "; " + policy.getName());
+                case "Constraint":
+                    if (annotation.getConstraints() != null) {
+                        annotation.setConstraints(annotation.getConstraints() + "; " + policy.getPolicyRef()+":"+policy.getName());
+                    } else {
+                        annotation.setConstraints( policy.getPolicyRef()+":"+policy.getName());
+                    }
                     break;
-                case "SYBLStrategy":
-                    annotation.setConstraints(annotation.getStrategies() + "; " + policy.getName());
+                case "Strategy":
+                    if (annotation.getStrategies() != null) {
+                        annotation.setStrategies(annotation.getStrategies() + "; " + policy.getPolicyRef()+":"+ policy.getName());
+                    } else {
+                        annotation.setStrategies( policy.getPolicyRef()+":"+policy.getName());
+                    }
                     break;
-                case "SYBLMonitoring":
-                    annotation.setConstraints(annotation.getMonitoring() + "; " + policy.getName());
+                case "Monitoring":
+                    if (annotation.getMonitoring()!=null){
+                    annotation.setMonitoring(annotation.getMonitoring() + "; " + policy.getPolicyRef()+":"+ policy.getName());
+                    }else{
+                        annotation.setMonitoring( policy.getPolicyRef()+":"+policy.getName());
+                    }
                     break;
-
+                
             }
-
+            
         }
         annotation.setEntityID(node.getId());
-
+        
         elasticityRequirement.setAnnotation(annotation);
         node.addElasticityRequirement(elasticityRequirement);
-        System.out.println(annotation.getConstraints() + " " + annotation.getStrategies() + " " + annotation.getMonitoring());
+       // System.out.println(annotation.getConstraints() + " " + annotation.getStrategies() + " " + annotation.getMonitoring());
     }
-
+    
     public HashMap<String, Node> parseTOSCAGraph(HashMap<String, Node> nodes, List<TExtensibleElements> currentElements) {
         List<TExtensibleElements> c = new ArrayList<TExtensibleElements>();
         String cloudServiceName = "";
@@ -193,7 +204,7 @@ public class TOSCAProcessing {
                 //System.out.println("Found of type service "+extensibleElements);
                 Node n = new Node();
                 TServiceTemplate serviceTemplate = (TServiceTemplate) extensibleElements;
-
+                
                 n.setId(serviceTemplate.getName());
                 n.setNodeType(NodeType.CLOUD_SERVICE);
                 if (serviceTemplate.getSubstitutableNodeType() != null) {
@@ -201,7 +212,7 @@ public class TOSCAProcessing {
                         n = nodes.get(serviceTemplate.getSubstitutableNodeType().getLocalPart());
                     }
                     n.setId(serviceTemplate.getSubstitutableNodeType().getLocalPart());
-
+                    
                     n.setNodeType(NodeType.SERVICE_TOPOLOGY);
                     SimpleRelationship rel = new SimpleRelationship();
                     rel.setType(RelationshipType.COMPOSITION_RELATIONSHIP);
@@ -223,7 +234,7 @@ public class TOSCAProcessing {
                                     serviceUnit = new Node();
                                     serviceUnit.setId(nodeTemplate.getId());
                                     serviceUnit.setNodeType(NodeType.SERVICE_UNIT);
-
+                                    
                                 }
                                 //System.out.println(n+" "+nodeTemplate.getId());
                                 //serviceUnit.setId(nodeTemplate.getId());
@@ -238,18 +249,28 @@ public class TOSCAProcessing {
                             } else {
                                 if (tExt instanceof TRelationshipTemplate) {
                                     TRelationshipTemplate relationship = (TRelationshipTemplate) tExt;
-
+                                    
                                 }
                             }
                         }
                     }
-
-
-                } else {
+                    
+                    
+                } else {                  
                     cloudServiceName = n.getId();
+                   
+                    
                     nodes.put(n.getId(), n);
                     TTopologyTemplate topologyTemplate = serviceTemplate.getTopologyTemplate();
-
+                     Node newServiceTemplate = new Node();
+                    newServiceTemplate.setNodeType(NodeType.SERVICE_TOPOLOGY);
+                    newServiceTemplate.setId("Composite Component");
+                    SimpleRelationship newRelationship = new SimpleRelationship();
+                    newRelationship.setSourceElement(cloudServiceName);
+                    newRelationship.setTargetElement(newServiceTemplate.getId());
+                    newRelationship.setType(RelationshipType.COMPOSITION_RELATIONSHIP);
+                    n.addNode(newServiceTemplate, newRelationship);
+                            
                     if (topologyTemplate != null) {
                         for (TEntityTemplate tExt : topologyTemplate.getNodeTemplateOrRelationshipTemplate()) {
 //							if (tExt.getType()!=null){
@@ -282,8 +303,10 @@ public class TOSCAProcessing {
                                 //serviceUnit.setId(nodeTemplate.getId());
                                 //serviceUnit.setNodeType(NodeType.SERVICE_UNIT);
                                 SimpleRelationship rel = new SimpleRelationship();
+                                rel.setSourceElement(newServiceTemplate.getId());
+                                rel.setTargetElement(serviceUnit.getId());
                                 rel.setType(RelationshipType.COMPOSITION_RELATIONSHIP);
-                                n.addNode(serviceUnit, rel);
+                                newServiceTemplate.addNode(serviceUnit, rel);
                                 nodes.put(serviceUnit.getId(), serviceUnit);
                                 if (nodeTemplate.getPolicies() != null) {
                                     setElasticityRequirements(serviceUnit, nodeTemplate.getPolicies());
@@ -291,25 +314,25 @@ public class TOSCAProcessing {
                             } else {
                                 if (tExt instanceof TRelationshipTemplate) {
                                     TRelationshipTemplate relationship = (TRelationshipTemplate) tExt;
-
+                                    
                                 }
                             }
                         }
                     }
                 }
-
+                
                 if (serviceTemplate.getBoundaryDefinitions() != null && serviceTemplate.getBoundaryDefinitions().getPolicies() != null) {
                     setElasticityRequirementsForService(n, serviceTemplate.getBoundaryDefinitions());
                 }
             }
-
-
+            
+            
         }
-
-
+        
+        
         return nodes;
     }
-
+    
     public DependencyGraph toscaDescriptionToDependencyGraph() {
         DependencyGraph dependencyGraph = new DependencyGraph();
         HashMap<String, Node> nodes = new HashMap<String, Node>();//String - id of the node, for easier access and modification of its relationships
@@ -324,7 +347,7 @@ public class TOSCAProcessing {
         }
         return dependencyGraph;
     }
-
+    
     public DependencyGraph toscaDescriptionToDependencyGraph(String tosca) {
         DependencyGraph dependencyGraph = new DependencyGraph();
         HashMap<String, Node> nodes = new HashMap<String, Node>();//String - id of the node, for easier access and modification of its relationships
@@ -332,7 +355,7 @@ public class TOSCAProcessing {
         //TODO: take each construct present in TOSCA and transform it to our model
         Definitions definitions = readTOSCADescriptionsString(tosca);
         TPolicy policy = new TPolicy();
-
+        
         parseTOSCAGraph(nodes, definitions.getServiceTemplateOrNodeTypeOrNodeTypeImplementation());
         for (Node n : nodes.values()) {
             if (n.getNodeType() == NodeType.CLOUD_SERVICE) {
@@ -341,7 +364,7 @@ public class TOSCAProcessing {
         }
         return dependencyGraph;
     }
-
+    
     public static void main(String[] args) {
         String content = null;
         File file = new File("application.tosca"); //for ex foo.txt
@@ -356,6 +379,6 @@ public class TOSCAProcessing {
         } catch (IOException e) {
             e.printStackTrace();
         }
-
+        
     }
 }

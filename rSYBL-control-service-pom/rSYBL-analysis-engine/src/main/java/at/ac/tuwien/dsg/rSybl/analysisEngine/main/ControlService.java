@@ -323,7 +323,7 @@ public class ControlService {
     public void setApplicationDescriptionInfoTOSCABased(String tosca) {
         // TODO : continue this, parse tosca and start planning and stuff
         TOSCAProcessing toscaProcessing = new TOSCAProcessing();
-        dependencyGraph = toscaProcessing.toscaDescriptionToDependencyGraph();
+        dependencyGraph = toscaProcessing.toscaDescriptionToDependencyGraph(tosca);
         OutputProcessing outputProcessing = new OutputProcessing();
         applicationDescription=outputProcessing.getCloudServiceXML(dependencyGraph.getCloudService());
         //startSYBLProcessingAndPlanning();

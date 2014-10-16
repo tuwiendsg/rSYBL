@@ -96,7 +96,7 @@ public class SyblControlWS {
 	 @Path("/{id}/description/tosca")
 	 @Consumes("application/xml")
 	public void setApplicationDescriptionTOSCA(@PathParam("id")String cloudServiceId,String celar){
-		 controlCoordination.setApplicationDescriptionInfoTOSCA(cloudServiceId,celar);
+		 controlCoordination.setApplicationDescriptionInfoTOSCA(celar,cloudServiceId);
 	}
             
              @DELETE

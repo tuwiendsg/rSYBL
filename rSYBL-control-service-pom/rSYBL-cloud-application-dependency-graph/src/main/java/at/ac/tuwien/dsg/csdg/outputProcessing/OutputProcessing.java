@@ -74,12 +74,15 @@ public class OutputProcessing implements OutputProcessingInterface {
         return reqs;
     }
     private SYBLAnnotationXML getXMLAnnotationGivenReqs(Node n){
-        SYBLAnnotationXML annotationXML= new SYBLAnnotationXML();
+       
+        if (n.getElasticityRequirements()!=null && n.getElasticityRequirements().size()>0){
+             SYBLAnnotationXML annotationXML= new SYBLAnnotationXML();
         annotationXML.setConstraints(n.getElasticityRequirements().get(0).getAnnotation().getConstraints());
         annotationXML.setMonitoring(n.getElasticityRequirements().get(0).getAnnotation().getMonitoring());
         annotationXML.setStrategies(n.getElasticityRequirements().get(0).getAnnotation().getStrategies());
-
         return annotationXML;
+        }
+        return null;
     }
     public String getCloudServiceXML(Node controlledService){
          String res="";
