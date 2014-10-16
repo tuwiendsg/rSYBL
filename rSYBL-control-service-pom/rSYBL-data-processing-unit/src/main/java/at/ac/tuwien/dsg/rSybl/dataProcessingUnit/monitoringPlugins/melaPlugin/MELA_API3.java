@@ -55,7 +55,6 @@ import at.ac.tuwien.dsg.mela.common.monitoringConcepts.Metric;
 import at.ac.tuwien.dsg.mela.common.monitoringConcepts.MetricValue;
 import at.ac.tuwien.dsg.mela.common.monitoringConcepts.MonitoredElement;
 import at.ac.tuwien.dsg.mela.common.monitoringConcepts.MonitoredElementMonitoringSnapshot;
-import at.ac.tuwien.dsg.mela.common.monitoringConcepts.ServiceMonitoringSnapshot;
 import at.ac.tuwien.dsg.mela.common.requirements.Condition.Type;
 import at.ac.tuwien.dsg.mela.common.requirements.Requirement;
 import at.ac.tuwien.dsg.mela.common.requirements.Requirements;
@@ -740,25 +739,33 @@ public void removeService(Node cloudService) {
             List<Node> serviceTopologies = new ArrayList<Node>();
             MonitoredElement mainServiceTopologyElement = null;
 
-            if (cloudService.getAllRelatedNodesOfType(RelationshipType.COMPOSITION_RELATIONSHIP, NodeType.SERVICE_TOPOLOGY).size() == 1) {
+            if (cloudService.getAllRelatedNodesOfType(RelationshipType.COMPOSITION_RELATIONSHIP, NodeType.SERVICE_TOPOLOGY).size() == 1  ) {
+                
                 mainServiceTopologyElement = new MonitoredElement();
                 mainServiceTopologyElement = new MonitoredElement();
 
                 Node serviceTopology = cloudService.getAllRelatedNodesOfType(RelationshipType.COMPOSITION_RELATIONSHIP, NodeType.SERVICE_TOPOLOGY).get(0);
                 mainServiceTopologyElement.setId(serviceTopology.getId());
                 mainServiceTopologyElement.setLevel(MonitoredElement.MonitoredElementLevel.SERVICE_TOPOLOGY);
-                serviceTopologies.addAll(serviceTopology.getAllRelatedNodesOfType(RelationshipType.COMPOSITION_RELATIONSHIP));
-
+                if ((serviceTopology.getAllRelatedNodesOfType(RelationshipType.COMPOSITION_RELATIONSHIP).size()>0) && (serviceTopology.getAllRelatedNodesOfType(RelationshipType.COMPOSITION_RELATIONSHIP).get(0).getNodeType()==NodeType.SERVICE_TOPOLOGY))
+                    serviceTopologies.addAll(serviceTopology.getAllRelatedNodesOfType(RelationshipType.COMPOSITION_RELATIONSHIP));
+                else{
+                    serviceTopologies.add(serviceTopology);
+                    mainServiceTopologyElement=null;
+                }
             } else {
                 serviceTopologies.addAll(cloudService.getAllRelatedNodesOfType(RelationshipType.COMPOSITION_RELATIONSHIP));
             }
             while (!serviceTopologies.isEmpty()) {
                 MonitoredElement serviceTopologyElement = new MonitoredElement();
-
+                
                 Node serviceTopology = serviceTopologies.get(0);
+                
                 serviceTopologyElement.setId(serviceTopology.getId());
+                if (serviceTopology.getNodeType()==NodeType.SERVICE_TOPOLOGY)
                 serviceTopologyElement.setLevel(MonitoredElement.MonitoredElementLevel.SERVICE_TOPOLOGY);
-
+                else
+                    serviceTopologyElement.setLevel(MonitoredElement.MonitoredElementLevel.SERVICE_UNIT);
                 if (serviceTopology.getAllRelatedNodesOfType(RelationshipType.COMPOSITION_RELATIONSHIP) != null) {
 
                     for (Node serviceUnit : serviceTopology.getAllRelatedNodesOfType(RelationshipType.COMPOSITION_RELATIONSHIP)) {

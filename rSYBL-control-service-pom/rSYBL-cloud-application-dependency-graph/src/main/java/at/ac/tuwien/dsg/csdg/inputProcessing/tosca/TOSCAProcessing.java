@@ -264,7 +264,7 @@ public class TOSCAProcessing {
                     TTopologyTemplate topologyTemplate = serviceTemplate.getTopologyTemplate();
                      Node newServiceTemplate = new Node();
                     newServiceTemplate.setNodeType(NodeType.SERVICE_TOPOLOGY);
-                    newServiceTemplate.setId("Composite Component");
+                    newServiceTemplate.setId("CompositeComponent");
                     SimpleRelationship newRelationship = new SimpleRelationship();
                     newRelationship.setSourceElement(cloudServiceName);
                     newRelationship.setTargetElement(newServiceTemplate.getId());

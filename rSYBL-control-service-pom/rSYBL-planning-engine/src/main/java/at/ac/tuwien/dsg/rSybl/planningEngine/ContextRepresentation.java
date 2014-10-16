@@ -1110,7 +1110,11 @@ public class ContextRepresentation {
                     currentRightValue = 0.0;
                 }
             }
+            try{
             currentRightValue = Double.parseDouble(binaryRestriction.getRightHandSide().getNumber());
+            }catch(Exception e){
+                currentRightValue=0.0d;
+            }
         } else if (binaryRestriction.getRightHandSide().getMetric() != null) {
             String metric = binaryRestriction.getRightHandSide().getMetric();
             currentRightValue = monitoredEntity.getMonitoredValue(metric);
