@@ -334,8 +334,73 @@ public static SYBLSpecification mapFromSYBLAnnotation(SYBLAnnotation syblAnnotat
 	//System.err.println("AAAAAAAAAAAAAEEEEEEEEEEEEEEEEEEE"+syblSpecification.toString());
 	return syblSpecification;
 }
+public static String cleanRequirement(String req){
+    String requirement = req.trim();
+    int fromIndex=0;
+    while (requirement.indexOf(">",fromIndex)>0){
+        int currentIndex = requirement.indexOf(">", fromIndex);
+        if (requirement.charAt(currentIndex-1)!=' '){
+            String newReq=requirement.substring(0, currentIndex)+" "+requirement.substring(currentIndex,requirement.length());
+            requirement=newReq;
+            fromIndex=currentIndex+2;
+            if (requirement.charAt(currentIndex+2)!=' '){
+                newReq=requirement.substring(0, currentIndex+2)+" "+requirement.substring(currentIndex+2,requirement.length());
+                requirement=newReq;
+                fromIndex=currentIndex+3;
+            }
+        }else{
+            if (requirement.charAt(currentIndex+1)!=' '){
+                String newReq=requirement.substring(0, currentIndex+1)+" "+requirement.substring(currentIndex+1,requirement.length());
+                requirement=newReq;
+                fromIndex=currentIndex+2;
+            }
+        }
+        
+    }
+    
+    while (requirement.indexOf("<",fromIndex)>0){
+        int currentIndex = requirement.indexOf("<", fromIndex);
+        if (requirement.charAt(currentIndex-1)!=' '){
+            String newReq=requirement.substring(0, currentIndex)+" "+requirement.substring(currentIndex,requirement.length());
+            requirement=newReq;
+            fromIndex=currentIndex+2;
+            if (requirement.charAt(currentIndex+2)!=' '){
+                newReq=requirement.substring(0, currentIndex+2)+" "+requirement.substring(currentIndex+2,requirement.length());
+                requirement=newReq;
+                fromIndex=currentIndex+3;
+            }
+        }else{
+            if (requirement.charAt(currentIndex+1)!=' '){
+                String newReq=requirement.substring(0, currentIndex+1)+" "+requirement.substring(currentIndex+1,requirement.length());
+                requirement=newReq;
+                fromIndex=currentIndex+2;
+            }
+        }
+        
+    }
+    
+    boolean numberFixed=false;
+    while (!numberFixed){
+        int toCheck = -1;
+        for (int i=0;i<requirement.length();i++){
+            if ((requirement.charAt(i)>='0'&& requirement.charAt(i)<='9') && (requirement.charAt(i+1)<'0' || requirement.charAt(i+1)>'9') && (requirement.charAt(i+1)!=' ')){
+                toCheck=i;
+            }
+        }
+        if (toCheck>-1){
+            numberFixed=true;
+            String newReq=requirement.substring(0, toCheck+1)+" "+requirement.substring(toCheck+1,requirement.length());
+            requirement=newReq;
+
+        }
+        
+    }
+    
+    return requirement;
+}
 public static Constraint mapSYBLAnnotationToXMLConstraint(String constraint ){
-	
+	constraint = cleanRequirement(constraint);
+        
 	String [] s = constraint.split("CONSTRAINT ")[1].split(" ");
 	Constraint c = new Constraint();
 	//DependencyGraphLogger.logger.info("The constraint is "+constraint+"s[0]="+s[0]+"s[1]="+s[1]+"s[2]="+s[2]+"s[3]="+"constraint.split(CONSTRAINT)[0]"+constraint.split("CONSTRAINT")[0]);
@@ -344,6 +409,7 @@ public static Constraint mapSYBLAnnotationToXMLConstraint(String constraint ){
 	c.setId(constraint.split(":")[0]);
 	BinaryRestriction binaryRestr = new BinaryRestriction();
 	LeftHandSide leftHandSide = new LeftHandSide();
+        if (s[0].length()>0)
 	if ((s[0].charAt(0)>='a' && s[0].charAt(0)<='z') ||(s[0].charAt(0)>='A' && s[0].charAt(0)<='Z')) leftHandSide.setMetric(s[0]);
 	else leftHandSide.setMetric(s[0]);
 	switch (s[1]){
@@ -471,6 +537,7 @@ public static Constraint mapSYBLAnnotationToXMLConstraint(String constraint ){
 	return c;
 }
 public static Strategy mapFromSYBLAnnotationToXMLStrategy(String strategy){
+        strategy = cleanRequirement(strategy);
 	String [] s = strategy.split("[: ]");
 	Strategy c = new Strategy();
 	ToEnforce toEnforce = new ToEnforce();

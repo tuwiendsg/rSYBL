@@ -232,7 +232,7 @@ public class TOSCAProcessing {
                                     serviceUnit = nodes.get(nodeTemplate.getId());
                                 } else {
                                     serviceUnit = new Node();
-                                    serviceUnit.setId(nodeTemplate.getId());
+                                    serviceUnit.setId(nodeTemplate.getName());
                                     serviceUnit.setNodeType(NodeType.SERVICE_UNIT);
                                     
                                 }
@@ -296,7 +296,7 @@ public class TOSCAProcessing {
                                         serviceUnit.setNodeType(NodeType.SERVICE_TOPOLOGY);
                                     } else {
                                         serviceUnit = new Node();
-                                        serviceUnit.setId(nodeTemplate.getId());
+                                        serviceUnit.setId(nodeTemplate.getName());
                                         serviceUnit.setNodeType(NodeType.SERVICE_UNIT);
                                     }
                                 }

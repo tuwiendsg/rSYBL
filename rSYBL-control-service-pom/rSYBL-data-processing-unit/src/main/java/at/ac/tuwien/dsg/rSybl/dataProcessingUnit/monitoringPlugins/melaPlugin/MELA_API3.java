@@ -898,6 +898,7 @@ public void removeService(Node cloudService) {
                             req.setMetric(m);
 
                             MetricValue metricValue = new MetricValue();
+                            
                             metricValue.setValue(Double.parseDouble(binaryRestriction.getRightHandSide().getNumber()));
                             cond.addValue(metricValue);
                             switch (binaryRestriction.getType()) {
