@@ -170,7 +170,7 @@ public class Main {
         deploymentDescription.setDeployments(units);
         try {
 
-            File file = new File("deployment.xml");
+            File file = new File("a.xml");
             JAXBContext jaxbContext = JAXBContext.newInstance(DeploymentDescription.class);
             Marshaller jaxbMarshaller = jaxbContext.createMarshaller();
 
@@ -251,7 +251,7 @@ public class Main {
 
     public static void main(String[] args) {
         //populateElasticityPrimitives();
-     //   createExampleDeploymentDescription();
+       createExampleDeploymentDescription();
 //		Main m = new Main();
 //		Node cloudService = m.constructExampleDependencyGraph();
 //		
@@ -259,19 +259,18 @@ public class Main {
 //		dependencyGraph.setCloudService(cloudService);
 //		
 //		System.out.println(dependencyGraph.graphToString());
-
-JAXBContext jc;
-        try {
-            jc = JAXBContext.newInstance(ElasticityPrimitivesDescription.class);
-            Unmarshaller unmarshaller = jc.createUnmarshaller();
-        File xml = new File("primitives.xml");
-        ElasticityPrimitivesDescription primitives = (ElasticityPrimitivesDescription) unmarshaller.unmarshal(xml);
-        System.out.println(primitives.getElasticityPrimitives().get(0).getId());
-        } catch (JAXBException ex) {
-            System.err.println("ERroorror");
-            ex.printStackTrace();
-            Logger.getLogger(Main.class.getName()).log(Level.SEVERE, null, ex);
-        }
+//JAXBContext jc;
+//        try {
+//            jc = JAXBContext.newInstance(ElasticityPrimitivesDescription.class);
+//            Unmarshaller unmarshaller = jc.createUnmarshaller();
+//        File xml = new File("primitives.xml");
+//        ElasticityPrimitivesDescription primitives = (ElasticityPrimitivesDescription) unmarshaller.unmarshal(xml);
+//        System.out.println(primitives.getElasticityPrimitives().get(0).getId());
+//        } catch (JAXBException ex) {
+//            System.err.println("ERroorror");
+//            ex.printStackTrace();
+//            Logger.getLogger(Main.class.getName()).log(Level.SEVERE, null, ex);
+//        }
 
         
 

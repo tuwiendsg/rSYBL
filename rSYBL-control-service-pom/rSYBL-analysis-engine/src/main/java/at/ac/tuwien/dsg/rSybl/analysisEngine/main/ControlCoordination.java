@@ -155,7 +155,22 @@ public class ControlCoordination {
         controls.put(dependencyGraph.getCloudService().getId(), controlService);
         controls.get(dependencyGraph.getCloudService().getId()).start();
     }
-
+ public boolean testEnforcementCapability(String serviceName, String enforcementName, String componentID){
+      return controls.get(serviceName).testEnforcementCapability(enforcementName, componentID);
+    }
+    public boolean testEnforcementCapabilityOnPlugin(String serviceName,String target,String enforcementName, String componentID){
+      return controls.get(serviceName).testEnforcementCapabilityOnPlugin(target,enforcementName, componentID);
+    }
+    public boolean setTESTState(String serviceName){
+        if (controls.containsKey(serviceName)){
+            controls.get(serviceName).setStateTEST();
+            return true;
+          }
+        else
+        {
+            return false;
+        }
+    }
     public String getJSONStructureOfService(String id) {
         if (controls.containsKey(id)){
         return controls.get(id).getJSONStructureOfService();

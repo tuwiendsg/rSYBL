@@ -53,6 +53,9 @@ public class DependencyGraph implements Serializable{
         public void setControlState(){
             STATE="CONTROL";
         }
+        public void setTestingState(){
+            STATE="TEST";
+        }
         public void setWaitState(){
             STATE="WAIT";
         }

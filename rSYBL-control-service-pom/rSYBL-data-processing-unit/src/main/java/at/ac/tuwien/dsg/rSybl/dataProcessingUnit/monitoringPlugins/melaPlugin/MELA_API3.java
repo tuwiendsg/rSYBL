@@ -328,7 +328,7 @@ public void removeService(Node cloudService) {
                 StringWriter stringWriter = new StringWriter();
                 jaxbContext.createMarshaller().marshal(element, stringWriter);
 
-                RuntimeLogger.logger.info(stringWriter.toString());
+                RuntimeLogger.logger.info("Sending to MELAAAA" +stringWriter.toString());
                 os.flush();
                 os.close();
 
@@ -1303,7 +1303,7 @@ public void removeService(Node cloudService) {
         boolean notConnected = true;
         while (notConnected) {
             try {
-                RuntimeLogger.logger.info("Trying to connect to MELA ...");
+                RuntimeLogger.logger.info("Sending control incapacity message to MELA ...");
                 url = new URL(REST_API_URL +"/"+ controlService.getId()+"/events");
                 connection = (HttpURLConnection) url.openConnection();
                 connection.setDoOutput(true);

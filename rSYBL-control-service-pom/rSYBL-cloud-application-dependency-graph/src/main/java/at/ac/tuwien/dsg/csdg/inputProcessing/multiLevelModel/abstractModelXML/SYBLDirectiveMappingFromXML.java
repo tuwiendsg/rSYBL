@@ -382,7 +382,8 @@ public static String cleanRequirement(String req){
     boolean numberFixed=false;
     while (!numberFixed){
         int toCheck = -1;
-        for (int i=0;i<requirement.length();i++){
+        for (int i=0;i<requirement.length()-1;i++){
+            
             if ((requirement.charAt(i)>='0'&& requirement.charAt(i)<='9') && (requirement.charAt(i+1)<'0' || requirement.charAt(i+1)>'9') && (requirement.charAt(i+1)!=' ')){
                 toCheck=i;
             }
@@ -399,6 +400,7 @@ public static String cleanRequirement(String req){
     return requirement;
 }
 public static Constraint mapSYBLAnnotationToXMLConstraint(String constraint ){
+        constraint=constraint.replaceAll("  ", " ");
 	constraint = cleanRequirement(constraint);
         
 	String [] s = constraint.split("CONSTRAINT ")[1].split(" ");
@@ -537,6 +539,7 @@ public static Constraint mapSYBLAnnotationToXMLConstraint(String constraint ){
 	return c;
 }
 public static Strategy mapFromSYBLAnnotationToXMLStrategy(String strategy){
+     strategy=strategy.replaceAll("  ", " ");
         strategy = cleanRequirement(strategy);
 	String [] s = strategy.split("[: ]");
 	Strategy c = new Strategy();

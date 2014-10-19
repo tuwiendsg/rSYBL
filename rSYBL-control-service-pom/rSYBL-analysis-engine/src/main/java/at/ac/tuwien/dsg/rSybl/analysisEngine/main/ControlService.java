@@ -181,7 +181,42 @@ public class ControlService {
         }
         replaceDependencyGraph();
     }
- 
+    public void setStateTEST(){
+        InputProcessing inputProcessing = new InputProcessing();
+            
+            dependencyGraph = inputProcessing.loadDependencyGraphFromStrings(applicationDescription, "", deploymentDescription);
+            Node node = new Node();
+            node = dependencyGraph.getCloudService();
+            AnalysisLogger.logger.info("Test mode - Current graph is" + dependencyGraph.graphToString());
+            monitoringAPI = new MonitoringAPI();
+            monitoringAPI.setControlledService(node);
+            if (!metricCompositionRules.equalsIgnoreCase("")) {
+                AnalysisLogger.logger.info("Test mode - Set the composition rules sent via WS ");
+                monitoringAPI.setCompositionRules(metricCompositionRules);
+            } else {
+                AnalysisLogger.logger.info("Test mode - Set the read composition rules");
+                monitoringAPI.setCompositionRules();
+            }
+            AnalysisLogger.logger.info("Test mode - Have just set the cloud service. The number of elasticity requirements is " + dependencyGraph.getAllElasticityRequirements().size());
+
+            monitoringAPI.submitElasticityRequirements(dependencyGraph
+                    .getAllElasticityRequirements());
+            AnalysisLogger.logger.info("Test mode - Have set the requirements on MELA");
+            enforcementAPI = new MultipleEnforcementAPIs();
+
+            enforcementAPI.setControlledService(node);
+
+            enforcementAPI.setMonitoringPlugin(monitoringAPI);
+            AnalysisLogger.logger.info("Test mode - Have set information on enforcement api");
+            dependencyGraph.setTestingState();
+
+    }
+    public boolean testEnforcementCapability(String enforcementName, String componentID){
+      return  enforcementAPI.enforceAction(enforcementName, dependencyGraph.getNodeWithID(componentID));
+    }
+    public boolean testEnforcementCapabilityOnPlugin(String target,String enforcementName, String componentID){
+      return  enforcementAPI.enforceAction(target, enforcementName,dependencyGraph.getNodeWithID(componentID));
+    }
     public void startSYBLProcessingAndPlanning() {
         try {
             InputProcessing inputProcessing = new InputProcessing();
