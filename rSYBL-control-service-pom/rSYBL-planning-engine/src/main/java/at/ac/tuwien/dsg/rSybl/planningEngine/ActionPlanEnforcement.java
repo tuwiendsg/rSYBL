@@ -55,7 +55,8 @@ public class ActionPlanEnforcement {
         for (Pair<ActionEffect, Integer> pair : result) {
             for (ElasticityCapability elasticityCapability : pair.getFirst().getTargetedEntity().getElasticityCapabilities()) {
                 if (checkECPossible(pair.getFirst())) {
-                    if (elasticityCapability.getName().equalsIgnoreCase(pair.getFirst().getActionType())) {
+                    
+                    if (elasticityCapability.getName().toLowerCase().contains(pair.getFirst().getActionType().toLowerCase())) {
                         capabilities.put(dependencyGraph.getNodeWithID(pair.getFirst().getTargetedEntityID()), elasticityCapability);
                     }
                 }
@@ -178,7 +179,7 @@ public class ActionPlanEnforcement {
             for (ElasticityCapability elasticityCapability : actionEffect
                     .getTargetedEntity().getElasticityCapabilities()) {
                 if (checkECPossible(actionEffect)) {
-                    if (elasticityCapability.getName().equalsIgnoreCase(actionName)) {
+                    if (elasticityCapability.getName().toLowerCase().contains(actionName.toLowerCase())) {
                         //if (!elasticityCapability.getName().toLowerCase().contains("scalein") || (elasticityCapability.getName().toLowerCase().contains("scalein")&& actionEffect.getTargetedEntity().getAllRelatedNodesOfType(RelationshipType.HOSTED_ON_RELATIONSHIP, NodeType.VIRTUAL_MACHINE).size()>1)){
 
                         String[] primitives = elasticityCapability
