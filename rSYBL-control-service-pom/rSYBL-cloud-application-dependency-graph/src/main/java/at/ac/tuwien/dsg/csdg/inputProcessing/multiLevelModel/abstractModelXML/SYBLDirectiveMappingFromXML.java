@@ -347,12 +347,16 @@ public static String cleanRequirement(String req){
                 newReq=requirement.substring(0, currentIndex+2)+" "+requirement.substring(currentIndex+2,requirement.length());
                 requirement=newReq;
                 fromIndex=currentIndex+3;
+            }else{
+                fromIndex=currentIndex+1;
             }
         }else{
             if (requirement.charAt(currentIndex+1)!=' '){
                 String newReq=requirement.substring(0, currentIndex+1)+" "+requirement.substring(currentIndex+1,requirement.length());
                 requirement=newReq;
                 fromIndex=currentIndex+2;
+            }else{
+                fromIndex=currentIndex+1;
             }
         }
         
@@ -368,12 +372,16 @@ public static String cleanRequirement(String req){
                 newReq=requirement.substring(0, currentIndex+2)+" "+requirement.substring(currentIndex+2,requirement.length());
                 requirement=newReq;
                 fromIndex=currentIndex+3;
+            }else{
+                fromIndex=currentIndex+1;
             }
         }else{
             if (requirement.charAt(currentIndex+1)!=' '){
                 String newReq=requirement.substring(0, currentIndex+1)+" "+requirement.substring(currentIndex+1,requirement.length());
                 requirement=newReq;
                 fromIndex=currentIndex+2;
+            }else{
+                fromIndex=currentIndex+1;
             }
         }
         

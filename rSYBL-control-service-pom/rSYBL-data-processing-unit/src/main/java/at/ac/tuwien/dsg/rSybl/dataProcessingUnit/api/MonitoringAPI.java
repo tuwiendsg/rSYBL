@@ -356,11 +356,11 @@ public class MonitoringAPI implements MonitoringAPIInterface {
     @Override
     public void submitElasticityRequirements(
             ArrayList<ElasticityRequirement> description) {
-        for (ElasticityRequirement elasticityRequirement : description) {
-
-            RuntimeLogger.logger.info(elasticityRequirement.getAnnotation().getEntityID() + " Setting elasticity requirements ");
-          
-        }
+//        for (ElasticityRequirement elasticityRequirement : description) {
+//
+//            RuntimeLogger.logger.info(elasticityRequirement.getAnnotation().getEntityID() + " Setting elasticity requirements ");
+//          
+//        }
         offeredMonitoringMetrics.submitElasticityRequirements(description);
 
     }
