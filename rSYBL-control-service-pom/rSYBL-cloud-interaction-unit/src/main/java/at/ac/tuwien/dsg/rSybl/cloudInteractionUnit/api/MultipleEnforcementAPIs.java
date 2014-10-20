@@ -84,7 +84,7 @@ public class MultipleEnforcementAPIs implements EnforcementAPIInterface {
 									+ arg0.getId());
 					monitoringAPIInterface
 							.enforcingActionEnded("ScaleIn", arg0);
-                                                                monitoringAPIInterface.refreshCompositionRules();
+                                  //                              monitoringAPIInterface.refreshCompositionRules();
 
 					if (res)
 					try {
@@ -103,7 +103,7 @@ public class MultipleEnforcementAPIs implements EnforcementAPIInterface {
 
 					monitoringAPIInterface
 							.enforcingActionEnded("ScaleIn", arg0);
-                                                                monitoringAPIInterface.refreshCompositionRules();
+                                  //                              monitoringAPIInterface.refreshCompositionRules();
 
 					enforcementAPI.setExecutingControlAction(false);
 					return false;
@@ -147,7 +147,7 @@ public class MultipleEnforcementAPIs implements EnforcementAPIInterface {
 							+ " with Enforcement plugin "
 							+ enforcementAPIs.get(""));
 			monitoringAPIInterface.enforcingActionEnded("ScaleOut", arg0);
-                        monitoringAPIInterface.refreshCompositionRules();
+                        //monitoringAPIInterface.refreshCompositionRules();
 
 			if (res)
 			try {
@@ -184,7 +184,7 @@ public class MultipleEnforcementAPIs implements EnforcementAPIInterface {
 							+ " with Enforcement plugin "
 							+ enforcementAPIs.get(""));
 			monitoringAPIInterface.enforcingActionEnded("ScaleOut", arg0);
-                        monitoringAPIInterface.refreshCompositionRules();
+                    //    monitoringAPIInterface.refreshCompositionRules();
 
 			if (res)
 			try {
@@ -213,7 +213,7 @@ public class MultipleEnforcementAPIs implements EnforcementAPIInterface {
 			}
 
 			monitoringAPIInterface.enforcingActionEnded(actionName, e);
-                                                monitoringAPIInterface.refreshCompositionRules();
+                              //                  monitoringAPIInterface.refreshCompositionRules();
 
 			if (res)
 			try {
@@ -241,7 +241,7 @@ public class MultipleEnforcementAPIs implements EnforcementAPIInterface {
 			}
 
 			monitoringAPIInterface.enforcingActionEnded(actionName, e);
-                                                monitoringAPIInterface.refreshCompositionRules();
+                                                //monitoringAPIInterface.refreshCompositionRules();
 
 			if (res)
 			try {
@@ -274,7 +274,7 @@ public class MultipleEnforcementAPIs implements EnforcementAPIInterface {
 
 			monitoringAPIInterface
 					.enforcingActionEnded(capability.getName(), e);
-                                                monitoringAPIInterface.refreshCompositionRules();
+                                              //monitoringAPIInterface.refreshCompositionRules();
 
 			if (res)
 			try {
@@ -310,7 +310,7 @@ public class MultipleEnforcementAPIs implements EnforcementAPIInterface {
 						+ target + " node " + arg0.getId());
 				monitoringAPIInterface.enforcingActionEnded("ScaleIn - "
 						+ target, arg0);
-                                                        monitoringAPIInterface.refreshCompositionRules();
+                                                   //     monitoringAPIInterface.refreshCompositionRules();
 
 				if (res)
 				try {
@@ -342,7 +342,7 @@ public class MultipleEnforcementAPIs implements EnforcementAPIInterface {
 			}
 			monitoringAPIInterface.enforcingActionEnded("ScaleOut - " + target,
 					arg0);
-                                                monitoringAPIInterface.refreshCompositionRules();
+                                              //  monitoringAPIInterface.refreshCompositionRules();
 
 			if (res)
 			try {
@@ -375,7 +375,7 @@ public class MultipleEnforcementAPIs implements EnforcementAPIInterface {
 			}
 			monitoringAPIInterface.enforcingActionEnded("ScaleOut - " + target,
 					arg0);
-                                                monitoringAPIInterface.refreshCompositionRules();
+                                        //        monitoringAPIInterface.refreshCompositionRules();
 
 			if (res)
 			try {
@@ -410,7 +410,7 @@ public class MultipleEnforcementAPIs implements EnforcementAPIInterface {
 			}
 			monitoringAPIInterface.enforcingActionEnded(actionName + " - "
 					+ target, e);
-                                                monitoringAPIInterface.refreshCompositionRules();
+                                     //           monitoringAPIInterface.refreshCompositionRules();
 
 			if (res)
 			try {
@@ -442,7 +442,7 @@ public class MultipleEnforcementAPIs implements EnforcementAPIInterface {
 			}
 			monitoringAPIInterface.enforcingActionEnded(actionName + " - "
 					+ target, e);
-                                                monitoringAPIInterface.refreshCompositionRules();
+                                        //        monitoringAPIInterface.refreshCompositionRules();
 
 			if (res)
 			try {
@@ -475,7 +475,7 @@ public class MultipleEnforcementAPIs implements EnforcementAPIInterface {
 			}
 			monitoringAPIInterface.enforcingActionEnded(capability.getName()
 					+ " - " + target, e);
-                                                monitoringAPIInterface.refreshCompositionRules();
+                                       //         monitoringAPIInterface.refreshCompositionRules();
 
 			if (res)
 			try {
@@ -515,7 +515,7 @@ public class MultipleEnforcementAPIs implements EnforcementAPIInterface {
 				}
 				monitoringAPIInterface.enforcingActionEnded(actionName + " - "
 						+ target, node);
-                               monitoringAPIInterface.refreshCompositionRules();
+                           //    monitoringAPIInterface.refreshCompositionRules();
                                          
 				if (res)
 				try {
@@ -567,7 +567,7 @@ public class MultipleEnforcementAPIs implements EnforcementAPIInterface {
 				}
 				monitoringAPIInterface.enforcingActionEnded(actionName + " - "
 						+ target, node);
-                               monitoringAPIInterface.refreshCompositionRules();
+                              // monitoringAPIInterface.refreshCompositionRules();
                                          
 				if (res)
 				try {

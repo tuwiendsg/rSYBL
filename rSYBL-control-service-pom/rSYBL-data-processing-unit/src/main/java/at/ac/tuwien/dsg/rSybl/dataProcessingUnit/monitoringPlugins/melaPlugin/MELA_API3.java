@@ -589,22 +589,16 @@ public void removeService(Node cloudService) {
             this.ongoingAction.add(actionName);
             this.actionTargetEntity.add(actionTargetEntity.getId());
             url = new URL(REST_API_URL + "/" + controlService.getId() + "/" + actionTargetEntity.getId()
-                    + "executingaction/" + actionName);
+                    + "/executingaction/" + actionName);
             connection = (HttpURLConnection) url.openConnection();
             connection.setDoOutput(true);
             connection.setInstanceFollowRedirects(false);
-            connection.setRequestMethod("POST");
+            connection.setRequestMethod("PUT");
             connection.setRequestProperty("Content-Type", "application/xml");
             connection.setRequestProperty("Accept", "application/xml");
 
-            //write message body
-            OutputStream os = connection.getOutputStream();
 
-            String compositionRules = "<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"yes\"?>"
-                    + "<Action targetEntityID=\"" + actionTargetEntity.getId() + "\" action=\"" + actionName + "\" />";
-            os.write(compositionRules.getBytes());
-            os.flush();
-            os.close();
+      
 
             InputStream errorStream = connection.getErrorStream();
             if (errorStream != null) {
@@ -641,23 +635,14 @@ public void removeService(Node cloudService) {
         try {
 
             url = new URL(REST_API_URL + "/" + controlService.getId() + "/" + actionTargetEntity.getId()
-                    + "executingaction/" + actionName);
+                    + "/executingaction/" + actionName);
 
             connection = (HttpURLConnection) url.openConnection();
-            connection.setDoOutput(true);
             connection.setInstanceFollowRedirects(false);
             connection.setRequestMethod("DELETE");
             connection.setRequestProperty("Content-Type", "application/xml");
             connection.setRequestProperty("Accept", "application/xml");
 
-            //write message body
-            OutputStream os = connection.getOutputStream();
-
-            String compositionRules = "<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"yes\"?>"
-                    + "<Action targetEntityID=\"" + actionTargetEntity.getId() + "\" action=\"" + actionName + "\" />";
-            os.write(compositionRules.getBytes());
-            os.flush();
-            os.close();
 
             InputStream errorStream = connection.getErrorStream();
             if (errorStream != null) {
