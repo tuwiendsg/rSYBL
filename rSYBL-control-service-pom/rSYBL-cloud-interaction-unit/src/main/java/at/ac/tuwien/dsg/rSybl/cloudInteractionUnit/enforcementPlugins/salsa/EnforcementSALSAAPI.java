@@ -583,9 +583,9 @@ salsaClient.undeployService(serviceID);
 
             for (String ip : master.getAssociatedIps()) {
                 if (ip.split("\\.")[0].length() == 2) {
-                    monitoring.enforcingActionStarted("ScaleIn", arg0);
+                   // monitoring.enforcingActionStarted("ScaleIn", arg0);
 
-                    monitoring.enforcingActionEnded("ScaleIn", arg0);
+                    //monitoring.enforcingActionEnded("ScaleIn", arg0);
                     break;
                 }
                 // scale in on the number of components of the topology
