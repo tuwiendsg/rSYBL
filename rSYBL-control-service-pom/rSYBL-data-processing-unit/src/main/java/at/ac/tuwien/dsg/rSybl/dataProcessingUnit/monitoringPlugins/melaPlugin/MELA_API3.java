@@ -380,7 +380,7 @@ public void removeService(Node cloudService) {
         URL url = null;
         HttpURLConnection connection = null;
         try {
-            url = new URL(REST_API_URL + "/" + controlService.getId() + "/service");
+            url = new URL(REST_API_URL + "/" + controlService.getId() + "/structure");
             connection = (HttpURLConnection) url.openConnection();
             connection.setDoOutput(true);
             connection.setInstanceFollowRedirects(false);
