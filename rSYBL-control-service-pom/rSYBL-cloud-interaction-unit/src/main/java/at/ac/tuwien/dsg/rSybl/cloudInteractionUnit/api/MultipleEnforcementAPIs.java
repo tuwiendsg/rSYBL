@@ -16,6 +16,7 @@ import java.util.List;
 import java.util.Map.Entry;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import oracle.jrockit.jfr.tools.ConCatRepository;
 
 public class MultipleEnforcementAPIs implements EnforcementAPIInterface {
 	HashMap<String, EnforcementAPI> enforcementAPIs = new HashMap<String, EnforcementAPI>();
@@ -44,7 +45,7 @@ public class MultipleEnforcementAPIs implements EnforcementAPIInterface {
 			}
 		} else {
 			EnforcementAPI enforcementAPI = new EnforcementAPI();
-			enforcementAPI.setControlledService(controlledService);
+			enforcementAPI.setControlledService(controlledService,Configuration.getEnforcementPlugin());
 			enforcementAPIs.put("", enforcementAPI);
 		}
 	}
