@@ -144,10 +144,14 @@ public class ActionPlanEnforcement {
         @Override
         public void run() {
             PlanningLogger.logger.info("Executing action from thread......................... " + elasticityCapability.getName() + " on " + node.getId());
-
-
-            String[] primitives = elasticityCapability
+            String[] primitives ;
+            if(elasticityCapability.getPrimitiveOperations().contains(";") || elasticityCapability.getPrimitiveOperations().contains(" ")){
+             primitives = elasticityCapability
                     .getPrimitiveOperations().split(";");
+            }
+            else{
+                primitives=new String[]{elasticityCapability.getPrimitiveOperations()};
+            }
             for (int i = 0; i < primitives.length; i++) {
                 if (!enforcePrimitive(primitives[i], node, dependencyGraph)) {
                     PlanningLogger.logger.info("Failed Enforcing " + primitives[i] + ", cancelling the entire elasticity capability " + elasticityCapability.getName() + "-" + node.getId());
