@@ -63,6 +63,7 @@ public class MultipleEnforcementAPIs implements EnforcementAPIInterface {
 			boolean res=false;
 			EnforcementAPI enforcementAPI = enforcementAPIs.get("");
 			if (!enforcementAPI.isExecutingControlAction() && arg0 != null) {
+                            enforcementAPI.setExecutingControlAction(true);
 				try {
 					monitoringAPIInterface.enforcingActionStarted("ScaleIn",
 							arg0);
@@ -72,7 +73,7 @@ public class MultipleEnforcementAPIs implements EnforcementAPIInterface {
 									+ " with Enforcement plugin "
 									+ enforcementAPIs.get(""));
 
-					enforcementAPI.setExecutingControlAction(true);
+					
 					res=enforcementAPI.scalein(arg0);
 					Node controlService = enforcementAPI.getControlledService();
 					for (EnforcementAPI api : enforcementAPIs.values()) {
@@ -129,13 +130,14 @@ public class MultipleEnforcementAPIs implements EnforcementAPIInterface {
 		EnforcementAPI enforcementAPI = enforcementAPIs.get("");
 		boolean res=false;
 		if (!enforcementAPI.isExecutingControlAction() && arg0 != null) {
+                    enforcementAPI.setExecutingControlAction(true);
 			monitoringAPIInterface.enforcingActionStarted("ScaleOut", arg0);
 			RuntimeLogger.logger
 					.info("Scaling out with default enforcement on node "
 							+ arg0.getId() + " with Enforcement plugin "
 							+ enforcementAPIs.get(""));
 
-			enforcementAPI.setExecutingControlAction(true);
+			
 			res=enforcementAPI.scaleout(violationDegree,arg0);
 			Node controlService = enforcementAPI.getControlledService();
 			for (EnforcementAPI api : enforcementAPIs.values()) {
@@ -166,13 +168,14 @@ public class MultipleEnforcementAPIs implements EnforcementAPIInterface {
 		EnforcementAPI enforcementAPI = enforcementAPIs.get("");
 		boolean res=false;
 		if (!enforcementAPI.isExecutingControlAction() && arg0 != null) {
+                    enforcementAPI.setExecutingControlAction(true);
 			monitoringAPIInterface.enforcingActionStarted("ScaleOut", arg0);
 			RuntimeLogger.logger
 					.info("Scaling out with default enforcement on node "
 							+ arg0.getId() + " with Enforcement plugin "
 							+ enforcementAPIs.get(""));
 
-			enforcementAPI.setExecutingControlAction(true);
+			
 			res=enforcementAPI.scaleout(arg0);
 			Node controlService = enforcementAPI.getControlledService();
 			for (EnforcementAPI api : enforcementAPIs.values()) {
@@ -203,9 +206,10 @@ public class MultipleEnforcementAPIs implements EnforcementAPIInterface {
 		boolean res=false;
 		EnforcementAPI enforcementAPI = enforcementAPIs.get("");
 		if (!enforcementAPI.isExecutingControlAction() && e != null) {
+                    enforcementAPI.setExecutingControlAction(true);
 			monitoringAPIInterface.enforcingActionStarted(actionName, e);
 
-			enforcementAPI.setExecutingControlAction(true);
+			
 			res=enforcementAPI.enforceAction(actionName, e);
 			Node controlService = enforcementAPI.getControlledService();
 			for (EnforcementAPI api : enforcementAPIs.values()) {
@@ -231,9 +235,10 @@ public class MultipleEnforcementAPIs implements EnforcementAPIInterface {
 		boolean res=false;
 		EnforcementAPI enforcementAPI = enforcementAPIs.get("");
 		if (!enforcementAPI.isExecutingControlAction() && e != null) {
+                    enforcementAPI.setExecutingControlAction(true);
 			monitoringAPIInterface.enforcingActionStarted(actionName, e);
 
-			enforcementAPI.setExecutingControlAction(true);
+			
 			res=enforcementAPI.enforceAction(violationDegree,actionName, e);
 			Node controlService = enforcementAPI.getControlledService();
 			for (EnforcementAPI api : enforcementAPIs.values()) {
@@ -262,10 +267,11 @@ public class MultipleEnforcementAPIs implements EnforcementAPIInterface {
 				.next();
 		boolean res=false;
 		if (!enforcementAPI.isExecutingControlAction() && e != null) {
+                    enforcementAPI.setExecutingControlAction(true);
 			monitoringAPIInterface.enforcingActionStarted(capability.getName(),
 					e);
 
-			enforcementAPI.setExecutingControlAction(true);
+			
 			res=enforcementAPI.enforceElasticityCapability(capability, e);
 			Node controlService = enforcementAPI.getControlledService();
 			for (EnforcementAPI api : enforcementAPIs.values()) {
@@ -295,12 +301,13 @@ public class MultipleEnforcementAPIs implements EnforcementAPIInterface {
 		if (arg0.getAllRelatedNodes().size() > 1) {
 			EnforcementAPI enforcementAPI = enforcementAPIs.get(target);
 			if (!enforcementAPI.isExecutingControlAction() && arg0 != null) {
+                            enforcementAPI.setExecutingControlAction(true);
 				monitoringAPIInterface.enforcingActionStarted("ScaleIn - "
 						+ target, arg0);
 				RuntimeLogger.logger.info("Scaling in on plugin , " + target
 						+ " node " + arg0.getId());
 
-				enforcementAPI.setExecutingControlAction(true);
+				
 				res=enforcementAPI.scalein(arg0);
 				Node controlService = enforcementAPI.getControlledService();
 				for (EnforcementAPI api : enforcementAPIs.values()) {
@@ -331,10 +338,11 @@ public class MultipleEnforcementAPIs implements EnforcementAPIInterface {
 		boolean res=false;
 		EnforcementAPI enforcementAPI = enforcementAPIs.get(target);
 		if (!enforcementAPI.isExecutingControlAction() && arg0 != null) {
+                    enforcementAPI.setExecutingControlAction(true);
 			monitoringAPIInterface.enforcingActionStarted("ScaleOut - "
 					+ target, arg0);
 
-			enforcementAPI.setExecutingControlAction(true);
+			
 			res=enforcementAPI.scaleout(arg0);
 			Node controlService = enforcementAPI.getControlledService();
 			for (EnforcementAPI api : enforcementAPIs.values()) {
@@ -364,10 +372,11 @@ public class MultipleEnforcementAPIs implements EnforcementAPIInterface {
 		boolean res=false;
 		EnforcementAPI enforcementAPI = enforcementAPIs.get(target);
 		if (!enforcementAPI.isExecutingControlAction() && arg0 != null) {
+                    enforcementAPI.setExecutingControlAction(true);
 			monitoringAPIInterface.enforcingActionStarted("ScaleOut - "
 					+ target, arg0);
 
-			enforcementAPI.setExecutingControlAction(true);
+			
 			res=enforcementAPI.scaleout(violationDegree,arg0);
 			Node controlService = enforcementAPI.getControlledService();
 			for (EnforcementAPI api : enforcementAPIs.values()) {
@@ -398,11 +407,12 @@ public class MultipleEnforcementAPIs implements EnforcementAPIInterface {
 		boolean res=false;
 		EnforcementAPI enforcementAPI = enforcementAPIs.get(target);
 		if (!enforcementAPI.isExecutingControlAction() && e != null) {
+                    enforcementAPI.setExecutingControlAction(true);
+
 			monitoringAPIInterface.enforcingActionStarted(actionName + " - "
 					+ target, e);
 
-			enforcementAPI.setExecutingControlAction(true);
-
+			
 			res=enforcementAPI.enforceAction(actionName, e);
 			Node controlService = enforcementAPI.getControlledService();
 			for (EnforcementAPI api : enforcementAPIs.values()) {
@@ -430,10 +440,11 @@ public class MultipleEnforcementAPIs implements EnforcementAPIInterface {
 		boolean res=false;
 		EnforcementAPI enforcementAPI = enforcementAPIs.get(target);
 		if (!enforcementAPI.isExecutingControlAction() && e != null) {
+                    enforcementAPI.setExecutingControlAction(true);
 			monitoringAPIInterface.enforcingActionStarted(actionName + " - "
 					+ target, e);
 
-			enforcementAPI.setExecutingControlAction(true);
+			
 
 			res=enforcementAPI.enforceAction(violationDegree,actionName, e);
 			Node controlService = enforcementAPI.getControlledService();
