@@ -80,7 +80,8 @@
                 <h2>Currently managed services:</h2>
                 <select id="service" name="service" onChange="checkservice(this);">
 
-                </select> <input type="submit" onclick="removeService()" value="Destroy Service">
+                </select> <input type="submit" onclick="removeService()" value="Remove the Service from Monitoring and Control">  or 
+                 <input type="submit" onclick="undeployService()" value="Undeploy the Service">
             </div>
             <div id ="serviceinfo">
 
@@ -152,14 +153,60 @@
                     buttonFocus   : "ok"
                 });
             }
+            function undeployService(){
+                 if (serviceID!="")
+                {
+                    reset();
+                
+                    alertify.set({ labels: { ok: "Undeploy", cancel: "Cancel" } });
+                    alertify.confirm("Confirm undeploying the service "+serviceID+". This means removing it from the clouds where it is deployed, and removing it from our control and monitoring tools." , function (e) {
+                           
+                        if (e) {
+                                   
+                            if (window.XMLHttpRequest) {
+                                undeployServicesRequest = new XMLHttpRequest();
+                            } else {
+                                undeployServicesRequest = new ActiveXObject("Microsoft.XMLHTTP");
+                            }
 
+                            undeployServicesRequest.open("DELETE", "./restWS/" + serviceID , true);
+
+                            undeployServicesRequest.setRequestHeader('Content-type', 'application/xml');
+                            undeployServicesRequest.send(null);
+                            undeployServicesRequest.onreadystatechange = finishedUndeployingService;
+                            //                            setTimeout(refreshMonitoringData, 4000);
+                            //getRequirementsXMLSYBL();
+                            alertify.log("Waiting to undeploy service");
+                        } else {
+                            alertify.error("You've clicked Cancel");
+                        }
+                    });
+                        
+			
+				
+                    
+                }else{
+                    alertify.error("There is no service selected for undeploy.");
+                }
+            }
+            function finishedUndeployingService(){
+             if (undeployServicesRequest.readyState == 4) {
+               
+                    serviceID="";
+                
+                    d3.select("#chart").selectAll("*").remove(); 
+                    refreshServiceStructureDisplayed();
+                    refreshServicesList();
+                    alertify.success("The service was undeployed.");
+                }
+            }
             function removeService(){
                 if (serviceID!="")
                 {
                     reset();
                 
-                    alertify.set({ labels: { ok: "Destroy", cancel: "Cancel" } });
-                    alertify.confirm("Confirm destroying the service "+serviceID, function (e) {
+                    alertify.set({ labels: { ok: "Remove", cancel: "Cancel" } });
+                    alertify.confirm("Confirm removing the service "+serviceID+" from our control and monitoring tools.", function (e) {
                            
                         if (e) {
                                    
@@ -169,7 +216,7 @@
                                 removeServicesRequest = new ActiveXObject("Microsoft.XMLHTTP");
                             }
 
-                            removeServicesRequest.open("DELETE", "./restWS/" + serviceID , true);
+                            removeServicesRequest.open("DELETE", "./restWS/managedService/" + serviceID , true);
 
                             removeServicesRequest.setRequestHeader('Content-type', 'application/xml');
                             removeServicesRequest.send(null);
@@ -184,16 +231,9 @@
                         
 			
 				
-                    return false;
-                    var r = confirm("Please confirm removing the service");
-                    if (r == true) {
-                        x = "You pressed OK! Removing the service.";
-                
-                    } else {
-                        x = "You pressed Cancel!";
-                    }
+                    
                 }else{
-                    alertify.error("There is no service selected for destroy");
+                    alertify.error("There is no service selected for removal.");
                 }
             }
             function finishedRemovingService(){
@@ -204,7 +244,7 @@
                     d3.select("#chart").selectAll("*").remove(); 
                     refreshServiceStructureDisplayed();
                     refreshServicesList();
-                    alertify.success("The service was destroyed.");
+                    alertify.success("The service was removed from monitoring and control.");
                 }
             }
             function checkformat(dropdown) {

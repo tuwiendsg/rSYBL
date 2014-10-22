@@ -76,9 +76,12 @@ public class ElasticityCapabilityEnforcement {
 
                         if (!enforcePrimitive(primitivesDescription, primitives[i],
                                 target, dependencyGraph)) {
-                            SYBLDirectivesEnforcementLogger.logger.info("Failed Enforcing " + primitives[i] + ", cancelling the entire elasticity capability " + actionName + "-" + target.getId());
-                            break;
-                        }
+                            SYBLDirectivesEnforcementLogger.logger.info("Failed Enforcing " + primitives[i] + ", cancelling the entire elasticity capability " );
+                        break;
+                    } else {
+                        SYBLDirectivesEnforcementLogger.logger.info("Successfully enforced " + primitives[i] + ", continuing with capability "  );
+
+                    }
                     }
                     break;
                 }
@@ -270,8 +273,7 @@ public class ElasticityCapabilityEnforcement {
             String primitive, Node node, DependencyGraph dependencyGraph) {
         String target = "";
         String actionName = primitive;
-        //SYBLDirectivesEnforcementLogger.logger.info("Enforcing primitive " + actionName);
-
+        SYBLDirectivesEnforcementLogger.logger.info("Trying to enforce primitive " + actionName);
         if (actionName.contains(".")) {
             target = actionName.split("\\.")[0];
             actionName = actionName.split("\\.")[1];
@@ -280,19 +282,21 @@ public class ElasticityCapabilityEnforcement {
             for (ElasticityCapability capability : node
                     .getElasticityCapabilities()) {
                 if (capability.getName().toLowerCase().contains(actionName)) {
+					 if (capability.getName().toLowerCase().contains(".")) {
                     target = capability.getName().split("\\.")[0].toLowerCase();
                 }
             }
         }
+				   }
         if (target.equalsIgnoreCase("")) {
             switch (actionName.toLowerCase()) {
                 case "scaleout":
-                    //SYBLDirectivesEnforcementLogger.logger.info("Calling Scale out from planning ");
+                    SYBLDirectivesEnforcementLogger.logger.info("Calling Scale out from sybl parser ");
 
                     return enforcementAPI.scaleout(node);
 
                 case "scalein":
-                    //SYBLDirectivesEnforcementLogger.logger.info("Calling Scale in from planning ");
+                    SYBLDirectivesEnforcementLogger.logger.info("Calling Scale in from sybl parser ");
 
                     return enforcementAPI.scalein(node);
                 default:

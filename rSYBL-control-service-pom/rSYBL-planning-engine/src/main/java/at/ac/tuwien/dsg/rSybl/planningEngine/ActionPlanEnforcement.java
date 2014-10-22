@@ -285,7 +285,8 @@ public class ActionPlanEnforcement {
     }
 
     public void enforceActionGivenPrimitives(
-            ActionEffect actionEffect, DependencyGraph dependencyGraph) {
+            ActionEffect actionEffect, DependencyGraph dependencyGraph) {	   
+
         String actionName = actionEffect.getActionType().toLowerCase();
         for (ElasticityCapability elasticityCapability : actionEffect
                 .getTargetedEntity().getElasticityCapabilities()) {
