@@ -26,7 +26,7 @@ import com.jcraft.jsch.JSchException;
 import com.jcraft.jsch.Session;
 import com.jcraft.jsch.UserInfo;
 
-public class M2MApplicationControl {
+public class M2MApplicationControl implements EnforcementInterface{
 	private Node controlledService;
 	public M2MApplicationControl(Node cloudService){
 		controlledService=cloudService;
@@ -307,4 +307,24 @@ public class M2MApplicationControl {
 		// TODO Auto-generated method stub
 		return false;
 	}
+
+    @Override
+    public boolean scaleOut(Node toBeScaled) {
+        throw new UnsupportedOperationException("Not supported yet.");
+    }
+
+    @Override
+    public boolean scaleOut(double violationDegree, Node toBeScaled) {
+        throw new UnsupportedOperationException("Not supported yet.");
+    }
+
+    @Override
+    public boolean scaleIn(Node toBeScaled) {
+        throw new UnsupportedOperationException("Not supported yet.");
+    }
+
+    @Override
+    public void undeployService(Node serviceID) {
+        throw new UnsupportedOperationException("Not supported yet.");
+    }
 }
