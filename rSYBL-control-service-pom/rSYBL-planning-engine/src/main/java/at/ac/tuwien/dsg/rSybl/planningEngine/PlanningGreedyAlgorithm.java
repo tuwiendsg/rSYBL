@@ -43,6 +43,8 @@ import at.ac.tuwien.dsg.rSybl.planningEngine.utils.Configuration;
 import at.ac.tuwien.dsg.rSybl.planningEngine.staticData.ActionEffect;
 import at.ac.tuwien.dsg.rSybl.planningEngine.staticData.ActionEffects;
 import at.ac.tuwien.dsg.rSybl.planningEngine.utils.PlanningLogger;
+import java.util.ArrayDeque;
+import java.util.Deque;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -57,7 +59,7 @@ public class PlanningGreedyAlgorithm implements PlanningAlgorithmInterface {
     private ContextRepresentation lastContextRepresentation;
     private String strategiesThatNeedToBeImproved = "";
     private int REFRESH_PERIOD = 120000;
-
+    Deque<HashMap<String,Boolean>> stack = new ArrayDeque<HashMap<String,Boolean>>();
     public PlanningGreedyAlgorithm(DependencyGraph cloudService,
             MonitoringAPIInterface monitoringAPI, EnforcementAPIInterface enforcementAPI) {
         this.dependencyGraph = cloudService;

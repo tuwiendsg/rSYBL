@@ -44,8 +44,10 @@ import at.ac.tuwien.dsg.rSybl.analysisEngine.main.ControlCoordination;
 import at.ac.tuwien.dsg.rSybl.analysisEngine.main.ControlService;
 import at.ac.tuwien.dsg.rSybl.analysisEngine.main.ControlServiceFactory;
 import at.ac.tuwien.dsg.rSybl.analysisEngine.utils.AnalysisLogger;
+import com.sun.jersey.api.client.ClientResponse;
 import javax.ws.rs.DELETE;
 import javax.ws.rs.PathParam;
+import javax.ws.rs.core.Response;
 
 
 @Singleton
@@ -98,14 +100,60 @@ public class SyblControlWS {
 	public void setApplicationDescriptionTOSCA(@PathParam("id")String cloudServiceId,String celar){
 		 controlCoordination.setApplicationDescriptionInfoTOSCA(celar,cloudServiceId);
 	}
-            
+           @PUT
+	 @Path("/{id}/startTEST")
+	 @Consumes("application/xml")
+	public Response startTest(@PathParam("id")String cloudServiceId){
+                try{
+		 controlCoordination.setTESTState(cloudServiceId);
+                 return Response.ok().build();
+                }catch(Exception e){
+                    return Response.serverError().entity(e).build();
+                }
+	}
+                 @PUT
+	 @Path("/{id}/{componentID}/testElasticityCapability/{capabilityID}")
+	 @Consumes("application/xml")
+	public Response startElasticityCapability(@PathParam("id")String cloudServiceId,@PathParam("componentID")String componentID,@PathParam("capabilityID") String capabilityID){
+                try{
+
+		 if (controlCoordination.testEnforcementCapability(cloudServiceId,capabilityID,componentID)){
+                 return Response.ok().build();}
+                 else{ 
+
+                     return Response.status(ClientResponse.Status.CONFLICT).build();
+                 }
+                }catch(Exception e){
+                    return Response.serverError().entity(e).build();
+                }
+	}
+                     @PUT
+	 @Path("/{id}/{componentID}/testElasticityCapability/{pluginID}/{capabilityID}")
+	 @Consumes("application/xml")
+	public Response startElasticityCapabilityWithPlugin(@PathParam("id")String cloudServiceId,@PathParam("componentID")String componentID,@PathParam("pluginID")String pluginID,@PathParam("capabilityID") String capabilityID){
+                try{
+		 if (controlCoordination.testEnforcementCapabilityOnPlugin(cloudServiceId,pluginID,capabilityID,componentID)){
+                 return Response.ok().build();}
+                 else{ 
+
+                     return Response.status(ClientResponse.Status.CONFLICT).build();
+                 }
+                }catch(Exception e){
+                    return Response.serverError().entity(e).build();
+                }
+	}   
              @DELETE
 	 @Path("/{id}")
 	 @Consumes("application/xml")
-	public void removeService(@PathParam("id")String cloudServiceId){
-		 controlCoordination.removeService(cloudServiceId);
+	public void undeployService(@PathParam("id")String cloudServiceId){
+		 controlCoordination.undeployService(cloudServiceId);
 	}
-             
+             @DELETE
+	 @Path("/managedService/{id}")
+	 @Consumes("application/xml")
+	public void removeServiceFromControl(@PathParam("id")String cloudServiceId){
+		 controlCoordination.removeService(cloudServiceId);
+	}  
 	 @PUT
 	 @Path("/{id}/description")
 	 @Consumes("application/xml")

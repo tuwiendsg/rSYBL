@@ -27,6 +27,16 @@ public class ControlCoordination {
     }
     public void removeService(String cloudServiceId){
         if (!cloudServiceId.equalsIgnoreCase("") && controls.containsKey(cloudServiceId)){
+           controls.get(cloudServiceId).removeFromMonitoring();
+        controls.get(cloudServiceId).stop();
+        
+        controls.remove(cloudServiceId);
+        
+        }
+    }
+       
+    public void undeployService(String cloudServiceId){
+        if (!cloudServiceId.equalsIgnoreCase("") && controls.containsKey(cloudServiceId)){
             controls.get(cloudServiceId).undeployService();
         controls.get(cloudServiceId).stop();
         
@@ -34,7 +44,6 @@ public class ControlCoordination {
         
         }
     }
-   
     public void prepareControl(String cloudServiceId) {
         ControlService controlService = new ControlService();
         controls.put(cloudServiceId, controlService);
