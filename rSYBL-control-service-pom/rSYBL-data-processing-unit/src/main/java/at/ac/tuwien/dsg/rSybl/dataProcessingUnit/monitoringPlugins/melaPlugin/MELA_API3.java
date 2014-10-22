@@ -420,7 +420,7 @@ public void removeService(Node cloudService) {
                 connection.disconnect();
             }
         }
-        submitCompositionRules();
+        //submitCompositionRules();
         serviceSet = true;
 
     }

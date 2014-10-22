@@ -302,7 +302,7 @@ public class MultipleEnforcementAPIs implements EnforcementAPIInterface {
 			EnforcementAPI enforcementAPI = enforcementAPIs.get(target);
 			if (!enforcementAPI.isExecutingControlAction() && arg0 != null) {
                             enforcementAPI.setExecutingControlAction(true);
-				monitoringAPIInterface.enforcingActionStarted("ScaleIn - "
+				monitoringAPIInterface.enforcingActionStarted("ScaleIn"
 						+ target, arg0);
 				RuntimeLogger.logger.info("Scaling in on plugin , " + target
 						+ " node " + arg0.getId());
@@ -315,7 +315,7 @@ public class MultipleEnforcementAPIs implements EnforcementAPIInterface {
 				}
 				RuntimeLogger.logger.info("Finished Scaling in on plugin , "
 						+ target + " node " + arg0.getId());
-				monitoringAPIInterface.enforcingActionEnded("ScaleIn - "
+				monitoringAPIInterface.enforcingActionEnded("ScaleIn"
 						+ target, arg0);
                                                    //     monitoringAPIInterface.refreshCompositionRules();
 
@@ -339,7 +339,7 @@ public class MultipleEnforcementAPIs implements EnforcementAPIInterface {
 		EnforcementAPI enforcementAPI = enforcementAPIs.get(target);
 		if (!enforcementAPI.isExecutingControlAction() && arg0 != null) {
                     enforcementAPI.setExecutingControlAction(true);
-			monitoringAPIInterface.enforcingActionStarted("ScaleOut - "
+			monitoringAPIInterface.enforcingActionStarted("ScaleOut"
 					+ target, arg0);
 
 			
@@ -348,7 +348,7 @@ public class MultipleEnforcementAPIs implements EnforcementAPIInterface {
 			for (EnforcementAPI api : enforcementAPIs.values()) {
 				api.refreshControlService(controlService);
 			}
-			monitoringAPIInterface.enforcingActionEnded("ScaleOut - " + target,
+			monitoringAPIInterface.enforcingActionEnded("ScaleOut" + target,
 					arg0);
                                               //  monitoringAPIInterface.refreshCompositionRules();
 
@@ -373,7 +373,7 @@ public class MultipleEnforcementAPIs implements EnforcementAPIInterface {
 		EnforcementAPI enforcementAPI = enforcementAPIs.get(target);
 		if (!enforcementAPI.isExecutingControlAction() && arg0 != null) {
                     enforcementAPI.setExecutingControlAction(true);
-			monitoringAPIInterface.enforcingActionStarted("ScaleOut - "
+			monitoringAPIInterface.enforcingActionStarted("ScaleOut"
 					+ target, arg0);
 
 			
@@ -382,7 +382,7 @@ public class MultipleEnforcementAPIs implements EnforcementAPIInterface {
 			for (EnforcementAPI api : enforcementAPIs.values()) {
 				api.refreshControlService(controlService);
 			}
-			monitoringAPIInterface.enforcingActionEnded("ScaleOut - " + target,
+			monitoringAPIInterface.enforcingActionEnded("ScaleOut" + target,
 					arg0);
                                         //        monitoringAPIInterface.refreshCompositionRules();
 
@@ -409,8 +409,7 @@ public class MultipleEnforcementAPIs implements EnforcementAPIInterface {
 		if (!enforcementAPI.isExecutingControlAction() && e != null) {
                     enforcementAPI.setExecutingControlAction(true);
 
-			monitoringAPIInterface.enforcingActionStarted(actionName + " - "
-					+ target, e);
+			monitoringAPIInterface.enforcingActionStarted(actionName+ target, e);
 
 			
 			res=enforcementAPI.enforceAction(actionName, e);
@@ -418,8 +417,7 @@ public class MultipleEnforcementAPIs implements EnforcementAPIInterface {
 			for (EnforcementAPI api : enforcementAPIs.values()) {
 				api.refreshControlService(controlService);
 			}
-			monitoringAPIInterface.enforcingActionEnded(actionName + " - "
-					+ target, e);
+			monitoringAPIInterface.enforcingActionEnded(actionName+ target, e);
                                      //           monitoringAPIInterface.refreshCompositionRules();
 
 			if (res)
@@ -441,7 +439,7 @@ public class MultipleEnforcementAPIs implements EnforcementAPIInterface {
 		EnforcementAPI enforcementAPI = enforcementAPIs.get(target);
 		if (!enforcementAPI.isExecutingControlAction() && e != null) {
                     enforcementAPI.setExecutingControlAction(true);
-			monitoringAPIInterface.enforcingActionStarted(actionName + " - "
+			monitoringAPIInterface.enforcingActionStarted(actionName 
 					+ target, e);
 
 			
@@ -451,7 +449,7 @@ public class MultipleEnforcementAPIs implements EnforcementAPIInterface {
 			for (EnforcementAPI api : enforcementAPIs.values()) {
 				api.refreshControlService(controlService);
 			}
-			monitoringAPIInterface.enforcingActionEnded(actionName + " - "
+			monitoringAPIInterface.enforcingActionEnded(actionName 
 					+ target, e);
                                         //        monitoringAPIInterface.refreshCompositionRules();
 
@@ -471,7 +469,7 @@ public class MultipleEnforcementAPIs implements EnforcementAPIInterface {
 	public boolean enforceElasticityCapability(String target,
 			ElasticityCapability capability, Node e) {
 		monitoringAPIInterface.enforcingActionStarted(capability.getName()
-				+ " - " + target, e);
+				 + target, e);
 		boolean res=false;
 		EnforcementAPI enforcementAPI = enforcementAPIs.get(target);
 		if (!enforcementAPI.isExecutingControlAction() && e != null) {
@@ -485,7 +483,7 @@ public class MultipleEnforcementAPIs implements EnforcementAPIInterface {
 				api.refreshControlService(controlService);
 			}
 			monitoringAPIInterface.enforcingActionEnded(capability.getName()
-					+ " - " + target, e);
+					 + target, e);
                                        //         monitoringAPIInterface.refreshCompositionRules();
 
 			if (res)
@@ -558,7 +556,7 @@ EnforcementAPI enforcementAPI = enforcementAPIs.get("");
 				enforcementAPI.setExecutingControlAction(true);
 				RuntimeLogger.logger.info("----------------------Enforcing "+actionName+" on "+ target + " "+node.getId()+" params "+parameters.length);
 				monitoringAPIInterface.enforcingActionStarted(actionName
-						+ " - " + target, node);
+						 + target, node);
 
 				res=enforcementAPI.enforceAction( actionName, node, parameters);
 				//RuntimeLogger.logger.info("Answer from enforcement plugin with regard to enforcement successful completion is "+res);
@@ -567,7 +565,7 @@ EnforcementAPI enforcementAPI = enforcementAPIs.get("");
 				for (EnforcementAPI api : enforcementAPIs.values()) {
 					api.refreshControlService(controlService);
 				}
-				monitoringAPIInterface.enforcingActionEnded(actionName + " - "
+				monitoringAPIInterface.enforcingActionEnded(actionName 
 						+ target, node);
                            //    monitoringAPIInterface.refreshCompositionRules();
                                          
@@ -610,7 +608,7 @@ EnforcementAPI enforcementAPI = enforcementAPIs.get("");
 				enforcementAPI.setExecutingControlAction(true);
 				RuntimeLogger.logger.info("----------------------Enforcing "+actionName+" on "+ target + " "+node.getId()+" params "+parameters.length);
 				monitoringAPIInterface.enforcingActionStarted(actionName
-						+ " - " + target, node);
+						+ target, node);
 
 				res=enforcementAPI.enforceAction(violationDegree,target, actionName, node, parameters);
 				//RuntimeLogger.logger.info("Answer from enforcement plugin with regard to enforcement successful completion is "+res);
@@ -619,7 +617,7 @@ EnforcementAPI enforcementAPI = enforcementAPIs.get("");
 				for (EnforcementAPI api : enforcementAPIs.values()) {
 					api.refreshControlService(controlService);
 				}
-				monitoringAPIInterface.enforcingActionEnded(actionName + " - "
+				monitoringAPIInterface.enforcingActionEnded(actionName 
 						+ target, node);
                               // monitoringAPIInterface.refreshCompositionRules();
                                          

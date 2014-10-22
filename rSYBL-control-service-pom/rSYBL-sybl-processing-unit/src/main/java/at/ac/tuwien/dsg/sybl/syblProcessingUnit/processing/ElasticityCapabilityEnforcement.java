@@ -413,7 +413,7 @@ public class ElasticityCapabilityEnforcement {
                                         .getMethodName();
                                 
                                 if (methodName.equalsIgnoreCase("")) {
-                                    if (target.equalsIgnoreCase("")){
+                                    if (!target.equalsIgnoreCase("")){
                                     boolean x = enforcementAPI.enforceAction(target,
                                             actionName, node, parameters);
                                     if (!x) {
@@ -427,7 +427,7 @@ public class ElasticityCapabilityEnforcement {
                                     } 
                                     }
                                 } else {
-                                    if (target.equalsIgnoreCase("")){
+                                    if (!target.equalsIgnoreCase("")){
                                     boolean x = enforcementAPI.enforceAction(target,
                                             methodName, node, parameters);
                                     if (!x) {
