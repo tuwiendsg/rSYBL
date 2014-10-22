@@ -58,6 +58,7 @@ public boolean enforceAction(double violationDegree,String actionName, Node e);
     public boolean enforceElasticityCapability(String target, ElasticityCapability capability, Node e);
 
     public boolean enforceAction(String target, String actionName, Node node, Object[] parameters);
-    
+        public boolean enforceAction( String actionName, Node node, Object[] parameters);
+
     public boolean enforceAction(double violationDegree, String target, String actionName, Node node, Object[] parameters);
 }

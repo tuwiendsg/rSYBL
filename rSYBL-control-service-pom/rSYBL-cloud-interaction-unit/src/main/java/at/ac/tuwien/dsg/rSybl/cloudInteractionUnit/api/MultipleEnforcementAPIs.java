@@ -500,6 +500,49 @@ public class MultipleEnforcementAPIs implements EnforcementAPIInterface {
 		return res;
 	}
 
+        @Override
+	public boolean enforceAction ( String actionName, Node node,
+			Object[] parameters) {
+		
+		RuntimeLogger.logger.info("----------------------Trying to "+actionName+" on  default enforcement with  "+node+" params ");
+		boolean res=false;
+
+		
+EnforcementAPI enforcementAPI = enforcementAPIs.get("");
+		
+		if (!enforcementAPI.isExecutingControlAction() && node != null) {
+			if (!actionName.toLowerCase().contains("scalein")||(actionName.toLowerCase().contains("scalein") && node.getAllRelatedNodesOfType(RelationshipType.HOSTED_ON_RELATIONSHIP).size()>1)  ){
+				enforcementAPI.setExecutingControlAction(true);
+				RuntimeLogger.logger.info("----------------------Enforcing "+actionName+" on "+  " "+node.getId()+" params "+parameters.length);
+				monitoringAPIInterface.enforcingActionStarted(actionName
+						, node);
+
+				res=enforcementAPI.enforceAction( actionName, node, parameters);
+				//RuntimeLogger.logger.info("Answer from enforcement plugin with regard to enforcement successful completion is "+res);
+
+				Node controlService = enforcementAPI.getControlledService();
+				for (EnforcementAPI api : enforcementAPIs.values()) {
+					api.refreshControlService(controlService);
+				}
+				monitoringAPIInterface.enforcingActionEnded(actionName , node);
+                           //    monitoringAPIInterface.refreshCompositionRules();
+                                         
+				if (res)
+				try {
+					Thread.sleep(60000);
+				} catch (InterruptedException ex) {
+					// TODO Auto-generated catch block
+					ex.printStackTrace();
+				}
+                                
+				enforcementAPI.setExecutingControlAction(false);
+
+			}
+			
+		}
+		return res;
+	}
+        
 	@Override
 	public boolean enforceAction (String target, String actionName, Node node,
 			Object[] parameters) {
@@ -517,7 +560,7 @@ public class MultipleEnforcementAPIs implements EnforcementAPIInterface {
 				monitoringAPIInterface.enforcingActionStarted(actionName
 						+ " - " + target, node);
 
-				res=enforcementAPI.enforceAction(target, actionName, node, parameters);
+				res=enforcementAPI.enforceAction( actionName, node, parameters);
 				//RuntimeLogger.logger.info("Answer from enforcement plugin with regard to enforcement successful completion is "+res);
 
 				Node controlService = enforcementAPI.getControlledService();

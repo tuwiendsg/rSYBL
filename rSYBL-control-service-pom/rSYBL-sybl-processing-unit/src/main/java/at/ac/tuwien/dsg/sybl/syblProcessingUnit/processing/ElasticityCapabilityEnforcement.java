@@ -66,6 +66,8 @@ public class ElasticityCapabilityEnforcement {
         if (!dependencyGraph.isInControlState()) {
             SYBLDirectivesEnforcementLogger.logger.info("Not enforcing action due to breakpoint ");
             return;
+        }else{
+            SYBLDirectivesEnforcementLogger.logger.info("Starting enforcing action"+actionName+" on target "+target+".");
         }
         for (ElasticityCapability elasticityCapability : target.getElasticityCapabilities()) {
             if (elasticityCapability.getName().equalsIgnoreCase(actionName) && checkECPossible(elasticityCapability)) {
@@ -409,20 +411,35 @@ public class ElasticityCapabilityEnforcement {
 
                                 String methodName = elasticityPrimitive
                                         .getMethodName();
-
+                                
                                 if (methodName.equalsIgnoreCase("")) {
+                                    if (target.equalsIgnoreCase("")){
                                     boolean x = enforcementAPI.enforceAction(target,
                                             actionName, node, parameters);
                                     if (!x) {
                                         res = false;
                                     }
+                                    }else{
+                                       boolean x = enforcementAPI.enforceAction(
+                                            actionName, node, parameters);
+                                    if (!x) {
+                                        res = false;
+                                    } 
+                                    }
                                 } else {
+                                    if (target.equalsIgnoreCase("")){
                                     boolean x = enforcementAPI.enforceAction(target,
                                             methodName, node, parameters);
                                     if (!x) {
                                         res = false;
                                     }
-
+                                    }else{
+                                       boolean x = enforcementAPI.enforceAction(
+                                            methodName, node, parameters);
+                                    if (!x) {
+                                        res = false;
+                                    } 
+                                    }
                                 }
                                 for (ElasticityPrimitiveDependency elasticityPrimitiveDependency : afterPrimitives) {
                                     // check before primitives

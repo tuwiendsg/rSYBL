@@ -189,7 +189,7 @@ public class EnforcementAPI {
         return res;
     }
 
-    public boolean enforceAction(String target, String actionName, Node node,
+    public boolean enforceAction( String actionName, Node node,
             Object[] parameters) {
         Method foundMethod = null;
         boolean res = false;
@@ -232,7 +232,7 @@ public class EnforcementAPI {
             } else {
                 res = false;
                 RuntimeLogger.logger.info("------------Method not found:> "
-                        + foundMethod + " on " + target + " " + node
+                        + foundMethod + " on " +  " " + node
                         + " params " + parameters.length);
 
             }
