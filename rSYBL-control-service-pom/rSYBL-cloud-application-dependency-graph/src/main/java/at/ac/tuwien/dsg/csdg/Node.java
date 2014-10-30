@@ -37,14 +37,14 @@ import at.ac.tuwien.dsg.csdg.utils.DependencyGraphLogger;
 
 public class Node implements Serializable {
 
-    protected ArrayList<ElasticityRequirement> elasticityRequirements = new ArrayList<ElasticityRequirement>();
-    protected ArrayList<ElasticityCapability> elasticityCapabilities = new ArrayList<ElasticityCapability>();
-    protected ArrayList<ElasticityMetric> elasticityMetrics = new ArrayList<ElasticityMetric>();
-    protected HashMap<Node, Relationship> relatedNodes = new HashMap<Node, Relationship>(); // KEEP THESE TWO SYNCHRONIZED
-    protected HashMap<RelationshipType, ArrayList<Node>> relationships = new HashMap<RelationshipType, ArrayList<Node>>(); // KEEP THESE TWO SYNCHRONIZED
-    protected String id;
-    protected HashMap<String, Object> staticInformation = new HashMap<String, Object>();
-    protected NodeType nodeType;
+    private ArrayList<ElasticityRequirement> elasticityRequirements = new ArrayList<ElasticityRequirement>();
+    private ArrayList<ElasticityCapability> elasticityCapabilities = new ArrayList<ElasticityCapability>();
+    private ArrayList<ElasticityMetric> elasticityMetrics = new ArrayList<ElasticityMetric>();
+    private HashMap<Node, Relationship> relatedNodes = new HashMap<Node, Relationship>(); // KEEP THESE TWO SYNCHRONIZED
+    private HashMap<RelationshipType, ArrayList<Node>> relationships = new HashMap<RelationshipType, ArrayList<Node>>(); // KEEP THESE TWO SYNCHRONIZED
+    private String id;
+    private HashMap<String, Object> staticInformation = new HashMap<String, Object>();
+    private NodeType nodeType;
 
     public static enum NodeType {
 
@@ -144,8 +144,8 @@ public class Node implements Serializable {
 
 
             }
-            getRelatedNodes().put(node, rel);
-            if (getRelationships().containsKey(rel.getType())) {
+            relatedNodes.put(node, rel);
+            if (relationships.containsKey(rel.getType())) {
 
                 Node foundNode = null;
                 for (Node myNode : getAllRelatedNodesOfType(rel.getType())) {
@@ -157,12 +157,12 @@ public class Node implements Serializable {
                 if (foundNode != null) {
                     relationships.get(rel.getType()).remove(foundNode);
                 }
-                getRelationships().get(rel.getType()).add(node);
+                relationships.get(rel.getType()).add(node);
 
             } else {
                 ArrayList<Node> strings = new ArrayList<Node>();
                 strings.add(node);
-                getRelationships().put(rel.getType(), strings);
+                relationships.put(rel.getType(), strings);
             }
         }
     }
@@ -173,8 +173,8 @@ public class Node implements Serializable {
 
 
         }
-        getRelatedNodes().put(node, rel);
-        if (getRelationships().containsKey(rel.getType())) {
+        relatedNodes.put(node, rel);
+        if (relationships.containsKey(rel.getType())) {
            
             Node foundNode = null;
             for (Node myNode : getAllRelatedNodesOfType(rel.getType())) {
@@ -186,18 +186,18 @@ public class Node implements Serializable {
             if (foundNode != null) {
                 relationships.get(rel.getType()).remove(foundNode);
             }
-            getRelationships().get(rel.getType()).add(node);
+            relationships.get(rel.getType()).add(node);
 
         } else {
             ArrayList<Node> strings = new ArrayList<Node>();
             strings.add(node);
-            getRelationships().put(rel.getType(), strings);
+            relationships.put(rel.getType(), strings);
         }
     }
 
     public Node getRelatedNode(String id) {
      // if (getRelatedNodes()==null) return null;
-        for (Node n : getRelatedNodes().keySet()) {
+        for (Node n : relatedNodes.keySet()) {
             if (n.getId().equalsIgnoreCase(id)) {
                 return n;
             }
@@ -206,7 +206,7 @@ public class Node implements Serializable {
     }
 
     public Set<Node> getAllRelatedNodes() {
-        return getRelatedNodes().keySet();
+        return relatedNodes.keySet();
     }
 
     public ArrayList<Node> getAllRelatedNodesOfType(RelationshipType relationshipType) {
@@ -224,16 +224,16 @@ public class Node implements Serializable {
                 }
             }
         }
-        return (ArrayList<Node>) getRelationships().get(relationshipType);
+        return (ArrayList<Node>) relationships.get(relationshipType);
     }
 
     public Relationship getRelationshipWithNode(Node string) {
-        return getRelatedNodes().get(string);
+        return relatedNodes.get(string);
     }
 
     public Relationship getRelationshipOfTypeWithNode(RelationshipType type, Node node) {
-        if (getRelatedNodes().get(node).getType() == type) {
-            return getRelatedNodes().get(node);
+        if (relatedNodes.get(node).getType() == type) {
+            return relatedNodes.get(node);
         } else {
             return null;
         }
@@ -262,7 +262,7 @@ public class Node implements Serializable {
         }
         ArrayList<Node> myNodes = new ArrayList<Node>();
         if (relationships.get(relationshipType) != null) {
-            for (Node string : getRelationships().get(relationshipType)) {
+            for (Node string : relationships.get(relationshipType)) {
                 if (string.getNodeType() == nodeType) {
                     myNodes.add(string);
                 }
@@ -274,7 +274,7 @@ public class Node implements Serializable {
     }
 
     public Set<SimpleRelationship.RelationshipType> getAllRelTypesExistentForThisNode() {
-        return getRelationships().keySet();
+        return relationships.keySet();
     }
 
     public void removeNode(Node node) {
@@ -307,9 +307,9 @@ public class Node implements Serializable {
         }
 
         try {
-            Relationship rel = getRelatedNodes().get(string);
-            getRelationships().get(rel).remove(string);
-            getRelatedNodes().remove(string);
+            Relationship rel = relatedNodes.get(string);
+            relationships.get(rel.getType()).remove(string);
+            relatedNodes.remove(string);
         } catch (Exception e) {
             DependencyGraphLogger.logger.info("Cannot remove " + id + " from " + this.id + e.getCause());
         }
@@ -381,12 +381,13 @@ public class Node implements Serializable {
         return (ArrayList<String>) getAssociatedIpsToCurrentNode(new ArrayList<String>());
     }
 
+    @Override
     public String toString() {
         String message = " Current node has id " + id + " and is of type " + nodeType + ". ";
-        for (RelationshipType type : getRelationships().keySet()) {
+        for (RelationshipType type : relationships.keySet()) {
             message += "Nodes related with " + id + " with relationship " + type + " are: ";
 
-            for (Node string : getRelationships().get(type)) {
+            for (Node string : relationships.get(type)) {
                 message += " " + string.getId() + " ";
             }
             message += " . ";
