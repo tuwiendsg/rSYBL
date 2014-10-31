@@ -282,7 +282,7 @@ salsaClient.undeployService(serviceID);
 
         RuntimeLogger.logger.info("Objects here" + toBeScaled + monitoring);
         toBeScaled.removeNode(toBeRemoved);
-
+        monitoring.refreshServiceStructure(controlledService);
 
         return res;
     }
@@ -545,6 +545,8 @@ salsaClient.undeployService(serviceID);
         return null;
     }
 
+    
+    
     public boolean scaleIn(Node arg0) {
         RuntimeLogger.logger.info("Scaling in..." + arg0.getId());
         boolean res = false;

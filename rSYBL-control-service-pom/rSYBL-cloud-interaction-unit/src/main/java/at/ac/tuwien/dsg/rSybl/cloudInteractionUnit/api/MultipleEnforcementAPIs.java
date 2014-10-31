@@ -468,11 +468,12 @@ public class MultipleEnforcementAPIs implements EnforcementAPIInterface {
 	@Override
 	public boolean enforceElasticityCapability(String target,
 			ElasticityCapability capability, Node e) {
-		monitoringAPIInterface.enforcingActionStarted(capability.getName()
-				 + target, e);
+		
 		boolean res=false;
 		EnforcementAPI enforcementAPI = enforcementAPIs.get(target);
 		if (!enforcementAPI.isExecutingControlAction() && e != null) {
+                    monitoringAPIInterface.enforcingActionStarted(capability.getName()
+				 + target, e);
 
 			enforcementAPI.setExecutingControlAction(true);
 			

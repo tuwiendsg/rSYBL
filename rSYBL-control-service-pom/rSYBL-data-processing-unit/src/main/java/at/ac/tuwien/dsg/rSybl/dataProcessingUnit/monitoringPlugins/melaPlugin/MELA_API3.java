@@ -394,6 +394,9 @@ public void removeService(Node cloudService) {
             jaxbContext.createMarshaller().marshal(element, os);
             os.flush();
             os.close();
+            StringWriter writer = new StringWriter();
+            jaxbContext.createMarshaller().marshal(element, writer);
+            Logger.getLogger(MELA_API3.class.getName()).log(Level.INFO, "Sending to MELA new structure "+writer.toString());
 
             InputStream errorStream = connection.getErrorStream();
             if (errorStream != null) {
@@ -412,7 +415,7 @@ public void removeService(Node cloudService) {
                     Logger.getLogger(MELA_API3.class.getName()).log(Level.SEVERE, line);
                 }
             }
-
+          
         } catch (Exception e) {
             Logger.getLogger(MELA_API3.class.getName()).log(Level.SEVERE, e.getMessage(), e);
         } finally {
