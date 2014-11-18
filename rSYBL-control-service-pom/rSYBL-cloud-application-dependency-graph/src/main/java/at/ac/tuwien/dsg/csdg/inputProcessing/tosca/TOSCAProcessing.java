@@ -105,7 +105,79 @@ public class TOSCAProcessing {
         
         
     }
+    public static String cleanRequirement(String req){
+    String requirement = req.trim();
+    int fromIndex=0;
+    while (requirement.indexOf(">",fromIndex)>0){
+        int currentIndex = requirement.indexOf(">", fromIndex);
+        if (requirement.charAt(currentIndex-1)!=' '){
+            String newReq=requirement.substring(0, currentIndex)+" "+requirement.substring(currentIndex,requirement.length());
+            requirement=newReq;
+            fromIndex=currentIndex+2;
+            if (requirement.charAt(currentIndex+2)!=' '){
+                newReq=requirement.substring(0, currentIndex+2)+" "+requirement.substring(currentIndex+2,requirement.length());
+                requirement=newReq;
+                fromIndex=currentIndex+3;
+            }else{
+                fromIndex=currentIndex+1;
+            }
+        }else{
+            if (requirement.charAt(currentIndex+1)!=' '){
+                String newReq=requirement.substring(0, currentIndex+1)+" "+requirement.substring(currentIndex+1,requirement.length());
+                requirement=newReq;
+                fromIndex=currentIndex+2;
+            }else{
+                fromIndex=currentIndex+1;
+            }
+        }
+        
+    }
     
+    while (requirement.indexOf("<",fromIndex)>0){
+        int currentIndex = requirement.indexOf("<", fromIndex);
+        if (requirement.charAt(currentIndex-1)!=' '){
+            String newReq=requirement.substring(0, currentIndex)+" "+requirement.substring(currentIndex,requirement.length());
+            requirement=newReq;
+            fromIndex=currentIndex+2;
+            if (requirement.charAt(currentIndex+2)!=' '){
+                newReq=requirement.substring(0, currentIndex+2)+" "+requirement.substring(currentIndex+2,requirement.length());
+                requirement=newReq;
+                fromIndex=currentIndex+3;
+            }else{
+                fromIndex=currentIndex+1;
+            }
+        }else{
+            if (requirement.charAt(currentIndex+1)!=' '){
+                String newReq=requirement.substring(0, currentIndex+1)+" "+requirement.substring(currentIndex+1,requirement.length());
+                requirement=newReq;
+                fromIndex=currentIndex+2;
+            }else{
+                fromIndex=currentIndex+1;
+            }
+        }
+        
+    }
+    
+    boolean numberFixed=false;
+    while (!numberFixed){
+        int toCheck = -1;
+        for (int i=0;i<requirement.length()-1;i++){
+            
+            if ((requirement.charAt(i)>='0'&& requirement.charAt(i)<='9') && (requirement.charAt(i+1)<'0' || requirement.charAt(i+1)>'9') && (requirement.charAt(i+1)!=' ')){
+                toCheck=i;
+            }
+        }
+        if (toCheck>-1){
+            numberFixed=true;
+            String newReq=requirement.substring(0, toCheck+1)+" "+requirement.substring(toCheck+1,requirement.length());
+            requirement=newReq;
+
+        }
+        
+    }
+    
+    return requirement;
+}
     private void setElasticityRequirementsForService(Node node, TBoundaryDefinitions reqs) {
         SYBLAnnotation annotation = new SYBLAnnotation();
         ElasticityRequirement elasticityRequirement = new ElasticityRequirement();
@@ -124,17 +196,50 @@ public class TOSCAProcessing {
                     break;
                 
             }
-            switch (policy.getPolicyType().getLocalPart()) {
-                case "SYBLConstraint":
-                    annotation.setConstraints(annotation.getConstraints() + "; " + policy.getName());
+            switch (policy.getPolicyType().getLocalPart().toLowerCase()) {
+                case "syblconstraint":
+                    if (annotation.getConstraints()!=null){
+                    annotation.setConstraints(annotation.getConstraints() + "; "+cleanRequirement(policy.getPolicyRef() +":" + policy.getName()));
+                    }else{
+                      annotation.setConstraints(cleanRequirement(policy.getPolicyRef() +":" + policy.getName())); 
+                    }
                     break;
-                case "SYBLStrategy":
-                    annotation.setConstraints(annotation.getStrategies() + "; " + policy.getName());
+                case "constraint":
+                    if (annotation.getConstraints()!=null){
+                    annotation.setConstraints(annotation.getConstraints() + "; "+cleanRequirement(policy.getPolicyRef() +":" + policy.getName()));
+                    }else{
+                      annotation.setConstraints(cleanRequirement(policy.getPolicyRef() +":" + policy.getName())); 
+                    }
                     break;
-                case "SYBLMonitoring":
-                    annotation.setConstraints(annotation.getMonitoring() + "; " + policy.getName());
+                case "syblstrategy":
+                    if (annotation.getStrategies()!=null){
+                    annotation.setStrategies(annotation.getStrategies() + "; " +cleanRequirement(policy.getPolicyRef()+":"+ policy.getName()));
+                    }else{
+                    annotation.setStrategies(cleanRequirement(policy.getPolicyRef()+":"+ policy.getName()));             
+                    }
                     break;
-                
+                  case "strategy":
+                    if (annotation.getStrategies()!=null){
+                    annotation.setStrategies(annotation.getStrategies() + "; " +cleanRequirement(policy.getPolicyRef()+":"+ policy.getName()));
+                    }else{
+                    annotation.setStrategies(cleanRequirement(policy.getPolicyRef()+":"+ policy.getName()));             
+                    }
+                    break;
+                      
+                case "syblmonitoring":
+                    if (annotation.getMonitoring()!=null){
+                    annotation.setMonitoring(annotation.getMonitoring() + "; " +cleanRequirement(policy.getPolicyRef()+":"+ policy.getName()));
+                    }else{
+                    annotation.setMonitoring(cleanRequirement(policy.getPolicyRef()+":"+ policy.getName()));
+                    }
+                    break;
+                case "monitoring":
+                    if (annotation.getMonitoring()!=null){
+                    annotation.setMonitoring(annotation.getMonitoring() + "; " +cleanRequirement(policy.getPolicyRef()+":"+ policy.getName()));
+                    }else{
+                    annotation.setMonitoring(cleanRequirement(policy.getPolicyRef()+":"+ policy.getName()));
+                    }
+                    break;
             }
             
         }
@@ -166,23 +271,23 @@ public class TOSCAProcessing {
             switch (policy.getPolicyType().getLocalPart()) {
                 case "Constraint":
                     if (annotation.getConstraints() != null) {
-                        annotation.setConstraints(annotation.getConstraints() + "; " + policy.getPolicyRef()+":"+policy.getName());
+                        annotation.setConstraints(annotation.getConstraints() + "; " + cleanRequirement( policy.getPolicyRef()+":"+policy.getName()));
                     } else {
-                        annotation.setConstraints( policy.getPolicyRef()+":"+policy.getName());
+                        annotation.setConstraints( cleanRequirement(policy.getPolicyRef()+":"+policy.getName()));
                     }
                     break;
                 case "Strategy":
                     if (annotation.getStrategies() != null) {
-                        annotation.setStrategies(annotation.getStrategies() + "; " + policy.getPolicyRef()+":"+ policy.getName());
+                        annotation.setStrategies(annotation.getStrategies() + "; " + cleanRequirement( policy.getPolicyRef()+":"+ policy.getName()));
                     } else {
-                        annotation.setStrategies( policy.getPolicyRef()+":"+policy.getName());
+                        annotation.setStrategies( cleanRequirement(policy.getPolicyRef()+":"+policy.getName()));
                     }
                     break;
                 case "Monitoring":
                     if (annotation.getMonitoring()!=null){
-                    annotation.setMonitoring(annotation.getMonitoring() + "; " + policy.getPolicyRef()+":"+ policy.getName());
+                    annotation.setMonitoring(annotation.getMonitoring() + "; " + cleanRequirement(policy.getPolicyRef()+":"+ policy.getName()));
                     }else{
-                        annotation.setMonitoring( policy.getPolicyRef()+":"+policy.getName());
+                        annotation.setMonitoring(cleanRequirement( policy.getPolicyRef()+":"+policy.getName()));
                     }
                     break;
                 
@@ -211,6 +316,7 @@ public class TOSCAProcessing {
                     if (nodes.containsKey(serviceTemplate.getSubstitutableNodeType().getLocalPart())) {
                         n = nodes.get(serviceTemplate.getSubstitutableNodeType().getLocalPart());
                     }
+                    
                     n.setId(serviceTemplate.getSubstitutableNodeType().getLocalPart());
                     
                     n.setNodeType(NodeType.SERVICE_TOPOLOGY);
@@ -285,6 +391,7 @@ public class TOSCAProcessing {
 //								
 //							}else
                             if (tExt instanceof TNodeTemplate) {
+                                
                                 TNodeTemplate nodeTemplate = (TNodeTemplate) tExt;
                                 Node serviceUnit = null;
                                 if (nodes.containsKey(nodeTemplate.getId())) {

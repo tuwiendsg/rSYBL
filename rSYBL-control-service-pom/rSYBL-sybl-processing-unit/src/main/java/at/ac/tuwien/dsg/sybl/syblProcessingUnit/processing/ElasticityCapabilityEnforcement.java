@@ -70,7 +70,7 @@ public class ElasticityCapabilityEnforcement {
             SYBLDirectivesEnforcementLogger.logger.info("Starting enforcing action"+actionName+" on target "+target+".");
         }
         for (ElasticityCapability elasticityCapability : target.getElasticityCapabilities()) {
-            if (elasticityCapability.getName().equalsIgnoreCase(actionName) && checkECPossible(elasticityCapability)) {
+            if (elasticityCapability.getName().trim().equalsIgnoreCase(actionName.trim()) && checkECPossible(elasticityCapability)) {
                 if (!elasticityCapability.getName().toLowerCase().contains("scalein") || (elasticityCapability.getName().toLowerCase().contains("scalein") && target.getAllRelatedNodesOfType(RelationshipType.HOSTED_ON_RELATIONSHIP, NodeType.VIRTUAL_MACHINE).size() > 1)) {
                     String[] primitives = elasticityCapability
                             .getPrimitiveOperations().split(";");

@@ -13,7 +13,7 @@
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
  * WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
- * License for the specific language governing permissions and limitations under
+ * License for the senpecific language governing permissions and limitations under
  * the License.
  */
 package at.ac.tuwien.dsg.rSybl.analysisEngine.main;
@@ -98,7 +98,11 @@ public class ControlService {
     }
     public String getXMLRequirements(){
         OutputProcessing outputProcessing = new OutputProcessing();
+        try{
         return outputProcessing.getXMLRequirements(dependencyGraph.getAllElasticityRequirements());
+        }catch(Exception e ){
+            return "";
+        }
     }
     public void refreshApplicationDeploymentDescription(String deployment) {
         //TODO implement this, have to replace deployment conf 
@@ -144,8 +148,13 @@ public class ControlService {
     }
 
     public String getJSONStructureOfService() {
+        try{
         return dependencyGraph.getStructuralDataInJSON();
-    }
+        }catch(Exception e){
+            
+                return "";
+        }
+        }
 
     private void replaceDependencyGraph() {
         Node node = new Node();
