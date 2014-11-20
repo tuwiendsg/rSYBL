@@ -212,6 +212,7 @@ public class TOSCAProcessing {
                     }
                     break;
                 case "syblstrategy":
+                    if (policy.getName().toLowerCase().contains("case"))
                     if (annotation.getStrategies()!=null){
                     annotation.setStrategies(annotation.getStrategies() + "; " +cleanRequirement(policy.getPolicyRef()+":"+ policy.getName()));
                     }else{
@@ -219,6 +220,7 @@ public class TOSCAProcessing {
                     }
                     break;
                   case "strategy":
+                     if (policy.getName().toLowerCase().contains("case"))
                     if (annotation.getStrategies()!=null){
                     annotation.setStrategies(annotation.getStrategies() + "; " +cleanRequirement(policy.getPolicyRef()+":"+ policy.getName()));
                     }else{
@@ -246,8 +248,11 @@ public class TOSCAProcessing {
         annotation.setEntityID(node.getId());
         
         elasticityRequirement.setAnnotation(annotation);
+        if (!annotation.getConstraints().equalsIgnoreCase("") || !annotation.getStrategies().equalsIgnoreCase("")){
         node.addElasticityRequirement(elasticityRequirement);
         System.out.println(annotation.getConstraints() + " " + annotation.getStrategies() + " " + annotation.getMonitoring());
+        
+        }
     }
     
     private void setElasticityRequirements(Node node, TNodeTemplate.Policies policies) {
@@ -277,6 +282,7 @@ public class TOSCAProcessing {
                     }
                     break;
                 case "Strategy":
+                    if (policy.getName().toLowerCase().contains("case"))
                     if (annotation.getStrategies() != null) {
                         annotation.setStrategies(annotation.getStrategies() + "; " + cleanRequirement( policy.getPolicyRef()+":"+ policy.getName()));
                     } else {
@@ -297,6 +303,7 @@ public class TOSCAProcessing {
         annotation.setEntityID(node.getId());
         
         elasticityRequirement.setAnnotation(annotation);
+        if (!annotation.getConstraints().equalsIgnoreCase("") || !annotation.getStrategies().equalsIgnoreCase(""))
         node.addElasticityRequirement(elasticityRequirement);
        // System.out.println(annotation.getConstraints() + " " + annotation.getStrategies() + " " + annotation.getMonitoring());
     }
