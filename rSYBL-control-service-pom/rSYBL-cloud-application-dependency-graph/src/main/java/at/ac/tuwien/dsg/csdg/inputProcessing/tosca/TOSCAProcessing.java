@@ -65,125 +65,124 @@ import java.util.logging.Logger;
 import sun.misc.IOUtils;
 
 public class TOSCAProcessing {
-    
+
     public Definitions readTOSCADescriptionsFile() {
-        
+
         try {
-            
+
             JAXBContext a = JAXBContext.newInstance(Definitions.class);
             Unmarshaller u = a.createUnmarshaller();
             Definitions def = (Definitions) u.unmarshal(new File("./tosca_sybl_example.xml"));
 
             // Definitions def = (Definitions) u.unmarshal( Definitions.class.getClassLoader().getResourceAsStream("./tosca_sybl_example.xml")) ;
-
             return def;
         } catch (JAXBException e) {
             // TODO Auto-generated catch block
             e.printStackTrace();
             return null;
         }
-        
-        
+
     }
-    
+
     public Definitions readTOSCADescriptionsString(String tosca) {
-        
+
         try {
-            
+
             JAXBContext a = JAXBContext.newInstance(Definitions.class);
             Unmarshaller u = a.createUnmarshaller();
             //Definitions	def = (Definitions) u.unmarshal(new File(Configuration.getCloudServiceTOSCADescription()));
 
             Definitions def = (Definitions) u.unmarshal(new StringReader(tosca));
-            
+
             return def;
         } catch (JAXBException e) {
             // TODO Auto-generated catch block
             e.printStackTrace();
             return null;
         }
-        
-        
+
     }
-    public static String cleanRequirement(String req){
-    String requirement = req.trim();
-    int fromIndex=0;
-    while (requirement.indexOf(">",fromIndex)>0){
-        int currentIndex = requirement.indexOf(">", fromIndex);
-        if (requirement.charAt(currentIndex-1)!=' '){
-            String newReq=requirement.substring(0, currentIndex)+" "+requirement.substring(currentIndex,requirement.length());
-            requirement=newReq;
-            fromIndex=currentIndex+2;
-            if (requirement.charAt(currentIndex+2)!=' '){
-                newReq=requirement.substring(0, currentIndex+2)+" "+requirement.substring(currentIndex+2,requirement.length());
-                requirement=newReq;
-                fromIndex=currentIndex+3;
-            }else{
-                fromIndex=currentIndex+1;
+
+    public static String cleanRequirement(String req) {
+        String requirement = req.trim();
+        int fromIndex = 0;
+        while (requirement.indexOf(">", fromIndex) > 0) {
+            int currentIndex = requirement.indexOf(">", fromIndex);
+            if (requirement.charAt(currentIndex - 1) != ' ') {
+                String newReq = requirement.substring(0, currentIndex) + " " + requirement.substring(currentIndex, requirement.length());
+                requirement = newReq;
+                fromIndex = currentIndex + 2;
+                if (requirement.charAt(currentIndex + 2) != ' ') {
+                    newReq = requirement.substring(0, currentIndex + 2) + " " + requirement.substring(currentIndex + 2, requirement.length());
+                    requirement = newReq;
+                    fromIndex = currentIndex + 3;
+                } else {
+                    fromIndex = currentIndex + 1;
+                }
+            } else {
+                if (requirement.charAt(currentIndex + 1) != ' ') {
+                    String newReq = requirement.substring(0, currentIndex + 1) + " " + requirement.substring(currentIndex + 1, requirement.length());
+                    requirement = newReq;
+                    fromIndex = currentIndex + 2;
+                } else {
+                    fromIndex = currentIndex + 1;
+                }
             }
-        }else{
-            if (requirement.charAt(currentIndex+1)!=' '){
-                String newReq=requirement.substring(0, currentIndex+1)+" "+requirement.substring(currentIndex+1,requirement.length());
-                requirement=newReq;
-                fromIndex=currentIndex+2;
-            }else{
-                fromIndex=currentIndex+1;
-            }
-        }
-        
-    }
-    
-    while (requirement.indexOf("<",fromIndex)>0){
-        int currentIndex = requirement.indexOf("<", fromIndex);
-        if (requirement.charAt(currentIndex-1)!=' '){
-            String newReq=requirement.substring(0, currentIndex)+" "+requirement.substring(currentIndex,requirement.length());
-            requirement=newReq;
-            fromIndex=currentIndex+2;
-            if (requirement.charAt(currentIndex+2)!=' '){
-                newReq=requirement.substring(0, currentIndex+2)+" "+requirement.substring(currentIndex+2,requirement.length());
-                requirement=newReq;
-                fromIndex=currentIndex+3;
-            }else{
-                fromIndex=currentIndex+1;
-            }
-        }else{
-            if (requirement.charAt(currentIndex+1)!=' '){
-                String newReq=requirement.substring(0, currentIndex+1)+" "+requirement.substring(currentIndex+1,requirement.length());
-                requirement=newReq;
-                fromIndex=currentIndex+2;
-            }else{
-                fromIndex=currentIndex+1;
-            }
-        }
-        
-    }
-    
-    boolean numberFixed=false;
-    while (!numberFixed){
-        int toCheck = -1;
-        for (int i=0;i<requirement.length()-1;i++){
-            
-            if ((requirement.charAt(i)>='0'&& requirement.charAt(i)<='9') && (requirement.charAt(i+1)<'0' || requirement.charAt(i+1)>'9') && (requirement.charAt(i+1)!=' ')){
-                toCheck=i;
-            }
-        }
-        if (toCheck>-1){
-            numberFixed=true;
-            String newReq=requirement.substring(0, toCheck+1)+" "+requirement.substring(toCheck+1,requirement.length());
-            requirement=newReq;
 
         }
-        
+
+        while (requirement.indexOf("<", fromIndex) > 0) {
+            int currentIndex = requirement.indexOf("<", fromIndex);
+            if (requirement.charAt(currentIndex - 1) != ' ') {
+                String newReq = requirement.substring(0, currentIndex) + " " + requirement.substring(currentIndex, requirement.length());
+                requirement = newReq;
+                fromIndex = currentIndex + 2;
+                if (requirement.charAt(currentIndex + 2) != ' ') {
+                    newReq = requirement.substring(0, currentIndex + 2) + " " + requirement.substring(currentIndex + 2, requirement.length());
+                    requirement = newReq;
+                    fromIndex = currentIndex + 3;
+                } else {
+                    fromIndex = currentIndex + 1;
+                }
+            } else {
+                if (requirement.charAt(currentIndex + 1) != ' ') {
+                    String newReq = requirement.substring(0, currentIndex + 1) + " " + requirement.substring(currentIndex + 1, requirement.length());
+                    requirement = newReq;
+                    fromIndex = currentIndex + 2;
+                } else {
+                    fromIndex = currentIndex + 1;
+                }
+            }
+
+        }
+
+        boolean numberFixed = false;
+        while (!numberFixed) {
+            int toCheck = -1;
+            for (int i = 0; i < requirement.length() - 1; i++) {
+
+                if ((requirement.charAt(i) >= '0' && requirement.charAt(i) <= '9') && (requirement.charAt(i + 1) < '0' || requirement.charAt(i + 1) > '9') && (requirement.charAt(i + 1) != ' ')) {
+                    toCheck = i;
+                }
+            }
+            if (toCheck > -1) {
+                numberFixed = true;
+                String newReq = requirement.substring(0, toCheck + 1) + " " + requirement.substring(toCheck + 1, requirement.length());
+                requirement = newReq;
+
+            }
+
+        }
+
+        return requirement;
     }
-    
-    return requirement;
-}
+
     private void setElasticityRequirementsForService(Node node, TBoundaryDefinitions reqs) {
         SYBLAnnotation annotation = new SYBLAnnotation();
         ElasticityRequirement elasticityRequirement = new ElasticityRequirement();
-        
+
         for (TPolicy policy : reqs.getPolicies().getPolicy()) {
-            
+
             switch (node.getNodeType()) {
                 case CLOUD_SERVICE:
                     annotation.setAnnotationType(AnnotationType.CLOUD_SERVICE);
@@ -194,67 +193,71 @@ public class TOSCAProcessing {
                 case SERVICE_UNIT:
                     annotation.setAnnotationType(AnnotationType.SERVICE_UNIT);
                     break;
-                
+
             }
             switch (policy.getPolicyType().getLocalPart().toLowerCase()) {
                 case "syblconstraint":
-                    if (annotation.getConstraints()!=null){
-                    annotation.setConstraints(annotation.getConstraints() + "; "+cleanRequirement(policy.getPolicyRef() +":" + policy.getName()));
-                    }else{
-                      annotation.setConstraints(cleanRequirement(policy.getPolicyRef() +":" + policy.getName())); 
+                    if (annotation.getConstraints() != null) {
+                        annotation.setConstraints(annotation.getConstraints() + "; " + cleanRequirement(policy.getPolicyRef() + ":" + policy.getName()));
+                    } else {
+                        annotation.setConstraints(cleanRequirement(policy.getPolicyRef() + ":" + policy.getName()));
                     }
                     break;
                 case "constraint":
-                    if (annotation.getConstraints()!=null){
-                    annotation.setConstraints(annotation.getConstraints() + "; "+cleanRequirement(policy.getPolicyRef() +":" + policy.getName()));
-                    }else{
-                      annotation.setConstraints(cleanRequirement(policy.getPolicyRef() +":" + policy.getName())); 
+                    if (annotation.getConstraints() != null) {
+                        annotation.setConstraints(annotation.getConstraints() + "; " + cleanRequirement(policy.getPolicyRef() + ":" + policy.getName()));
+                    } else {
+                        annotation.setConstraints(cleanRequirement(policy.getPolicyRef() + ":" + policy.getName()));
                     }
                     break;
                 case "syblstrategy":
-                    if (policy.getName().toLowerCase().contains("case"))
-                    if (annotation.getStrategies()!=null){
-                    annotation.setStrategies(annotation.getStrategies() + "; " +cleanRequirement(policy.getPolicyRef()+":"+ policy.getName()));
-                    }else{
-                    annotation.setStrategies(cleanRequirement(policy.getPolicyRef()+":"+ policy.getName()));             
+                    if (policy.getName().toLowerCase().contains("case")) {
+                        if (annotation.getStrategies() != null) {
+                            annotation.setStrategies(annotation.getStrategies() + "; " + cleanRequirement(policy.getPolicyRef() + ":" + policy.getName()));
+                        } else {
+                            annotation.setStrategies(cleanRequirement(policy.getPolicyRef() + ":" + policy.getName()));
+                        }
                     }
                     break;
-                  case "strategy":
-                     if (policy.getName().toLowerCase().contains("case"))
-                    if (annotation.getStrategies()!=null){
-                    annotation.setStrategies(annotation.getStrategies() + "; " +cleanRequirement(policy.getPolicyRef()+":"+ policy.getName()));
-                    }else{
-                    annotation.setStrategies(cleanRequirement(policy.getPolicyRef()+":"+ policy.getName()));             
+                case "strategy":
+                    if (policy.getName().toLowerCase().contains("case")) {
+                        if (annotation.getStrategies() != null) {
+                            annotation.setStrategies(annotation.getStrategies() + "; " + cleanRequirement(policy.getPolicyRef() + ":" + policy.getName()));
+                        } else {
+                            annotation.setStrategies(cleanRequirement(policy.getPolicyRef() + ":" + policy.getName()));
+                        }
                     }
                     break;
-                      
+
                 case "syblmonitoring":
-                    if (annotation.getMonitoring()!=null){
-                    annotation.setMonitoring(annotation.getMonitoring() + "; " +cleanRequirement(policy.getPolicyRef()+":"+ policy.getName()));
-                    }else{
-                    annotation.setMonitoring(cleanRequirement(policy.getPolicyRef()+":"+ policy.getName()));
+                    if (annotation.getMonitoring() != null) {
+                        annotation.setMonitoring(annotation.getMonitoring() + "; " + cleanRequirement(policy.getPolicyRef() + ":" + policy.getName()));
+                    } else {
+                        annotation.setMonitoring(cleanRequirement(policy.getPolicyRef() + ":" + policy.getName()));
                     }
                     break;
                 case "monitoring":
-                    if (annotation.getMonitoring()!=null){
-                    annotation.setMonitoring(annotation.getMonitoring() + "; " +cleanRequirement(policy.getPolicyRef()+":"+ policy.getName()));
-                    }else{
-                    annotation.setMonitoring(cleanRequirement(policy.getPolicyRef()+":"+ policy.getName()));
+                    if (annotation.getMonitoring() != null) {
+                        annotation.setMonitoring(annotation.getMonitoring() + "; " + cleanRequirement(policy.getPolicyRef() + ":" + policy.getName()));
+                    } else {
+                        annotation.setMonitoring(cleanRequirement(policy.getPolicyRef() + ":" + policy.getName()));
                     }
                     break;
             }
-            
+
         }
         annotation.setEntityID(node.getId());
-        
+
         elasticityRequirement.setAnnotation(annotation);
-        if (!annotation.getConstraints().equalsIgnoreCase("") || !annotation.getStrategies().equalsIgnoreCase("")){
-        node.addElasticityRequirement(elasticityRequirement);
-        System.out.println(annotation.getConstraints() + " " + annotation.getStrategies() + " " + annotation.getMonitoring());
-        
+
+        if ((annotation.getConstraints() != null && !annotation.getConstraints().isEmpty())
+                || (annotation.getStrategies() != null && !annotation.getStrategies().isEmpty())) {
+            node.addElasticityRequirement(elasticityRequirement);
+            System.out.println(annotation.getConstraints() + " " + annotation.getStrategies() + " " + annotation.getMonitoring());
         }
+
     }
-    
+
     private void setElasticityRequirements(Node node, TNodeTemplate.Policies policies) {
         SYBLAnnotation annotation = new SYBLAnnotation();
         ElasticityRequirement elasticityRequirement = new ElasticityRequirement();
@@ -271,43 +274,46 @@ public class TOSCAProcessing {
                 case SERVICE_UNIT:
                     annotation.setAnnotationType(AnnotationType.SERVICE_UNIT);
                     break;
-                
+
             }
             switch (policy.getPolicyType().getLocalPart()) {
                 case "Constraint":
                     if (annotation.getConstraints() != null) {
-                        annotation.setConstraints(annotation.getConstraints() + "; " + cleanRequirement( policy.getPolicyRef()+":"+policy.getName()));
+                        annotation.setConstraints(annotation.getConstraints() + "; " + cleanRequirement(policy.getPolicyRef() + ":" + policy.getName()));
                     } else {
-                        annotation.setConstraints( cleanRequirement(policy.getPolicyRef()+":"+policy.getName()));
+                        annotation.setConstraints(cleanRequirement(policy.getPolicyRef() + ":" + policy.getName()));
                     }
                     break;
                 case "Strategy":
-                    if (policy.getName().toLowerCase().contains("case"))
-                    if (annotation.getStrategies() != null) {
-                        annotation.setStrategies(annotation.getStrategies() + "; " + cleanRequirement( policy.getPolicyRef()+":"+ policy.getName()));
-                    } else {
-                        annotation.setStrategies( cleanRequirement(policy.getPolicyRef()+":"+policy.getName()));
+                    if (policy.getName().toLowerCase().contains("case")) {
+                        if (annotation.getStrategies() != null) {
+                            annotation.setStrategies(annotation.getStrategies() + "; " + cleanRequirement(policy.getPolicyRef() + ":" + policy.getName()));
+                        } else {
+                            annotation.setStrategies(cleanRequirement(policy.getPolicyRef() + ":" + policy.getName()));
+                        }
                     }
                     break;
                 case "Monitoring":
-                    if (annotation.getMonitoring()!=null){
-                    annotation.setMonitoring(annotation.getMonitoring() + "; " + cleanRequirement(policy.getPolicyRef()+":"+ policy.getName()));
-                    }else{
-                        annotation.setMonitoring(cleanRequirement( policy.getPolicyRef()+":"+policy.getName()));
+                    if (annotation.getMonitoring() != null) {
+                        annotation.setMonitoring(annotation.getMonitoring() + "; " + cleanRequirement(policy.getPolicyRef() + ":" + policy.getName()));
+                    } else {
+                        annotation.setMonitoring(cleanRequirement(policy.getPolicyRef() + ":" + policy.getName()));
                     }
                     break;
-                
+
             }
-            
+
         }
         annotation.setEntityID(node.getId());
-        
+
         elasticityRequirement.setAnnotation(annotation);
-        if (!annotation.getConstraints().equalsIgnoreCase("") || !annotation.getStrategies().equalsIgnoreCase(""))
-        node.addElasticityRequirement(elasticityRequirement);
-       // System.out.println(annotation.getConstraints() + " " + annotation.getStrategies() + " " + annotation.getMonitoring());
+        if ((annotation.getConstraints() != null && !annotation.getConstraints().isEmpty())
+                || (annotation.getStrategies() != null && !annotation.getStrategies().isEmpty())) {
+            node.addElasticityRequirement(elasticityRequirement);
+        }
+        // System.out.println(annotation.getConstraints() + " " + annotation.getStrategies() + " " + annotation.getMonitoring());
     }
-    
+
     public HashMap<String, Node> parseTOSCAGraph(HashMap<String, Node> nodes, List<TExtensibleElements> currentElements) {
         List<TExtensibleElements> c = new ArrayList<TExtensibleElements>();
         String cloudServiceName = "";
@@ -316,16 +322,16 @@ public class TOSCAProcessing {
                 //System.out.println("Found of type service "+extensibleElements);
                 Node n = new Node();
                 TServiceTemplate serviceTemplate = (TServiceTemplate) extensibleElements;
-                
+
                 n.setId(serviceTemplate.getName());
                 n.setNodeType(NodeType.CLOUD_SERVICE);
                 if (serviceTemplate.getSubstitutableNodeType() != null) {
                     if (nodes.containsKey(serviceTemplate.getSubstitutableNodeType().getLocalPart())) {
                         n = nodes.get(serviceTemplate.getSubstitutableNodeType().getLocalPart());
                     }
-                    
+
                     n.setId(serviceTemplate.getSubstitutableNodeType().getLocalPart());
-                    
+
                     n.setNodeType(NodeType.SERVICE_TOPOLOGY);
                     SimpleRelationship rel = new SimpleRelationship();
                     rel.setType(RelationshipType.COMPOSITION_RELATIONSHIP);
@@ -347,7 +353,7 @@ public class TOSCAProcessing {
                                     serviceUnit = new Node();
                                     serviceUnit.setId(nodeTemplate.getName());
                                     serviceUnit.setNodeType(NodeType.SERVICE_UNIT);
-                                    
+
                                 }
                                 //System.out.println(n+" "+nodeTemplate.getId());
                                 //serviceUnit.setId(nodeTemplate.getId());
@@ -362,20 +368,18 @@ public class TOSCAProcessing {
                             } else {
                                 if (tExt instanceof TRelationshipTemplate) {
                                     TRelationshipTemplate relationship = (TRelationshipTemplate) tExt;
-                                    
+
                                 }
                             }
                         }
                     }
-                    
-                    
-                } else {                  
+
+                } else {
                     cloudServiceName = n.getId();
-                   
-                    
+
                     nodes.put(n.getId(), n);
                     TTopologyTemplate topologyTemplate = serviceTemplate.getTopologyTemplate();
-                     Node newServiceTemplate = new Node();
+                    Node newServiceTemplate = new Node();
                     newServiceTemplate.setNodeType(NodeType.SERVICE_TOPOLOGY);
                     newServiceTemplate.setId("CompositeComponent");
                     SimpleRelationship newRelationship = new SimpleRelationship();
@@ -383,7 +387,7 @@ public class TOSCAProcessing {
                     newRelationship.setTargetElement(newServiceTemplate.getId());
                     newRelationship.setType(RelationshipType.COMPOSITION_RELATIONSHIP);
                     n.addNode(newServiceTemplate, newRelationship);
-                            
+
                     if (topologyTemplate != null) {
                         for (TEntityTemplate tExt : topologyTemplate.getNodeTemplateOrRelationshipTemplate()) {
 //							if (tExt.getType()!=null){
@@ -398,7 +402,7 @@ public class TOSCAProcessing {
 //								
 //							}else
                             if (tExt instanceof TNodeTemplate) {
-                                
+
                                 TNodeTemplate nodeTemplate = (TNodeTemplate) tExt;
                                 Node serviceUnit = null;
                                 if (nodes.containsKey(nodeTemplate.getId())) {
@@ -428,25 +432,23 @@ public class TOSCAProcessing {
                             } else {
                                 if (tExt instanceof TRelationshipTemplate) {
                                     TRelationshipTemplate relationship = (TRelationshipTemplate) tExt;
-                                    
+
                                 }
                             }
                         }
                     }
                 }
-                
+
                 if (serviceTemplate.getBoundaryDefinitions() != null && serviceTemplate.getBoundaryDefinitions().getPolicies() != null) {
                     setElasticityRequirementsForService(n, serviceTemplate.getBoundaryDefinitions());
                 }
             }
-            
-            
+
         }
-        
-        
+
         return nodes;
     }
-    
+
     public DependencyGraph toscaDescriptionToDependencyGraph() {
         DependencyGraph dependencyGraph = new DependencyGraph();
         HashMap<String, Node> nodes = new HashMap<String, Node>();//String - id of the node, for easier access and modification of its relationships
@@ -461,7 +463,7 @@ public class TOSCAProcessing {
         }
         return dependencyGraph;
     }
-    
+
     public DependencyGraph toscaDescriptionToDependencyGraph(String tosca) {
         DependencyGraph dependencyGraph = new DependencyGraph();
         HashMap<String, Node> nodes = new HashMap<String, Node>();//String - id of the node, for easier access and modification of its relationships
@@ -469,7 +471,7 @@ public class TOSCAProcessing {
         //TODO: take each construct present in TOSCA and transform it to our model
         Definitions definitions = readTOSCADescriptionsString(tosca);
         TPolicy policy = new TPolicy();
-        
+
         parseTOSCAGraph(nodes, definitions.getServiceTemplateOrNodeTypeOrNodeTypeImplementation());
         for (Node n : nodes.values()) {
             if (n.getNodeType() == NodeType.CLOUD_SERVICE) {
@@ -478,7 +480,7 @@ public class TOSCAProcessing {
         }
         return dependencyGraph;
     }
-    
+
     public static void main(String[] args) {
         String content = null;
         File file = new File("application.tosca"); //for ex foo.txt
@@ -493,6 +495,6 @@ public class TOSCAProcessing {
         } catch (IOException e) {
             e.printStackTrace();
         }
-        
+
     }
 }
