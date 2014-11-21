@@ -392,7 +392,7 @@ public static String cleanRequirement(String req){
         int toCheck = -1;
         for (int i=0;i<requirement.length()-1;i++){
             
-                if (((requirement.charAt(i) >= '0' && requirement.charAt(i) <= '9')) && (requirement.charAt(i + 1) < '0' || requirement.charAt(i + 1) > '9') && (requirement.charAt(i + 1) != ' ' && requirement.charAt(i+1)!='.')) {
+                if (((requirement.charAt(i) >= '0' && requirement.charAt(i) <= '9')) && (requirement.charAt(i + 1) < '0' || requirement.charAt(i + 1) > '9') && (requirement.charAt(i + 1) != ' ' && requirement.charAt(i+1)!='.' && requirement.charAt(i+1)!=':')) {
                 toCheck=i;
             }
         }
@@ -413,7 +413,17 @@ public static Constraint mapSYBLAnnotationToXMLConstraint(String constraint ){
         constraint=constraint.replaceAll("  ", " ");
 	constraint = cleanRequirement(constraint);
         
-	String [] s = constraint.split("CONSTRAINT ")[1].split(" ");
+	String [] st = constraint.split("CONSTRAINT ")[1].split(" ");
+        String [] si = new String[st.length];
+        int i = 0;
+             for (String mys:st){
+            if (!mys.equalsIgnoreCase("")){
+                si[i]=mys;
+                i++;
+            }
+        }
+        String [] s= new String[i];
+        System.arraycopy(si, 0, s, 0, i);
 	Constraint c = new Constraint();
 	//DependencyGraphLogger.logger.info("The constraint is "+constraint+"s[0]="+s[0]+"s[1]="+s[1]+"s[2]="+s[2]+"s[3]="+"constraint.split(CONSTRAINT)[0]"+constraint.split("CONSTRAINT")[0]);
 	Condition toEnforce = new Condition();
@@ -450,7 +460,7 @@ public static Constraint mapSYBLAnnotationToXMLConstraint(String constraint ){
 	BinaryRestrictionsConjunction binaryRestrictions = new BinaryRestrictionsConjunction();
 	binaryRestrictions.add(binaryRestr);
 	if(constraint.contains("AND") || constraint.contains("and")){
-	int i=0;
+	 i=0;
 	int index =0;
 		for (String x:s){
 			
@@ -551,7 +561,17 @@ public static Constraint mapSYBLAnnotationToXMLConstraint(String constraint ){
 public static Strategy mapFromSYBLAnnotationToXMLStrategy(String strategy){
      strategy=strategy.replaceAll("  ", " ");
         strategy = cleanRequirement(strategy);
-	String [] s = strategy.split("[: ]");
+	String [] st = strategy.split("[ : ]");
+           String [] si = new String[st.length];
+        int i = 0;
+        for (String mys:st){
+            if (!mys.equalsIgnoreCase("")){
+                si[i]=mys;
+                i++;
+            }
+        }
+        String [] s= new String[i];
+        System.arraycopy(si, 0, s, 0, i);
 	Strategy c = new Strategy();
 	ToEnforce toEnforce = new ToEnforce();
 
@@ -612,7 +632,7 @@ public static Strategy mapFromSYBLAnnotationToXMLStrategy(String strategy){
 					unaryRestrictions.add(unaryRestriction);
 				cond.addUnaryRestrictionConjunction(unaryRestrictions);	
 			}else{
-			int i=0;
+			 i=0;
 			if ((s[index+1].charAt(0)>='a' && s[index+1].charAt(0)<='z') ||(s[index+1].charAt(0)>='A' && s[index+1].charAt(0)<='Z')) leftHandSide2.setMetric(s[index+1]);
 			else
 				leftHandSide2.setNumber(s[index+1]);
@@ -644,7 +664,7 @@ public static Strategy mapFromSYBLAnnotationToXMLStrategy(String strategy){
 			 index = 0;
 			
 		
-			 int i=0;
+			 i=0;
 			for (String x:s){
 				
 				if (x.equalsIgnoreCase("and")) index = i;
