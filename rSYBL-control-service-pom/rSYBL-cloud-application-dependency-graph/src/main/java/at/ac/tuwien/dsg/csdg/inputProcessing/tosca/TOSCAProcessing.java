@@ -161,7 +161,7 @@ public class TOSCAProcessing {
             int toCheck = -1;
             for (int i = 0; i < requirement.length() - 1; i++) {
 
-                if (((requirement.charAt(i) >= '0' && requirement.charAt(i) <= '9')) && (requirement.charAt(i + 1) < '0' || requirement.charAt(i + 1) > '9') && (requirement.charAt(i + 1) != ' ' && requirement.charAt(i+1)!='.')) {
+                if (((requirement.charAt(i) >= '0' && requirement.charAt(i) <= '9')) && (requirement.charAt(i + 1) < '0' || requirement.charAt(i + 1) > '9') && (requirement.charAt(i + 1) != ' ' && requirement.charAt(i+1)!='.' && requirement.charAt(i+1)!=':')) {
                     toCheck = i;
                 }
             }
