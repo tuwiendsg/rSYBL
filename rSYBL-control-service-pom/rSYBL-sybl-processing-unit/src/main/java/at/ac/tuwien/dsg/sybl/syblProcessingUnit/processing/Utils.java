@@ -27,7 +27,6 @@ import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.HashMap;
 
-import org.jclouds.openstack.nova.v2_0.compute.functions.RemoveFloatingIpFromNodeAndDeallocate;
 
 import at.ac.tuwien.dsg.csdg.DependencyGraph;
 import at.ac.tuwien.dsg.csdg.Node;
@@ -703,7 +702,8 @@ public void processCompositeConstraint(Rule constraint)
 public boolean evaluateCompositeCondition (String compCond)throws MethodNotFoundException, NoSuchMethodException, SecurityException, IllegalAccessException, IllegalArgumentException, InvocationTargetException{
 	if (compCond.contains("AND")){
 	String [] s= compCond.split("AND ");
-	//SYBLDirectivesEnforcementLogger.logger.info("Condition "+s[0]+" is "+evaluateCondition(s[0]));
+        //TODO: implement multiple complex combinations of and and or
+        //SYBLDirectivesEnforcementLogger.logger.info("Condition "+s[0]+" is "+evaluateCondition(s[0]));
 	//SYBLDirectivesEnforcementLogger.logger.info("Condition "+s[1]+" is "+evaluateCondition(s[1]));
 	try{
 	if (evaluateCondition(s[0]) && evaluateCondition(s[1])) return true;

@@ -55,6 +55,7 @@ import at.ac.tuwien.dsg.csdg.elasticityInformation.ElasticityRequirement;
 import at.ac.tuwien.dsg.csdg.elasticityInformation.elasticityRequirements.SYBLAnnotation;
 import at.ac.tuwien.dsg.csdg.elasticityInformation.elasticityRequirements.SYBLAnnotation.AnnotationType;
 import at.ac.tuwien.dsg.csdg.inputProcessing.multiLevelModel.InputProcessing;
+import at.ac.tuwien.dsg.csdg.inputProcessing.multiLevelModel.abstractModelXML.SYBLDirectiveMappingFromXML;
 import at.ac.tuwien.dsg.csdg.inputProcessing.multiLevelModel.deploymentDescription.DeploymentDescription;
 import at.ac.tuwien.dsg.csdg.utils.Configuration;
 import java.io.FileInputStream;
@@ -103,79 +104,7 @@ public class TOSCAProcessing {
 
     }
 
-    public static String cleanRequirement(String req) {
-        String requirement = req.trim();
-        int fromIndex = 0;
-        while (requirement.indexOf(">", fromIndex) > 0) {
-            int currentIndex = requirement.indexOf(">", fromIndex);
-            if (requirement.charAt(currentIndex - 1) != ' ') {
-                String newReq = requirement.substring(0, currentIndex) + " " + requirement.substring(currentIndex, requirement.length());
-                requirement = newReq;
-                fromIndex = currentIndex + 2;
-                if (requirement.charAt(currentIndex + 2) != ' ') {
-                    newReq = requirement.substring(0, currentIndex + 2) + " " + requirement.substring(currentIndex + 2, requirement.length());
-                    requirement = newReq;
-                    fromIndex = currentIndex + 3;
-                } else {
-                    fromIndex = currentIndex + 1;
-                }
-            } else {
-                if (requirement.charAt(currentIndex + 1) != ' ') {
-                    String newReq = requirement.substring(0, currentIndex + 1) + " " + requirement.substring(currentIndex + 1, requirement.length());
-                    requirement = newReq;
-                    fromIndex = currentIndex + 2;
-                } else {
-                    fromIndex = currentIndex + 1;
-                }
-            }
 
-        }
-
-        while (requirement.indexOf("<", fromIndex) > 0) {
-            int currentIndex = requirement.indexOf("<", fromIndex);
-            if (requirement.charAt(currentIndex - 1) != ' ') {
-                String newReq = requirement.substring(0, currentIndex) + " " + requirement.substring(currentIndex, requirement.length());
-                requirement = newReq;
-                fromIndex = currentIndex + 2;
-                if (requirement.charAt(currentIndex + 2) != ' ') {
-                    newReq = requirement.substring(0, currentIndex + 2) + " " + requirement.substring(currentIndex + 2, requirement.length());
-                    requirement = newReq;
-                    fromIndex = currentIndex + 3;
-                } else {
-                    fromIndex = currentIndex + 1;
-                }
-            } else {
-                if (requirement.charAt(currentIndex + 1) != ' ') {
-                    String newReq = requirement.substring(0, currentIndex + 1) + " " + requirement.substring(currentIndex + 1, requirement.length());
-                    requirement = newReq;
-                    fromIndex = currentIndex + 2;
-                } else {
-                    fromIndex = currentIndex + 1;
-                }
-            }
-
-        }
-
-        boolean numberFixed = false;
-        while (!numberFixed) {
-            int toCheck = -1;
-            for (int i = 0; i < requirement.length() - 1; i++) {
-
-                if (((requirement.charAt(i) >= '0' && requirement.charAt(i) <= '9')) && (requirement.charAt(i + 1) < '0' || requirement.charAt(i + 1) > '9') && (requirement.charAt(i + 1) != ' ' && requirement.charAt(i+1)!='.' && requirement.charAt(i+1)!=':')) {
-                    toCheck = i;
-                }
-            }
-            if (toCheck > -1) {
-                numberFixed = true;
-                String newReq = requirement.substring(0, toCheck + 1) + " " + requirement.substring(toCheck + 1, requirement.length());
-                requirement = newReq;
-
-            }
-
-        }
-
-        return requirement;
-    }
 
     private void setElasticityRequirementsForService(Node node, TBoundaryDefinitions reqs) {
         SYBLAnnotation annotation = new SYBLAnnotation();
@@ -198,49 +127,49 @@ public class TOSCAProcessing {
             switch (policy.getPolicyType().getLocalPart().toLowerCase()) {
                 case "syblconstraint":
                     if (annotation.getConstraints() != null) {
-                        annotation.setConstraints(annotation.getConstraints() + "; " + cleanRequirement(policy.getPolicyRef() + ":" + policy.getName()));
+                        annotation.setConstraints(annotation.getConstraints() + "; " + SYBLDirectiveMappingFromXML.cleanRequirement(policy.getPolicyRef() + ":" + policy.getName()));
                     } else {
-                        annotation.setConstraints(cleanRequirement(policy.getPolicyRef() + ":" + policy.getName()));
+                        annotation.setConstraints(SYBLDirectiveMappingFromXML.cleanRequirement(policy.getPolicyRef() + ":" + policy.getName()));
                     }
                     break;
                 case "constraint":
                     if (annotation.getConstraints() != null) {
-                        annotation.setConstraints(annotation.getConstraints() + "; " + cleanRequirement(policy.getPolicyRef() + ":" + policy.getName()));
+                        annotation.setConstraints(annotation.getConstraints() + "; " + SYBLDirectiveMappingFromXML.cleanRequirement(policy.getPolicyRef() + ":" + policy.getName()));
                     } else {
-                        annotation.setConstraints(cleanRequirement(policy.getPolicyRef() + ":" + policy.getName()));
+                        annotation.setConstraints(SYBLDirectiveMappingFromXML.cleanRequirement(policy.getPolicyRef() + ":" + policy.getName()));
                     }
                     break;
                 case "syblstrategy":
                     if (policy.getName().toLowerCase().contains("case")) {
                         if (annotation.getStrategies() != null) {
-                            annotation.setStrategies(annotation.getStrategies() + "; " + cleanRequirement(policy.getPolicyRef() + ":" + policy.getName()));
+                            annotation.setStrategies(annotation.getStrategies() + "; " + SYBLDirectiveMappingFromXML.cleanRequirement(policy.getPolicyRef() + ":" + policy.getName()));
                         } else {
-                            annotation.setStrategies(cleanRequirement(policy.getPolicyRef() + ":" + policy.getName()));
+                            annotation.setStrategies(SYBLDirectiveMappingFromXML.cleanRequirement(policy.getPolicyRef() + ":" + policy.getName()));
                         }
                     }
                     break;
                 case "strategy":
                     if (policy.getName().toLowerCase().contains("case")) {
                         if (annotation.getStrategies() != null) {
-                            annotation.setStrategies(annotation.getStrategies() + "; " + cleanRequirement(policy.getPolicyRef() + ":" + policy.getName()));
+                            annotation.setStrategies(annotation.getStrategies() + "; " + SYBLDirectiveMappingFromXML.cleanRequirement(policy.getPolicyRef() + ":" + policy.getName()));
                         } else {
-                            annotation.setStrategies(cleanRequirement(policy.getPolicyRef() + ":" + policy.getName()));
+                            annotation.setStrategies(SYBLDirectiveMappingFromXML.cleanRequirement(policy.getPolicyRef() + ":" + policy.getName()));
                         }
                     }
                     break;
 
                 case "syblmonitoring":
                     if (annotation.getMonitoring() != null) {
-                        annotation.setMonitoring(annotation.getMonitoring() + "; " + cleanRequirement(policy.getPolicyRef() + ":" + policy.getName()));
+                        annotation.setMonitoring(annotation.getMonitoring() + "; " + SYBLDirectiveMappingFromXML.cleanRequirement(policy.getPolicyRef() + ":" + policy.getName()));
                     } else {
-                        annotation.setMonitoring(cleanRequirement(policy.getPolicyRef() + ":" + policy.getName()));
+                        annotation.setMonitoring(SYBLDirectiveMappingFromXML.cleanRequirement(policy.getPolicyRef() + ":" + policy.getName()));
                     }
                     break;
                 case "monitoring":
                     if (annotation.getMonitoring() != null) {
-                        annotation.setMonitoring(annotation.getMonitoring() + "; " + cleanRequirement(policy.getPolicyRef() + ":" + policy.getName()));
+                        annotation.setMonitoring(annotation.getMonitoring() + "; " + SYBLDirectiveMappingFromXML.cleanRequirement(policy.getPolicyRef() + ":" + policy.getName()));
                     } else {
-                        annotation.setMonitoring(cleanRequirement(policy.getPolicyRef() + ":" + policy.getName()));
+                        annotation.setMonitoring(SYBLDirectiveMappingFromXML.cleanRequirement(policy.getPolicyRef() + ":" + policy.getName()));
                     }
                     break;
             }
@@ -279,25 +208,25 @@ public class TOSCAProcessing {
             switch (policy.getPolicyType().getLocalPart()) {
                 case "Constraint":
                     if (annotation.getConstraints() != null) {
-                        annotation.setConstraints(annotation.getConstraints() + "; " + cleanRequirement(policy.getPolicyRef() + ":" + policy.getName()));
+                        annotation.setConstraints(annotation.getConstraints() + "; " + SYBLDirectiveMappingFromXML.cleanRequirement(policy.getPolicyRef() + ":" + policy.getName()));
                     } else {
-                        annotation.setConstraints(cleanRequirement(policy.getPolicyRef() + ":" + policy.getName()));
+                        annotation.setConstraints(SYBLDirectiveMappingFromXML.cleanRequirement(policy.getPolicyRef() + ":" + policy.getName()));
                     }
                     break;
                 case "Strategy":
                     if (policy.getName().toLowerCase().contains("case")) {
                         if (annotation.getStrategies() != null) {
-                            annotation.setStrategies(annotation.getStrategies() + "; " + cleanRequirement(policy.getPolicyRef() + ":" + policy.getName()));
+                            annotation.setStrategies(annotation.getStrategies() + "; " + SYBLDirectiveMappingFromXML.cleanRequirement(policy.getPolicyRef() + ":" + policy.getName()));
                         } else {
-                            annotation.setStrategies(cleanRequirement(policy.getPolicyRef() + ":" + policy.getName()));
+                            annotation.setStrategies(SYBLDirectiveMappingFromXML.cleanRequirement(policy.getPolicyRef() + ":" + policy.getName()));
                         }
                     }
                     break;
                 case "Monitoring":
                     if (annotation.getMonitoring() != null) {
-                        annotation.setMonitoring(annotation.getMonitoring() + "; " + cleanRequirement(policy.getPolicyRef() + ":" + policy.getName()));
+                        annotation.setMonitoring(annotation.getMonitoring() + "; " + SYBLDirectiveMappingFromXML.cleanRequirement(policy.getPolicyRef() + ":" + policy.getName()));
                     } else {
-                        annotation.setMonitoring(cleanRequirement(policy.getPolicyRef() + ":" + policy.getName()));
+                        annotation.setMonitoring(SYBLDirectiveMappingFromXML.cleanRequirement(policy.getPolicyRef() + ":" + policy.getName()));
                     }
                     break;
 
