@@ -361,7 +361,7 @@ public static String cleanRequirement(String req){
         }
         
     }
-    
+    fromIndex=0;
     while (requirement.indexOf("<",fromIndex)>0){
         int currentIndex = requirement.indexOf("<", fromIndex);
         if (requirement.charAt(currentIndex-1)!=' '){
