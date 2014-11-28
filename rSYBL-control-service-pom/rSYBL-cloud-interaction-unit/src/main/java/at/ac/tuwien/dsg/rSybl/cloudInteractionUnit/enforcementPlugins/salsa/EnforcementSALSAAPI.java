@@ -82,8 +82,8 @@ public class EnforcementSALSAAPI implements EnforcementInterface {
                         RelationshipType.COMPOSITION_RELATIONSHIP,
                         NodeType.SERVICE_TOPOLOGY) != null
                         && currentTopology.getAllRelatedNodesOfType(
-                        RelationshipType.COMPOSITION_RELATIONSHIP,
-                        NodeType.SERVICE_TOPOLOGY).size() > 0) {
+                                RelationshipType.COMPOSITION_RELATIONSHIP,
+                                NodeType.SERVICE_TOPOLOGY).size() > 0) {
                     topologies.addAll(currentTopology.getAllRelatedNodesOfType(
                             RelationshipType.COMPOSITION_RELATIONSHIP,
                             NodeType.SERVICE_TOPOLOGY));
@@ -92,12 +92,12 @@ public class EnforcementSALSAAPI implements EnforcementInterface {
                         RelationshipType.COMPOSITION_RELATIONSHIP,
                         NodeType.SERVICE_UNIT) != null
                         && currentTopology.getAllRelatedNodesOfType(
-                        RelationshipType.COMPOSITION_RELATIONSHIP,
-                        NodeType.SERVICE_UNIT).size() > 0) {
+                                RelationshipType.COMPOSITION_RELATIONSHIP,
+                                NodeType.SERVICE_UNIT).size() > 0) {
                     componentsToExplore.addAll(currentTopology
                             .getAllRelatedNodesOfType(
-                            RelationshipType.COMPOSITION_RELATIONSHIP,
-                            NodeType.SERVICE_UNIT));
+                                    RelationshipType.COMPOSITION_RELATIONSHIP,
+                                    NodeType.SERVICE_UNIT));
                 }
             }
         }
@@ -114,13 +114,13 @@ public class EnforcementSALSAAPI implements EnforcementInterface {
 
         return null;
     }
-public void undeployService(Node serviceID) {
 
-salsaClient.undeployService(serviceID);
+    public void undeployService(Node serviceID) {
 
-        
+        salsaClient.undeployService(serviceID);
 
     }
+
     @Override
     public boolean scaleOut(Node arg0) {
         //monitoring.enforcingActionStarted("ScaleOut", arg0);
@@ -134,7 +134,6 @@ salsaClient.undeployService(serviceID);
         }
 
         // TODO : enable just ComponentTopology level
-
         if (o.getNodeType() == NodeType.SERVICE_UNIT) {
             res = scaleOutComponent(o);
         }
@@ -145,8 +144,8 @@ salsaClient.undeployService(serviceID);
             Node slave = null;
             ArrayList<Node> comps = (ArrayList<Node>) o
                     .getAllRelatedNodesOfType(
-                    RelationshipType.COMPOSITION_RELATIONSHIP,
-                    NodeType.SERVICE_UNIT);
+                            RelationshipType.COMPOSITION_RELATIONSHIP,
+                            NodeType.SERVICE_UNIT);
 
             for (Node comp : comps) {
                 if (comp.getAllRelatedNodesOfType(RelationshipType.MASTER_OF) != null) {
@@ -215,7 +214,7 @@ salsaClient.undeployService(serviceID);
         graph.setCloudService(controlledService);
         RuntimeLogger.logger
                 .info("~~~~~~~~~~~~~~~~~~~~~~Image from which we create "
-                + (String) o.getStaticInformation("DefaultImage"));
+                        + (String) o.getStaticInformation("DefaultImage"));
         String ip = salsaClient.scaleOut(o.getId());
         Node node = new Node();
         Node artifact = null;
@@ -240,7 +239,6 @@ salsaClient.undeployService(serviceID);
             rel.setType(RelationshipType.HOSTED_ON_RELATIONSHIP);
             RuntimeLogger.logger.info("Adding to " + o.getId() + " vm with ip "
                     + ip);
-
 
             if (artifact == null && container == null) {
                 rel.setSourceElement(o.getId());
@@ -275,9 +273,6 @@ salsaClient.undeployService(serviceID);
         Node toBeRemoved = graph.getNodeWithID(ip);
         RuntimeLogger.logger.info("Trying to remove  " + toBeRemoved.getId() + " From " + toBeScaled.getId());
 
-
-
-
         res = salsaClient.scaleIn(toBeRemoved.getId());
 
         RuntimeLogger.logger.info("Objects here" + toBeScaled + monitoring);
@@ -293,31 +288,30 @@ salsaClient.undeployService(serviceID);
         graph.setCloudService(controlledService);
 
         Node toBeScaled = graph.getNodeWithID(toscale);
-        
-         Node artifact = null;
-                      Node container = null;
-                      Node toBeScaledArtifactorContainer = toBeScaled;
-                            if (toBeScaled.getAllRelatedNodesOfType(RelationshipType.HOSTED_ON_RELATIONSHIP, NodeType.ARTIFACT) != null && toBeScaled.getAllRelatedNodesOfType(RelationshipType.HOSTED_ON_RELATIONSHIP, NodeType.ARTIFACT).size() > 0) {
-                       artifact= toBeScaled.getAllRelatedNodesOfType(RelationshipType.HOSTED_ON_RELATIONSHIP, NodeType.ARTIFACT).get(0);
-                       
-                      if (artifact.getAllRelatedNodesOfType(RelationshipType.HOSTED_ON_RELATIONSHIP, NodeType.CONTAINER) != null && artifact.getAllRelatedNodesOfType(RelationshipType.HOSTED_ON_RELATIONSHIP, NodeType.CONTAINER).size() > 0) {
-                      
-                       container= artifact.getAllRelatedNodesOfType(RelationshipType.HOSTED_ON_RELATIONSHIP, NodeType.CONTAINER).get(0);
-                      }
-                      }
-                              boolean ok = false;
-		 if (artifact==null && container==null){
-	                 ok = toBeScaled.getAllRelatedNodesOfType(RelationshipType.HOSTED_ON_RELATIONSHIP, NodeType.VIRTUAL_MACHINE).size()>1;
-                     }else{
-                         if (container==null){
-                           ok = artifact.getAllRelatedNodesOfType(RelationshipType.HOSTED_ON_RELATIONSHIP, NodeType.VIRTUAL_MACHINE).size()>1;
-                            toBeScaledArtifactorContainer = artifact;
-                         }else
-                         {
-                              ok = container.getAllRelatedNodesOfType(RelationshipType.HOSTED_ON_RELATIONSHIP, NodeType.VIRTUAL_MACHINE).size()>1;
-                                toBeScaledArtifactorContainer = container;
-                         }
-                     }	
+
+        Node artifact = null;
+        Node container = null;
+        Node toBeScaledArtifactorContainer = toBeScaled;
+        if (toBeScaled.getAllRelatedNodesOfType(RelationshipType.HOSTED_ON_RELATIONSHIP, NodeType.ARTIFACT) != null && toBeScaled.getAllRelatedNodesOfType(RelationshipType.HOSTED_ON_RELATIONSHIP, NodeType.ARTIFACT).size() > 0) {
+            artifact = toBeScaled.getAllRelatedNodesOfType(RelationshipType.HOSTED_ON_RELATIONSHIP, NodeType.ARTIFACT).get(0);
+
+            if (artifact.getAllRelatedNodesOfType(RelationshipType.HOSTED_ON_RELATIONSHIP, NodeType.CONTAINER) != null && artifact.getAllRelatedNodesOfType(RelationshipType.HOSTED_ON_RELATIONSHIP, NodeType.CONTAINER).size() > 0) {
+
+                container = artifact.getAllRelatedNodesOfType(RelationshipType.HOSTED_ON_RELATIONSHIP, NodeType.CONTAINER).get(0);
+            }
+        }
+        boolean ok = false;
+        if (artifact == null && container == null) {
+            ok = toBeScaled.getAllRelatedNodesOfType(RelationshipType.HOSTED_ON_RELATIONSHIP, NodeType.VIRTUAL_MACHINE).size() > 1;
+        } else {
+            if (container == null) {
+                ok = artifact.getAllRelatedNodesOfType(RelationshipType.HOSTED_ON_RELATIONSHIP, NodeType.VIRTUAL_MACHINE).size() > 1;
+                toBeScaledArtifactorContainer = artifact;
+            } else {
+                ok = container.getAllRelatedNodesOfType(RelationshipType.HOSTED_ON_RELATIONSHIP, NodeType.VIRTUAL_MACHINE).size() > 1;
+                toBeScaledArtifactorContainer = container;
+            }
+        }
         Node toBeRemoved = toBeScaledArtifactorContainer.getAllRelatedNodesOfType(RelationshipType.HOSTED_ON_RELATIONSHIP, NodeType.VIRTUAL_MACHINE).get(0);
         RuntimeLogger.logger.info("Trying to remove  " + toBeRemoved.getId() + " From " + toBeScaled.getId());
 
@@ -336,35 +330,33 @@ salsaClient.undeployService(serviceID);
         graph.setCloudService(controlledService);
 
         Node toBeScaled = graph.getNodeWithID(o.getId());
-          Node artifact = null;
-                      Node container = null;
-                      Node toBeScaledArtifactorContainer = toBeScaled;
-                            if (toBeScaled.getAllRelatedNodesOfType(RelationshipType.HOSTED_ON_RELATIONSHIP, NodeType.ARTIFACT) != null && toBeScaled.getAllRelatedNodesOfType(RelationshipType.HOSTED_ON_RELATIONSHIP, NodeType.ARTIFACT).size() > 0) {
-                       artifact= toBeScaled.getAllRelatedNodesOfType(RelationshipType.HOSTED_ON_RELATIONSHIP, NodeType.ARTIFACT).get(0);
-                       
-                      if (artifact.getAllRelatedNodesOfType(RelationshipType.HOSTED_ON_RELATIONSHIP, NodeType.CONTAINER) != null && artifact.getAllRelatedNodesOfType(RelationshipType.HOSTED_ON_RELATIONSHIP, NodeType.CONTAINER).size() > 0) {
-                      
-                       container= artifact.getAllRelatedNodesOfType(RelationshipType.HOSTED_ON_RELATIONSHIP, NodeType.CONTAINER).get(0);
-                      }
-                      }
-                              boolean ok = false;
-		 if (artifact==null && container==null){
-	                 ok = toBeScaled.getAllRelatedNodesOfType(RelationshipType.HOSTED_ON_RELATIONSHIP, NodeType.VIRTUAL_MACHINE).size()>1;
-                     }else{
-                         if (container==null){
-                           ok = artifact.getAllRelatedNodesOfType(RelationshipType.HOSTED_ON_RELATIONSHIP, NodeType.VIRTUAL_MACHINE).size()>1;
-                            toBeScaledArtifactorContainer = artifact;
-                         }else
-                         {
-                              ok = container.getAllRelatedNodesOfType(RelationshipType.HOSTED_ON_RELATIONSHIP, NodeType.VIRTUAL_MACHINE).size()>1;
-                                toBeScaledArtifactorContainer = container;
-                         }
-                     }	
+        Node artifact = null;
+        Node container = null;
+        Node toBeScaledArtifactorContainer = toBeScaled;
+        if (toBeScaled.getAllRelatedNodesOfType(RelationshipType.HOSTED_ON_RELATIONSHIP, NodeType.ARTIFACT) != null && toBeScaled.getAllRelatedNodesOfType(RelationshipType.HOSTED_ON_RELATIONSHIP, NodeType.ARTIFACT).size() > 0) {
+            artifact = toBeScaled.getAllRelatedNodesOfType(RelationshipType.HOSTED_ON_RELATIONSHIP, NodeType.ARTIFACT).get(0);
+
+            if (artifact.getAllRelatedNodesOfType(RelationshipType.HOSTED_ON_RELATIONSHIP, NodeType.CONTAINER) != null && artifact.getAllRelatedNodesOfType(RelationshipType.HOSTED_ON_RELATIONSHIP, NodeType.CONTAINER).size() > 0) {
+
+                container = artifact.getAllRelatedNodesOfType(RelationshipType.HOSTED_ON_RELATIONSHIP, NodeType.CONTAINER).get(0);
+            }
+        }
+        boolean ok = false;
+        if (artifact == null && container == null) {
+            ok = toBeScaled.getAllRelatedNodesOfType(RelationshipType.HOSTED_ON_RELATIONSHIP, NodeType.VIRTUAL_MACHINE).size() > 1;
+        } else {
+            if (container == null) {
+                ok = artifact.getAllRelatedNodesOfType(RelationshipType.HOSTED_ON_RELATIONSHIP, NodeType.VIRTUAL_MACHINE).size() > 1;
+                toBeScaledArtifactorContainer = artifact;
+            } else {
+                ok = container.getAllRelatedNodesOfType(RelationshipType.HOSTED_ON_RELATIONSHIP, NodeType.VIRTUAL_MACHINE).size() > 1;
+                toBeScaledArtifactorContainer = container;
+            }
+        }
         Node toBeRemoved = toBeScaledArtifactorContainer.getAllRelatedNodesOfType(RelationshipType.HOSTED_ON_RELATIONSHIP, NodeType.VIRTUAL_MACHINE).get(0);
         RuntimeLogger.logger.info("Trying to remove  " + toBeRemoved.getId() + " From " + toBeScaled.getId());
         String cmd = "";
         String ip = toBeRemoved.getId();
-
 
         res = salsaClient.scaleIn(toBeRemoved.getId());
 
@@ -379,8 +371,8 @@ salsaClient.undeployService(serviceID);
         Node res = null;
         List<Node> componentTopologies = controlledService
                 .getAllRelatedNodesOfType(
-                RelationshipType.COMPOSITION_RELATIONSHIP,
-                NodeType.SERVICE_TOPOLOGY);
+                        RelationshipType.COMPOSITION_RELATIONSHIP,
+                        NodeType.SERVICE_TOPOLOGY);
         for (Node componentTopology : componentTopologies) {
             for (Node topology : componentTopology.getAllRelatedNodesOfType(
                     RelationshipType.COMPOSITION_RELATIONSHIP,
@@ -477,8 +469,8 @@ salsaClient.undeployService(serviceID);
                     NodeType.SERVICE_UNIT).size() > 0) {
                 componentsToExplore.addAll(currentTopology
                         .getAllRelatedNodesOfType(
-                        RelationshipType.COMPOSITION_RELATIONSHIP,
-                        NodeType.SERVICE_UNIT));
+                                RelationshipType.COMPOSITION_RELATIONSHIP,
+                                NodeType.SERVICE_UNIT));
             }
 
         }
@@ -545,8 +537,6 @@ salsaClient.undeployService(serviceID);
         return null;
     }
 
-    
-    
     public boolean scaleIn(Node arg0) {
         RuntimeLogger.logger.info("Scaling in..." + arg0.getId());
         boolean res = false;
@@ -646,7 +636,7 @@ salsaClient.undeployService(serviceID);
                 if (x.split("\\.")[0].length() == 2) {
                    // monitoring.enforcingActionStarted("ScaleIn", arg0);
 
-                   // monitoring.enforcingActionEnded("ScaleIn", arg0);
+                    // monitoring.enforcingActionEnded("ScaleIn", arg0);
                     break;
                 }
                 // scale in on the number of components of the topology

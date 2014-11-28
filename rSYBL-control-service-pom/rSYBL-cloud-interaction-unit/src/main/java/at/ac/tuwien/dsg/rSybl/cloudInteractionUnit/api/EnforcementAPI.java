@@ -1,8 +1,7 @@
 /**
  * Copyright 2013 Technische Universitat Wien (TUW), Distributed SystemsGroup
- * E184.  *
- * This work was partially supported by the European Commission in terms of the
- * CELAR FP7 project (FP7-ICT-2011-8 #317790).
+ * E184. * This work was partially supported by the European Commission in terms
+ * of the CELAR FP7 project (FP7-ICT-2011-8 #317790).
  *
  * Licensed under the Apache License, Version 2.0 (the "License"); you may not
  * use this file except in compliance with the License. You may obtain a copy of
@@ -45,7 +44,6 @@ import at.ac.tuwien.dsg.rSybl.cloudInteractionUnit.utils.Configuration;
 import at.ac.tuwien.dsg.rSybl.cloudInteractionUnit.utils.RuntimeLogger;
 import at.ac.tuwien.dsg.rSybl.dataProcessingUnit.api.MonitoringAPIInterface;
 import at.ac.tuwien.dsg.rSybl.dataProcessingUnit.monitoringPlugins.melaPlugin.MELA_API;
-
 
 public class EnforcementAPI {
 
@@ -152,12 +150,12 @@ public class EnforcementAPI {
                                 + metricName
                                 + " has value "
                                 + monitoringAPIInterface.getMetricValue(
-                                metricName, node));
+                                        metricName, node));
 
                         if (monitoringAPIInterface.getMetricValue(metricName,
                                 node) == null
                                 || monitoringAPIInterface.getMetricValue(
-                                metricName, node) < 0) {
+                                        metricName, node) < 0) {
                             myMetrics = false;
                             RuntimeLogger.logger.info("~~~~Metric "
                                     + metricName + "smaller than 0");
@@ -189,7 +187,7 @@ public class EnforcementAPI {
         return res;
     }
 
-    public boolean enforceAction( String actionName, Node node,
+    public boolean enforceAction(String actionName, Node node,
             Object[] parameters) {
         Method foundMethod = null;
         boolean res = false;
@@ -232,7 +230,7 @@ public class EnforcementAPI {
             } else {
                 res = false;
                 RuntimeLogger.logger.info("------------Method not found:> "
-                        + foundMethod + " on " +  " " + node
+                        + foundMethod + " on " + " " + node
                         + " params " + parameters.length);
 
             }
@@ -255,12 +253,12 @@ public class EnforcementAPI {
                                 + metricName
                                 + " has value "
                                 + monitoringAPIInterface.getMetricValue(
-                                metricName, node));
+                                        metricName, node));
 
                         if (monitoringAPIInterface.getMetricValue(metricName,
                                 node) == null
                                 || monitoringAPIInterface.getMetricValue(
-                                metricName, node) < 0) {
+                                        metricName, node) < 0) {
                             myMetrics = false;
                             RuntimeLogger.logger.info("~~~~Metric "
                                     + metricName + "smaller than 0");
@@ -296,7 +294,6 @@ public class EnforcementAPI {
         boolean res = false;
         if (arg0.getAllRelatedNodes().size() > 1) {
 
-
             res = offeredCapabilities.scaleIn(arg0);
             List<String> metrics = monitoringAPIInterface
                     .getAvailableMetrics(arg0);
@@ -317,12 +314,12 @@ public class EnforcementAPI {
                                 + metricName
                                 + " has value "
                                 + monitoringAPIInterface.getMetricValue(
-                                metricName, arg0));
+                                        metricName, arg0));
 
                         if (monitoringAPIInterface.getMetricValue(metricName,
                                 arg0) == null
                                 || monitoringAPIInterface.getMetricValue(
-                                metricName, arg0) < 0) {
+                                        metricName, arg0) < 0) {
                             myMetrics = false;
                             RuntimeLogger.logger.info("~~~~Metric "
                                     + metricName + "smaller than 0");
@@ -379,10 +376,10 @@ public class EnforcementAPI {
                             + metricName
                             + " has value "
                             + monitoringAPIInterface.getMetricValue(metricName,
-                            arg0));
+                                    arg0));
                     if (monitoringAPIInterface.getMetricValue(metricName, arg0) == null
                             || monitoringAPIInterface.getMetricValue(
-                            metricName, arg0) < 0) {
+                                    metricName, arg0) < 0) {
                         myMetrics = false;
                         RuntimeLogger.logger.info("~~~Metric " + metricName
                                 + "smaller than 0");
@@ -439,10 +436,10 @@ public class EnforcementAPI {
                             + metricName
                             + " has value "
                             + monitoringAPIInterface.getMetricValue(metricName,
-                            arg0));
+                                    arg0));
                     if (monitoringAPIInterface.getMetricValue(metricName, arg0) == null
                             || monitoringAPIInterface.getMetricValue(
-                            metricName, arg0) < 0) {
+                                    metricName, arg0) < 0) {
                         myMetrics = false;
                         RuntimeLogger.logger.info("~~~Metric " + metricName
                                 + "smaller than 0");
@@ -479,7 +476,6 @@ public class EnforcementAPI {
 
     public boolean enforceAction(String actionName, Node e) {
 
-
         Method foundMethod = null;
         boolean res = false;
         try {
@@ -497,7 +493,6 @@ public class EnforcementAPI {
                 partypes[0] = Node.class;
                 myParameters[0] = e;
                 int i = 1;
-
 
                 Method actionMethod;
 
@@ -538,12 +533,12 @@ public class EnforcementAPI {
                                     + metricName
                                     + " has value "
                                     + monitoringAPIInterface.getMetricValue(
-                                    metricName, e));
+                                            metricName, e));
 
                             if (monitoringAPIInterface.getMetricValue(metricName,
                                     e) == null
                                     || monitoringAPIInterface.getMetricValue(
-                                    metricName, e) < 0) {
+                                            metricName, e) < 0) {
                                 myMetrics = false;
                                 RuntimeLogger.logger.info("~~~~Metric "
                                         + metricName + "smaller than 0");
@@ -568,7 +563,6 @@ public class EnforcementAPI {
             } else {
                 res = false;
 
-
             }
         } catch (SecurityException | ClassNotFoundException e1) {
             // TODO Auto-generated catch block
@@ -578,14 +572,12 @@ public class EnforcementAPI {
 
         return res;
 
-
-
     }
 
     public boolean enforceAction(double violationDegree, String actionName, Node e) {
 
-        if (className==null){
-            className=Configuration.getEnforcementPlugin();
+        if (className == null) {
+            className = Configuration.getEnforcementPlugin();
         }
         Method foundMethod = null;
         boolean res = false;
@@ -608,7 +600,6 @@ public class EnforcementAPI {
                 myParameters[1] = e;
                 int i = 2;
 
-
                 Method actionMethod;
 
                 try {
@@ -648,12 +639,12 @@ public class EnforcementAPI {
                                     + metricName
                                     + " has value "
                                     + monitoringAPIInterface.getMetricValue(
-                                    metricName, e));
+                                            metricName, e));
 
                             if (monitoringAPIInterface.getMetricValue(metricName,
                                     e) == null
                                     || monitoringAPIInterface.getMetricValue(
-                                    metricName, e) < 0) {
+                                            metricName, e) < 0) {
                                 myMetrics = false;
                                 RuntimeLogger.logger.info("~~~~Metric "
                                         + metricName + "smaller than 0");
@@ -678,7 +669,6 @@ public class EnforcementAPI {
             } else {
                 res = false;
 
-
             }
         } catch (SecurityException | ClassNotFoundException e1) {
             // TODO Auto-generated catch block
@@ -687,8 +677,6 @@ public class EnforcementAPI {
         }
 
         return res;
-
-
 
     }
 
