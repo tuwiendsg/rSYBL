@@ -436,4 +436,16 @@ public class MonitoringAPI implements MonitoringAPIInterface {
     public void removeService(Node service){
         offeredMonitoringMetrics.removeService(service);
     }
+
+    @Override
+    public HashMap<String, ArrayList<Double>> getAllMonitoringInformation(Node n) {
+        return offeredMonitoringMetrics.getAllMonitoringInformation(n);
+    }
+
+    @Override
+    public HashMap<String, ArrayList<Double>> getAllMonitoringInformationOnPeriod(Node n, long time) {
+        return offeredMonitoringMetrics.getAllMonitoringInformationOnPeriod(n,time);
+    }
+
+ 
 }

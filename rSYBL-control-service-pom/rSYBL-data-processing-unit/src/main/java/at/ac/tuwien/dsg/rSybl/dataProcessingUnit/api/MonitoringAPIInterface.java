@@ -22,13 +22,15 @@ import java.util.List;
 
 import at.ac.tuwien.dsg.csdg.Node;
 import at.ac.tuwien.dsg.csdg.elasticityInformation.ElasticityRequirement;
+import java.util.HashMap;
 
 public interface MonitoringAPIInterface {
 
     public void setCompositionRules(String compositionRules);
     public void removeService(Node service);
     public void setCompositionRules();
-    
+    public HashMap<String,ArrayList<Double>> getAllMonitoringInformation(Node n);
+    public  HashMap<String,ArrayList<Double>>  getAllMonitoringInformationOnPeriod(Node n, long time );
     public void refreshCompositionRules();
 
     public Double getCurrentCPUSize(Node e) throws Exception;
