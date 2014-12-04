@@ -226,5 +226,9 @@ public class MonitoringAPIDryRun  implements MonitoringInterface{
                HashMap<String,ArrayList<Double>> metricsValues = new HashMap<String, ArrayList<Double>>();
        return metricsValues;
     }
+    
+    public boolean isHealthy(){
+        return true;
+    }
 
 }

@@ -438,11 +438,35 @@ public class OfferedMonitoringMetrics implements MonitoringInterface {
 
     @Override
     public HashMap<String, ArrayList<Double>> getAllMonitoringInformation(Node n) {
-        throw new UnsupportedOperationException("Not supported yet.");
+        Map<Method, MonitoringInterface> methods = manageMonitoringPlugins.getMethods(manageMonitoringPlugins.getAllPlugins(cloudService));
+        for (Method method : methods.keySet()) {
+            if (method.getName().equalsIgnoreCase("getAllMonitoringInformation")) {
+                return methods.get(method).getAllMonitoringInformation(n);
+            }
+        }
+        return new HashMap<String, ArrayList<Double>>();
     }
 
     @Override
     public HashMap<String, ArrayList<Double>> getAllMonitoringInformationOnPeriod(Node n, long time) {
-        throw new UnsupportedOperationException("Not supported yet.");
+        Map<Method, MonitoringInterface> methods = manageMonitoringPlugins.getMethods(manageMonitoringPlugins.getAllPlugins(cloudService));
+        for (Method method : methods.keySet()) {
+            if (method.getName().equalsIgnoreCase("getAllMonitoringInformationOnPeriod")) {
+                return methods.get(method).getAllMonitoringInformationOnPeriod(n,time);
+            }
+        }
+        return new HashMap<String, ArrayList<Double>>();
+    }
+
+    @Override
+    public boolean isHealthy() {
+        boolean result = true;
+        Map<Method, MonitoringInterface> methods = manageMonitoringPlugins.getMethods(manageMonitoringPlugins.getAllPlugins(cloudService));
+        for (Method method : methods.keySet()) {
+            if (method.getName().equalsIgnoreCase("isHealthy")) {
+                result = methods.get(method).isHealthy();
+            }
+        }
+        return result;
     }
 }

@@ -32,7 +32,7 @@ public interface MonitoringAPIInterface {
     public HashMap<String,ArrayList<Double>> getAllMonitoringInformation(Node n);
     public  HashMap<String,ArrayList<Double>>  getAllMonitoringInformationOnPeriod(Node n, long time );
     public void refreshCompositionRules();
-
+    public boolean isHealthy();
     public Double getCurrentCPUSize(Node e) throws Exception;
 
     public Double getCostPerHour(Node e) throws Exception;

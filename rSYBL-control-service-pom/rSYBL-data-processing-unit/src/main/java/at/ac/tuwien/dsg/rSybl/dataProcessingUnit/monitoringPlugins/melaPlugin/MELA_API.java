@@ -795,6 +795,11 @@ public class MELA_API implements MonitoringInterface {
         throw new UnsupportedOperationException("Not supported yet.");
     }
 
+    @Override
+    public boolean isHealthy() {
+        return true;
+    }
+
     private static class MELA_ClientUtils {
 
         //works as side effect

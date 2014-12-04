@@ -618,6 +618,8 @@ Double retValue = 0.0;
     }
 
 	
-
+    public boolean isHealthy(){
+        return true;
+    }
 	
 }

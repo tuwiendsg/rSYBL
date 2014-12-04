@@ -30,6 +30,7 @@ public interface MonitoringInterface {
     public Double getCpuUsage(Node node);
     public void removeService(Node service);
     public Double getMemoryAvailable(Node node);
+    public boolean isHealthy();
 
     public Double getMemorySize(Node node);
 
