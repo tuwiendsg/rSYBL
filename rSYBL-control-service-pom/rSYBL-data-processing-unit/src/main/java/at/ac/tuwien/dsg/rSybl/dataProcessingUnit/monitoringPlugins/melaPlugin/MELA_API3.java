@@ -68,7 +68,8 @@ public class MELA_API3 implements MonitoringInterface {
 
     private boolean existsStructureData = false;
     private boolean serviceSet = false;
-    private static final String REST_API_URL = Configuration.getMonitoringServiceURL();
+//    private static final String REST_API_URL = Configuration.getMonitoringServiceURL();
+    private static final String REST_API_URL = "http://109.231.121.88:8080/MELA-DataService/REST_WS";
     //private static final String REST_API_URL = "http://localhost:8080/MELA-AnalysisService-0.1-SNAPSHOT/REST_WS";
     // private static final String REST_API_URL="http://localhost:8080/MELA-AnalysisService-1.0/REST_WS";
     private static final int MONITORING_DATA_REFRESH_INTERVAL = 10; //in seconds
@@ -178,6 +179,51 @@ public class MELA_API3 implements MonitoringInterface {
 //        return filters;
 //
 //    }
+    public boolean isHealthy() {
+        URL url = null;
+        HttpURLConnection connection = null;
+        boolean ishealthy = false;
+        try {
+            url = new URL(REST_API_URL + "/" + controlService.getId() + "/healthy");
+            connection = (HttpURLConnection) url.openConnection();
+            connection.setRequestMethod("GET");
+//            connection.setRequestProperty("Content-Type", "application/xml");
+//            connection.setRequestProperty("Accept", "application/xml");
+
+            InputStream errorStream = connection.getErrorStream();
+            if (errorStream != null) {
+                BufferedReader reader = new BufferedReader(new InputStreamReader(errorStream));
+                String line;
+                while ((line = reader.readLine()) != null) {
+                    Logger.getLogger(MELA_API3.class.getName()).log(Level.SEVERE, line);
+                }
+            }
+
+            InputStream inputStream = connection.getInputStream();
+            if (inputStream != null) {
+                BufferedReader reader = new BufferedReader(new InputStreamReader(inputStream));
+                String line;
+                while ((line = reader.readLine()) != null) {
+                    Logger.getLogger(MELA_API3.class.getName()).log(Level.SEVERE, line);
+                    if (line.contains("true")) {
+                        ishealthy = true;
+                    }
+                }
+            }
+
+        } catch (Exception e) {
+            // Logger.getLogger(MELA_API.class.getName()).log(Level.SEVERE, e.getMessage(), e);
+            Logger.getLogger(MELA_API3.class.getName()).log(Level.WARNING, "Trying to connect to MELA - failing ... . Retrying later");
+            RuntimeLogger.logger.error("Failing to connect to MELA");
+
+        } finally {
+            if (connection != null) {
+                connection.disconnect();
+            }
+        }
+        return ishealthy;
+    }
+
     /**
      * pulls new monitoring data
      */
@@ -240,12 +286,12 @@ public class MELA_API3 implements MonitoringInterface {
     private void releaseLatestMonitoringDataLock() {
         monitoringDataUsed.set(false);
     }
-public void removeService(Node cloudService) {
+
+    public void removeService(Node cloudService) {
         controlService = cloudService;
         MonitoredElement element = new MonitoredElement();
         element.setId(cloudService.getId());
         element.setLevel(MonitoredElement.MonitoredElementLevel.SERVICE);
-
 
         URL url = null;
         HttpURLConnection connection = null;
@@ -253,7 +299,7 @@ public void removeService(Node cloudService) {
         while (notConnected) {
             try {
                 RuntimeLogger.logger.info("Trying to connect to MELA ...");
-                url = new URL(REST_API_URL + "/" + controlService.getId() );
+                url = new URL(REST_API_URL + "/" + controlService.getId());
                 connection = (HttpURLConnection) url.openConnection();
                 connection.setDoOutput(true);
                 connection.setInstanceFollowRedirects(false);
@@ -261,7 +307,6 @@ public void removeService(Node cloudService) {
                 connection.setRequestProperty("Content-Type", "application/xml");
                 connection.setRequestProperty("Accept", "application/json");
                 //write message body
-            
 
                 InputStream errorStream = connection.getErrorStream();
                 if (errorStream != null) {
@@ -300,6 +345,7 @@ public void removeService(Node cloudService) {
         }
 
     }
+
     public void submitServiceConfiguration(Node cloudService) {
         controlService = cloudService;
         MonitoredElement element = new MonitoredElement();
@@ -329,7 +375,7 @@ public void removeService(Node cloudService) {
                 StringWriter stringWriter = new StringWriter();
                 jaxbContext.createMarshaller().marshal(element, stringWriter);
 
-                RuntimeLogger.logger.info("Sending to MELAAAA" +stringWriter.toString());
+                RuntimeLogger.logger.info("Sending to MELAAAA" + stringWriter.toString());
                 os.flush();
                 os.close();
 
@@ -397,7 +443,7 @@ public void removeService(Node cloudService) {
             os.close();
             StringWriter writer = new StringWriter();
             jaxbContext.createMarshaller().marshal(element, writer);
-            Logger.getLogger(MELA_API3.class.getName()).log(Level.INFO, "Sending to MELA new structure "+writer.toString());
+            Logger.getLogger(MELA_API3.class.getName()).log(Level.INFO, "Sending to MELA new structure " + writer.toString());
 
             InputStream errorStream = connection.getErrorStream();
             if (errorStream != null) {
@@ -416,7 +462,7 @@ public void removeService(Node cloudService) {
                     Logger.getLogger(MELA_API3.class.getName()).log(Level.SEVERE, line);
                 }
             }
-          
+
         } catch (Exception e) {
             Logger.getLogger(MELA_API3.class.getName()).log(Level.SEVERE, e.getMessage(), e);
         } finally {
@@ -601,9 +647,6 @@ public void removeService(Node cloudService) {
             connection.setRequestProperty("Content-Type", "application/xml");
             connection.setRequestProperty("Accept", "application/xml");
 
-
-      
-
             InputStream errorStream = connection.getErrorStream();
             if (errorStream != null) {
                 BufferedReader reader = new BufferedReader(new InputStreamReader(errorStream));
@@ -646,7 +689,6 @@ public void removeService(Node cloudService) {
             connection.setRequestMethod("DELETE");
             connection.setRequestProperty("Content-Type", "application/xml");
             connection.setRequestProperty("Accept", "application/xml");
-
 
             InputStream errorStream = connection.getErrorStream();
             if (errorStream != null) {
@@ -738,33 +780,34 @@ public void removeService(Node cloudService) {
             List<Node> serviceTopologies = new ArrayList<Node>();
             MonitoredElement mainServiceTopologyElement = null;
 
-            if (cloudService.getAllRelatedNodesOfType(RelationshipType.COMPOSITION_RELATIONSHIP, NodeType.SERVICE_TOPOLOGY).size() == 1  ) {
-                
+            if (cloudService.getAllRelatedNodesOfType(RelationshipType.COMPOSITION_RELATIONSHIP, NodeType.SERVICE_TOPOLOGY).size() == 1) {
+
                 mainServiceTopologyElement = new MonitoredElement();
                 mainServiceTopologyElement = new MonitoredElement();
 
                 Node serviceTopology = cloudService.getAllRelatedNodesOfType(RelationshipType.COMPOSITION_RELATIONSHIP, NodeType.SERVICE_TOPOLOGY).get(0);
                 mainServiceTopologyElement.setId(serviceTopology.getId());
                 mainServiceTopologyElement.setLevel(MonitoredElement.MonitoredElementLevel.SERVICE_TOPOLOGY);
-                if ((serviceTopology.getAllRelatedNodesOfType(RelationshipType.COMPOSITION_RELATIONSHIP).size()>0) && (serviceTopology.getAllRelatedNodesOfType(RelationshipType.COMPOSITION_RELATIONSHIP).get(0).getNodeType()==NodeType.SERVICE_TOPOLOGY))
+                if ((serviceTopology.getAllRelatedNodesOfType(RelationshipType.COMPOSITION_RELATIONSHIP).size() > 0) && (serviceTopology.getAllRelatedNodesOfType(RelationshipType.COMPOSITION_RELATIONSHIP).get(0).getNodeType() == NodeType.SERVICE_TOPOLOGY)) {
                     serviceTopologies.addAll(serviceTopology.getAllRelatedNodesOfType(RelationshipType.COMPOSITION_RELATIONSHIP));
-                else{
+                } else {
                     serviceTopologies.add(serviceTopology);
-                    mainServiceTopologyElement=null;
+                    mainServiceTopologyElement = null;
                 }
             } else {
                 serviceTopologies.addAll(cloudService.getAllRelatedNodesOfType(RelationshipType.COMPOSITION_RELATIONSHIP));
             }
             while (!serviceTopologies.isEmpty()) {
                 MonitoredElement serviceTopologyElement = new MonitoredElement();
-                
+
                 Node serviceTopology = serviceTopologies.get(0);
-                
+
                 serviceTopologyElement.setId(serviceTopology.getId());
-                if (serviceTopology.getNodeType()==NodeType.SERVICE_TOPOLOGY)
-                serviceTopologyElement.setLevel(MonitoredElement.MonitoredElementLevel.SERVICE_TOPOLOGY);
-                else
+                if (serviceTopology.getNodeType() == NodeType.SERVICE_TOPOLOGY) {
+                    serviceTopologyElement.setLevel(MonitoredElement.MonitoredElementLevel.SERVICE_TOPOLOGY);
+                } else {
                     serviceTopologyElement.setLevel(MonitoredElement.MonitoredElementLevel.SERVICE_UNIT);
+                }
                 if (serviceTopology.getAllRelatedNodesOfType(RelationshipType.COMPOSITION_RELATIONSHIP) != null) {
 
                     for (Node serviceUnit : serviceTopology.getAllRelatedNodesOfType(RelationshipType.COMPOSITION_RELATIONSHIP)) {
@@ -861,6 +904,7 @@ public void removeService(Node cloudService) {
     }
 
     public static void main(String[] args) throws Exception {
+        
     }
 
     @Override
@@ -897,7 +941,7 @@ public void removeService(Node cloudService) {
                             req.setMetric(m);
 
                             MetricValue metricValue = new MetricValue();
-                            
+
                             metricValue.setValue(Double.parseDouble(binaryRestriction.getRightHandSide().getNumber()));
                             cond.addValue(metricValue);
                             switch (binaryRestriction.getType()) {
@@ -1234,16 +1278,16 @@ public void removeService(Node cloudService) {
     public List<String> getOngoingActionNodeID() {
         return this.actionTargetEntity;
     }
-    
+
     @Override
     public void sendMessageToAnalysisService(String message) {
-          URL url = null;
+        URL url = null;
         HttpURLConnection connection = null;
         boolean notConnected = true;
         while (notConnected) {
             try {
                 RuntimeLogger.logger.info("Trying to connect to MELA ...");
-                url = new URL(REST_API_URL +"/"+ controlService.getId()+"/events");
+                url = new URL(REST_API_URL + "/" + controlService.getId() + "/events");
                 connection = (HttpURLConnection) url.openConnection();
                 connection.setDoOutput(true);
                 connection.setInstanceFollowRedirects(false);
@@ -1297,28 +1341,28 @@ public void removeService(Node cloudService) {
 
     @Override
     public void sendControlIncapacityMessage(String message, List<ElasticityRequirement> cause) {
-         URL url = null;
+        URL url = null;
         HttpURLConnection connection = null;
         boolean notConnected = true;
         while (notConnected) {
             try {
                 RuntimeLogger.logger.info("Sending control incapacity message to MELA ...");
-                url = new URL(REST_API_URL +"/"+ controlService.getId()+"/events");
+                url = new URL(REST_API_URL + "/" + controlService.getId() + "/events");
                 connection = (HttpURLConnection) url.openConnection();
                 connection.setDoOutput(true);
                 connection.setInstanceFollowRedirects(false);
                 connection.setRequestMethod("POST");
                 connection.setRequestProperty("Content-Type", "text/plain");
-            connection.setRequestProperty("Accept", "text/plain");
+                connection.setRequestProperty("Accept", "text/plain");
                 //write message body
                 OutputStream os = connection.getOutputStream();
                 //JAXBContext jaxbContext = JAXBContext.newInstance(MonitoredElement.class);
                 //jaxbContext.createMarshaller().marshal(message, os);
                 String myCause = "";
-                for (ElasticityRequirement req: cause){
-                    myCause+=req.getAnnotation().getConstraints()+"; ";
+                for (ElasticityRequirement req : cause) {
+                    myCause += req.getAnnotation().getConstraints() + "; ";
                 }
-                os.write((message+"Cause : "+myCause).getBytes());
+                os.write((message + "Cause : " + myCause).getBytes());
                 os.flush();
                 os.close();
 
@@ -1358,4 +1402,5 @@ public void removeService(Node cloudService) {
             }
         }
     }
+
 }
