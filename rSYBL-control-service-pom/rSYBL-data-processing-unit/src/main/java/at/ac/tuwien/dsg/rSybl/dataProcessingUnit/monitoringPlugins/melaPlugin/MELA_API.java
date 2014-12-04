@@ -63,6 +63,7 @@ import at.ac.tuwien.dsg.rSybl.dataProcessingUnit.monitoringPlugins.interfaces.Mo
 import at.ac.tuwien.dsg.rSybl.dataProcessingUnit.utils.Configuration;
 import at.ac.tuwien.dsg.rSybl.dataProcessingUnit.utils.RuntimeLogger;
 import java.io.StringWriter;
+import java.util.HashMap;
 
 public class MELA_API implements MonitoringInterface {
 
@@ -782,6 +783,16 @@ public class MELA_API implements MonitoringInterface {
                 }
             }
         }
+    }
+
+    @Override
+    public HashMap<String, ArrayList<Double>> getAllMonitoringInformation(Node n) {
+        throw new UnsupportedOperationException("Not supported yet.");
+    }
+
+    @Override
+    public HashMap<String, ArrayList<Double>> getAllMonitoringInformationOnPeriod(Node n, long time) {
+        throw new UnsupportedOperationException("Not supported yet.");
     }
 
     private static class MELA_ClientUtils {

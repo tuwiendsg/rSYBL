@@ -22,9 +22,11 @@ import java.util.List;
 
 import at.ac.tuwien.dsg.csdg.Node;
 import at.ac.tuwien.dsg.csdg.elasticityInformation.ElasticityRequirement;
+import java.util.HashMap;
 
 public interface MonitoringInterface {
-
+    public HashMap<String,ArrayList<Double>> getAllMonitoringInformation(Node n);
+    public  HashMap<String,ArrayList<Double>>  getAllMonitoringInformationOnPeriod(Node n, long time );
     public Double getCpuUsage(Node node);
     public void removeService(Node service);
     public Double getMemoryAvailable(Node node);

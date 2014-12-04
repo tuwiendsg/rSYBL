@@ -26,6 +26,7 @@ import at.ac.tuwien.dsg.csdg.Node;
 import at.ac.tuwien.dsg.csdg.elasticityInformation.ElasticityRequirement;
 import at.ac.tuwien.dsg.rSybl.dataProcessingUnit.monitoringPlugins.interfaces.MonitoringInterface;
 import at.ac.tuwien.dsg.rSybl.dataProcessingUnit.utils.RuntimeLogger;
+import java.util.HashMap;
 
 public class OfferedMonitoringMetrics implements MonitoringInterface {
 
@@ -433,5 +434,15 @@ public class OfferedMonitoringMetrics implements MonitoringInterface {
                 methods.get(method).removeService(cloudService);
             }
         }
+    }
+
+    @Override
+    public HashMap<String, ArrayList<Double>> getAllMonitoringInformation(Node n) {
+        throw new UnsupportedOperationException("Not supported yet.");
+    }
+
+    @Override
+    public HashMap<String, ArrayList<Double>> getAllMonitoringInformationOnPeriod(Node n, long time) {
+        throw new UnsupportedOperationException("Not supported yet.");
     }
 }
