@@ -51,25 +51,30 @@ import at.ac.tuwien.dsg.csdg.elasticityInformation.elasticityRequirements.Constr
 import at.ac.tuwien.dsg.csdg.elasticityInformation.elasticityRequirements.SYBLSpecification;
 import at.ac.tuwien.dsg.csdg.inputProcessing.multiLevelModel.abstractModelXML.SYBLDirectiveMappingFromXML;
 import at.ac.tuwien.dsg.mela.common.configuration.metricComposition.CompositionRulesConfiguration;
+import at.ac.tuwien.dsg.mela.common.monitoringConcepts.Action;
 import at.ac.tuwien.dsg.mela.common.monitoringConcepts.Metric;
 import at.ac.tuwien.dsg.mela.common.monitoringConcepts.MetricValue;
 import at.ac.tuwien.dsg.mela.common.monitoringConcepts.MonitoredElement;
 import at.ac.tuwien.dsg.mela.common.monitoringConcepts.MonitoredElementMonitoringSnapshot;
+import at.ac.tuwien.dsg.mela.common.monitoringConcepts.MonitoredElementMonitoringSnapshots;
 import at.ac.tuwien.dsg.mela.common.requirements.Condition.Type;
 import at.ac.tuwien.dsg.mela.common.requirements.Requirement;
 import at.ac.tuwien.dsg.mela.common.requirements.Requirements;
+import at.ac.tuwien.dsg.rSybl.dataProcessingUnit.api.model.MonitoringSnapshot;
+import at.ac.tuwien.dsg.rSybl.dataProcessingUnit.api.model.ServicePartMonitor;
 import at.ac.tuwien.dsg.rSybl.dataProcessingUnit.monitoringPlugins.interfaces.MonitoringInterface;
 import at.ac.tuwien.dsg.rSybl.dataProcessingUnit.utils.Configuration;
 import at.ac.tuwien.dsg.rSybl.dataProcessingUnit.utils.RuntimeLogger;
 import java.io.StringWriter;
 import java.util.HashMap;
+import java.util.Map.Entry;
 
 public class MELA_API3 implements MonitoringInterface {
 
     private boolean existsStructureData = false;
     private boolean serviceSet = false;
-//    private static final String REST_API_URL = Configuration.getMonitoringServiceURL();
-    private static final String REST_API_URL = "http://109.231.121.88:8080/MELA-DataService/REST_WS";
+    private static final String REST_API_URL = Configuration.getMonitoringServiceURL();
+//    private static final String REST_API_URL = "http://109.231.121.88:8080/MELA-DataService/REST_WS";
     //private static final String REST_API_URL = "http://localhost:8080/MELA-AnalysisService-0.1-SNAPSHOT/REST_WS";
     // private static final String REST_API_URL="http://localhost:8080/MELA-AnalysisService-1.0/REST_WS";
     private static final int MONITORING_DATA_REFRESH_INTERVAL = 10; //in seconds
@@ -763,13 +768,141 @@ public class MELA_API3 implements MonitoringInterface {
     }
 
     @Override
-    public HashMap<String, ArrayList<Double>> getAllMonitoringInformation(Node n) {
-        throw new UnsupportedOperationException("Not supported yet.");
+    public List<MonitoringSnapshot> getAllMonitoringInformation() {
+        List<MonitoringSnapshot> snapshots = new ArrayList<>();
+        URL url = null;
+        HttpURLConnection connection = null;
+        try {
+            url = new URL(REST_API_URL + "/" + controlService.getId() + "/historicalmonitoringdataXML/all");
+            connection = (HttpURLConnection) url.openConnection();
+            connection.setRequestMethod("GET");
+            connection.setRequestProperty("Content-Type", "application/xml");
+            connection.setRequestProperty("Accept", "application/xml");
+
+            InputStream errorStream = connection.getErrorStream();
+            if (errorStream != null) {
+                BufferedReader reader = new BufferedReader(new InputStreamReader(errorStream));
+                String line;
+                while ((line = reader.readLine()) != null) {
+                    Logger.getLogger(MELA_API3.class.getName()).log(Level.SEVERE, line);
+                }
+            }
+
+            InputStream inputStream = connection.getInputStream();
+            JAXBContext jAXBContext = JAXBContext.newInstance(MonitoredElementMonitoringSnapshots.class);
+            MonitoredElementMonitoringSnapshots retrievedData = (MonitoredElementMonitoringSnapshots) jAXBContext.createUnmarshaller().unmarshal(inputStream);
+
+            if (retrievedData != null) {
+                //P
+                //getLatestMonitoringDataLock();
+                snapshots= recursivelyProcessMonitoringSnapshots(retrievedData);
+                //V
+                //releaseLatestMonitoringDataLock();
+            }
+
+        } catch (Exception e) {
+            // Logger.getLogger(MELA_API.class.getName()).log(Level.SEVERE, e.getMessage(), e);
+            Logger.getLogger(MELA_API3.class.getName()).log(Level.WARNING, "Trying to connect to MELA - failing ... . Retrying later");
+            RuntimeLogger.logger.error("Failing to connect to MELA");
+            return snapshots;
+        } finally {
+            if (connection != null) {
+                connection.disconnect();
+            }
+        }
+        return snapshots;
+        //throw new UnsupportedOperationException("Not supported yet.");
+    }
+
+    private List<MonitoringSnapshot> recursivelyProcessMonitoringSnapshots(MonitoredElementMonitoringSnapshots retrievedData) {
+        List<MonitoringSnapshot> monitoringSnapshots = new ArrayList<>();
+
+        for (MonitoredElementMonitoringSnapshot elementMonitoringSnapshot : retrievedData.getChildren()) {
+            List<MonitoredElementMonitoringSnapshot> processing = new ArrayList<MonitoredElementMonitoringSnapshot>();
+
+            MonitoringSnapshot monitoringSnapshot = new MonitoringSnapshot();
+            HashMap<String, ServicePartMonitor> monitors = new HashMap<>();
+            processing.add(elementMonitoringSnapshot);
+            monitoringSnapshot.setTimestamp(elementMonitoringSnapshot.getTimestamp());
+            for (Action action:elementMonitoringSnapshot.getExecutingActions()){
+                monitoringSnapshot.addOngoingActions(action.getTargetEntityID(), action.getAction());
+            }
+           
+            while (!processing.isEmpty() && processing != null) {
+                MonitoredElementMonitoringSnapshot currentlyUnderInspection = processing.remove(0);
+                ServicePartMonitor monitor = new ServicePartMonitor();
+                monitor.setServicePart(currentlyUnderInspection.getMonitoredElement().getId());
+                HashMap<String, Double> metrics = new HashMap<>();
+                for (Entry<Metric, MetricValue> m : currentlyUnderInspection.getMonitoredData().entrySet()) {
+
+                    MetricValue value = currentlyUnderInspection.getMetricValue(m.getKey());
+                    switch (value.getValueType()) {
+                        case NUMERIC:
+                            metrics.put(m.getKey().getName(), Double.parseDouble(m.getValue().getValueRepresentation()));
+                        default:
+                            Logger.getLogger(this.getClass().getName()).log(Level.WARNING, "Value ''{0}''for metric {1} for Node {2} is not Numeric", new Object[]{value.getValueRepresentation(), m.getKey().getName().toString(), monitor.getServicePart()});
+                            ;
+                    }
+                    
+                }
+                monitor.setMetrics(metrics);
+                
+                monitors.put(monitor.getServicePart(), monitor);
+
+
+
+                processing.addAll(currentlyUnderInspection.getChildren());
+
+            }
+            monitoringSnapshots.add(monitoringSnapshot);
+        }
+        return monitoringSnapshots;
     }
 
     @Override
-    public HashMap<String, ArrayList<Double>> getAllMonitoringInformationOnPeriod(Node n, long time) {
-        throw new UnsupportedOperationException("Not supported yet.");
+    public List<MonitoringSnapshot> getAllMonitoringInformationOnPeriod( long time) {
+          List<MonitoringSnapshot> snapshots = new ArrayList<>();
+        URL url = null;
+        HttpURLConnection connection = null;
+        try {
+            url = new URL(REST_API_URL + "/" + controlService.getId() + "/historicalmonitoringdataXML/lastX?count="+time);
+            connection = (HttpURLConnection) url.openConnection();
+            connection.setRequestMethod("GET");
+            connection.setRequestProperty("Content-Type", "application/xml");
+            connection.setRequestProperty("Accept", "application/xml");
+
+            InputStream errorStream = connection.getErrorStream();
+            if (errorStream != null) {
+                BufferedReader reader = new BufferedReader(new InputStreamReader(errorStream));
+                String line;
+                while ((line = reader.readLine()) != null) {
+                    Logger.getLogger(MELA_API3.class.getName()).log(Level.SEVERE, line);
+                }
+            }
+
+            InputStream inputStream = connection.getInputStream();
+            JAXBContext jAXBContext = JAXBContext.newInstance(MonitoredElementMonitoringSnapshots.class);
+            MonitoredElementMonitoringSnapshots retrievedData = (MonitoredElementMonitoringSnapshots) jAXBContext.createUnmarshaller().unmarshal(inputStream);
+
+            if (retrievedData != null) {
+                //P
+                //getLatestMonitoringDataLock();
+                snapshots= recursivelyProcessMonitoringSnapshots(retrievedData);
+                //V
+                //releaseLatestMonitoringDataLock();
+            }
+
+        } catch (Exception e) {
+            // Logger.getLogger(MELA_API.class.getName()).log(Level.SEVERE, e.getMessage(), e);
+            Logger.getLogger(MELA_API3.class.getName()).log(Level.WARNING, "Trying to connect to MELA - failing ... . Retrying later");
+            RuntimeLogger.logger.error("Failing to connect to MELA");
+            return snapshots;
+        } finally {
+            if (connection != null) {
+                connection.disconnect();
+            }
+        }
+        return snapshots;
     }
 
     private static class MELA_ClientUtils {
@@ -904,7 +1037,6 @@ public class MELA_API3 implements MonitoringInterface {
     }
 
     public static void main(String[] args) throws Exception {
-        
     }
 
     @Override
@@ -1402,5 +1534,4 @@ public class MELA_API3 implements MonitoringInterface {
             }
         }
     }
-
 }

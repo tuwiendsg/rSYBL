@@ -59,6 +59,7 @@ import at.ac.tuwien.dsg.mela.common.monitoringConcepts.ServiceMonitoringSnapshot
 import at.ac.tuwien.dsg.mela.common.requirements.Condition.Type;
 import at.ac.tuwien.dsg.mela.common.requirements.Requirement;
 import at.ac.tuwien.dsg.mela.common.requirements.Requirements;
+import at.ac.tuwien.dsg.rSybl.dataProcessingUnit.api.model.MonitoringSnapshot;
 import at.ac.tuwien.dsg.rSybl.dataProcessingUnit.monitoringPlugins.interfaces.MonitoringInterface;
 import at.ac.tuwien.dsg.rSybl.dataProcessingUnit.utils.Configuration;
 import at.ac.tuwien.dsg.rSybl.dataProcessingUnit.utils.RuntimeLogger;
@@ -785,19 +786,22 @@ public class MELA_API implements MonitoringInterface {
         }
     }
 
-    @Override
-    public HashMap<String, ArrayList<Double>> getAllMonitoringInformation(Node n) {
-        throw new UnsupportedOperationException("Not supported yet.");
-    }
-
-    @Override
-    public HashMap<String, ArrayList<Double>> getAllMonitoringInformationOnPeriod(Node n, long time) {
-        throw new UnsupportedOperationException("Not supported yet.");
-    }
+   
+   
 
     @Override
     public boolean isHealthy() {
         return true;
+    }
+
+    @Override
+    public List<MonitoringSnapshot> getAllMonitoringInformation() {
+        throw new UnsupportedOperationException("Not supported yet.");
+    }
+
+    @Override
+    public List<MonitoringSnapshot> getAllMonitoringInformationOnPeriod(long time) {
+        throw new UnsupportedOperationException("Not supported yet.");
     }
 
     private static class MELA_ClientUtils {

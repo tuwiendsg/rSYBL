@@ -21,16 +21,25 @@ public class Main {
         for (int i = 0; i < size; i++) {
             NDimensionalPoint p = new NDimensionalPoint();
             p.setSize(3);
-            double[] mypoints = {i, i, i};
-            p.setValues(mypoints);
+            ArrayList<Double> myPoints = new ArrayList<>();
+            
+            myPoints.add(i+0.0d);
+            myPoints.add(i+0.0);
+            myPoints.add(i+0.0d);
+            p.setValues(myPoints);
             points.add(p);
         }
         
          for (int i = 0; i < size; i++) {
             NDimensionalPoint p = new NDimensionalPoint();
             p.setSize(3);
-            double[] mypoints = {i*3, i*3, i*3};
-            p.setValues(mypoints);
+                        ArrayList<Double> myPoints = new ArrayList<>();
+            
+            myPoints.add(i*3+0.0d);
+            myPoints.add(i*3+0.0);
+            myPoints.add(i*3+0.0d);
+            p.setValues(myPoints);
+
             points.add(p);
         }
          
@@ -38,8 +47,12 @@ public class Main {
           for (int i = 0; i < size; i++) {
             NDimensionalPoint p = new NDimensionalPoint();
             p.setSize(3);
-            double[] mypoints = {i*7, i*7, i*7};
-            p.setValues(mypoints);
+                        ArrayList<Double> myPoints = new ArrayList<>();
+            
+            myPoints.add(i*7+0.0d);
+            myPoints.add(i*7+0.0);
+            myPoints.add(i*7+0.0d);
+            p.setValues(myPoints);
             points.add(p);
         }
           

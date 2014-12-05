@@ -24,6 +24,7 @@ import at.ac.tuwien.dsg.csdg.DependencyGraph;
 import at.ac.tuwien.dsg.csdg.Node;
 import at.ac.tuwien.dsg.csdg.elasticityInformation.ElasticityCapability;
 import at.ac.tuwien.dsg.csdg.elasticityInformation.ElasticityRequirement;
+import at.ac.tuwien.dsg.rSybl.dataProcessingUnit.api.model.MonitoringSnapshot;
 import at.ac.tuwien.dsg.rSybl.dataProcessingUnit.monitoringPlugins.OfferedMonitoredMetrics;
 import at.ac.tuwien.dsg.rSybl.dataProcessingUnit.monitoringPlugins.interfaces.MonitoringInterface;
 import at.ac.tuwien.dsg.rSybl.dataProcessingUnit.utils.RuntimeLogger;
@@ -438,13 +439,13 @@ public class MonitoringAPI implements MonitoringAPIInterface {
     }
 
     @Override
-    public HashMap<String, ArrayList<Double>> getAllMonitoringInformation(Node n) {
-        return offeredMonitoringMetrics.getAllMonitoringInformation(n);
+    public List<MonitoringSnapshot> getAllMonitoringInformation() {
+        return offeredMonitoringMetrics.getAllMonitoringInformation();
     }
 
     @Override
-    public HashMap<String, ArrayList<Double>> getAllMonitoringInformationOnPeriod(Node n, long time) {
-        return offeredMonitoringMetrics.getAllMonitoringInformationOnPeriod(n,time);
+    public List<MonitoringSnapshot> getAllMonitoringInformationOnPeriod( long time) {
+        return offeredMonitoringMetrics.getAllMonitoringInformationOnPeriod(time);
     }
 
     @Override

@@ -4,6 +4,7 @@
  */
 package at.ac.tuwien.dsg.rSybl.learningEngine.advise.kMeans;
 
+import at.ac.tuwien.dsg.rSybl.learningEngine.utils.LearningLogger;
 import java.util.ArrayList;
 
 /**
@@ -13,6 +14,10 @@ import java.util.ArrayList;
 public class Clustering {
     private ArrayList<NDimensionalPoint> points = new ArrayList<>();
     private ArrayList<Cluster> clusters = new ArrayList<Cluster>();
+    public Clustering(){
+        
+    }
+
     public void initialize(ArrayList<NDimensionalPoint> points, int k, double cutoff){
         this.points=points;
         for (int i=0;i<k;i++){

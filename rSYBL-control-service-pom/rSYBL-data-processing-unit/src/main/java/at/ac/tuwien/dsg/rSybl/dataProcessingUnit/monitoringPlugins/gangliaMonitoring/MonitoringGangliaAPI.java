@@ -28,6 +28,7 @@ import at.ac.tuwien.dsg.csdg.Node;
 import at.ac.tuwien.dsg.csdg.Node.NodeType;
 import at.ac.tuwien.dsg.csdg.Relationship.RelationshipType;
 import at.ac.tuwien.dsg.csdg.elasticityInformation.ElasticityRequirement;
+import at.ac.tuwien.dsg.rSybl.dataProcessingUnit.api.model.MonitoringSnapshot;
 import at.ac.tuwien.dsg.rSybl.dataProcessingUnit.monitoringPlugins.ganglia.gangliaInfo.GangliaClusterInfo;
 import at.ac.tuwien.dsg.rSybl.dataProcessingUnit.monitoringPlugins.ganglia.gangliaInfo.GangliaMetricInfo;
 import at.ac.tuwien.dsg.rSybl.dataProcessingUnit.monitoringPlugins.interfaces.MonitoringInterface;
@@ -607,19 +608,21 @@ Double retValue = 0.0;
         throw new UnsupportedOperationException("Not supported yet.");
     }
 
-    @Override
-    public HashMap<String, ArrayList<Double>> getAllMonitoringInformation(Node n) {
-        throw new UnsupportedOperationException("Not supported yet.");
-    }
 
-    @Override
-    public HashMap<String, ArrayList<Double>> getAllMonitoringInformationOnPeriod(Node n, long time) {
-        throw new UnsupportedOperationException("Not supported yet.");
-    }
 
 	
     public boolean isHealthy(){
         return true;
+    }
+
+    @Override
+    public List<MonitoringSnapshot> getAllMonitoringInformation() {
+        throw new UnsupportedOperationException("Not supported yet.");
+    }
+
+    @Override
+    public List<MonitoringSnapshot> getAllMonitoringInformationOnPeriod(long time) {
+        throw new UnsupportedOperationException("Not supported yet.");
     }
 	
 }

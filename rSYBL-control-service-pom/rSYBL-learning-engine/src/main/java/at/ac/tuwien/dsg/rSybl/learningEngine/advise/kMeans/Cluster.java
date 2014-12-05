@@ -57,15 +57,15 @@ public class Cluster {
         NDimensionalPoint center = new NDimensionalPoint();
         if (points != null && points.size() > 0) {
             center.setSize(points.get(0).getSize());
-            double[] myPoints = points.get(0).getValues();
+            ArrayList<Double> myPoints = points.get(0).getValues();
 
             for (int x = 1; x < points.size(); x++) {
                 for (int i = 0; i < points.get(0).getSize(); i++) {
-                    myPoints[i] += points.get(x).getValues()[i];
+                    myPoints.set(i,  myPoints.get(i) + points.get(x).getValues().get(i));
                 }
             }
             for (int i = 0; i < points.get(0).getSize(); i++) {
-                myPoints[i] /= points.size();
+                myPoints.set(i, myPoints.get(i) / points.size());
             }
             center.setValues(myPoints);
             return center;

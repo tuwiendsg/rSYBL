@@ -6,6 +6,7 @@ import java.util.Random;
 
 import at.ac.tuwien.dsg.csdg.Node;
 import at.ac.tuwien.dsg.csdg.elasticityInformation.ElasticityRequirement;
+import at.ac.tuwien.dsg.rSybl.dataProcessingUnit.api.model.MonitoringSnapshot;
 import at.ac.tuwien.dsg.rSybl.dataProcessingUnit.monitoringPlugins.interfaces.MonitoringInterface;
 import java.util.HashMap;
 
@@ -216,14 +217,14 @@ public class MonitoringAPIDryRun  implements MonitoringInterface{
     }
 
     @Override
-    public HashMap<String, ArrayList<Double>> getAllMonitoringInformation(Node n) {
-       HashMap<String,ArrayList<Double>> metricsValues = new HashMap<String, ArrayList<Double>>();
+    public List<MonitoringSnapshot> getAllMonitoringInformation() {
+      List<MonitoringSnapshot> metricsValues = new ArrayList<MonitoringSnapshot>();
        return metricsValues;
     }
 
     @Override
-    public HashMap<String, ArrayList<Double>> getAllMonitoringInformationOnPeriod(Node n, long time) {
-               HashMap<String,ArrayList<Double>> metricsValues = new HashMap<String, ArrayList<Double>>();
+    public List<MonitoringSnapshot> getAllMonitoringInformationOnPeriod(long time) {
+               List<MonitoringSnapshot> metricsValues = new ArrayList<MonitoringSnapshot>();
        return metricsValues;
     }
     
