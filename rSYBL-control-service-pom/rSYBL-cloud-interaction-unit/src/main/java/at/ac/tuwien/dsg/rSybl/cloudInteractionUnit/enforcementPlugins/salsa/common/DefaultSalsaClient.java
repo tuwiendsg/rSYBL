@@ -36,7 +36,7 @@ public void undeployService(Node serviceID){
         while (notConnected) {
             try {
                 RuntimeLogger.logger.info("Trying to connect to Salsa ...");
-                url = new URL(REST_API_URL + "/" + serviceID);
+                url = new URL(REST_API_URL + "/" + serviceID.getId());
                 connection = (HttpURLConnection) url.openConnection();
                 connection.setDoOutput(true);
                 connection.setInstanceFollowRedirects(false);

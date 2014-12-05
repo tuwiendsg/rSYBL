@@ -25,45 +25,48 @@ import org.ejml.simple.SimpleMatrix;
  * @author Georgiana
  */
 public class ECPBehavioralModel {
+
     private ElasticityCapability capability = new ElasticityCapability();
-    private HashMap<String,NodeBehavior> nodeBehaviors = new HashMap<>();
-    private MonitoringAPIInterface monitoringAPIInterface ;
+    private HashMap<String, NodeBehavior> nodeBehaviors = new HashMap<>();
+    private MonitoringAPIInterface monitoringAPIInterface;
     private DependencyGraph dependencyGraph;
     private SimpleMatrix coocurenceMatrix;
     public static int CHANGE_INTERVAL = 20;
     private int totalNumberOfClusters = 0;
     private ArrayList<String> clusterNames = new ArrayList<String>();
-    private String lastRefreshedTimestamp="";
-    private HashMap<String,HashMap<String,ArrayList<NDimensionalPoint>>> spsWithNDimForEachMetric = new HashMap<>();
-    public ECPBehavioralModel(Node cloudService, MonitoringAPIInterface aPIInterface){
-        monitoringAPIInterface=aPIInterface;
+    private String lastRefreshedTimestamp = "";
+    private HashMap<String, HashMap<String, ArrayList<NDimensionalPoint>>> spsWithNDimForEachMetric = new HashMap<>();
+    public static double SENSITIVITY = 1.0;
+    public ECPBehavioralModel(Node cloudService, MonitoringAPIInterface aPIInterface) {
+        monitoringAPIInterface = aPIInterface;
         dependencyGraph = new DependencyGraph();
         dependencyGraph.setCloudService(cloudService);
-        
+
     }
-    public void selectRelevantTimeSeries(){
+
+    public void selectRelevantTimeSeries() {
         List<MonitoringSnapshot> snapshots = monitoringAPIInterface.getAllMonitoringInformation();
-        int start=-1;
-        int end=-1;
+        int start = -1;
+        int end = -1;
         List<Integer> significatIndexes = new ArrayList<Integer>();
-        if (snapshots.size()>0){
-            int i=0;
-            for (MonitoringSnapshot snapshot: snapshots){
-                for (Entry<String,String> myAction:snapshot.getOngoingActions().entrySet()){
-                   if (myAction.getKey().equalsIgnoreCase(capability.getServicePartID()) && myAction.getValue().equalsIgnoreCase(capability.getName())){
-                       if (start==-1){
-                           start=i;
-                       }
-                       if (start>-1){
-                           end=i;
-                       }
-                   }else{
-                       if (start>0&&end>0){
-                           significatIndexes.add(start+(end-start)/2);
-                           start=-1;
-                           end=-1;
-                       }
-                   }
+        if (snapshots.size() > 0) {
+            int i = 0;
+            for (MonitoringSnapshot snapshot : snapshots) {
+                for (Entry<String, String> myAction : snapshot.getOngoingActions().entrySet()) {
+                    if (myAction.getKey().equalsIgnoreCase(capability.getServicePartID()) && myAction.getValue().equalsIgnoreCase(capability.getName())) {
+                        if (start == -1) {
+                            start = i;
+                        }
+                        if (start > -1) {
+                            end = i;
+                        }
+                    } else {
+                        if (start > 0 && end > 0) {
+                            significatIndexes.add(start + (end - start) / 2);
+                            start = -1;
+                            end = -1;
+                        }
+                    }
                 }
                 i++;
             }
@@ -71,21 +74,21 @@ public class ECPBehavioralModel {
         }
         //now we have significant indexes, we get the behaviors for this capability (nDim points, where n=2*CHANGE_INTERVAL)
         int generalIndex = 0;
-        for (int significantIndex:significatIndexes){
-            for (int i=significantIndex-CHANGE_INTERVAL;i<significantIndex+CHANGE_INTERVAL;i++){
+        for (int significantIndex : significatIndexes) {
+            for (int i = significantIndex - CHANGE_INTERVAL; i < significantIndex + CHANGE_INTERVAL; i++) {
                 MonitoringSnapshot snapshot = snapshots.get(i);
-                for (String SP:snapshot.getServiceParts().keySet()){
-                    if (!spsWithNDimForEachMetric.containsKey(SP)){
-                        HashMap<String, ArrayList<NDimensionalPoint>> metricsWithPoints= new HashMap<>();
+                for (String SP : snapshot.getServiceParts().keySet()) {
+                    if (!spsWithNDimForEachMetric.containsKey(SP)) {
+                        HashMap<String, ArrayList<NDimensionalPoint>> metricsWithPoints = new HashMap<>();
                         spsWithNDimForEachMetric.put(SP, metricsWithPoints);
                     }
-                    for (ServicePartMonitor monitor:snapshot.getServiceParts().values()){
-                        for (Entry<String,Double>recording:monitor.getMetrics().entrySet()){
-                            if (!spsWithNDimForEachMetric.get(SP).containsKey(recording.getKey())){
+                    for (ServicePartMonitor monitor : snapshot.getServiceParts().values()) {
+                        for (Entry<String, Double> recording : monitor.getMetrics().entrySet()) {
+                            if (!spsWithNDimForEachMetric.get(SP).containsKey(recording.getKey())) {
                                 ArrayList<NDimensionalPoint> nDimPoint = new ArrayList<NDimensionalPoint>();
                                 spsWithNDimForEachMetric.get(SP).put(recording.getKey(), nDimPoint);
                             }
-                            if (spsWithNDimForEachMetric.get(SP).get(recording.getKey()).size()<generalIndex){
+                            if (spsWithNDimForEachMetric.get(SP).get(recording.getKey()).size() < generalIndex) {
                                 NDimensionalPoint nDimensionalPoint = new NDimensionalPoint();
                                 spsWithNDimForEachMetric.get(SP).get(recording.getKey()).add(nDimensionalPoint);
                             }
@@ -93,50 +96,67 @@ public class ECPBehavioralModel {
                         }
                     }
                 }
-                
-                
-                
+
+
+
             }
             generalIndex++;
         }
     }
-    
-    public void initializeBehaviorClusters(){
-      selectRelevantTimeSeries();
-        
-      for (String sp:spsWithNDimForEachMetric.keySet()){
-          NodeBehavior behavior = new NodeBehavior();
-          behavior.setNodeID(sp);
-          HashMap<String,Clustering> clustering = new HashMap<>();
-          for (String metric: spsWithNDimForEachMetric.get(sp).keySet()){
-             Clustering cl = new Clustering();
-             int nbClusters = (int) Math.sqrt(spsWithNDimForEachMetric.get(sp).get(metric).size());
-             cl.initialize(spsWithNDimForEachMetric.get(sp).get(metric),nbClusters,0.2);
-            clustering.put(metric, cl);
-            
-            int x = 0;
-            for (Cluster cluster:cl.getClusters()){
-                if (cluster!=null && cluster.getPoints()!=null && cluster.getPoints().size()>0)
-                {clusterNames.add("Cl"+x+"_"+metric+"_"+sp);
-                x++;
+
+    public void initializeBehaviorClusters() {
+        selectRelevantTimeSeries();
+
+        for (String sp : spsWithNDimForEachMetric.keySet()) {
+            NodeBehavior behavior = new NodeBehavior();
+            behavior.setNodeID(sp);
+            HashMap<String, Clustering> clustering = new HashMap<>();
+            for (String metric : spsWithNDimForEachMetric.get(sp).keySet()) {
+                Clustering cl = new Clustering();
+                int nbClusters = (int) Math.sqrt(spsWithNDimForEachMetric.get(sp).get(metric).size());
+                cl.initialize(spsWithNDimForEachMetric.get(sp).get(metric), nbClusters, 0.2);
+                clustering.put(metric, cl);
+
+                int x = 0;
+                for (Cluster cluster : cl.getClusters()) {
+                    if (cluster != null && cluster.getPoints() != null && cluster.getPoints().size() > 0) {
+                        clusterNames.add("Cl_" + x + "_" + metric + "_" + sp);
+                        x++;
+                    }
                 }
+                totalNumberOfClusters += x;
             }
-            totalNumberOfClusters+=x;
-          }
-          
-          behavior.setMetricClusters(clustering);
-      }  
-        
+
+            behavior.setMetricClusters(clustering);
+        }
+
     }
 
- 
-        public void computeCorrelationMatrix(){
-        coocurenceMatrix = new SimpleMatrix(totalNumberOfClusters,totalNumberOfClusters);
+    public void computeCorrelationMatrix() {
+        coocurenceMatrix = new SimpleMatrix(totalNumberOfClusters, totalNumberOfClusters);
         
+        for (int i = 0; i < totalNumberOfClusters; i++) {
+            for (int j = 0; j < totalNumberOfClusters; j++) {
+                String[] s1 = clusterNames.get(i).split("_");
+                String[] s2 = clusterNames.get(j).split("_");
+                int clusterNb1 = Integer.parseInt(s1[1]);
+                int clusterNb2 = Integer.parseInt(s2[1]);
+                String metricName1= s1[2];
+                String metricName2=s2[2];
+                String sp1=s1[3];
+                String sp2=s2[3];
+                for (int x=0;x<spsWithNDimForEachMetric.get(sp1).get(metricName1).size();i++){
+                    double dist1=spsWithNDimForEachMetric.get(sp1).get(metricName1).get(x).computeDistance(nodeBehaviors.get(sp1).getMetricClusters().get(metricName1).getClusters().get(clusterNb1));
+                    double dist2=spsWithNDimForEachMetric.get(sp1).get(metricName1).get(x).computeDistance(nodeBehaviors.get(sp2).getMetricClusters().get(metricName2).getClusters().get(clusterNb2));
+                    if (dist1<SENSITIVITY && dist2<SENSITIVITY ){
+                        coocurenceMatrix.set(i, j, coocurenceMatrix.get(i, j)+1);
+                    }
+                }
+                
+            }
+        }
     }
 
-
-    
     /**
      * @return the capability
      */
@@ -154,18 +174,14 @@ public class ECPBehavioralModel {
     /**
      * @return the nodeBehaviors
      */
-    public HashMap<String,NodeBehavior> getNodeBehaviors() {
+    public HashMap<String, NodeBehavior> getNodeBehaviors() {
         return nodeBehaviors;
     }
 
     /**
      * @param nodeBehaviors the nodeBehaviors to set
      */
-    public void setNodeBehaviors(HashMap<String,NodeBehavior> nodeBehaviors) {
+    public void setNodeBehaviors(HashMap<String, NodeBehavior> nodeBehaviors) {
         this.nodeBehaviors = nodeBehaviors;
     }
-
-  
-
-    
 }

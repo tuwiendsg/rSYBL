@@ -656,7 +656,7 @@ public class MultipleEnforcementAPIs implements EnforcementAPIInterface {
     @Override
     public void undeployService(Node service) {
         for (Entry<String, EnforcementAPI> enforcementAPI : enforcementAPIs.entrySet()) {
-            if (enforcementAPI.getValue().isExecutingControlAction()) {
+            if (!enforcementAPI.getValue().isExecutingControlAction()) {
                 enforcementAPI.getValue().undeployService(service);
             }
         }
