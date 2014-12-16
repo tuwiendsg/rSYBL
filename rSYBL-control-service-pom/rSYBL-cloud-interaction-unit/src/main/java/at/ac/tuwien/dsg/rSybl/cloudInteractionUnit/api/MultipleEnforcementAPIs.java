@@ -16,7 +16,7 @@ import java.util.List;
 import java.util.Map.Entry;
 
 public class MultipleEnforcementAPIs implements EnforcementAPIInterface {
-
+    private boolean enforcingAction = false;
     HashMap<String, EnforcementAPI> enforcementAPIs = new HashMap<String, EnforcementAPI>();
     MonitoringAPIInterface monitoringAPIInterface;
 
@@ -60,7 +60,7 @@ public class MultipleEnforcementAPIs implements EnforcementAPIInterface {
     public boolean scalein(Node arg0) {
         if (arg0.getAllRelatedNodes().size() > 1) {
             boolean res = false;
-            
+            enforcingAction=true;
             EnforcementAPI enforcementAPI = (enforcementAPIs.isEmpty())? new EnforcementAPI() : enforcementAPIs.values().iterator().next();
             
             
@@ -107,11 +107,13 @@ public class MultipleEnforcementAPIs implements EnforcementAPIInterface {
                     monitoringAPIInterface
                             .enforcingActionEnded("ScaleIn", arg0);
                     //                              monitoringAPIInterface.refreshCompositionRules();
+            enforcingAction=false;
 
                     enforcementAPI.setExecutingControlAction(false);
                     return false;
                 }
             }
+            enforcingAction=false;
             return res;
         }
         return false;
@@ -133,6 +135,7 @@ public class MultipleEnforcementAPIs implements EnforcementAPIInterface {
         EnforcementAPI enforcementAPI = (enforcementAPIs.isEmpty())? new EnforcementAPI() : enforcementAPIs.values().iterator().next();
         boolean res = false;
         if (!enforcementAPI.isExecutingControlAction() && arg0 != null) {
+            enforcingAction=true;
             enforcementAPI.setExecutingControlAction(true);
             monitoringAPIInterface.enforcingActionStarted("ScaleOut", arg0);
             RuntimeLogger.logger
@@ -162,6 +165,8 @@ public class MultipleEnforcementAPIs implements EnforcementAPIInterface {
                 }
             }
             enforcementAPI.setExecutingControlAction(false);
+                        enforcingAction=false;
+
         }
         return res;
     }
@@ -172,6 +177,7 @@ public class MultipleEnforcementAPIs implements EnforcementAPIInterface {
         EnforcementAPI enforcementAPI = (enforcementAPIs.isEmpty())? new EnforcementAPI() : enforcementAPIs.values().iterator().next();
         boolean res = false;
         if (!enforcementAPI.isExecutingControlAction() && arg0 != null) {
+            enforcingAction=true;
             enforcementAPI.setExecutingControlAction(true);
             monitoringAPIInterface.enforcingActionStarted("ScaleOut", arg0);
             RuntimeLogger.logger
@@ -202,6 +208,8 @@ public class MultipleEnforcementAPIs implements EnforcementAPIInterface {
             }
             enforcementAPI.setExecutingControlAction(false);
         }
+                    enforcingAction=false;
+
         return res;
     }
 
@@ -210,6 +218,7 @@ public class MultipleEnforcementAPIs implements EnforcementAPIInterface {
         boolean res = false;
         EnforcementAPI enforcementAPI = (enforcementAPIs.isEmpty())? new EnforcementAPI() : enforcementAPIs.values().iterator().next();
         if (!enforcementAPI.isExecutingControlAction() && e != null) {
+            enforcingAction=true;
             enforcementAPI.setExecutingControlAction(true);
             monitoringAPIInterface.enforcingActionStarted(actionName, e);
 
@@ -231,6 +240,8 @@ public class MultipleEnforcementAPIs implements EnforcementAPIInterface {
                 }
             }
             enforcementAPI.setExecutingControlAction(false);
+                        enforcingAction=false;
+
         }
         return res;
     }
@@ -240,6 +251,7 @@ public class MultipleEnforcementAPIs implements EnforcementAPIInterface {
         boolean res = false;
         EnforcementAPI enforcementAPI = (enforcementAPIs.isEmpty())? new EnforcementAPI() : enforcementAPIs.values().iterator().next();
         if (!enforcementAPI.isExecutingControlAction() && e != null) {
+            enforcingAction=true;
             enforcementAPI.setExecutingControlAction(true);
             monitoringAPIInterface.enforcingActionStarted(actionName, e);
 
@@ -261,6 +273,8 @@ public class MultipleEnforcementAPIs implements EnforcementAPIInterface {
                 }
             }
             enforcementAPI.setExecutingControlAction(false);
+                        enforcingAction=false;
+
         }
         return res;
     }
@@ -272,6 +286,7 @@ public class MultipleEnforcementAPIs implements EnforcementAPIInterface {
                 .next();
         boolean res = false;
         if (!enforcementAPI.isExecutingControlAction() && e != null) {
+            enforcingAction=true;
             enforcementAPI.setExecutingControlAction(true);
             monitoringAPIInterface.enforcingActionStarted(capability.getName(),
                     e);
@@ -295,6 +310,8 @@ public class MultipleEnforcementAPIs implements EnforcementAPIInterface {
                 }
             }
             enforcementAPI.setExecutingControlAction(false);
+                        enforcingAction=false;
+
         }
         return res;
     }
@@ -304,6 +321,7 @@ public class MultipleEnforcementAPIs implements EnforcementAPIInterface {
         RuntimeLogger.logger.info("----------------------Trying to scale in " + target + " " + arg0.getId());
         boolean res = false;
         if (arg0.getAllRelatedNodes().size() > 1) {
+            enforcingAction=true;
             EnforcementAPI enforcementAPI = enforcementAPIs.get(target);
             if (!enforcementAPI.isExecutingControlAction() && arg0 != null) {
                 enforcementAPI.setExecutingControlAction(true);
@@ -333,6 +351,8 @@ public class MultipleEnforcementAPIs implements EnforcementAPIInterface {
                 }
                 enforcementAPI.setExecutingControlAction(false);
             }
+                        enforcingAction=false;
+
         }
         return res;
     }
@@ -343,6 +363,7 @@ public class MultipleEnforcementAPIs implements EnforcementAPIInterface {
         boolean res = false;
         EnforcementAPI enforcementAPI = enforcementAPIs.get(target);
         if (!enforcementAPI.isExecutingControlAction() && arg0 != null) {
+            enforcingAction=true;
             enforcementAPI.setExecutingControlAction(true);
             monitoringAPIInterface.enforcingActionStarted("ScaleOut"
                     + target, arg0);
@@ -365,6 +386,8 @@ public class MultipleEnforcementAPIs implements EnforcementAPIInterface {
                 }
             }
             enforcementAPI.setExecutingControlAction(false);
+                        enforcingAction=false;
+
         } else {
             RuntimeLogger.logger.info("--------------------Not possible. It is already enforcing an action or arg0 is null " + target + " " + arg0.getId());
 
@@ -378,6 +401,7 @@ public class MultipleEnforcementAPIs implements EnforcementAPIInterface {
         boolean res = false;
         EnforcementAPI enforcementAPI = enforcementAPIs.get(target);
         if (!enforcementAPI.isExecutingControlAction() && arg0 != null) {
+            enforcingAction=true;
             enforcementAPI.setExecutingControlAction(true);
             monitoringAPIInterface.enforcingActionStarted("ScaleOut"
                     + target, arg0);
@@ -400,6 +424,8 @@ public class MultipleEnforcementAPIs implements EnforcementAPIInterface {
                 }
             }
             enforcementAPI.setExecutingControlAction(false);
+                        enforcingAction=false;
+
         } else {
             RuntimeLogger.logger.info("--------------------Not possible. It is already enforcing an action or arg0 is null " + target + " " + arg0.getId());
 
@@ -413,6 +439,7 @@ public class MultipleEnforcementAPIs implements EnforcementAPIInterface {
         boolean res = false;
         EnforcementAPI enforcementAPI = enforcementAPIs.get(target);
         if (!enforcementAPI.isExecutingControlAction() && e != null) {
+            enforcingAction=true;
             enforcementAPI.setExecutingControlAction(true);
 
             monitoringAPIInterface.enforcingActionStarted(actionName + target, e);
@@ -434,6 +461,8 @@ public class MultipleEnforcementAPIs implements EnforcementAPIInterface {
                 }
             }
             enforcementAPI.setExecutingControlAction(false);
+                    enforcingAction=false;
+
         }
         return res;
     }
@@ -444,6 +473,7 @@ public class MultipleEnforcementAPIs implements EnforcementAPIInterface {
         boolean res = false;
         EnforcementAPI enforcementAPI = enforcementAPIs.get(target);
         if (!enforcementAPI.isExecutingControlAction() && e != null) {
+            enforcingAction=true;
             enforcementAPI.setExecutingControlAction(true);
             monitoringAPIInterface.enforcingActionStarted(actionName
                     + target, e);
@@ -466,6 +496,8 @@ public class MultipleEnforcementAPIs implements EnforcementAPIInterface {
                 }
             }
             enforcementAPI.setExecutingControlAction(false);
+                        enforcingAction=false;
+
         }
         return res;
     }
@@ -477,6 +509,7 @@ public class MultipleEnforcementAPIs implements EnforcementAPIInterface {
         boolean res = false;
         EnforcementAPI enforcementAPI = enforcementAPIs.get(target);
         if (!enforcementAPI.isExecutingControlAction() && e != null) {
+            enforcingAction=true;
             monitoringAPIInterface.enforcingActionStarted(capability.getName()
                     + target, e);
 
@@ -501,6 +534,8 @@ public class MultipleEnforcementAPIs implements EnforcementAPIInterface {
                 }
             }
             enforcementAPI.setExecutingControlAction(false);
+                        enforcingAction=false;
+
         }
         return res;
     }
@@ -517,6 +552,7 @@ public class MultipleEnforcementAPIs implements EnforcementAPIInterface {
         if (!enforcementAPI.isExecutingControlAction() && node != null) {
             if (!actionName.toLowerCase().contains("scalein") || (actionName.toLowerCase().contains("scalein") && node.getAllRelatedNodesOfType(RelationshipType.HOSTED_ON_RELATIONSHIP).size() > 1)) {
                 enforcementAPI.setExecutingControlAction(true);
+                enforcingAction=true;
                 RuntimeLogger.logger.info("----------------------Enforcing " + actionName + " on " + " " + node.getId() + " params " + parameters.length);
                 monitoringAPIInterface.enforcingActionStarted(actionName, node);
 
@@ -538,6 +574,7 @@ public class MultipleEnforcementAPIs implements EnforcementAPIInterface {
                         ex.printStackTrace();
                     }
                 }
+            enforcingAction=false;
 
                 enforcementAPI.setExecutingControlAction(false);
 
@@ -569,6 +606,7 @@ public class MultipleEnforcementAPIs implements EnforcementAPIInterface {
         if (!enforcementAPI.isExecutingControlAction() && node != null) {
             if (!actionName.toLowerCase().contains("scalein") || (actionName.toLowerCase().contains("scalein") && node.getAllRelatedNodesOfType(RelationshipType.HOSTED_ON_RELATIONSHIP).size() > 1)) {
                 enforcementAPI.setExecutingControlAction(true);
+                enforcingAction=true;
                 RuntimeLogger.logger.info("----------------------Enforcing " + actionName + " on " + target + " " + node.getId() + " params " + parameters.length);
                 monitoringAPIInterface.enforcingActionStarted(actionName
                         + target, node);
@@ -592,7 +630,7 @@ public class MultipleEnforcementAPIs implements EnforcementAPIInterface {
                         ex.printStackTrace();
                     }
                 }
-
+                enforcingAction=false;
                 enforcementAPI.setExecutingControlAction(false);
 
             }
@@ -621,6 +659,7 @@ public class MultipleEnforcementAPIs implements EnforcementAPIInterface {
         if (!enforcementAPI.isExecutingControlAction() && node != null) {
             if (!actionName.toLowerCase().contains("scalein") || (actionName.toLowerCase().contains("scalein") && node.getAllRelatedNodesOfType(RelationshipType.HOSTED_ON_RELATIONSHIP).size() > 1)) {
                 enforcementAPI.setExecutingControlAction(true);
+                enforcingAction=true;
                 RuntimeLogger.logger.info("----------------------Enforcing " + actionName + " on " + target + " " + node.getId() + " params " + parameters.length);
                 monitoringAPIInterface.enforcingActionStarted(actionName
                         + target, node);
@@ -644,7 +683,7 @@ public class MultipleEnforcementAPIs implements EnforcementAPIInterface {
                         ex.printStackTrace();
                     }
                 }
-
+                enforcingAction=false;
                 enforcementAPI.setExecutingControlAction(false);
 
             }
@@ -660,6 +699,20 @@ public class MultipleEnforcementAPIs implements EnforcementAPIInterface {
                 enforcementAPI.getValue().undeployService(service);
             }
         }
+    }
+
+    /**
+     * @return the enforcingAction
+     */
+    public boolean isEnforcingAction() {
+        return enforcingAction;
+    }
+
+    /**
+     * @param enforcingAction the enforcingAction to set
+     */
+    public void setEnforcingAction(boolean enforcingAction) {
+        this.enforcingAction = enforcingAction;
     }
 
 }

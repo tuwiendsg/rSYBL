@@ -804,6 +804,11 @@ public class MELA_API implements MonitoringInterface {
         throw new UnsupportedOperationException("Not supported yet.");
     }
 
+    @Override
+    public List<MonitoringSnapshot> getAllMonitoringInformationOnPeriod(String timestamp) {
+        throw new UnsupportedOperationException("Not supported yet.");
+    }
+
     private static class MELA_ClientUtils {
 
         //works as side effect

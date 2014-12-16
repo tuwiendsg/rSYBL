@@ -232,4 +232,9 @@ public class MonitoringAPIDryRun  implements MonitoringInterface{
         return true;
     }
 
+    @Override
+    public List<MonitoringSnapshot> getAllMonitoringInformationOnPeriod(String timestamp) {
+        throw new UnsupportedOperationException("Not supported yet.");
+    }
+
 }

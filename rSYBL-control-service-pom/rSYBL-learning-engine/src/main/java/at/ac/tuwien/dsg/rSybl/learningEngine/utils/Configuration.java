@@ -52,6 +52,15 @@ public class Configuration {
     {
     	return configuration.getProperty("Cutoff");
     }
+    public static int getLearningPeriod()
+    {
+        if (configuration.getProperty("LearningPeriod")!=null && !configuration.getProperty("LearningPeriod").equalsIgnoreCase("")) {
+            return Integer.parseInt(configuration.getProperty("LearningPeriod"));
+        }
+        else {
+            return 10*60000;
+        }
+    }
     public static String getIntervalSize()
     {
     	return configuration.getProperty("IntervalSize");

@@ -858,6 +858,51 @@ public class MELA_API3 implements MonitoringInterface {
         }
         return monitoringSnapshots;
     }
+ @Override
+    public List<MonitoringSnapshot> getAllMonitoringInformationOnPeriod( String timestamp) {
+          List<MonitoringSnapshot> snapshots = new ArrayList<>();
+        URL url = null;
+        HttpURLConnection connection = null;
+        try {
+            url = new URL(REST_API_URL + "/" + controlService.getId() + "/historicalmonitoringdataXML/fromTimestamp?timestamp="+timestamp);
+            connection = (HttpURLConnection) url.openConnection();
+            connection.setRequestMethod("GET");
+            connection.setRequestProperty("Content-Type", "application/xml");
+            connection.setRequestProperty("Accept", "application/xml");
+
+            InputStream errorStream = connection.getErrorStream();
+            if (errorStream != null) {
+                BufferedReader reader = new BufferedReader(new InputStreamReader(errorStream));
+                String line;
+                while ((line = reader.readLine()) != null) {
+                    Logger.getLogger(MELA_API3.class.getName()).log(Level.SEVERE, line);
+                }
+            }
+
+            InputStream inputStream = connection.getInputStream();
+            JAXBContext jAXBContext = JAXBContext.newInstance(MonitoredElementMonitoringSnapshots.class);
+            MonitoredElementMonitoringSnapshots retrievedData = (MonitoredElementMonitoringSnapshots) jAXBContext.createUnmarshaller().unmarshal(inputStream);
+
+            if (retrievedData != null) {
+                //P
+                //getLatestMonitoringDataLock();
+                snapshots= recursivelyProcessMonitoringSnapshots(retrievedData);
+                //V
+                //releaseLatestMonitoringDataLock();
+            }
+
+        } catch (Exception e) {
+            // Logger.getLogger(MELA_API.class.getName()).log(Level.SEVERE, e.getMessage(), e);
+            Logger.getLogger(MELA_API3.class.getName()).log(Level.WARNING, "Trying to connect to MELA - failing ... . Retrying later");
+            RuntimeLogger.logger.error("Failing to connect to MELA");
+            return snapshots;
+        } finally {
+            if (connection != null) {
+                connection.disconnect();
+            }
+        }
+        return snapshots;
+    }
 
     @Override
     public List<MonitoringSnapshot> getAllMonitoringInformationOnPeriod( long time) {

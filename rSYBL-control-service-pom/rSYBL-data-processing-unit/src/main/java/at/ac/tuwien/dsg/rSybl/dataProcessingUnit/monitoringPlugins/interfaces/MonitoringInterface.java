@@ -26,11 +26,17 @@ import at.ac.tuwien.dsg.rSybl.dataProcessingUnit.api.model.MonitoringSnapshot;
 import java.util.HashMap;
 
 public interface MonitoringInterface {
+
     public List<MonitoringSnapshot> getAllMonitoringInformation();
-    public List<MonitoringSnapshot>  getAllMonitoringInformationOnPeriod( long time );
+
+    public List<MonitoringSnapshot> getAllMonitoringInformationOnPeriod(long time);
+
     public Double getCpuUsage(Node node);
+
     public void removeService(Node service);
+
     public Double getMemoryAvailable(Node node);
+
     public boolean isHealthy();
 
     public Double getMemorySize(Node node);
@@ -42,6 +48,8 @@ public interface MonitoringInterface {
     public Double getDiskAvailable(Node node);
 
     public Double getDiskUsage(Node node);
+
+    public List<MonitoringSnapshot> getAllMonitoringInformationOnPeriod(String timestamp);
 
     public Double getCPUSpeed(Node node);
 

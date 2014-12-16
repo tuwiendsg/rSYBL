@@ -12,7 +12,7 @@ import java.util.logging.Logger;
  *
  * @author Georgiana
  */
-public class Cluster {
+public class Cluster  {
 
     private ArrayList<NDimensionalPoint> points = new ArrayList<NDimensionalPoint>();
     private NDimensionalPoint centroid;

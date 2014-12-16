@@ -39,18 +39,21 @@ import at.ac.tuwien.dsg.csdg.inputProcessing.multiLevelModel.abstractModelXML.SY
 import at.ac.tuwien.dsg.rSybl.cloudInteractionUnit.api.EnforcementAPIInterface;
 import at.ac.tuwien.dsg.rSybl.dataProcessingUnit.api.MonitoringAPIInterface;
 import at.ac.tuwien.dsg.rSybl.planningEngine.ContextRepresentation.Pair;
+import at.ac.tuwien.dsg.rSybl.planningEngine.adviseEffects.PlanningGreedyWithADVISE;
 import at.ac.tuwien.dsg.rSybl.planningEngine.utils.Configuration;
 import at.ac.tuwien.dsg.rSybl.planningEngine.staticData.ActionEffect;
 import at.ac.tuwien.dsg.rSybl.planningEngine.staticData.ActionEffects;
 import at.ac.tuwien.dsg.rSybl.planningEngine.utils.PlanningLogger;
 import java.util.ArrayDeque;
 import java.util.Deque;
+import java.util.Timer;
+import java.util.TimerTask;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
 public class PlanningGreedyAlgorithm implements PlanningAlgorithmInterface {
 
-    private Thread t;
+    private Timer t = new Timer();
 
     private ContextRepresentation contextRepresentation;
     private MonitoringAPIInterface monitoringAPI;
@@ -60,15 +63,45 @@ public class PlanningGreedyAlgorithm implements PlanningAlgorithmInterface {
     private String strategiesThatNeedToBeImproved = "";
     private int REFRESH_PERIOD = 120000;
     Deque<HashMap<String,Boolean>> stack = new ArrayDeque<HashMap<String,Boolean>>();
+    PlanningGreedyWithADVISE planningGreedyWithADVISE ;
+    
+    private Timer evaluateLearningPerformance = new Timer();
+    
     public PlanningGreedyAlgorithm(DependencyGraph cloudService,
             MonitoringAPIInterface monitoringAPI, EnforcementAPIInterface enforcementAPI) {
         this.dependencyGraph = cloudService;
         this.monitoringAPI = monitoringAPI;
         this.enforcementAPI = enforcementAPI;
         REFRESH_PERIOD = Configuration.getRefreshPeriod();
-        t = new Thread(this);
+        planningGreedyWithADVISE= new PlanningGreedyWithADVISE(monitoringAPI, cloudService.getCloudService(), enforcementAPI);
+        planningGreedyWithADVISE.startLearningProcess();
+        evaluateLearningPerformance.scheduleAtFixedRate(new TimerTask(){
+        public void run(){
+            checkWhetherLearningIsAccurateAndSwitch();
+        }
+        }, REFRESH_PERIOD, REFRESH_PERIOD);
     }
-
+    public void checkWhetherLearningIsAccurateAndSwitch(){
+        
+       if (planningGreedyWithADVISE.checkWhetherPerformanceIsAcceptable()){
+                 
+           while (enforcementAPI.isEnforcingAction()){
+               try {
+                   Thread.sleep(1000);
+               } catch (InterruptedException ex) {
+                   Logger.getLogger(PlanningGreedyAlgorithm.class.getName()).log(Level.SEVERE, null, ex);
+               }
+           }
+        stop();
+        try {
+                   Thread.sleep(1000);
+               } catch (InterruptedException ex) {
+                   Logger.getLogger(PlanningGreedyAlgorithm.class.getName()).log(Level.SEVERE, null, ex);
+               }
+        planningGreedyWithADVISE.replaceDependencyGraph(dependencyGraph);
+        planningGreedyWithADVISE.start();
+       }
+    }
     public boolean checkIfActionPossible(ActionEffect actionEffect) {
         if (actionEffect.isConditional()){
             if(!actionEffect.evaluateConditions(dependencyGraph, monitoringAPI)) return false;
@@ -635,10 +668,12 @@ public class PlanningGreedyAlgorithm implements PlanningAlgorithmInterface {
         actionPlanEnforcement.enforceResult(result, dependencyGraph);
         }
     }
-
+    
     @Override
     public void run() {
-        while (true) {
+        t.scheduleAtFixedRate(new TimerTask(){
+            @Override
+            public void run(){
             if (dependencyGraph.isInControlState()) {
                 try {
                     Thread.sleep(REFRESH_PERIOD);
@@ -658,12 +693,13 @@ public class PlanningGreedyAlgorithm implements PlanningAlgorithmInterface {
 
                 findAndExecuteBestActions();
             }
-        }
+            }
+        }, REFRESH_PERIOD, REFRESH_PERIOD);
     }
 
     @Override
     public void start() {
-        t.start();
+        run();
     }
 
     @Override
@@ -680,7 +716,8 @@ public class PlanningGreedyAlgorithm implements PlanningAlgorithmInterface {
                 ok = true;
             }
         }
-        t.stop();
+        t.purge();
+        t.cancel();
     }
 
     @Override

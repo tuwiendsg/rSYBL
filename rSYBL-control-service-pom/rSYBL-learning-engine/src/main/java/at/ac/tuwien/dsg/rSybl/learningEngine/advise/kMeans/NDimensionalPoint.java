@@ -107,6 +107,7 @@ public class NDimensionalPoint implements Cloneable{
      * @pre - it is expected that the two objects have the same size
      */
     public double computeDistance(Object o){
+        
         if (o!=null && o.getClass()==this.getClass()){
             NDimensionalPoint newPoint = (NDimensionalPoint) o;
             if (newPoint.getSize()==size){

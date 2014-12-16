@@ -28,20 +28,29 @@ import java.util.HashMap;
 public interface MonitoringAPIInterface {
 
     public void setCompositionRules(String compositionRules);
+
     public void removeService(Node service);
+
     public void setCompositionRules();
+
     public List<MonitoringSnapshot> getAllMonitoringInformation();
-    public  List<MonitoringSnapshot>  getAllMonitoringInformationOnPeriod( long time );
+
+    public List<MonitoringSnapshot> getAllMonitoringInformationOnPeriod(long count);
+
     public void refreshCompositionRules();
+
     public boolean isHealthy();
+
     public Double getCurrentCPUSize(Node e) throws Exception;
+
+    public List<MonitoringSnapshot> getAllMonitoringInformationOnPeriod(String timestamp);
 
     public Double getCostPerHour(Node e) throws Exception;
 
     public Double getCurrentRAMSize(Node e) throws Exception;
 
     public Double getCurrentMemUsage(Node e) throws Exception;
- 
+
     public Double getTotalCostSoFar(Node e) throws Exception;
 
     public Node getControlledService();
@@ -93,10 +102,10 @@ public interface MonitoringAPIInterface {
     public List<String> getOngoingActionNodeID();
 
     public boolean checkIfMetricsValid(Node node);
-    
+
     public boolean checkHealthy(Node node);
-    
+
     public void sendMessageToAnalysisService(String message);
-    
+
     public void sendControlIncapacityMessage(String message, List<ElasticityRequirement> cause);
 }

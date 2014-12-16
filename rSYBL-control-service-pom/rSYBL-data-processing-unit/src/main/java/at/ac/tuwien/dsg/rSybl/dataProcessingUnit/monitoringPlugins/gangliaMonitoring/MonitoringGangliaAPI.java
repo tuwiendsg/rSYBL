@@ -624,5 +624,10 @@ Double retValue = 0.0;
     public List<MonitoringSnapshot> getAllMonitoringInformationOnPeriod(long time) {
         throw new UnsupportedOperationException("Not supported yet.");
     }
+
+    @Override
+    public List<MonitoringSnapshot> getAllMonitoringInformationOnPeriod(String timestamp) {
+        throw new UnsupportedOperationException("Not supported yet.");
+    }
 	
 }

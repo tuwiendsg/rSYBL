@@ -33,6 +33,7 @@ public class ActionPlanEnforcement {
     private double violationDegree = 0;
 
     public ActionPlanEnforcement(EnforcementAPIInterface apiInterface) {
+
         enforcementAPI = apiInterface;
         try {
             InputProcessing inputProcessing = new InputProcessing();
@@ -161,7 +162,7 @@ public class ActionPlanEnforcement {
         }
         //}
     }
-
+    
     public class EnforceActionInThread implements Runnable {
 
         ActionEffect actionEffect;
@@ -682,7 +683,49 @@ public class ActionPlanEnforcement {
 //			}
         }
     }
+    public void enforceElasticityCapability(DependencyGraph dependencyGraph,ElasticityCapability ec) {
+        String target = "";
+        String actionName = ec.getName();
+        if (actionName.contains(".")) {
+            target = actionName.split("\\.")[0];
+            actionName = actionName.split("\\.")[1];
+        }
+        
+      
+        if (target.equalsIgnoreCase("")) {
+            switch (actionName.toLowerCase()) {
+                case "scaleout":
+                    enforcementAPI.scaleout(dependencyGraph.getNodeWithID(ec.getServicePartID()));
+                    break;
+                case "scalein":
+                    enforcementAPI.scalein(dependencyGraph.getNodeWithID(ec.getServicePartID()));
+                    break;
+                default:
+                    enforcementAPI.enforceAction(actionName,
+                            dependencyGraph.getNodeWithID(ec.getServicePartID()));
+                    break;
+            }
+        } else {
+            switch (actionName.toLowerCase()) {
+                case "scaleout":
+                    enforcementAPI.scaleout(target,
+                            dependencyGraph.getNodeWithID(ec.getServicePartID()));
+                    break;
+                case "scalein":
+                    enforcementAPI
+                            .scalein(target, dependencyGraph.getNodeWithID(ec.getServicePartID()));
+                    break;
+                default:
+                    if (target.equalsIgnoreCase("")) {
+                        enforcementAPI.enforceAction(target,
+                                actionName,
+                                dependencyGraph.getNodeWithID(ec.getServicePartID()));
+                    }
 
+                    break;
+            }
+        }
+    }
     public void enforceAction(ActionEffect actionEffect) {
         String target = "";
         String actionName = actionEffect.getActionType().toLowerCase();

@@ -452,6 +452,11 @@ public class MonitoringAPI implements MonitoringAPIInterface {
     public boolean isHealthy() {
         return offeredMonitoringMetrics.isHealthy();
     }
+
+    @Override
+    public List<MonitoringSnapshot> getAllMonitoringInformationOnPeriod(String timestamp) {
+        return offeredMonitoringMetrics.getAllMonitoringInformationOnPeriod(timestamp);
+    }
     
 
  
