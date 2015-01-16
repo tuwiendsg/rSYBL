@@ -56,15 +56,15 @@ public class Cluster  {
     public NDimensionalPoint computeCentroidAsAverage() {
         NDimensionalPoint center = new NDimensionalPoint();
         if (points != null && points.size() > 0) {
-            center.setSize(points.get(0).getSize());
+           // center.setSize(points.get(0).getValues().size());
             ArrayList<Double> myPoints = points.get(0).getValues();
 
             for (int x = 1; x < points.size(); x++) {
-                for (int i = 0; i < points.get(0).getSize(); i++) {
+                for (int i = 0; i < points.get(0).getValues().size(); i++) {
                     myPoints.set(i,  myPoints.get(i) + points.get(x).getValues().get(i));
                 }
             }
-            for (int i = 0; i < points.get(0).getSize(); i++) {
+            for (int i = 0; i < points.get(0).getValues().size(); i++) {
                 myPoints.set(i, myPoints.get(i) / points.size());
             }
             center.setValues(myPoints);
@@ -90,7 +90,11 @@ public class Cluster  {
                 NDimensionalPoint oldCentroid = (NDimensionalPoint) centroid.clone();
                 this.points = newPoints;
                 this.centroid = computeCentroidAsAverage();
+                if (centroid!=null){
                 return centroid.computeDistance(oldCentroid);
+                }else{
+                    return NDimensionalPoint.MAX_DIST;
+                }
             } catch (CloneNotSupportedException ex) {
                 Logger.getLogger(Cluster.class.getName()).log(Level.SEVERE, null, ex);
                 return NDimensionalPoint.MAX_DIST;

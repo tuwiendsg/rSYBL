@@ -89,7 +89,7 @@ public class Clustering {
                }
                lists.get(index).add(nDimensionalPoint);
            }
-           biggestShift=0.0;
+           biggestShift=-200000;
            for (int i=0;i<clusters.size();i++){
                double shift = clusters.get(i).update(lists.get(i));
                if (shift>biggestShift){

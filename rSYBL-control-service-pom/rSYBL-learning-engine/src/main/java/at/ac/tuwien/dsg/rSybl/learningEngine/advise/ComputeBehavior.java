@@ -13,6 +13,7 @@ import at.ac.tuwien.dsg.rSybl.dataProcessingUnit.api.model.ServicePartMonitor;
 import at.ac.tuwien.dsg.rSybl.dataProcessingUnit.monitoringPlugins.interfaces.MonitoringInterface;
 import at.ac.tuwien.dsg.rSybl.learningEngine.advise.kMeans.NDimensionalPoint;
 import at.ac.tuwien.dsg.rSybl.learningEngine.utils.Configuration;
+import at.ac.tuwien.dsg.rSybl.learningEngine.utils.LearningLogger;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
@@ -29,24 +30,49 @@ import java.util.concurrent.Executors;
  */
 public class ComputeBehavior {
 
-    private HashMap<String, HashMap<String, ECPBehavioralModel>> behaviors = new HashMap<>();
+    private final HashMap<String, HashMap<String, ECPBehavioralModel>> behaviors = new HashMap<>();
     private MonitoringAPIInterface monitoringInterface;
     private DependencyGraph dependencyGraph;
     private Timer reLearnTimer = new Timer();
     private int LEARNING_PERIOD = Configuration.getLearningPeriod();
-    private String latestTimestamp = "";
 
     public ComputeBehavior(Node cloudService, MonitoringAPIInterface interface1) {
         monitoringInterface = interface1;
         dependencyGraph = new DependencyGraph();
         dependencyGraph.setCloudService(cloudService);
-        for (Node node : dependencyGraph.getAllServiceUnits()) {
+
+        initializeBehaviors();
+        reLearnTimer.scheduleAtFixedRate(new TimerTask() {
+            @Override
+            public void run() {
+                refreshBehaviors();
+            }
+        }, LEARNING_PERIOD, LEARNING_PERIOD);
+    }
+    public void initializeBehaviors()
+    {
+        List<MonitoringSnapshot> snapshots = null;
+        while (snapshots==null || snapshots.size()==0){
+       snapshots= monitoringInterface.getAllMonitoringInformation();
+       if (snapshots==null || snapshots.size()==0){
+            try {
+                Thread.sleep(10000);
+            } catch (InterruptedException ex) {
+                LearningLogger.logger.info("Waiting to get monitoring information....");
+            }}
+        }
+        Node cloudService=dependencyGraph.getCloudService();
+        synchronized(behaviors){
+                for (Node node : dependencyGraph.getAllServiceUnits()) {
             if (node.getElasticityCapabilities() != null && node.getElasticityCapabilities().size() > 0) {
                 if (!behaviors.containsKey(node.getId())) {
                     behaviors.put(node.getId(), new HashMap<String, ECPBehavioralModel>());
                 }
                 for (ElasticityCapability capability : node.getElasticityCapabilities()) {
-                    behaviors.get(node.getId()).put(capability.getName(), new ECPBehavioralModel(cloudService, interface1));
+                    ECPBehavioralModel behavioralModel = new ECPBehavioralModel(cloudService, monitoringInterface);
+                    behavioralModel.setCapability(capability);
+                    
+                    behaviors.get(node.getId()).put(capability.getName(), behavioralModel);
                 }
             }
         }
@@ -56,7 +82,7 @@ public class ComputeBehavior {
                     behaviors.put(node.getId(), new HashMap<String, ECPBehavioralModel>());
                 }
                 for (ElasticityCapability capability : node.getElasticityCapabilities()) {
-                    behaviors.get(node.getId()).put(capability.getName(), new ECPBehavioralModel(cloudService, interface1));
+                    behaviors.get(node.getId()).put(capability.getName(), new ECPBehavioralModel(cloudService, monitoringInterface));
                 }
             }
         }
@@ -65,20 +91,10 @@ public class ComputeBehavior {
                 behaviors.put(cloudService.getId(), new HashMap<String, ECPBehavioralModel>());
             }
             for (ElasticityCapability capability : cloudService.getElasticityCapabilities()) {
-                behaviors.get(cloudService.getId()).put(capability.getName(), new ECPBehavioralModel(cloudService, interface1));
+                behaviors.get(cloudService.getId()).put(capability.getName(), new ECPBehavioralModel(cloudService, monitoringInterface));
             }
         }
-        reLearnTimer.scheduleAtFixedRate(new TimerTask() {
-            @Override
-            public void run() {
-                refreshBehaviors();
-            }
-        }, LEARNING_PERIOD, LEARNING_PERIOD);
-    }
-
-    public void refreshBehaviors() {
-        if (latestTimestamp.equalsIgnoreCase("")) {
-            for (String node : behaviors.keySet()) {
+         for (String node : behaviors.keySet()) {
                 for (String ec : behaviors.get(node).keySet()) {
                     ECPBehavioralModel behavioralModel = behaviors.get(node).get(ec);
                     for (ElasticityCapability capability : dependencyGraph.getNodeWithID(node).getElasticityCapabilities()) {
@@ -87,26 +103,25 @@ public class ComputeBehavior {
                             break;
                         }
                     }
-                    behavioralModel.initializeBehaviorClusters();
+                    behavioralModel.initializeBehaviorClusters(snapshots);
                     behavioralModel.refreshCorrelationMatrix();
+                    behaviors.get(node).put(ec,behavioralModel);
                 }
             }
-        } else {
+        }
+    }
+    public void refreshBehaviors() {
+        synchronized(behaviors){
             for (String node : behaviors.keySet()) {
                 for (String ec : behaviors.get(node).keySet()) {
                     ECPBehavioralModel behavioralModel = behaviors.get(node).get(ec);
-                    for (ElasticityCapability capability : dependencyGraph.getNodeWithID(node).getElasticityCapabilities()) {
-                        if (capability.getName().equalsIgnoreCase(ec)) {
-                            behavioralModel.setCapability(capability);
-                            break;
-                        }
-                    }
                     behavioralModel.refreshBehaviorClusters();
                     behavioralModel.refreshCorrelationMatrix();
-
+                    behaviors.get(node).put(ec, behavioralModel);
                 }
             }
-        }
+      
+    }
     }
 
     /**
@@ -116,18 +131,12 @@ public class ComputeBehavior {
         return behaviors;
     }
 
-    /**
-     * @param behaviors the behaviors to set
-     */
-    public void setBehaviors(HashMap<String, HashMap<String, ECPBehavioralModel>> behaviors) {
-        this.behaviors = behaviors;
-    }
 
     public ECPBehavioralModel getBehaviorModel(ElasticityCapability capability, Node node) {
         return behaviors.get(node.getId()).get(capability.getName());
     }
     public double avgActionTime(ElasticityCapability capability, Node node){
-        if (behaviors.get(node.getId()).containsKey(capability.getName())) {
+        if (behaviors!=null && behaviors.size()>0 && behaviors.containsKey(node.getId()) && behaviors.get(node.getId()).containsKey(capability.getName())) {
             return behaviors.get(node.getId()).get(capability.getName()).avgActionTime();
         }
         else {
@@ -137,10 +146,14 @@ public class ComputeBehavior {
      public double stdDevActionTime(ElasticityCapability capability, Node node){
         return behaviors.get(node.getId()).entrySet().iterator().next().getValue().stdDeviationActionTime();
     }
-    public LinkedHashMap<String, LinkedHashMap<String, NDimensionalPoint>> computeExpectedBehavior(ElasticityCapability capability, Node node) {
+    public LinkedHashMap<String, LinkedHashMap<String, NDimensionalPoint>> computeExpectedBehavior(ElasticityCapability capability) {
         LinkedHashMap<String, LinkedHashMap<String, NDimensionalPoint>> currentBehavior = new LinkedHashMap<>();
-
+        
         List<MonitoringSnapshot> snapshots = monitoringInterface.getAllMonitoringInformationOnPeriod(ECPBehavioralModel.CHANGE_INTERVAL);
+        while (snapshots.isEmpty()){
+            snapshots=monitoringInterface.getAllMonitoringInformationOnPeriod(ECPBehavioralModel.CHANGE_INTERVAL);
+        }
+       synchronized(behaviors){
         if (snapshots.size() > 0) {
             
             MonitoringSnapshot snapshot = snapshots.get(snapshots.size() - 1);
@@ -149,7 +162,7 @@ public class ComputeBehavior {
                     LinkedHashMap<String, NDimensionalPoint> metricsWithPoints = new LinkedHashMap<>();
                     currentBehavior.put(SP, metricsWithPoints);
                 }
-                for (ServicePartMonitor monitor : snapshot.getServiceParts().values()) {
+                ServicePartMonitor monitor = snapshot.getServiceParts().get(SP);
                     for (Map.Entry<String, Double> recording : monitor.getMetrics().entrySet()) {
 
                         if (!currentBehavior.get(SP).containsKey(recording.getKey())) {
@@ -164,14 +177,9 @@ public class ComputeBehavior {
                 }
             }
 
-        }
+   
 
-
-
-
-
-
-
-        return behaviors.get(node.getId()).get(capability.getName()).computeExpectedBehavior(currentBehavior);
+        return behaviors.get(capability.getServicePartID()).get(capability.getName()).computeExpectedBehavior(currentBehavior);
+       }
     }
 }

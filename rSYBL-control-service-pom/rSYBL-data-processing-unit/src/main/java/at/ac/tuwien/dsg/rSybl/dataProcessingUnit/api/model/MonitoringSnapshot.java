@@ -13,7 +13,7 @@ import java.util.HashMap;
 public class MonitoringSnapshot {
     private HashMap<String, String> ongoingActions=new HashMap<>();
     private HashMap<String, ServicePartMonitor> serviceParts = new HashMap<>();
-    private String timestamp;
+    private long timestamp;
      /**
      * @param ongoingActions the ongoingActions to set
      */
@@ -53,14 +53,14 @@ public class MonitoringSnapshot {
     /**
      * @return the timestamp
      */
-    public String getTimestamp() {
+    public long getTimestamp() {
         return timestamp;
     }
 
     /**
      * @param timestamp the timestamp to set
      */
-    public void setTimestamp(String timestamp) {
+    public void setTimestamp(long timestamp) {
         this.timestamp = timestamp;
     }
 }

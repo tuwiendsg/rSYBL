@@ -61,9 +61,9 @@ public class Configuration {
             return 10*60000;
         }
     }
-    public static String getIntervalSize()
+    public static int getIntervalSize()
     {
-    	return configuration.getProperty("IntervalSize");
+    	return Integer.parseInt(configuration.getProperty("IntervalSize"));
     }
    
 }

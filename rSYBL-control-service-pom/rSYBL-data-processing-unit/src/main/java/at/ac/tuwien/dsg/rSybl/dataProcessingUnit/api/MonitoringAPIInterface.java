@@ -43,7 +43,7 @@ public interface MonitoringAPIInterface {
 
     public Double getCurrentCPUSize(Node e) throws Exception;
 
-    public List<MonitoringSnapshot> getAllMonitoringInformationOnPeriod(String timestamp);
+    public List<MonitoringSnapshot> getAllMonitoringInformationFromTimestamp(long timestamp);
 
     public Double getCostPerHour(Node e) throws Exception;
 

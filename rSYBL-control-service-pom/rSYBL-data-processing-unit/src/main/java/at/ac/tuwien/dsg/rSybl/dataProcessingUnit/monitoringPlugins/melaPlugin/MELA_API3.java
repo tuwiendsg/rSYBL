@@ -772,8 +772,9 @@ public class MELA_API3 implements MonitoringInterface {
         List<MonitoringSnapshot> snapshots = new ArrayList<>();
         URL url = null;
         HttpURLConnection connection = null;
+        while (snapshots.size()==0){
         try {
-            url = new URL(REST_API_URL + "/" + controlService.getId() + "/historicalmonitoringdataXML/all");
+            url = new URL(REST_API_URL + "/" + controlService.getId() + "/historicalmonitoringdata/all/xml");
             connection = (HttpURLConnection) url.openConnection();
             connection.setRequestMethod("GET");
             connection.setRequestProperty("Content-Type", "application/xml");
@@ -804,11 +805,12 @@ public class MELA_API3 implements MonitoringInterface {
             // Logger.getLogger(MELA_API.class.getName()).log(Level.SEVERE, e.getMessage(), e);
             Logger.getLogger(MELA_API3.class.getName()).log(Level.WARNING, "Trying to connect to MELA - failing ... . Retrying later");
             RuntimeLogger.logger.error("Failing to connect to MELA");
-            return snapshots;
+           
         } finally {
             if (connection != null) {
                 connection.disconnect();
             }
+        }
         }
         return snapshots;
         //throw new UnsupportedOperationException("Not supported yet.");
@@ -823,7 +825,7 @@ public class MELA_API3 implements MonitoringInterface {
             MonitoringSnapshot monitoringSnapshot = new MonitoringSnapshot();
             HashMap<String, ServicePartMonitor> monitors = new HashMap<>();
             processing.add(elementMonitoringSnapshot);
-            monitoringSnapshot.setTimestamp(elementMonitoringSnapshot.getTimestamp());
+            monitoringSnapshot.setTimestamp(Long.parseLong(elementMonitoringSnapshot.getTimestamp()));
             for (Action action:elementMonitoringSnapshot.getExecutingActions()){
                 monitoringSnapshot.addOngoingActions(action.getTargetEntityID(), action.getAction());
             }
@@ -839,32 +841,34 @@ public class MELA_API3 implements MonitoringInterface {
                     switch (value.getValueType()) {
                         case NUMERIC:
                             metrics.put(m.getKey().getName(), Double.parseDouble(m.getValue().getValueRepresentation()));
+                            break;
                         default:
-                            Logger.getLogger(this.getClass().getName()).log(Level.WARNING, "Value ''{0}''for metric {1} for Node {2} is not Numeric", new Object[]{value.getValueRepresentation(), m.getKey().getName().toString(), monitor.getServicePart()});
-                            ;
+                            //Logger.getLogger(this.getClass().getName()).log(Level.WARNING, "Value ''{0}''for metric {1} for Node {2} is not Numeric", new Object[]{value.getValueRepresentation(), m.getKey().getName().toString(), monitor.getServicePart()});
+                            //;
+                            break;
                     }
                     
                 }
                 monitor.setMetrics(metrics);
                 
                 monitors.put(monitor.getServicePart(), monitor);
-
-
-
+                 monitoringSnapshot.addServicePart(monitor.getServicePart(),monitor);
+                
                 processing.addAll(currentlyUnderInspection.getChildren());
 
             }
+
             monitoringSnapshots.add(monitoringSnapshot);
         }
         return monitoringSnapshots;
     }
  @Override
-    public List<MonitoringSnapshot> getAllMonitoringInformationOnPeriod( String timestamp) {
+    public List<MonitoringSnapshot> getAllMonitoringInformationFromTimestamp( long timestamp) {
           List<MonitoringSnapshot> snapshots = new ArrayList<>();
         URL url = null;
         HttpURLConnection connection = null;
         try {
-            url = new URL(REST_API_URL + "/" + controlService.getId() + "/historicalmonitoringdataXML/fromTimestamp?timestamp="+timestamp);
+            url = new URL(REST_API_URL + "/" + controlService.getId() + "/historicalmonitoringdata/fromtimestamp/xml?timestamp="+timestamp);
             connection = (HttpURLConnection) url.openConnection();
             connection.setRequestMethod("GET");
             connection.setRequestProperty("Content-Type", "application/xml");
@@ -910,7 +914,7 @@ public class MELA_API3 implements MonitoringInterface {
         URL url = null;
         HttpURLConnection connection = null;
         try {
-            url = new URL(REST_API_URL + "/" + controlService.getId() + "/historicalmonitoringdataXML/lastX?count="+time);
+            url = new URL(REST_API_URL + "/" + controlService.getId() + "/historicalmonitoringdata/lastX/xml?count="+time);
             connection = (HttpURLConnection) url.openConnection();
             connection.setRequestMethod("GET");
             connection.setRequestProperty("Content-Type", "application/xml");

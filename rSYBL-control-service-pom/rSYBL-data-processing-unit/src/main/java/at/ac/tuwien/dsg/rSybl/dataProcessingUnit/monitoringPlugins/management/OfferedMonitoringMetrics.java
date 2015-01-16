@@ -472,11 +472,11 @@ public class OfferedMonitoringMetrics implements MonitoringInterface {
     }
 
     @Override
-    public List<MonitoringSnapshot> getAllMonitoringInformationOnPeriod(String timestamp) {
+    public List<MonitoringSnapshot> getAllMonitoringInformationFromTimestamp(long timestamp) {
           Map<Method, MonitoringInterface> methods = manageMonitoringPlugins.getMethods(manageMonitoringPlugins.getAllPlugins(cloudService));
         for (Method method : methods.keySet()) {
             if (method.getName().equalsIgnoreCase("getAllMonitoringInformationOnPeriod")) {
-                return methods.get(method).getAllMonitoringInformationOnPeriod(timestamp);
+                return methods.get(method).getAllMonitoringInformationFromTimestamp(timestamp);
             }
         }
         return new ArrayList<MonitoringSnapshot>();

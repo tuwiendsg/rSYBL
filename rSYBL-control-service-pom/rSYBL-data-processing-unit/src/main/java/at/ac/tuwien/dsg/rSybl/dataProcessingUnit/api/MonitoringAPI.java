@@ -454,8 +454,8 @@ public class MonitoringAPI implements MonitoringAPIInterface {
     }
 
     @Override
-    public List<MonitoringSnapshot> getAllMonitoringInformationOnPeriod(String timestamp) {
-        return offeredMonitoringMetrics.getAllMonitoringInformationOnPeriod(timestamp);
+    public List<MonitoringSnapshot> getAllMonitoringInformationFromTimestamp(long timestamp) {
+        return offeredMonitoringMetrics.getAllMonitoringInformationFromTimestamp(timestamp);
     }
     
 

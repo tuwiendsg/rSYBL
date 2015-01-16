@@ -20,7 +20,7 @@ public class Main {
         int size = 10;
         for (int i = 0; i < size; i++) {
             NDimensionalPoint p = new NDimensionalPoint();
-            p.setSize(3);
+           // p.setSize(3);
             ArrayList<Double> myPoints = new ArrayList<>();
             
             myPoints.add(i+0.0d);
@@ -32,7 +32,7 @@ public class Main {
         
          for (int i = 0; i < size; i++) {
             NDimensionalPoint p = new NDimensionalPoint();
-            p.setSize(3);
+//            p.setSize(3);
                         ArrayList<Double> myPoints = new ArrayList<>();
             
             myPoints.add(i*3+0.0d);
@@ -46,7 +46,7 @@ public class Main {
          
           for (int i = 0; i < size; i++) {
             NDimensionalPoint p = new NDimensionalPoint();
-            p.setSize(3);
+//            p.setSize(3);
                         ArrayList<Double> myPoints = new ArrayList<>();
             
             myPoints.add(i*7+0.0d);

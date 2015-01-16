@@ -23,6 +23,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Timer;
 import java.util.TimerTask;
+import org.springframework.util.LinkedCaseInsensitiveMap;
 
 /**
  *
@@ -31,7 +32,7 @@ import java.util.TimerTask;
 public class PlanningGreedyWithADVISE implements PlanningAlgorithmInterface {
 
     private List<ContextRepresentation> withoutEnforcing = new LinkedList<ContextRepresentation>();
-    private ContextRepresentation initialContext;
+    private ContextRepresentation initialContext ;
     private Node cloudService;
     private DependencyGraph dependencyGraph;
     private MonitoringAPIInterface monitoringInterface;
@@ -41,7 +42,7 @@ public class PlanningGreedyWithADVISE implements PlanningAlgorithmInterface {
     private LinkedHashMap<ElasticityCapability, Double> expectedFinalEffect = new LinkedHashMap<>();
     private double noActionOverallViolatedConstraints = 0;
     private double noActionFinalViolatedConstraints = 0;
-    private Timer timer;
+    private Timer timer = new Timer();
     private EnforcementAPIInterface enforcementAPI;
     private ComputeBehavior behavior;
 
@@ -51,6 +52,7 @@ public class PlanningGreedyWithADVISE implements PlanningAlgorithmInterface {
         this.enforcementAPI = enforcementAPI;
         dependencyGraph = new DependencyGraph();
         dependencyGraph.setCloudService(cloudService);
+        initialContext=new ContextRepresentation(cloudService, new LinkedHashMap<String, LinkedHashMap<String, Double>>());
     }
 
     public void startLearningProcess() {
@@ -82,14 +84,14 @@ public class PlanningGreedyWithADVISE implements PlanningAlgorithmInterface {
                     overallEc = ec;
                 }
             }
-            if (minViolatedFinalConstraints > expectedFinalEffect.get(ec)) {
+            if (constraintsViolatedWithout > 0 && minViolatedFinalConstraints > expectedFinalEffect.get(ec)) {
                 minViolatedFinalConstraints = expectedFinalEffect.get(ec);
                 finalEc = ec;
             }
 
         }
 
-        if (overallEc == finalEc) {
+        if (constraintsViolatedWithout > 0 && overallEc == finalEc) {
             elasticityCapability = overallEc;
             return elasticityCapability;
         }
@@ -114,14 +116,18 @@ public class PlanningGreedyWithADVISE implements PlanningAlgorithmInterface {
     public boolean checkWhetherPerformanceIsAcceptable() {
         double stdDevSum = 0;
         double bigNb = 1000000;
+        int nbActions=0;
         for (ElasticityCapability capability : dependencyGraph.getAllElasticityCapabilities()) {
-            if (behavior.avgActionTime(capability, cloudService) > 0) {
-                stdDevSum += behavior.stdDevActionTime(capability, cloudService);
+            if (behavior.avgActionTime(capability, dependencyGraph.getNodeWithID(capability.getServicePartID())) > 0) {
+                stdDevSum += behavior.stdDevActionTime(capability,  dependencyGraph.getNodeWithID(capability.getServicePartID()));
+                nbActions +=1;
             } else {
                 stdDevSum += bigNb;
+                nbActions +=1;
+
             }
         }
-        if (stdDevSum < bigNb && stdDevSum / dependencyGraph.getAllElasticityCapabilities().size() < 2) {
+        if (stdDevSum/nbActions < bigNb) {
             return true;
         } else {
             return false;
@@ -187,7 +193,8 @@ public class PlanningGreedyWithADVISE implements PlanningAlgorithmInterface {
                     for (int j = 0; j < coef.length; j++) {
                         value += coef[j] * Math.pow(i + ECPBehavioralModel.CHANGE_INTERVAL, j);
                     }
-                    expectedValues.get(node).get(metric).add(value);
+                    //expectedValues.get(node).get(metric).add(value);
+                    expectedValues.get(node).get(metric).add(samplePoints[observations.length-1]);
                 }
             }
         }
@@ -234,16 +241,21 @@ public class PlanningGreedyWithADVISE implements PlanningAlgorithmInterface {
     public void replaceDependencyGraph(DependencyGraph dependencyGraph) {
         this.dependencyGraph = dependencyGraph;
     }
-
+    public void discoverPlan(){
+         initializeContexts();
+                ElasticityCapability capability = findCapabilityToEnforce();
+                if (capability!=null){
+                ActionPlanEnforcement actionPlanEnforcement = new ActionPlanEnforcement(enforcementAPI);
+                actionPlanEnforcement.enforceElasticityCapability(dependencyGraph, capability);
+    }
+    }
     @Override
     public void run() {
         timer.scheduleAtFixedRate(new TimerTask() {
             @Override
             public void run() {
-                initializeContexts();
-                ElasticityCapability capability = findCapabilityToEnforce();
-                ActionPlanEnforcement actionPlanEnforcement = new ActionPlanEnforcement(enforcementAPI);
-                actionPlanEnforcement.enforceElasticityCapability(dependencyGraph, capability);
+                    discoverPlan();
+                
             }
         }, Configuration.getRefreshPeriod(), Configuration.getRefreshPeriod());
     }

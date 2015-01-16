@@ -38,7 +38,7 @@ import java.util.List;
 public class ContextRepresentation {
 
 
-    private LinkedHashMap<String, LinkedHashMap<String, Double>> metricValues;
+    private LinkedHashMap<String, LinkedHashMap<String, Double>> metricValues = new LinkedHashMap<>();
 
     public ContextRepresentation(Node cloudService, LinkedHashMap<String, LinkedHashMap<String, Double>> values) {
         DependencyGraph dependencyGraph = new DependencyGraph();
@@ -55,7 +55,12 @@ public class ContextRepresentation {
     }
 
     public double getMetricValue(String node, String metric) {
-        return metricValues.get(node).get(metric);
+        if (metricValues.containsKey(node) && metricValues.get(node).containsKey(metric)) {
+            return metricValues.get(node).get(metric);
+        }
+        else {
+            return -1;
+        }
     }
     
     public void setMetricValue(String node, String metric,Double value){

@@ -93,6 +93,7 @@ public class PlanningGreedyAlgorithm implements PlanningAlgorithmInterface {
                }
            }
         stop();
+        evaluateLearningPerformance.cancel();
         try {
                    Thread.sleep(1000);
                } catch (InterruptedException ex) {

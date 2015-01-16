@@ -46,57 +46,61 @@ public class ECEnforcementEffect {
     private MonitoringAPIInterface monitoringInterface;
     private Node cloudService;
     private ComputeBehavior behavior;
-    public ECEnforcementEffect(ComputeBehavior behavior,Node cloudService, MonitoringAPIInterface monitoringAPIInterface,ElasticityCapability capability1) {
+
+    public ECEnforcementEffect(ComputeBehavior behavior, Node cloudService, MonitoringAPIInterface monitoringAPIInterface, ElasticityCapability capability1) {
         dependencyGraph = new DependencyGraph();
         dependencyGraph.setCloudService(cloudService);
         monitoringInterface = monitoringAPIInterface;
-        this.cloudService=cloudService;
-        capability=capability1;
+        this.cloudService = cloudService;
+        capability = capability1;
         this.behavior = behavior;
         initializeContexts();
     }
-    
-    public double getImprovedStrategies(ContextRepresentation beforeContextRepresentation){
+
+    public double getImprovedStrategies(ContextRepresentation beforeContextRepresentation) {
         ContextEvaluation contextEvaluation = new ContextEvaluation();
-        
-       return contextEvaluation.countFixedStrategies(dependencyGraph, withEnforcing.get(withEnforcing.size()-1), beforeContextRepresentation);
+
+        return contextEvaluation.countFixedStrategies(dependencyGraph, withEnforcing.get(withEnforcing.size() - 1), beforeContextRepresentation);
     }
-    public double getFinalStateViolatedConstraints (){
-          ContextEvaluation contextEvaluation = new ContextEvaluation();
-      
-        return contextEvaluation.countViolatedConstraints(dependencyGraph, withEnforcing.get(withEnforcing.size()-1));
+
+    public double getFinalStateViolatedConstraints() {
+        ContextEvaluation contextEvaluation = new ContextEvaluation();
+
+        return contextEvaluation.countViolatedConstraints(dependencyGraph, withEnforcing.get(withEnforcing.size() - 1));
     }
-    public double overallViolatedConstraints(){
+
+    public double overallViolatedConstraints() {
         double overallViolatedConstraints = 0.0;
         ContextEvaluation contextEvaluation = new ContextEvaluation();
-        for (ContextRepresentation contextRepresentation:withEnforcing){
-           overallViolatedConstraints+=contextEvaluation.countViolatedConstraints(dependencyGraph, contextRepresentation);
-           
-        }
-        return overallViolatedConstraints/withEnforcing.size();
-    }
-    private void initializeContexts() {
-        
-              LinkedHashMap<String, LinkedHashMap<String,Double>> metrics ;
+        for (ContextRepresentation contextRepresentation : withEnforcing) {
+            overallViolatedConstraints += contextEvaluation.countViolatedConstraints(dependencyGraph, contextRepresentation);
 
-        
-        LinkedHashMap<String, LinkedHashMap<String,NDimensionalPoint>> result = behavior.computeExpectedBehavior(capability, cloudService);
-        for (int i=0;i<ECPBehavioralModel.CHANGE_INTERVAL;i++){
-             metrics = new LinkedHashMap<>();
-             for (String node : result.keySet()){
-                 if (!metrics.containsKey(node)){
-                     metrics.put(node,new LinkedHashMap<String,Double>());
-                 }
-                 for (String metric : result.get(node).keySet()){
-                     metrics.get(node).put(metric, result.get(node).get(metric).getValues().get(i));
-                 }
-             }
-            ContextRepresentation contextRepresentation = new ContextRepresentation(cloudService,metrics);
+        }
+        return overallViolatedConstraints / withEnforcing.size();
+    }
+
+    private void initializeContexts() {
+
+        LinkedHashMap<String, LinkedHashMap<String, Double>> metrics;
+
+
+        LinkedHashMap<String, LinkedHashMap<String, NDimensionalPoint>> result = behavior.computeExpectedBehavior(capability);
+        for (int i = 0; i < ECPBehavioralModel.CHANGE_INTERVAL; i++) {
+            metrics = new LinkedHashMap<>();
+            for (String node : result.keySet()) {
+                if (!metrics.containsKey(node)) {
+                    metrics.put(node, new LinkedHashMap<String, Double>());
+                }
+                for (String metric : result.get(node).keySet()) {
+                    metrics.get(node).put(metric, result.get(node).get(metric).getValues().get(i));
+                }
+            }
+            ContextRepresentation contextRepresentation = new ContextRepresentation(cloudService, metrics);
             withEnforcing.add(contextRepresentation);
         }
-        
+
     }
-    
+
     private List<String> findTargetedMetrics(Node entity) {
         ArrayList<String> metricsTargeted = new ArrayList<String>();
 

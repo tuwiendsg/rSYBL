@@ -805,7 +805,7 @@ public class MELA_API implements MonitoringInterface {
     }
 
     @Override
-    public List<MonitoringSnapshot> getAllMonitoringInformationOnPeriod(String timestamp) {
+    public List<MonitoringSnapshot> getAllMonitoringInformationFromTimestamp(long timestamp) {
         throw new UnsupportedOperationException("Not supported yet.");
     }
 

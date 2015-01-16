@@ -49,7 +49,7 @@ public interface MonitoringInterface {
 
     public Double getDiskUsage(Node node);
 
-    public List<MonitoringSnapshot> getAllMonitoringInformationOnPeriod(String timestamp);
+    public List<MonitoringSnapshot> getAllMonitoringInformationFromTimestamp(long timestamp);
 
     public Double getCPUSpeed(Node node);
 

@@ -13,26 +13,12 @@ import java.util.List;
  * @author Georgiana
  */
 public class NDimensionalPoint implements Cloneable{
-    private int size;
     private ArrayList<Double> values = new ArrayList<>();
     public static double MAX_DIST=9999999;
     
     
     
-    /**
-     * @return the size
-     */
-    public int getSize() {
-        return size;
-    }
-
-    /**
-     * @param size the size to set
-     */
-    public void setSize(int size) {
-        this.size = size;
-    }
-
+    
     /**
      * @return the values
      */
@@ -49,7 +35,6 @@ public class NDimensionalPoint implements Cloneable{
     @Override
         protected Object clone() throws CloneNotSupportedException {
         NDimensionalPoint newNDimensionalPoint= (NDimensionalPoint) super.clone();
-        newNDimensionalPoint.setSize(size);
         newNDimensionalPoint.setValues((ArrayList<Double>)values.clone());
         return newNDimensionalPoint;
         }
@@ -57,8 +42,8 @@ public class NDimensionalPoint implements Cloneable{
     public boolean equals(Object o){
         if (o.getClass()==this.getClass()){
             NDimensionalPoint newPoint = (NDimensionalPoint) o;
-            if (newPoint.getSize()==size){
-                for (int i=0;i<size;i++){
+            if (newPoint.getValues().size()==values.size()){
+                for (int i=0;i<values.size();i++){
                     if (newPoint.getValues().get(i) !=values.get(i))
                     {
                         return false;
@@ -77,7 +62,7 @@ public class NDimensionalPoint implements Cloneable{
     @Override
     public int hashCode() {
         int hash = 3;
-        hash = 59 * hash + this.size;
+        hash = 59 * hash + values.size();
         hash = 59 * hash + Arrays.hashCode(this.values.toArray());
         return hash;
     }
@@ -88,7 +73,7 @@ public class NDimensionalPoint implements Cloneable{
       public double computeDistance(Object o, int newSize){
         if (o.getClass()==this.getClass()){
             NDimensionalPoint newPoint = (NDimensionalPoint) o;
-            if (newPoint.getSize()<=newSize && newPoint.getSize()<=newSize){
+            if (newPoint.values.size()==newSize && newPoint.values.size()<=newSize){
                 double dist = 0.0;
                 for (int i=0;i<newSize;i++){
                         dist+=Math.pow(newPoint.getValues().get(i) -values.get(i),2);
@@ -110,9 +95,9 @@ public class NDimensionalPoint implements Cloneable{
         
         if (o!=null && o.getClass()==this.getClass()){
             NDimensionalPoint newPoint = (NDimensionalPoint) o;
-            if (newPoint.getSize()==size){
+            if (newPoint.values.size()==values.size()){
                 double dist = 0.0;
-                for (int i=0;i<size;i++){
+                for (int i=0;i<values.size();i++){
                         dist+=Math.pow(newPoint.getValues().get(i) -values.get(i),2);
                 }
                 return Math.sqrt(dist);
@@ -129,8 +114,8 @@ public class NDimensionalPoint implements Cloneable{
     }
     @Override
     public String toString(){
-        String s=  "The point is "+size+"-dimensional, and it the coordinates are ";
-        for (int i=0;i<size;i++){
+        String s=  "The point is "+values.size()+"-dimensional, and it the coordinates are ";
+        for (int i=0;i<values.size();i++){
             s+=values.get(i) +" ";
         }
         
