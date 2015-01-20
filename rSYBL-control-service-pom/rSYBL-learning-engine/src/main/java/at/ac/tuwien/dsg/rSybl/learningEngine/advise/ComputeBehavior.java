@@ -42,12 +42,12 @@ public class ComputeBehavior {
         dependencyGraph.setCloudService(cloudService);
 
         initializeBehaviors();
-        reLearnTimer.scheduleAtFixedRate(new TimerTask() {
-            @Override
-            public void run() {
-                refreshBehaviors();
-            }
-        }, LEARNING_PERIOD, LEARNING_PERIOD);
+//        reLearnTimer.scheduleAtFixedRate(new TimerTask() {
+//            @Override
+//            public void run() {
+//                refreshBehaviors();
+//            }
+//        }, LEARNING_PERIOD, LEARNING_PERIOD);
     }
     public void initializeBehaviors()
     {
@@ -109,6 +109,12 @@ public class ComputeBehavior {
                 }
             }
         }
+                reLearnTimer.scheduleAtFixedRate(new TimerTask() {
+            @Override
+            public void run() {
+                refreshBehaviors();
+            }
+        }, LEARNING_PERIOD, LEARNING_PERIOD);
     }
     public void refreshBehaviors() {
         synchronized(behaviors){
@@ -149,14 +155,14 @@ public class ComputeBehavior {
     public LinkedHashMap<String, LinkedHashMap<String, NDimensionalPoint>> computeExpectedBehavior(ElasticityCapability capability) {
         LinkedHashMap<String, LinkedHashMap<String, NDimensionalPoint>> currentBehavior = new LinkedHashMap<>();
         
-        List<MonitoringSnapshot> snapshots = monitoringInterface.getAllMonitoringInformationOnPeriod(ECPBehavioralModel.CHANGE_INTERVAL);
+         List<MonitoringSnapshot> snapshots = monitoringInterface.getAllMonitoringInformationOnPeriod(ECPBehavioralModel.CHANGE_INTERVAL);
         while (snapshots.isEmpty()){
             snapshots=monitoringInterface.getAllMonitoringInformationOnPeriod(ECPBehavioralModel.CHANGE_INTERVAL);
         }
        synchronized(behaviors){
         if (snapshots.size() > 0) {
             
-            MonitoringSnapshot snapshot = snapshots.get(snapshots.size() - 1);
+            for (MonitoringSnapshot snapshot : snapshots){
             for (String SP : snapshot.getServiceParts().keySet()) {
                 if (!currentBehavior.containsKey(SP)) {
                     LinkedHashMap<String, NDimensionalPoint> metricsWithPoints = new LinkedHashMap<>();
@@ -168,15 +174,14 @@ public class ComputeBehavior {
                         if (!currentBehavior.get(SP).containsKey(recording.getKey())) {
                             NDimensionalPoint nDimPoint = new NDimensionalPoint();
                             currentBehavior.get(SP).put(recording.getKey(), nDimPoint);
-                            currentBehavior.get(SP).put(recording.getKey(), nDimPoint);
+                            
                         }
 
-                        currentBehavior.get(SP).get(recording.getKey()).addValue(recording.getValue());
                         currentBehavior.get(SP).get(recording.getKey()).addValue(recording.getValue());
                     }
                 }
             }
-
+        }
    
 
         return behaviors.get(capability.getServicePartID()).get(capability.getName()).computeExpectedBehavior(currentBehavior);

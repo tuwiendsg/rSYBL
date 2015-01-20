@@ -10,7 +10,7 @@ import java.util.HashMap;
  *
  * @author Georgiana
  */
-public class MonitoringSnapshot {
+public class MonitoringSnapshot implements Comparable<MonitoringSnapshot> {
     private HashMap<String, String> ongoingActions=new HashMap<>();
     private HashMap<String, ServicePartMonitor> serviceParts = new HashMap<>();
     private long timestamp;
@@ -63,4 +63,16 @@ public class MonitoringSnapshot {
     public void setTimestamp(long timestamp) {
         this.timestamp = timestamp;
     }
+
+    @Override
+    public int compareTo(MonitoringSnapshot o) {
+        if (timestamp>o.timestamp) {
+            return 1;
+        }
+        if (timestamp<o.timestamp) {
+            return -1;
+        }
+        return 0;
+    }
+    
 }

@@ -177,7 +177,7 @@ public class ContextEvaluation {
             currentLeftValue = currentContextRepresentation.getMetricValue(node,metric);
             if (currentLeftValue < 0) {
                 
-                    currentRightValue = 0.0;
+                    currentLeftValue = 0.0;
                 
             }
             try{

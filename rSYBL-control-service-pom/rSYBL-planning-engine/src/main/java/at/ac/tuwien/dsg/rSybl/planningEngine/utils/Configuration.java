@@ -79,5 +79,7 @@ public class Configuration {
     public static int getRefreshPeriod(){
     	return Integer.parseInt(configuration.getProperty("REFRESH_PERIOD"));
     }
-
+    public static boolean getADVISEEnabled(){
+        return Boolean.parseBoolean(configuration.getProperty("ADVISEEnabled"));
+    }
 }

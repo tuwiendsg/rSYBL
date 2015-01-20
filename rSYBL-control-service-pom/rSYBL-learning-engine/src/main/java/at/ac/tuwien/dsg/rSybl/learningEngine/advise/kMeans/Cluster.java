@@ -60,7 +60,7 @@ public class Cluster  {
             ArrayList<Double> myPoints = points.get(0).getValues();
 
             for (int x = 1; x < points.size(); x++) {
-                for (int i = 0; i < points.get(0).getValues().size(); i++) {
+                for (int i = 0; i < points.get(0).getValues().size(); i++) {   
                     myPoints.set(i,  myPoints.get(i) + points.get(x).getValues().get(i));
                 }
             }

@@ -32,6 +32,8 @@ import java.util.LinkedHashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  *
@@ -46,7 +48,6 @@ public class ECEnforcementEffect {
     private MonitoringAPIInterface monitoringInterface;
     private Node cloudService;
     private ComputeBehavior behavior;
-
     public ECEnforcementEffect(ComputeBehavior behavior, Node cloudService, MonitoringAPIInterface monitoringAPIInterface, ElasticityCapability capability1) {
         dependencyGraph = new DependencyGraph();
         dependencyGraph.setCloudService(cloudService);
@@ -65,8 +66,10 @@ public class ECEnforcementEffect {
 
     public double getFinalStateViolatedConstraints() {
         ContextEvaluation contextEvaluation = new ContextEvaluation();
-
+        if (!withEnforcing.isEmpty())
         return contextEvaluation.countViolatedConstraints(dependencyGraph, withEnforcing.get(withEnforcing.size() - 1));
+        else
+            return 1000000;
     }
 
     public double overallViolatedConstraints() {
@@ -76,15 +79,34 @@ public class ECEnforcementEffect {
             overallViolatedConstraints += contextEvaluation.countViolatedConstraints(dependencyGraph, contextRepresentation);
 
         }
+        if (withEnforcing.isEmpty())
+            return 100000;
+        else
         return overallViolatedConstraints / withEnforcing.size();
     }
 
     private void initializeContexts() {
 
         LinkedHashMap<String, LinkedHashMap<String, Double>> metrics;
-
-
+        
         LinkedHashMap<String, LinkedHashMap<String, NDimensionalPoint>> result = behavior.computeExpectedBehavior(capability);
+        
+        for (String node:result.keySet()){
+            for (String metric: result.get(node).keySet()){
+                try {
+                    double initialValue = monitoringInterface.getMetricValue(metric, dependencyGraph.getNodeWithID(node));
+                    double initialPredicted= result.get(node).get(metric).getValues().get(0);
+                    ArrayList<Double> values=result.get(node).get(metric).getValues();
+                    for (int i= 0;i<values.size();i++){
+                        values.set(i, values.get(i)-initialPredicted+initialValue);
+                    }
+                    result.get(node).get(metric).setValues(values);
+                } catch (Exception ex) {
+                    Logger.getLogger(ECEnforcementEffect.class.getName()).log(Level.SEVERE, null, ex);
+                }
+                
+            }
+        }
         for (int i = 0; i < ECPBehavioralModel.CHANGE_INTERVAL; i++) {
             metrics = new LinkedHashMap<>();
             for (String node : result.keySet()) {
@@ -92,13 +114,15 @@ public class ECEnforcementEffect {
                     metrics.put(node, new LinkedHashMap<String, Double>());
                 }
                 for (String metric : result.get(node).keySet()) {
+                    
                     metrics.get(node).put(metric, result.get(node).get(metric).getValues().get(i));
                 }
             }
+            if (!metrics.isEmpty()){
             ContextRepresentation contextRepresentation = new ContextRepresentation(cloudService, metrics);
             withEnforcing.add(contextRepresentation);
         }
-
+        }
     }
 
     private List<String> findTargetedMetrics(Node entity) {

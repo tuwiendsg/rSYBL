@@ -73,13 +73,16 @@ public class PlanningGreedyAlgorithm implements PlanningAlgorithmInterface {
         this.monitoringAPI = monitoringAPI;
         this.enforcementAPI = enforcementAPI;
         REFRESH_PERIOD = Configuration.getRefreshPeriod();
+        if (Configuration.getADVISEEnabled()){
         planningGreedyWithADVISE= new PlanningGreedyWithADVISE(monitoringAPI, cloudService.getCloudService(), enforcementAPI);
         planningGreedyWithADVISE.startLearningProcess();
+        
         evaluateLearningPerformance.scheduleAtFixedRate(new TimerTask(){
         public void run(){
             checkWhetherLearningIsAccurateAndSwitch();
         }
         }, REFRESH_PERIOD, REFRESH_PERIOD);
+        }
     }
     public void checkWhetherLearningIsAccurateAndSwitch(){
         
