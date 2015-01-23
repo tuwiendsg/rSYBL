@@ -8,6 +8,7 @@ import at.ac.tuwien.dsg.rSybl.learningEngine.advise.kMeans.Cluster;
 import at.ac.tuwien.dsg.rSybl.learningEngine.advise.kMeans.Clustering;
 import at.ac.tuwien.dsg.rSybl.learningEngine.advise.kMeans.NDimensionalPoint;
 import java.util.ArrayList;
+import java.util.LinkedList;
 
 /**
  *
@@ -21,7 +22,7 @@ public class Main {
         for (int i = 0; i < size; i++) {
             NDimensionalPoint p = new NDimensionalPoint();
            // p.setSize(3);
-            ArrayList<Double> myPoints = new ArrayList<>();
+            LinkedList<Double> myPoints = new LinkedList<>();
             
             myPoints.add(i+0.0d);
             myPoints.add(i+0.0);
@@ -33,7 +34,7 @@ public class Main {
          for (int i = 0; i < size; i++) {
             NDimensionalPoint p = new NDimensionalPoint();
 //            p.setSize(3);
-                        ArrayList<Double> myPoints = new ArrayList<>();
+                        LinkedList<Double> myPoints = new LinkedList<>();
             
             myPoints.add(i*3+0.0d);
             myPoints.add(i*3+0.0);
@@ -47,7 +48,7 @@ public class Main {
           for (int i = 0; i < size; i++) {
             NDimensionalPoint p = new NDimensionalPoint();
 //            p.setSize(3);
-                        ArrayList<Double> myPoints = new ArrayList<>();
+                        LinkedList<Double> myPoints = new LinkedList<>();
             
             myPoints.add(i*7+0.0d);
             myPoints.add(i*7+0.0);

@@ -5,6 +5,7 @@
 package at.ac.tuwien.dsg.rSybl.learningEngine.advise.kMeans;
 
 import java.util.ArrayList;
+import java.util.LinkedList;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -57,7 +58,7 @@ public class Cluster  {
         NDimensionalPoint center = new NDimensionalPoint();
         if (points != null && points.size() > 0) {
            // center.setSize(points.get(0).getValues().size());
-            ArrayList<Double> myPoints = points.get(0).getValues();
+            LinkedList<Double> myPoints = points.get(0).getValues();
 
             for (int x = 1; x < points.size(); x++) {
                 for (int i = 0; i < points.get(0).getValues().size(); i++) {   

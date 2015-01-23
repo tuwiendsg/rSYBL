@@ -23,7 +23,9 @@ import at.ac.tuwien.dsg.rSybl.dataProcessingUnit.api.model.MonitoringSnapshot;
 import at.ac.tuwien.dsg.rSybl.dataProcessingUnit.api.model.ServicePartMonitor;
 import at.ac.tuwien.dsg.rSybl.learningEngine.advise.ComputeBehavior;
 import at.ac.tuwien.dsg.rSybl.learningEngine.advise.ECPBehavioralModel;
+import at.ac.tuwien.dsg.rSybl.learningEngine.advise.kMeans.MyEntry;
 import at.ac.tuwien.dsg.rSybl.learningEngine.advise.kMeans.NDimensionalPoint;
+import at.ac.tuwien.dsg.rSybl.planningEngine.utils.Configuration;
 import at.ac.tuwien.dsg.rSybl.planningEngine.utils.PlanningLogger;
 import at.ac.tuwien.dsg.sybl.syblProcessingUnit.languageDescription.SYBLDescriptionParser;
 import com.sun.org.apache.bcel.internal.generic.AALOAD;
@@ -41,10 +43,12 @@ import java.util.logging.Logger;
  */
 public class ECEnforcementEffect {
 
-    private List<ContextRepresentation> withEnforcing = new LinkedList<ContextRepresentation>();
+    private LinkedList<ContextRepresentation> withEnforcing = new LinkedList<ContextRepresentation>();
     private ElasticityCapability capability;
     private LinkedHashMap<String, LinkedHashMap<String, LinkedList<Double>>> measurements = new LinkedHashMap<String, LinkedHashMap<String, LinkedList<Double>>>();
     private DependencyGraph dependencyGraph;
+    private double ACCEPTABLE_DISTANCE= 400;
+    public double MAX_CONSTRAINTS = 10000;
     private MonitoringAPIInterface monitoringInterface;
     private Node cloudService;
     private ComputeBehavior behavior;
@@ -55,6 +59,8 @@ public class ECEnforcementEffect {
         this.cloudService = cloudService;
         capability = capability1;
         this.behavior = behavior;
+        if (Configuration.getAcceptableDistance()>0)
+            ACCEPTABLE_DISTANCE = Configuration.getAcceptableDistance();
         initializeContexts();
     }
 
@@ -66,21 +72,24 @@ public class ECEnforcementEffect {
 
     public double getFinalStateViolatedConstraints() {
         ContextEvaluation contextEvaluation = new ContextEvaluation();
-        if (!withEnforcing.isEmpty())
+        
+        if (!withEnforcing.isEmpty() && withEnforcing.get(withEnforcing.size()-1).getDistance()<ACCEPTABLE_DISTANCE)
         return contextEvaluation.countViolatedConstraints(dependencyGraph, withEnforcing.get(withEnforcing.size() - 1));
         else
-            return 1000000;
+            return MAX_CONSTRAINTS;
     }
 
     public double overallViolatedConstraints() {
         double overallViolatedConstraints = 0.0;
         ContextEvaluation contextEvaluation = new ContextEvaluation();
+        double avgDist=0.0;
         for (ContextRepresentation contextRepresentation : withEnforcing) {
             overallViolatedConstraints += contextEvaluation.countViolatedConstraints(dependencyGraph, contextRepresentation);
-
+            avgDist+=contextRepresentation.getDistance();
         }
-        if (withEnforcing.isEmpty())
-            return 100000;
+        
+        if (withEnforcing.isEmpty()|| (avgDist/withEnforcing.size()>ACCEPTABLE_DISTANCE))
+            return MAX_CONSTRAINTS;
         else
         return overallViolatedConstraints / withEnforcing.size();
     }
@@ -89,38 +98,44 @@ public class ECEnforcementEffect {
 
         LinkedHashMap<String, LinkedHashMap<String, Double>> metrics;
         
-        LinkedHashMap<String, LinkedHashMap<String, NDimensionalPoint>> result = behavior.computeExpectedBehavior(capability);
+        LinkedHashMap<String, LinkedHashMap<String, MyEntry<Double, NDimensionalPoint>>> result = behavior.computeExpectedBehavior(capability);
         
-        for (String node:result.keySet()){
-            for (String metric: result.get(node).keySet()){
-                try {
-                    double initialValue = monitoringInterface.getMetricValue(metric, dependencyGraph.getNodeWithID(node));
-                    double initialPredicted= result.get(node).get(metric).getValues().get(0);
-                    ArrayList<Double> values=result.get(node).get(metric).getValues();
-                    for (int i= 0;i<values.size();i++){
-                        values.set(i, values.get(i)-initialPredicted+initialValue);
-                    }
-                    result.get(node).get(metric).setValues(values);
-                } catch (Exception ex) {
-                    Logger.getLogger(ECEnforcementEffect.class.getName()).log(Level.SEVERE, null, ex);
-                }
-                
-            }
-        }
+//        for (String node:result.keySet()){
+//            for (String metric: result.get(node).keySet()){
+//                try {
+//                    //double initialValue = monitoringInterface.getMetricValue(metric, dependencyGraph.getNodeWithID(node));
+//                    //double initialPredicted= result.get(node).get(metric).getValues().get(0);
+//                    LinkedList<Double> values=result.get(node).get(metric).getValue().getValues();
+//                    for (int i= 0;i<values.size();i++){
+//                        values.set(i, values.get(i));
+//                    }
+//                    result.get(node).get(metric).setValues(result.get(node).get(metric).getValue().getValues());
+//                } catch (Exception ex) {
+//                    Logger.getLogger(ECEnforcementEffect.class.getName()).log(Level.SEVERE, null, ex);
+//                }
+//                
+//            }
+//        }
         for (int i = 0; i < ECPBehavioralModel.CHANGE_INTERVAL; i++) {
             metrics = new LinkedHashMap<>();
+            double distance = 0.0;
+            double nbDistances= 0;
             for (String node : result.keySet()) {
                 if (!metrics.containsKey(node)) {
                     metrics.put(node, new LinkedHashMap<String, Double>());
                 }
                 for (String metric : result.get(node).keySet()) {
                     
-                    metrics.get(node).put(metric, result.get(node).get(metric).getValues().get(i));
+                    metrics.get(node).put(metric, result.get(node).get(metric).getValue().getValues().get(i));
+                    distance+= result.get(node).get(metric).getKey();
+                    nbDistances++;
                 }
             }
-            if (!metrics.isEmpty()){
+            if (nbDistances>0){
             ContextRepresentation contextRepresentation = new ContextRepresentation(cloudService, metrics);
+            contextRepresentation.setDistance(distance/nbDistances);
             withEnforcing.add(contextRepresentation);
+            
         }
         }
     }

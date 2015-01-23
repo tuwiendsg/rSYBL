@@ -67,6 +67,7 @@ public class PlanningGreedyWithADVISE implements PlanningAlgorithmInterface {
         double minViolatedFinalConstraints = 100000000.0;
         ElasticityCapability overallEc = null;
         ElasticityCapability finalEc = null;
+        boolean sufficientInfo = true;
         double constraintsViolatedWithout = 0;
         ContextEvaluation contextEvaluation = new ContextEvaluation();
         for (ContextRepresentation contextRepresentation : withoutEnforcing) {
@@ -74,9 +75,14 @@ public class PlanningGreedyWithADVISE implements PlanningAlgorithmInterface {
         }
         constraintsViolatedWithout /= withoutEnforcing.size();
         for (ElasticityCapability ec : dependencyGraph.getAllElasticityCapabilities()) {
+            
             ECEnforcementEffect ecEnforcementEffect = new ECEnforcementEffect(behavior, cloudService, monitoringInterface, ec);
             expectedOverallEffect.put(ec, ecEnforcementEffect.overallViolatedConstraints());
             expectedFinalEffect.put(ec, ecEnforcementEffect.getFinalStateViolatedConstraints());
+           if (expectedFinalEffect.get(ec)==ecEnforcementEffect.MAX_CONSTRAINTS){
+               sufficientInfo=false;
+               break;
+           }
             if (constraintsViolatedWithout > 0 && expectedOverallEffect.get(ec) < constraintsViolatedWithout) {
                 if (minViolatedConstraints > expectedOverallEffect.get(ec)) {
                     minViolatedConstraints = expectedOverallEffect.get(ec);
@@ -89,7 +95,7 @@ public class PlanningGreedyWithADVISE implements PlanningAlgorithmInterface {
             }
 
         }
-
+        if (sufficientInfo){
         if (constraintsViolatedWithout > 0 && overallEc == finalEc) {
             elasticityCapability = overallEc;
             return elasticityCapability;
@@ -110,6 +116,8 @@ public class PlanningGreedyWithADVISE implements PlanningAlgorithmInterface {
         }
 
         return elasticityCapability;
+        }
+        return null;
     }
 
     public boolean checkWhetherPerformanceIsAcceptable() {

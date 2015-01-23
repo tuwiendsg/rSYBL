@@ -39,7 +39,7 @@ public class ContextRepresentation {
 
 
     private LinkedHashMap<String, LinkedHashMap<String, Double>> metricValues = new LinkedHashMap<>();
-
+    private double distance =0;
     public ContextRepresentation(Node cloudService, LinkedHashMap<String, LinkedHashMap<String, Double>> values) {
         DependencyGraph dependencyGraph = new DependencyGraph();
         dependencyGraph.setCloudService(cloudService);
@@ -68,6 +68,20 @@ public class ContextRepresentation {
             metricValues.put(node, new LinkedHashMap<String,Double>());
         }
         metricValues.get(node).put(metric, value);
+    }
+
+    /**
+     * @return the distance
+     */
+    public double getDistance() {
+        return distance;
+    }
+
+    /**
+     * @param distance the distance to set
+     */
+    public void setDistance(double distance) {
+        this.distance = distance;
     }
 
 }

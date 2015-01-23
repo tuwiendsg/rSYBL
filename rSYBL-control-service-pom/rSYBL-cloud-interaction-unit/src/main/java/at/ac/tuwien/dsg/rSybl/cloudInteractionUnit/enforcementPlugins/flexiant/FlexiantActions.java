@@ -47,7 +47,9 @@ public class FlexiantActions  {
 	String customerUUID = Configuration.getCustomerUUID();
 	String password = Configuration.getPassword();
 	String ENDPOINT_ADDRESS_PROPERTY = "https://api.sd1.flexiant.net:4442";
-
+        public FlexiantActions(){
+            System.setProperty("jsse.enableSNIExtension", "false");
+        }
 	public boolean removeServer(String serverUUID) {
 		boolean res=true;
 		UserService service;
@@ -573,7 +575,7 @@ public class FlexiantActions  {
 
 			// Call the service to execute the query
 			ListResult result = service
-					.listResources(null, null, ResourceType.NIC);
+					.listResources(sf, lim, ResourceType.NIC);
 
 			// Iterate through the results
 			for (Object o : result.getList()) {

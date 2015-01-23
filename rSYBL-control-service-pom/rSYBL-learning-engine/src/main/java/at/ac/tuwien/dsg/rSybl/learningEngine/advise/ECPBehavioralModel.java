@@ -12,6 +12,7 @@ import at.ac.tuwien.dsg.rSybl.dataProcessingUnit.api.model.MonitoringSnapshot;
 import at.ac.tuwien.dsg.rSybl.dataProcessingUnit.api.model.ServicePartMonitor;
 import at.ac.tuwien.dsg.rSybl.learningEngine.advise.kMeans.Cluster;
 import at.ac.tuwien.dsg.rSybl.learningEngine.advise.kMeans.Clustering;
+import at.ac.tuwien.dsg.rSybl.learningEngine.advise.kMeans.MyEntry;
 import at.ac.tuwien.dsg.rSybl.learningEngine.advise.kMeans.NDimensionalPoint;
 import at.ac.tuwien.dsg.rSybl.learningEngine.utils.Configuration;
 import at.ac.tuwien.dsg.rSybl.learningEngine.utils.LearningLogger;
@@ -110,7 +111,6 @@ public class ECPBehavioralModel {
             }
             //now we have significant indexes, we get the behaviors for this capability (nDim points, where n=2*CHANGE_INTERVAL)
             int generalIndex = 0;
-
             for (int significantIndex : significatIndexes) {
                 for (int i = significantIndex - CHANGE_INTERVAL; i < significantIndex + CHANGE_INTERVAL; i++) {
                     MonitoringSnapshot snapshot = snapshots.get(i);
@@ -139,7 +139,7 @@ public class ECPBehavioralModel {
                                     ArrayList<NDimensionalPoint> nDimPoint = new ArrayList<NDimensionalPoint>();
                                     allSPsWithNDimForEachMetric.get(SP).put(recording.getKey(), nDimPoint);
                                 }
-                                if (newSPsWithNDimForEachMetric.get(SP).get(recording.getKey()).size() < generalIndex) {
+                                if (newSPsWithNDimForEachMetric.get(SP).get(recording.getKey()).size() < generalIndex+1) {
                                     NDimensionalPoint nDimensionalPoint = new NDimensionalPoint();
                                     newSPsWithNDimForEachMetric.get(SP).get(recording.getKey()).add(nDimensionalPoint);
                                     allSPsWithNDimForEachMetric.get(SP).get(recording.getKey()).add(nDimensionalPoint);
@@ -158,6 +158,7 @@ public class ECPBehavioralModel {
                 }
                 generalIndex++;
             }
+           
             return newSPsWithNDimForEachMetric;
         } else {
             return null;
@@ -210,9 +211,11 @@ public class ECPBehavioralModel {
             int generalIndex = 0;
 
             for (int significantIndex : significatIndexes) {
-               
-                
-                for (int i = significantIndex - CHANGE_INTERVAL; i < significantIndex + CHANGE_INTERVAL; i++) {
+               int finalI = significantIndex + CHANGE_INTERVAL;
+                if (snapshots.size()<significantIndex+CHANGE_INTERVAL){
+                    finalI=snapshots.size()-1;
+                }
+                for (int i = significantIndex - CHANGE_INTERVAL; i < finalI; i++) {
                     MonitoringSnapshot snapshot = snapshots.get(i);
                     
                     for (String SP : snapshot.getServiceParts().keySet()) {
@@ -370,9 +373,9 @@ public class ECPBehavioralModel {
     }
 
     //Still to do - get monitoring data from MELA, and move it into hashmaps  - ALSO REFRESH CLUSTERS
-    public LinkedHashMap<String, LinkedHashMap<String, NDimensionalPoint>> computeExpectedBehavior(LinkedHashMap<String, LinkedHashMap<String, NDimensionalPoint>> currentBehavior) {
-        LinkedHashMap<String, LinkedHashMap<String, List<Clustering.MyEntry<Double, NDimensionalPoint>>>> expectedBehavior = new LinkedHashMap<>();
-        LinkedHashMap<String, LinkedHashMap<String, NDimensionalPoint>> behaviors = new LinkedHashMap<String, LinkedHashMap<String, NDimensionalPoint>>();
+    public LinkedHashMap<String, LinkedHashMap<String, MyEntry<Double, NDimensionalPoint>>> computeExpectedBehavior(LinkedHashMap<String, LinkedHashMap<String, NDimensionalPoint>> currentBehavior) {
+        LinkedHashMap<String, LinkedHashMap<String, List<MyEntry<Double, NDimensionalPoint>>>> expectedBehavior = new LinkedHashMap<>();
+        LinkedHashMap<String, LinkedHashMap<String, MyEntry<Double, NDimensionalPoint>>> behaviors = new LinkedHashMap<String, LinkedHashMap<String, MyEntry<Double, NDimensionalPoint>>>();
 
 
         for (String sp : currentBehavior.keySet()) {
@@ -381,9 +384,9 @@ public class ECPBehavioralModel {
 
                     Clustering cluster = nodeBehaviors.get(sp).getMetricClusters().get(metric);
                     if (cluster != null) {
-                        List<Clustering.MyEntry<Double, NDimensionalPoint>> b = cluster.getClustersByDistance(currentBehavior.get(sp).get(metric));
+                        List<MyEntry<Double, NDimensionalPoint>> b = cluster.getClustersByDistance(currentBehavior.get(sp).get(metric));
                         if (!expectedBehavior.containsKey(sp)) {
-                            expectedBehavior.put(sp, new LinkedHashMap<String, List<Clustering.MyEntry<Double, NDimensionalPoint>>>());
+                            expectedBehavior.put(sp, new LinkedHashMap<String, List<MyEntry<Double, NDimensionalPoint>>>());
 
                         }
 
@@ -398,7 +401,6 @@ public class ECPBehavioralModel {
 
 
         }
-        //TODO: compute best corelation 
         int spNb = 0;
         for (String sp : currentBehavior.keySet()) {
             if (expectedBehavior.containsKey(sp)) {
@@ -465,16 +467,25 @@ public class ECPBehavioralModel {
                 int i = 0;
                 for (String metric : currentBehavior.get(sp).keySet()) {
                     if (!behaviors.containsKey(sp)) {
-                        behaviors.put(sp, new LinkedHashMap<String, NDimensionalPoint>());
+                        behaviors.put(sp, new LinkedHashMap<String, MyEntry<Double, NDimensionalPoint>>());
 
                     }
-                    behaviors.get(sp).put(metric, expectedBehavior.get(sp).get(metric).get(selected[i]).getValue());
+                    List<Double> values = expectedBehavior.get(sp).get(metric).get(selected[i]).getValue().getValues();
+                    NDimensionalPoint nDimensionalPoint = new NDimensionalPoint();
+                    LinkedList<Double> sublist = new LinkedList<>();
+                    for (Double d :values.subList(CHANGE_INTERVAL, values.size())){
+                        sublist.add(d);
+                    }
+                    nDimensionalPoint.setValues(sublist);
+
+                    
+                    behaviors.get(sp).put(metric, new MyEntry(expectedBehavior.get(sp).get(metric).get(selected[i]).getKey(),nDimensionalPoint));
                     i++;
                 }
                 spNb++;
             } else {
                 if (!behaviors.containsKey(sp)) {
-                    behaviors.put(sp, new LinkedHashMap<String, NDimensionalPoint>());
+                    behaviors.put(sp, new LinkedHashMap<String, MyEntry<Double,NDimensionalPoint>>());
                 }
             }
         }

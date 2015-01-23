@@ -75,7 +75,11 @@ public class Configuration {
     public static String getMonitoringServiceURL(){
     	return configuration.getProperty("MonitoringServiceURL");
     }   
-    
+    public static int getAcceptableDistance(){
+        if (configuration.getProperty("ACCEPTABLE_DISTANCE")!=null)
+    	return Integer.parseInt(configuration.getProperty("ACCEPTABLE_DISTANCE"));
+        else return -1;
+    }
     public static int getRefreshPeriod(){
     	return Integer.parseInt(configuration.getProperty("REFRESH_PERIOD"));
     }

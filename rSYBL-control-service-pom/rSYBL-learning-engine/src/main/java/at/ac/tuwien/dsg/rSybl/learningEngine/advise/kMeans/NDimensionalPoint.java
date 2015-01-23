@@ -6,6 +6,7 @@ package at.ac.tuwien.dsg.rSybl.learningEngine.advise.kMeans;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.LinkedList;
 import java.util.List;
 
 /**
@@ -13,7 +14,7 @@ import java.util.List;
  * @author Georgiana
  */
 public class NDimensionalPoint implements Cloneable{
-    private ArrayList<Double> values = new ArrayList<>();
+    private LinkedList<Double> values = new LinkedList<>();
     public static double MAX_DIST=9999999;
     
     
@@ -22,20 +23,20 @@ public class NDimensionalPoint implements Cloneable{
     /**
      * @return the values
      */
-    public ArrayList<Double> getValues() {
+    public LinkedList<Double> getValues() {
         return values;
     }
 
     /**
      * @param values the values to set
      */
-    public void setValues(ArrayList<Double> values) {
-        this.values = values;
+    public void setValues(LinkedList<Double> values) {
+        this.values =  values;
     }
     @Override
         protected Object clone() throws CloneNotSupportedException {
         NDimensionalPoint newNDimensionalPoint= (NDimensionalPoint) super.clone();
-        newNDimensionalPoint.setValues((ArrayList<Double>)values.clone());
+        newNDimensionalPoint.setValues((LinkedList<Double>)values.clone());
         return newNDimensionalPoint;
         }
     @Override
@@ -121,4 +122,6 @@ public class NDimensionalPoint implements Cloneable{
         
         return s;
     }
+
+ 
 }

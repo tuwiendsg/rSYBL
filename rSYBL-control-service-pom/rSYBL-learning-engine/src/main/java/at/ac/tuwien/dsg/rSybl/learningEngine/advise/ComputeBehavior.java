@@ -10,11 +10,11 @@ import at.ac.tuwien.dsg.csdg.elasticityInformation.ElasticityCapability;
 import at.ac.tuwien.dsg.rSybl.dataProcessingUnit.api.MonitoringAPIInterface;
 import at.ac.tuwien.dsg.rSybl.dataProcessingUnit.api.model.MonitoringSnapshot;
 import at.ac.tuwien.dsg.rSybl.dataProcessingUnit.api.model.ServicePartMonitor;
-import at.ac.tuwien.dsg.rSybl.dataProcessingUnit.monitoringPlugins.interfaces.MonitoringInterface;
+import at.ac.tuwien.dsg.rSybl.learningEngine.advise.kMeans.MyEntry;
 import at.ac.tuwien.dsg.rSybl.learningEngine.advise.kMeans.NDimensionalPoint;
 import at.ac.tuwien.dsg.rSybl.learningEngine.utils.Configuration;
 import at.ac.tuwien.dsg.rSybl.learningEngine.utils.LearningLogger;
-import java.util.ArrayList;
+
 import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -152,7 +152,7 @@ public class ComputeBehavior {
      public double stdDevActionTime(ElasticityCapability capability, Node node){
         return behaviors.get(node.getId()).entrySet().iterator().next().getValue().stdDeviationActionTime();
     }
-    public LinkedHashMap<String, LinkedHashMap<String, NDimensionalPoint>> computeExpectedBehavior(ElasticityCapability capability) {
+    public LinkedHashMap<String, LinkedHashMap<String, MyEntry<Double, NDimensionalPoint>>> computeExpectedBehavior(ElasticityCapability capability) {
         LinkedHashMap<String, LinkedHashMap<String, NDimensionalPoint>> currentBehavior = new LinkedHashMap<>();
         
          List<MonitoringSnapshot> snapshots = monitoringInterface.getAllMonitoringInformationOnPeriod(ECPBehavioralModel.CHANGE_INTERVAL);
