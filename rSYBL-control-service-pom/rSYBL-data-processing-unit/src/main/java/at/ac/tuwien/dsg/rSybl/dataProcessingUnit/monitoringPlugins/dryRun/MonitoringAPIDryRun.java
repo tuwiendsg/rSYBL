@@ -14,7 +14,7 @@ public class MonitoringAPIDryRun  implements MonitoringInterface{
 	private double FIXED_VALUE=0;
         private List<String> actions = new ArrayList<String>();
         private List<String> targets = new ArrayList<String>();
-
+        private Node controlService= null;
 	private Double returnRandomValue(){
 		Random random = new Random();
 		return random.nextDouble()*100;
@@ -236,5 +236,7 @@ public class MonitoringAPIDryRun  implements MonitoringInterface{
     public List<MonitoringSnapshot> getAllMonitoringInformationFromTimestamp(long timestamp) {
         throw new UnsupportedOperationException("Not supported yet.");
     }
-
+   public void setCurrentCloudService (Node cloudService){
+        this.controlService=cloudService;
+    }
 }

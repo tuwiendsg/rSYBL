@@ -144,7 +144,13 @@ public class MonitoringAPI implements MonitoringAPIInterface {
         RuntimeLogger.logger.info("Set the service configuration on the monitoring api to " + controlledService.toString());
 
     }
-
+    public void controlExistingCloudService(Node controlledService){
+        this.controlledService=controlledService;
+              
+        offeredMonitoringMetrics = OfferedMonitoredMetrics.getInstance(this.controlledService);
+        offeredMonitoringMetrics.setCurrentCloudService(controlledService);
+        RuntimeLogger.logger.info("Set the service configuration on the monitoring api to " + controlledService.toString());
+    }
     public Double getCurrentReadLatency(Node e) {
         if (isExecutingControlAction()) {
             try {

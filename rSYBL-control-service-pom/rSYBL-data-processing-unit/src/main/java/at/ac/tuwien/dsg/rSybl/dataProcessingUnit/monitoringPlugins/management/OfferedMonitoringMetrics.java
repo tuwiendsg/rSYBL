@@ -481,4 +481,14 @@ public class OfferedMonitoringMetrics implements MonitoringInterface {
         }
         return new ArrayList<MonitoringSnapshot>();
     }
+
+    @Override
+    public void setCurrentCloudService(Node cloudService) {
+         Map<Method, MonitoringInterface> methods = manageMonitoringPlugins.getMethods(manageMonitoringPlugins.getAllPlugins(cloudService));
+        for (Method method : methods.keySet()) {
+            if (method.getName().equalsIgnoreCase("setCurrentCloudService")) {
+                methods.get(method).setCurrentCloudService(cloudService);
+            }
+        }
+    }
 }

@@ -117,8 +117,11 @@ public class ControlService {
 
         startSYBLProcessingAndPlanning();
         dependencyGraph.setControlState();
+        }
+    public void startControlOnExisting(){
+        controlExistingService();
+        dependencyGraph.setControlState();
     }
-
     public void stop() {
         monitoringAPI.removeService(dependencyGraph.getCloudService());
         dependencyGraph.setWaitState();
@@ -192,6 +195,55 @@ public class ControlService {
             dependencyGraph.replaceRequirement(req);
         }
         replaceDependencyGraph();
+    }
+    public void controlExistingService(){
+            InputProcessing inputProcessing = new InputProcessing();
+            
+            dependencyGraph = inputProcessing.loadDependencyGraphFromStrings(applicationDescription, "", deploymentDescription);
+            Node node = new Node();
+            node = dependencyGraph.getCloudService();
+            AnalysisLogger.logger.info("Current graph is" + dependencyGraph.graphToString());
+            monitoringAPI = new MonitoringAPI();
+            monitoringAPI.controlExistingCloudService(node);
+
+            AnalysisLogger.logger.info("Have just started monitoring plugin for existing cloud service");
+
+//            monitoringAPI.submitElasticityRequirements(dependencyGraph
+//                    .getAllElasticityRequirements());
+//            AnalysisLogger.logger.info("Have set the requirements on MELA");
+            enforcementAPI = new MultipleEnforcementAPIs();
+
+            enforcementAPI.setControlledService(node);
+
+            enforcementAPI.setMonitoringPlugin(monitoringAPI);
+            AnalysisLogger.logger.info("Have information on enforcement api");
+
+            syblService = new SYBLService(dependencyGraph, monitoringAPI,
+                    enforcementAPI);
+            for (ElasticityRequirement syblSpecification : dependencyGraph
+                    .getAllElasticityRequirements()) {
+                SYBLAnnotation annotation = syblSpecification.getAnnotation();
+                syblService.processAnnotations(syblSpecification
+                        .getAnnotation().getEntityID(), annotation);
+
+            }
+
+            AnalysisLogger.logger.info("SYBL Service started");
+
+            if (Configuration.getPlanningAlgorithm() != null && !Configuration.getPlanningAlgorithm().equals("") && Configuration.getPlanningAlgorithm().toLowerCase().contains("heuristic")) {
+                planningAlgorithm = new PlanningHeuristicSearchWithPolynomialElasticityRelationships(
+                        dependencyGraph, monitoringAPI, enforcementAPI);
+            } else {
+                planningAlgorithm = new PlanningGreedyAlgorithm(
+                        dependencyGraph, monitoringAPI, enforcementAPI);
+            }
+            if (!effects.equalsIgnoreCase("")) {
+                planningAlgorithm.setEffects(effects);
+            }
+
+            planningAlgorithm.start();
+            AnalysisLogger.logger.info("Planning algorithm started");
+
     }
     public void setStateTEST(){
         InputProcessing inputProcessing = new InputProcessing();

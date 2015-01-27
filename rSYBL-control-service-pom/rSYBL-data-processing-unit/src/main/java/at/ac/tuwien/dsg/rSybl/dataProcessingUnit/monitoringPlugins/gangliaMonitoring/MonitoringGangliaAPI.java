@@ -629,5 +629,7 @@ Double retValue = 0.0;
     public List<MonitoringSnapshot> getAllMonitoringInformationFromTimestamp(long timestamp) {
         throw new UnsupportedOperationException("Not supported yet.");
     }
-	
+	   public void setCurrentCloudService (Node cloudService){
+        this.controlledService=cloudService;
+    }
 }

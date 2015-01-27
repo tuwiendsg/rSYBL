@@ -197,6 +197,9 @@ public class ControlCoordination {
         
         controls.get(serviceID).setApplicationDescriptionInfoTOSCABased(tosca);
     }
+    public void startControlOnExisting( String serviceID){
+        controls.get(serviceID).startControlOnExisting();
+    }
     public String getServices() {
         String services = "";
         for (String serv : controls.keySet()) {

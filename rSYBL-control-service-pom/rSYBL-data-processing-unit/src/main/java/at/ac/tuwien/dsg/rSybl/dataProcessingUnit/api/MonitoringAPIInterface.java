@@ -56,7 +56,7 @@ public interface MonitoringAPIInterface {
     public Node getControlledService();
 
     public void setControlledService(Node controlledService);
-
+    public void controlExistingCloudService(Node controlledService);
     public Double getCurrentReadLatency(Node e) throws Exception;
 
     public Double getCurrentReadCount(Node e) throws Exception;

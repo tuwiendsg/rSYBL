@@ -100,4 +100,6 @@ public interface MonitoringInterface {
     public void sendMessageToAnalysisService(String message);
 
     public void sendControlIncapacityMessage(String message, List<ElasticityRequirement> cause);
+    public void setCurrentCloudService (Node cloudService);
+
 }

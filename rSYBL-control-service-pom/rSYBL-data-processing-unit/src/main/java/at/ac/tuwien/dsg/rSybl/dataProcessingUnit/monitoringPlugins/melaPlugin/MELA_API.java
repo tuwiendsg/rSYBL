@@ -242,7 +242,9 @@ public class MELA_API implements MonitoringInterface {
     private void releaseLatestMonitoringDataLock() {
         monitoringDataUsed.set(false);
     }
-
+   public void setCurrentCloudService (Node cloudService){
+        this.controlService=cloudService;
+    }
     public void submitServiceConfiguration(Node cloudService) {
         controlService = cloudService;
         MonitoredElement element = new MonitoredElement();

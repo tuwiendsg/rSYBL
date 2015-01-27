@@ -210,7 +210,12 @@ public class SyblControlWS {
 	public void startControl(@PathParam("id")String cloudServiceId){
 		 controlCoordination.startControl(cloudServiceId);
 	} 
-	
+	 @PUT
+	 @Path("/{id}/startControlOnExisting")
+	 @Consumes("application/xml")
+	public void startControlOnExisting(@PathParam("id")String cloudServiceId){
+		 controlCoordination.startControlOnExisting(cloudServiceId);
+	} 
 	 @PUT
 	 @Path("/{id}/stopControl")
 	 @Consumes("application/xml")

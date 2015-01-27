@@ -350,7 +350,9 @@ public class MELA_API3 implements MonitoringInterface {
         }
 
     }
-
+    public void setCurrentCloudService (Node cloudService){
+        this.controlService=cloudService;
+    }
     public void submitServiceConfiguration(Node cloudService) {
         controlService = cloudService;
         MonitoredElement element = new MonitoredElement();
