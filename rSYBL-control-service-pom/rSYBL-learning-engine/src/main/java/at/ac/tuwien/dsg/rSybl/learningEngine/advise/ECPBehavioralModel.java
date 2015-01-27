@@ -109,6 +109,13 @@ public class ECPBehavioralModel {
                 }
 
             }
+               if (start > 0 && end > 0) {
+                significatIndexes.add(start + (end - start) / 2);
+                actionLengths.add(end - start);
+                start = -1;
+                end = -1;
+            }
+
             //now we have significant indexes, we get the behaviors for this capability (nDim points, where n=2*CHANGE_INTERVAL)
             int generalIndex = 0;
             for (int significantIndex : significatIndexes) {
