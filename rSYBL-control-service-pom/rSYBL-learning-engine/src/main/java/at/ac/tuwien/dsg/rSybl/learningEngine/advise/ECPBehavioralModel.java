@@ -109,12 +109,12 @@ public class ECPBehavioralModel {
                 }
 
             }
-               if (start > 0 && end > 0) {
-                significatIndexes.add(start + (end - start) / 2);
-                actionLengths.add(end - start);
-                start = -1;
-                end = -1;
-            }
+//               if (start > 0 && end > 0) {
+//                significatIndexes.add(start + (end - start) / 2);
+//                actionLengths.add(end - start);
+//                start = -1;
+//                end = -1;
+//            }
 
             //now we have significant indexes, we get the behaviors for this capability (nDim points, where n=2*CHANGE_INTERVAL)
             int generalIndex = 0;
@@ -207,12 +207,12 @@ public class ECPBehavioralModel {
                 }
 
             }
-            if (start > 0 && end > 0) {
-                significatIndexes.add(start + (end - start) / 2);
-                actionLengths.add(end - start);
-                start = -1;
-                end = -1;
-            }
+//            if (start > 0 && end > 0) {
+//                significatIndexes.add(start + (end - start) / 2);
+//                actionLengths.add(end - start);
+//                start = -1;
+//                end = -1;
+//            }
 
             //now we have significant indexes, we get the behaviors for this capability (nDim points, where n=2*CHANGE_INTERVAL)
             int generalIndex = 0;
@@ -249,7 +249,7 @@ public class ECPBehavioralModel {
 //                                }
                                 if (spsWithNDimForEachMetric.get(SP).get(recording.getKey()).size() < (generalIndex + 1)) {
                                     NDimensionalPoint nDimensionalPoint = new NDimensionalPoint();
-                                    spsWithNDimForEachMetric.get(SP).get(recording.getKey()).ensureCapacity(generalIndex + 1);
+                                    
                                     spsWithNDimForEachMetric.get(SP).get(recording.getKey()).add(nDimensionalPoint);
                                    // allSPsWithNDimForEachMetric.get(SP).get(recording.getKey()).add(nDimensionalPoint);
 
