@@ -280,4 +280,9 @@ public class PlanningHeuristicSearch implements PlanningAlgorithmInterface {
     public void replaceDependencyGraph(DependencyGraph dependencyGraph) {
         this.dependencyGraph=dependencyGraph;
     }
+
+    @Override
+    public void takeMainRole() {
+        throw new UnsupportedOperationException("Not supported yet.");
+    }
 }

@@ -15,14 +15,17 @@ import at.ac.tuwien.dsg.rSybl.learningEngine.advise.ComputeBehavior;
 import at.ac.tuwien.dsg.rSybl.learningEngine.advise.ECPBehavioralModel;
 import at.ac.tuwien.dsg.rSybl.planningEngine.ActionPlanEnforcement;
 import at.ac.tuwien.dsg.rSybl.planningEngine.PlanningAlgorithmInterface;
+import at.ac.tuwien.dsg.rSybl.planningEngine.PlanningGreedyAlgorithmWithPolynomialElasticityRelationships;
 import at.ac.tuwien.dsg.rSybl.planningEngine.utils.Configuration;
 import at.ac.tuwien.dsg.rSybl.planningEngine.utils.PlanningLogger;
+import java.util.Date;
 import java.util.LinkedHashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Timer;
 import java.util.TimerTask;
+import java.util.concurrent.TimeUnit;
 
 /**
  *
@@ -41,13 +44,16 @@ public class PlanningGreedyWithADVISE implements PlanningAlgorithmInterface {
     private LinkedHashMap<ElasticityCapability, Double> expectedFinalEffect = new LinkedHashMap<>();
     private double noActionOverallViolatedConstraints = 0;
     private double noActionFinalViolatedConstraints = 0;
+    private int MINUTES_TO_WAIT_AFTER_ABNORMAL_DISTANCE = 20;
     private Timer timer = new Timer();
     private EnforcementAPIInterface enforcementAPI;
     private ComputeBehavior behavior;
-
-    public PlanningGreedyWithADVISE(MonitoringAPIInterface monitoringAPIInterface, Node cloudService, EnforcementAPIInterface enforcementAPI) {
+    private Date timeITWasNotOK;
+    private PlanningAlgorithmInterface initialPlanning;
+    public PlanningGreedyWithADVISE(MonitoringAPIInterface monitoringAPIInterface, Node cloudService, EnforcementAPIInterface enforcementAPI, PlanningAlgorithmInterface mainPlanning) {
         monitoringInterface = monitoringAPIInterface;
         this.cloudService = cloudService;
+        initialPlanning = mainPlanning;
         this.enforcementAPI = enforcementAPI;
         dependencyGraph = new DependencyGraph();
         dependencyGraph.setCloudService(cloudService);
@@ -81,6 +87,8 @@ public class PlanningGreedyWithADVISE implements PlanningAlgorithmInterface {
             expectedFinalEffect.put(ec, ecEnforcementEffect.getFinalStateViolatedConstraints());
            if (expectedFinalEffect.get(ec)==ecEnforcementEffect.MAX_CONSTRAINTS){
                sufficientInfo=false;
+               timeITWasNotOK = new Date();
+               stop();
                break;
            }
             if (constraintsViolatedWithout > 0 && expectedOverallEffect.get(ec) < constraintsViolatedWithout) {
@@ -123,7 +131,18 @@ public class PlanningGreedyWithADVISE implements PlanningAlgorithmInterface {
     public boolean checkWhetherPerformanceIsAcceptable() {
         double stdDevSum = 0;
         double bigNb = 1000000;
+        
         int nbActions=0;
+        if (timeITWasNotOK!=null){
+        Date now = new Date();
+        
+         long diff = now.getTime() - this.timeITWasNotOK.getTime();
+        long diffMinutes = diff / (60 * 1000) % 60;
+        if (diffMinutes<MINUTES_TO_WAIT_AFTER_ABNORMAL_DISTANCE){
+            return false;
+        }
+        }
+        
         for (ElasticityCapability capability : dependencyGraph.getAllElasticityCapabilities()) {
             if (behavior.avgActionTime(capability, dependencyGraph.getNodeWithID(capability.getServicePartID())) > 0) {
                 stdDevSum += behavior.stdDevActionTime(capability,  dependencyGraph.getNodeWithID(capability.getServicePartID()));
@@ -265,5 +284,10 @@ public class PlanningGreedyWithADVISE implements PlanningAlgorithmInterface {
                 
             }
         }, Configuration.getRefreshPeriod(), Configuration.getRefreshPeriod());
+    }
+
+    @Override
+    public void takeMainRole() {
+        start();
     }
 }

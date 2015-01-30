@@ -74,15 +74,11 @@ public class PlanningGreedyAlgorithm implements PlanningAlgorithmInterface {
         this.enforcementAPI = enforcementAPI;
         REFRESH_PERIOD = Configuration.getRefreshPeriod();
         if (Configuration.getADVISEEnabled()){
-        planningGreedyWithADVISE= new PlanningGreedyWithADVISE(monitoringAPI, cloudService.getCloudService(), enforcementAPI);
+        planningGreedyWithADVISE= new PlanningGreedyWithADVISE(monitoringAPI, cloudService.getCloudService(), enforcementAPI,this);
         planningGreedyWithADVISE.startLearningProcess();
         
-        evaluateLearningPerformance.scheduleAtFixedRate(new TimerTask(){
-        public void run(){
-            checkWhetherLearningIsAccurateAndSwitch();
-        }
-        }, REFRESH_PERIOD, REFRESH_PERIOD);
-        }
+        
+    }
     }
     public void checkWhetherLearningIsAccurateAndSwitch(){
         
@@ -703,6 +699,14 @@ public class PlanningGreedyAlgorithm implements PlanningAlgorithmInterface {
 
     @Override
     public void start() {
+        if (Configuration.getADVISEEnabled()){
+        evaluateLearningPerformance.scheduleAtFixedRate(new TimerTask(){
+        public void run(){
+            checkWhetherLearningIsAccurateAndSwitch();
+        }
+        }, REFRESH_PERIOD, REFRESH_PERIOD);
+        }
+        
         run();
     }
 
@@ -733,5 +737,11 @@ public class PlanningGreedyAlgorithm implements PlanningAlgorithmInterface {
     @Override
     public void replaceDependencyGraph(DependencyGraph dependencyGraph) {
         this.dependencyGraph=dependencyGraph;
+    }
+
+    @Override
+    public void takeMainRole() {
+        PlanningLogger.logger.info("SWITCHING to Initial Greedy Algorithm");
+        this.start();
     }
 }
