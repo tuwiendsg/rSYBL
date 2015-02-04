@@ -107,7 +107,7 @@ public class Clustering {
         for (Cluster c:clusters){
             c.computeCentroidAsAverage();
             double dist = NDimensionalPoint.MAX_DIST;
-            if (c.getCentroid()!=null && !point.getValues().isEmpty())
+            if (c.getCentroid()!=null && !c.getPoints().isEmpty())
              dist = c.getCentroid().computeDistance(point, point.getValues().size());
             if (orderedCluster.size()==0){
                orderedCluster.add(new MyEntry<>(dist,c.getCentroid()));
