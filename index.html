@@ -68,25 +68,25 @@ RelationOperator := <|>|>=|<=|==|!=
 <h3>Examples of using SYBL</h3>
 Cost-related elasticity requirements
 A cloud customer can specify that when the total cost is higher than 800 euro, there should be a scale-in action for keeping costs in acceptable limits. 
-<code>@SYBL_ApplicationContext(strategies="St1: STRATEGY CASE total_cost>800 Euro : ScaleIn")</code>
+<pre><code>@SYBL_ApplicationContext(strategies="St1: STRATEGY CASE total_cost>800 Euro : ScaleIn")</code></pre>
 Quality-related elasticity requirements
 A software provider can specify constraints on the response time depending on the number of users currently accessing the provided software.
-<code>@SYBL_ComponentContext(constraints=
+<pre><code>@SYBL_ComponentContext(constraints=
 	"Co1: CONSTRAINT rt<2ms WHEN nbUsers<1000;
-	Co2: CONSTRAINT rt<4ms WHEN nbUsers>=1000")</code>
+	Co2: CONSTRAINT rt<4ms WHEN nbUsers>=1000")</code></pre>
 A developer could specify that the result from a data analytics algorithm must reach a certain data accuracy under a cost constraint without caring how many resources should be used for executing the code of that algorithm.
-<code>@SYBL_ProgrammingContext(constraints=
+<pre><code>@SYBL_ProgrammingContext(constraints=
 	"Co1: CONSTRAINT dataAccuracy>90%; 
 	Co2:CONSTRAINT dataAccuracy>95% WHEN total_cost>400;
 	Co3:CONSTRAINT total_cost<800;"
 priorities=
 	"Priority(Co2)>Priority(Co1);
-	Priority(Co3)>Priority(Co1);")	</code>
+	Priority(Co3)>Priority(Co1);")	</code></pre>
 					
 Elasticity requirements on the relation between cost and quality
 A cloud provider could specify its pricing schema or price computation policies, for example that when availability is higher than 99% the cost should increase by 10%.
-<code>@SYBL_ApplicationContext(strategies="St1: STRATEGY CASE availability>99%: 
-				IncreaseCostBy(total_cost/10)")</code>
+<pre><code>@SYBL_ApplicationContext(strategies="St1: STRATEGY CASE availability>99%: 
+				IncreaseCostBy(total_cost/10)")</code></pre>
 				
   
 </section>
