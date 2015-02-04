@@ -319,6 +319,8 @@ public class ContextEvaluation {
 
                             if (currentContextRepresentation.getMetricValue(monitoredEntity,strategy.getToEnforce().getParameter()) > previousContextRepresentation.getMetricValue(monitoredEntity, strategy.getToEnforce().getParameter())) {
                                 nbFixedStrategies += 1;
+                                System.out.println("Improved strategy "+ strategy.getCondition() +"-"+strategy.getToEnforce());
+
                             }
                         }
                         if (strategy.getToEnforce().getActionName().toLowerCase().contains("minimize")) {
@@ -326,6 +328,8 @@ public class ContextEvaluation {
 
                             if (currentContextRepresentation.getMetricValue(monitoredEntity, strategy.getToEnforce().getParameter()) < previousContextRepresentation.getMetricValue(monitoredEntity, strategy.getToEnforce().getParameter())) {
                                 nbFixedStrategies += 1;
+                                System.out.println("Improved strategy "+ strategy.getCondition() +"-"+strategy.getToEnforce());
+                                        
                             }
                         }
                     }

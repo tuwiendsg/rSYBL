@@ -58,9 +58,20 @@ public class Cluster  {
         NDimensionalPoint center = new NDimensionalPoint();
         if (points != null && points.size() > 0) {
            // center.setSize(points.get(0).getValues().size());
+            double max = 0;
             LinkedList<Double> myPoints = points.get(0).getValues();
-            int nb = 1;
-            for (int x = 1; x < points.size(); x++) {
+            for (NDimensionalPoint point :points){
+                if (point.getValues().size()>max){
+                    myPoints=point.getValues();
+                    max=point.getValues().size();
+                }
+            }
+     
+            for (int i=0;i<max;i++){
+                myPoints.set(i, 0.0);
+            }
+            int nb = 0;
+            for (int x = 0; x < points.size(); x++) {
                 if (points.get(x).getValues().size()==points.get(0).getValues().size()){
                 for (int i = 0; i < points.get(0).getValues().size(); i++) {
                     if (!points.get(x).getValues().get(i).equals(Double.NaN) || !points.get(x).getValues().get(i).equals(Double.NEGATIVE_INFINITY) ){

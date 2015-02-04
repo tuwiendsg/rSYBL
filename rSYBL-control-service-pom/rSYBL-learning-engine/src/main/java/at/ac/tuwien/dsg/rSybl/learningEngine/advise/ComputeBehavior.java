@@ -152,10 +152,9 @@ public class ComputeBehavior {
      public double stdDevActionTime(ElasticityCapability capability, Node node){
         return behaviors.get(node.getId()).entrySet().iterator().next().getValue().stdDeviationActionTime();
     }
-    public LinkedHashMap<String, LinkedHashMap<String, MyEntry<Double, NDimensionalPoint>>> computeExpectedBehavior(ElasticityCapability capability) {
+    public LinkedHashMap<String, LinkedHashMap<String, MyEntry<Double, NDimensionalPoint>>> computeExpectedBehavior(ElasticityCapability capability, List<MonitoringSnapshot> snapshots) {
         LinkedHashMap<String, LinkedHashMap<String, NDimensionalPoint>> currentBehavior = new LinkedHashMap<>();
         
-         List<MonitoringSnapshot> snapshots = monitoringInterface.getAllMonitoringInformationOnPeriod(ECPBehavioralModel.CHANGE_INTERVAL);
         while (snapshots.isEmpty()){
             snapshots=monitoringInterface.getAllMonitoringInformationOnPeriod(ECPBehavioralModel.CHANGE_INTERVAL);
         }

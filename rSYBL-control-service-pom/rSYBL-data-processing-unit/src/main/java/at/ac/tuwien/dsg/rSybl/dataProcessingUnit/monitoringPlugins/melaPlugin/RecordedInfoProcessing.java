@@ -26,7 +26,7 @@ public class RecordedInfoProcessing {
         mela_api3.setCurrentCloudService(node);
         List<MonitoringSnapshot> list= mela_api3.getAllMonitoringInformation();
         boolean created = false;
-        for (MonitoringSnapshot monitoringSnapshot:list){
+        for (MonitoringSnapshot monitoringSnapshot:list.subList(5,list.size()-1)){
           long currentTimestamp = monitoringSnapshot.getTimestamp();
           HashMap<String, String> actions=monitoringSnapshot.getOngoingActions();
           for (String servicePart:monitoringSnapshot.getServiceParts().keySet()){

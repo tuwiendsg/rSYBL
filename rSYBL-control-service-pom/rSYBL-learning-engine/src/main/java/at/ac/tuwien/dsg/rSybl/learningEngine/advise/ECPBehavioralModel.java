@@ -420,7 +420,7 @@ public class ECPBehavioralModel {
         int spNb = 0;
         for (String sp : currentBehavior.keySet()) {
             if (expectedBehavior.containsKey(sp)) {
-                Double[][] distancesMetrics = new Double[maxNbMetrics][maxNbClusters];
+                Double[][] distancesMetrics = new Double[100][100];
                 int row = 0;
                 int column = 0;
                 String[] metricNames = new String[expectedBehavior.get(sp).size()];
@@ -444,26 +444,28 @@ public class ECPBehavioralModel {
                 double maxCoocurence = 0;
                 for (int i = 0; i < row; i++) {
                      
-                    Integer[] sel = new Integer[expectedBehavior.get(sp).values().size()];
+                    Integer[] sel = new Integer[100];
                     for (int y = 0; y < expectedBehavior.get(sp).values().size(); y++) {
                         sel[y] = 0;
                     }
                     for (int x = 0; x < columnSizes[i]; x++) {
                         for (int y = 0; y < expectedBehavior.get(sp).values().size(); y++) {
-                            
+                            try{
                                 if (expectedBehavior.get(sp).get(metricNames[y]).get(sel[y]).getKey() > expectedBehavior.get(sp).get(metricNames[y]).get(x).getKey()) {
                                     sel[y] = x;
                                 }
-                            
+                            }catch(Exception e){
+                                LearningLogger.logger.info("Too many metrics for  "+sp);
+                            }
                         }
                     }
                     double sum = 0;
                     double coocurence = 0;
                     for (int x = 0; x < expectedBehavior.get(sp).values().size(); x++) {
                         sum += expectedBehavior.get(sp).get(metricNames[x]).get(sel[x]).getKey();
-
                     }
                     for (int x = 0; x < expectedBehavior.get(sp).values().size(); x++) {
+                        
                         String name = "Cl::" + sel[x] + "::" + metricNames[x] + "::" + sp;
                         int cl1 = clusterNames.indexOf(name);
 
@@ -474,7 +476,6 @@ public class ECPBehavioralModel {
                                 coocurence += coocurenceMatrix.get(cl1, cl2);
                             }
                         }
-                        
                     }
 
                     if (sum <= minSum && (maxCoocurence <= coocurence / 2.0)) {

@@ -80,9 +80,11 @@ public class PlanningGreedyWithADVISE implements PlanningAlgorithmInterface {
             double minViolatedFinalConstraints = 100000000.0;
             ElasticityCapability overallEc = null;
             ElasticityCapability finalEc = null;
+            List<MonitoringSnapshot> snapshots = monitoringInterface.getAllMonitoringInformationOnPeriod(ECPBehavioralModel.CHANGE_INTERVAL);
+
             for (ElasticityCapability ec : dependencyGraph.getAllElasticityCapabilities()) {
 
-                ECEnforcementEffect ecEnforcementEffect = new ECEnforcementEffect(behavior, cloudService, monitoringInterface, ec);
+                ECEnforcementEffect ecEnforcementEffect = new ECEnforcementEffect(behavior, cloudService, monitoringInterface, ec,snapshots);
                 expectedOverallEffect.put(ec, ecEnforcementEffect.overallViolatedConstraints());
                 expectedFinalEffect.put(ec, ecEnforcementEffect.getFinalStateViolatedConstraints());
                 if (expectedFinalEffect.get(ec) == ecEnforcementEffect.MAX_CONSTRAINTS) {
@@ -119,9 +121,12 @@ public class PlanningGreedyWithADVISE implements PlanningAlgorithmInterface {
                 double maxImprovedStrategies = 0;
                 ElasticityCapability forStrategiesEC = null;
                 boolean foundNotPredictable = false;
+                            List<MonitoringSnapshot> snapshots = monitoringInterface.getAllMonitoringInformationOnPeriod(ECPBehavioralModel.CHANGE_INTERVAL);
+
                 for (ElasticityCapability ec : dependencyGraph.getAllElasticityCapabilities()) {
-                    ECEnforcementEffect eCEnforcementEffect = new ECEnforcementEffect(behavior, cloudService, monitoringInterface, ec);
+                    ECEnforcementEffect eCEnforcementEffect = new ECEnforcementEffect(behavior, cloudService, monitoringInterface, ec,snapshots);
                     strategies.put(ec, eCEnforcementEffect.getImprovedStrategies(initialContext));
+
                     if (strategies.get(ec)==ECEnforcementEffect.MAX_CONSTRAINTS){
                         foundNotPredictable=true;
                     }
@@ -191,11 +196,11 @@ public class PlanningGreedyWithADVISE implements PlanningAlgorithmInterface {
                         if (!measurements.get(SP).containsKey(recording.getKey())) {
                             LinkedList<Double> nDimPoint = new LinkedList<Double>();
                             measurements.get(SP).put(recording.getKey(), nDimPoint);
-                            measurements.get(SP).put(recording.getKey(), nDimPoint);
+                         //   measurements.get(SP).put(recording.getKey(), nDimPoint);
                         }
 
                         measurements.get(SP).get(recording.getKey()).add(recording.getValue());
-                        measurements.get(SP).get(recording.getKey()).add(recording.getValue());
+                        //measurements.get(SP).get(recording.getKey()).add(recording.getValue());
                     }
                 }
             }
