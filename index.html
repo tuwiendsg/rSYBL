@@ -66,7 +66,31 @@ BitwiseOperator := OR | AND | XOR | NOT
 RelationOperator := <|>|>=|<=|==|!= 
 </code></pre>
 <h3>Examples of using SYBL</h3>
-Cost-related elasticity requirements
+<h4>Elasticity requirements in cloud service descriptions</h4>
+SYBL elasticity requirements can be injected in cloud service descriptions, be them TOSCA-based or custom. This is a simple process since SYBL requirements are close to day-to-day sentences and can be associated to different nodes existent in the description.
+Examples of such descriptions can be found in the git repository, <a href="https://raw.githubusercontent.com/tuwiendsg/rSYBL/master/rSYBL-control-service-pom/rSYBL-cloud-application-dependency-graph/tosca_DaaS_example.xml">tosca</a> or <a href="https://raw.githubusercontent.com/tuwiendsg/rSYBL/master/starting%20rSYBL/rSYBL%20Python%20clients/multipleEnforcementMechanisms_multiCloud/serviceDescription.xml">xml</a>
+<pre><code>
+	 <tosca:TopologyTemplate>
+      <tosca:NodeTemplate  id="DataEndServiceTopology" type="DataEndServiceTopology">
+        <tosca:Policies>
+          <tosca:Policy name="Co1:CONSTRAINT latency &lt; 0.5 ms;Co2:CONSTRAINT cpuUsage &lt; 83 %" policyType="SYBLConstraint"/>
+        </tosca:Policies>
+      </tosca:NodeTemplate>
+	    <tosca:NodeTemplate  id="EventProcessingServiceTopology" type="EventProcessingServiceTopology">
+        <tosca:Policies>
+          <tosca:Policy name="Co3:CONSTRAINT responseTime &lt; 350 ms" policyType="SYBLConstraint"/>
+       </tosca:Policies>
+      </tosca:NodeTemplate>
+      <tosca:RelationshipTemplate name="Directed Relation">
+        <tosca:SourceElement ref="EventProcessingServiceTopology"/>
+        <tosca:TargetElement ref="DataEndServiceTopology"/>
+      </tosca:RelationshipTemplate>
+    </tosca:TopologyTemplate>
+  </tosca:ServiceTemplate>
+</code></pre>
+<h4>Elasticity requirements as Java annotations</h4>
+For interpreting injected elasticity requirements, one needs to also deploy the Local module of the elasticity controller on each virtual machine/container where the unit is deployed.
+<b>Cost-related elasticity requirements</b>
 A cloud customer can specify that when the total cost is higher than 800 euro, there should be a scale-in action for keeping costs in acceptable limits. 
 <pre><code>@SYBL_ApplicationContext(strategies="St1: STRATEGY CASE total_cost>800 Euro : ScaleIn")</code></pre>
 Quality-related elasticity requirements
@@ -83,7 +107,7 @@ priorities=
 	"Priority(Co2)>Priority(Co1);
 	Priority(Co3)>Priority(Co1);")	</code></pre>
 					
-Elasticity requirements on the relation between cost and quality
+<b>Elasticity requirements on the relation between cost and quality</b>
 A cloud provider could specify its pricing schema or price computation policies, for example that when availability is higher than 99% the cost should increase by 10%.
 <pre><code>@SYBL_ApplicationContext(strategies="St1: STRATEGY CASE availability>99%: 
 				IncreaseCostBy(total_cost/10)")</code></pre>
