@@ -181,10 +181,13 @@ public class ComputeBehavior {
                     }
                 }
             }
-        }
+            return behaviors.get(capability.getServicePartID()).get(capability.getName()).computeExpectedBehavior(currentBehavior);
+            
+        }else 
+            return null;
    
 
-        return behaviors.get(capability.getServicePartID()).get(capability.getName()).computeExpectedBehavior(currentBehavior);
+        
        }
     }
 }

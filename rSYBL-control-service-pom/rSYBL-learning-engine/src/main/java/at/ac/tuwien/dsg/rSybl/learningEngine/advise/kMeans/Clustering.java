@@ -105,34 +105,29 @@ public class Clustering {
     public  ArrayList<MyEntry<Double,NDimensionalPoint>> getClustersByDistance(NDimensionalPoint point){
         ArrayList<MyEntry<Double,NDimensionalPoint>> orderedCluster = new ArrayList<> ();
         for (Cluster c:clusters){
-            double dist = c.getCentroid().computeDistance(point, point.getValues().size());
-            switch (orderedCluster.size()){
-                case 2:
-                    int i=0;
-                   while (i<orderedCluster.size()){
-                        if (i<orderedCluster.size()-1){
-                            if (orderedCluster.get(i).getKey()>dist && orderedCluster.get(i+1).getKey()<dist){
-                                orderedCluster.add(i+1,new MyEntry<>(dist,c.getCentroid()) );
-                                break;
-                            }
-                        }else{
-                       orderedCluster.add(i,new MyEntry<>(dist,c.getCentroid()) );     
-                        }
-                   i++; 
-                   }
-                break;
-                case 1:
-                    if (orderedCluster.get(0).getKey()<dist)
-                    {
-                        orderedCluster.add(1, new MyEntry<>(dist,c.getCentroid()));
-                    }else{
-                         orderedCluster.add(0, new MyEntry<>(dist,c.getCentroid()));
-                    }
-                    break;
-                case 0:
-                   orderedCluster.add(new MyEntry<>(dist,c.getCentroid()));
-                    break;
-            }            
+            c.computeCentroidAsAverage();
+            double dist = NDimensionalPoint.MAX_DIST;
+            if (c.getCentroid()!=null && !point.getValues().isEmpty())
+             dist = c.getCentroid().computeDistance(point, point.getValues().size());
+            if (orderedCluster.size()==0){
+               orderedCluster.add(new MyEntry<>(dist,c.getCentroid()));
+
+            }else{
+                int x = -1;
+            for (int i =0;i<orderedCluster.size();i++){
+                if (orderedCluster.get(i).getKey()<dist){
+                    x=i;
+                }
+            }
+            if (x==-1){
+                orderedCluster.add(0,new MyEntry<>(dist,c.getCentroid()));
+            }else{
+            if (x+1<orderedCluster.size())
+                orderedCluster.add(x+1, new MyEntry<>(dist,c.getCentroid()));
+            else
+                orderedCluster.add(new MyEntry<>(dist,c.getCentroid()));
+            }
+            }    
         }
    
         return orderedCluster;

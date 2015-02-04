@@ -256,7 +256,11 @@ public class ECPBehavioralModel {
 
                                 }
                                     //allSPsWithNDimForEachMetric.get(SP).get(recording.getKey()).get(generalIndex).getValues().add(recording.getValue());
+                                if (spsWithNDimForEachMetric.get(SP).get(recording.getKey()).size()>=generalIndex+1){
                                       spsWithNDimForEachMetric.get(SP).get(recording.getKey()).get(generalIndex).getValues().add(recording.getValue());
+                                }else{
+                                    LearningLogger.logger.info("Could not add "+ recording.getKey() +" measurements to "+SP );
+                                }
                            
                             }
                         }
@@ -291,7 +295,7 @@ public class ECPBehavioralModel {
                     Clustering cl = behavior.getMetricClusters().get(metric);
                     int nbClusters = (int) Math.sqrt(allSPsWithNDimForEachMetric.get(sp).get(metric).size());
                     //TO implement refresh on clusters 
-                    cl.addNewPointsAndRefreshClusters(newSPsWithNDimForEachMetric.get(sp).get(metric), nbClusters, 0.2);
+                    cl.addNewPointsAndRefreshClusters(newSPsWithNDimForEachMetric.get(sp).get(metric), nbClusters, 0.6);
                     clustering.put(metric, cl);
                     if (cl.getClusters().size() > maxNbClusters) {
                         maxNbClusters = cl.getClusters().size();
@@ -364,7 +368,12 @@ public class ECPBehavioralModel {
                     if (allSPsWithNDimForEachMetric.get(sp1) != null) {
                         for (int x = 0; x < allSPsWithNDimForEachMetric.get(sp1).get(metricName1).size(); x++) {
                             double dist1 = allSPsWithNDimForEachMetric.get(sp1).get(metricName1).get(x).computeDistance(nodeBehaviors.get(sp1).getMetricClusters().get(metricName1).getClusters().get(clusterNb1).getCentroid());
-                            double dist2 = allSPsWithNDimForEachMetric.get(sp2).get(metricName2).get(x).computeDistance(nodeBehaviors.get(sp2).getMetricClusters().get(metricName2).getClusters().get(clusterNb2).getCentroid());
+                            double dist2 = SENSITIVITY;
+                            try{
+                                dist2=allSPsWithNDimForEachMetric.get(sp2).get(metricName2).get(x).computeDistance(nodeBehaviors.get(sp2).getMetricClusters().get(metricName2).getClusters().get(clusterNb2).getCentroid());
+                            }catch(Exception e){
+                                LearningLogger.logger.error(e.getMessage());
+                            }
                             if (dist1 < SENSITIVITY && dist2 < SENSITIVITY) {
 
                                 coocurenceMatrix.set(i, j, coocurenceMatrix.get(i, j) + 1);
@@ -403,7 +412,7 @@ public class ECPBehavioralModel {
                     }
                 }
             } else {
-                LearningLogger.logger.info("SP not existent in node behaviors");
+                LearningLogger.logger.info(sp + " SP not existent in node behaviors");
             }
 
 
@@ -420,28 +429,32 @@ public class ECPBehavioralModel {
                     int i = 0;
                     metricNames[row] = metric;
                     for (i = 0; i < expectedBehavior.get(sp).get(metric).size(); i++) {
+                        try{
                         distancesMetrics[row][i] = expectedBehavior.get(sp).get(metric).get(i).getKey();
-                    }
+                        }catch(Exception e){
+                            e.printStackTrace();
+                        }
+                        }
                     columnSizes[row] = expectedBehavior.get(sp).get(metric).size();
                     row++;
                 }
-                double minSum = 100000;
-                double maxCoocurence = 0;
+             
                 Integer[] selected = new Integer[expectedBehavior.get(sp).values().size()];
+                  double minSum = Double.MAX_VALUE;
+                double maxCoocurence = 0;
                 for (int i = 0; i < row; i++) {
+                     
                     Integer[] sel = new Integer[expectedBehavior.get(sp).values().size()];
                     for (int y = 0; y < expectedBehavior.get(sp).values().size(); y++) {
                         sel[y] = 0;
                     }
                     for (int x = 0; x < columnSizes[i]; x++) {
                         for (int y = 0; y < expectedBehavior.get(sp).values().size(); y++) {
-                            if (sel[y] != 0) {
+                            
                                 if (expectedBehavior.get(sp).get(metricNames[y]).get(sel[y]).getKey() > expectedBehavior.get(sp).get(metricNames[y]).get(x).getKey()) {
                                     sel[y] = x;
                                 }
-                            } else {
-                                sel[y] = x;
-                            }
+                            
                         }
                     }
                     double sum = 0;
@@ -461,24 +474,30 @@ public class ECPBehavioralModel {
                                 coocurence += coocurenceMatrix.get(cl1, cl2);
                             }
                         }
+                        
                     }
 
-
-                    if (sum < minSum && (maxCoocurence <= coocurence / 2.0)) {
+                    if (sum <= minSum && (maxCoocurence <= coocurence / 2.0)) {
                         minSum = sum;
                         maxCoocurence = coocurence;
                         selected = sel.clone();
                     }
+                   
                 }
 
                 int i = 0;
-                for (String metric : currentBehavior.get(sp).keySet()) {
+                for (String metric : expectedBehavior.get(sp).keySet()) {
                     if (!behaviors.containsKey(sp)) {
                         behaviors.put(sp, new LinkedHashMap<String, MyEntry<Double, NDimensionalPoint>>());
 
                     }
-                    List<Double> values = expectedBehavior.get(sp).get(metric).get(selected[i]).getValue().getValues();
-                    NDimensionalPoint nDimensionalPoint = new NDimensionalPoint();
+                    List<Double> values =null ;
+                    try{
+                     values = expectedBehavior.get(sp).get(metric).get(selected[i]).getValue().getValues();
+                    }catch(Exception ex){
+                        ex.printStackTrace();
+                    }
+                     NDimensionalPoint nDimensionalPoint = new NDimensionalPoint();
                     LinkedList<Double> sublist = new LinkedList<>();
                     for (Double d :values.subList(CHANGE_INTERVAL, values.size())){
                         sublist.add(d);
@@ -491,9 +510,9 @@ public class ECPBehavioralModel {
                 }
                 spNb++;
             } else {
-                if (!behaviors.containsKey(sp)) {
-                    behaviors.put(sp, new LinkedHashMap<String, MyEntry<Double,NDimensionalPoint>>());
-                }
+//                if (!behaviors.containsKey(sp)) {
+//                    behaviors.put(sp, new LinkedHashMap<String, MyEntry<Double,NDimensionalPoint>>());
+//                }
             }
         }
 

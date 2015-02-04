@@ -324,7 +324,8 @@ public class MonitoringAPI implements MonitoringAPIInterface {
             return offeredMonitoringMetrics.getMetricValue(metricName, e);
         } catch (Exception ex) {
             RuntimeLogger.logger.error("Current " + metricName + ex.toString() + "for node " + e.getId());
-            throw new Exception();
+           // throw new Exception();
+            return 0.0;
         }
     }
 

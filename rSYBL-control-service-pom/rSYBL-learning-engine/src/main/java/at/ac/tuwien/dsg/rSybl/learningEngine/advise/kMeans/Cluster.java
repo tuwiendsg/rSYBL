@@ -59,17 +59,24 @@ public class Cluster  {
         if (points != null && points.size() > 0) {
            // center.setSize(points.get(0).getValues().size());
             LinkedList<Double> myPoints = points.get(0).getValues();
-
+            int nb = 1;
             for (int x = 1; x < points.size(); x++) {
-                for (int i = 0; i < points.get(0).getValues().size(); i++) {   
+                if (points.get(x).getValues().size()==points.get(0).getValues().size()){
+                for (int i = 0; i < points.get(0).getValues().size(); i++) {
+                    if (!points.get(x).getValues().get(i).equals(Double.NaN) || !points.get(x).getValues().get(i).equals(Double.NEGATIVE_INFINITY) ){
                     myPoints.set(i,  myPoints.get(i) + points.get(x).getValues().get(i));
+                }
+                }
+                nb++;
                 }
             }
             for (int i = 0; i < points.get(0).getValues().size(); i++) {
-                myPoints.set(i, myPoints.get(i) / points.size());
+                myPoints.set(i, myPoints.get(i) / nb);
             }
+            
             center.setValues(myPoints);
-            return center;
+            centroid=center;
+            return centroid;
         } else {
             return null;
         }
@@ -94,7 +101,11 @@ public class Cluster  {
                 if (centroid!=null){
                 return centroid.computeDistance(oldCentroid);
                 }else{
-                    return NDimensionalPoint.MAX_DIST;
+                    if (centroid==null && oldCentroid==null){
+                        return 0.0;}
+                        else{
+                                        return NDimensionalPoint.MAX_DIST;
+                    }
                 }
             } catch (CloneNotSupportedException ex) {
                 Logger.getLogger(Cluster.class.getName()).log(Level.SEVERE, null, ex);
@@ -102,9 +113,14 @@ public class Cluster  {
             }
 
         } else {
+            
             centroid = computeCentroidAsAverage();
             this.points = newPoints;
+            if (centroid==null){
+                return 0.0;
+            }else{
             return NDimensionalPoint.MAX_DIST;
+            }
         }
     }
 

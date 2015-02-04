@@ -34,7 +34,7 @@ import java.util.concurrent.TimeUnit;
 public class PlanningGreedyWithADVISE implements PlanningAlgorithmInterface {
 
     private List<ContextRepresentation> withoutEnforcing = new LinkedList<ContextRepresentation>();
-    private ContextRepresentation initialContext ;
+    private ContextRepresentation initialContext;
     private Node cloudService;
     private DependencyGraph dependencyGraph;
     private MonitoringAPIInterface monitoringInterface;
@@ -44,12 +44,13 @@ public class PlanningGreedyWithADVISE implements PlanningAlgorithmInterface {
     private LinkedHashMap<ElasticityCapability, Double> expectedFinalEffect = new LinkedHashMap<>();
     private double noActionOverallViolatedConstraints = 0;
     private double noActionFinalViolatedConstraints = 0;
-    private int MINUTES_TO_WAIT_AFTER_ABNORMAL_DISTANCE = 20;
+    private int MINUTES_TO_WAIT_AFTER_ABNORMAL_DISTANCE = 10;
     private Timer timer = new Timer();
     private EnforcementAPIInterface enforcementAPI;
     private ComputeBehavior behavior;
     private Date timeITWasNotOK;
     private PlanningAlgorithmInterface initialPlanning;
+
     public PlanningGreedyWithADVISE(MonitoringAPIInterface monitoringAPIInterface, Node cloudService, EnforcementAPIInterface enforcementAPI, PlanningAlgorithmInterface mainPlanning) {
         monitoringInterface = monitoringAPIInterface;
         this.cloudService = cloudService;
@@ -57,103 +58,115 @@ public class PlanningGreedyWithADVISE implements PlanningAlgorithmInterface {
         this.enforcementAPI = enforcementAPI;
         dependencyGraph = new DependencyGraph();
         dependencyGraph.setCloudService(cloudService);
-        initialContext=new ContextRepresentation(cloudService, new LinkedHashMap<String, LinkedHashMap<String, Double>>());
+        initialContext = new ContextRepresentation(cloudService, new LinkedHashMap<String, LinkedHashMap<String, Double>>());
     }
-
     public void startLearningProcess() {
         behavior = new ComputeBehavior(cloudService, monitoringInterface);
 
     }
-
     public ElasticityCapability findCapabilityToEnforce() {
         DependencyGraph dependencyGraph = new DependencyGraph();
         dependencyGraph.setCloudService(cloudService);
-        ElasticityCapability elasticityCapability = null;
-        double minViolatedConstraints = 100000000.0;
-        double minViolatedFinalConstraints = 100000000.0;
-        ElasticityCapability overallEc = null;
-        ElasticityCapability finalEc = null;
         boolean sufficientInfo = true;
         double constraintsViolatedWithout = 0;
         ContextEvaluation contextEvaluation = new ContextEvaluation();
         for (ContextRepresentation contextRepresentation : withoutEnforcing) {
             constraintsViolatedWithout += contextEvaluation.countViolatedConstraints(dependencyGraph, contextRepresentation);
         }
-        constraintsViolatedWithout /= withoutEnforcing.size();
-        for (ElasticityCapability ec : dependencyGraph.getAllElasticityCapabilities()) {
-            
-            ECEnforcementEffect ecEnforcementEffect = new ECEnforcementEffect(behavior, cloudService, monitoringInterface, ec);
-            expectedOverallEffect.put(ec, ecEnforcementEffect.overallViolatedConstraints());
-            expectedFinalEffect.put(ec, ecEnforcementEffect.getFinalStateViolatedConstraints());
-           if (expectedFinalEffect.get(ec)==ecEnforcementEffect.MAX_CONSTRAINTS){
-               sufficientInfo=false;
-               timeITWasNotOK = new Date();
-               stop();
-               break;
-           }
-            if (constraintsViolatedWithout > 0 && expectedOverallEffect.get(ec) < constraintsViolatedWithout) {
-                if (minViolatedConstraints > expectedOverallEffect.get(ec)) {
-                    minViolatedConstraints = expectedOverallEffect.get(ec);
-                    overallEc = ec;
+        constraintsViolatedWithout /= withoutEnforcing.size() * 1.0;
+        if (constraintsViolatedWithout > 0) {
+            ElasticityCapability elasticityCapability = null;
+            double minViolatedConstraints = 100000000.0;
+            double minViolatedFinalConstraints = 100000000.0;
+            ElasticityCapability overallEc = null;
+            ElasticityCapability finalEc = null;
+            for (ElasticityCapability ec : dependencyGraph.getAllElasticityCapabilities()) {
+
+                ECEnforcementEffect ecEnforcementEffect = new ECEnforcementEffect(behavior, cloudService, monitoringInterface, ec);
+                expectedOverallEffect.put(ec, ecEnforcementEffect.overallViolatedConstraints());
+                expectedFinalEffect.put(ec, ecEnforcementEffect.getFinalStateViolatedConstraints());
+                if (expectedFinalEffect.get(ec) == ecEnforcementEffect.MAX_CONSTRAINTS) {
+                    sufficientInfo = false;
+                    timeITWasNotOK = new Date();
+                    stop();
+                    initialPlanning.takeMainRole();
+                    return null;
+
                 }
-            }
-            if (constraintsViolatedWithout > 0 && minViolatedFinalConstraints > expectedFinalEffect.get(ec)) {
-                minViolatedFinalConstraints = expectedFinalEffect.get(ec);
-                finalEc = ec;
-            }
+                if (constraintsViolatedWithout > 0 && expectedOverallEffect.get(ec) < constraintsViolatedWithout) {
+                    if (minViolatedConstraints > expectedOverallEffect.get(ec)) {
+                        minViolatedConstraints = expectedOverallEffect.get(ec);
+                        overallEc = ec;
+                    }
+                }
+                if (constraintsViolatedWithout > 0 && minViolatedFinalConstraints > expectedFinalEffect.get(ec)) {
+                    minViolatedFinalConstraints = expectedFinalEffect.get(ec);
+                    finalEc = ec;
+                }
 
-        }
-        if (sufficientInfo){
-        if (constraintsViolatedWithout > 0 && overallEc == finalEc) {
-            elasticityCapability = overallEc;
-            return elasticityCapability;
-        }
-        LinkedHashMap<ElasticityCapability, Double> strategies = new LinkedHashMap<ElasticityCapability, Double>();
-        double maxImprovedStrategies = 0;
-        ElasticityCapability forStrategiesEC = null;
-        for (ElasticityCapability ec : dependencyGraph.getAllElasticityCapabilities()) {
-            ECEnforcementEffect eCEnforcementEffect = new ECEnforcementEffect(behavior, cloudService, monitoringInterface, ec);
-            strategies.put(ec, eCEnforcementEffect.getImprovedStrategies(initialContext));
-            if (maxImprovedStrategies < strategies.get(ec)) {
-                maxImprovedStrategies = strategies.get(ec);
-                forStrategiesEC = ec;
             }
-        }
-        if (finalEc == forStrategiesEC) {
-            return forStrategiesEC;
-        }
+            if (sufficientInfo) {
+                if (constraintsViolatedWithout > 0 && null != overallEc) {
+                    elasticityCapability = overallEc;
+                    return elasticityCapability;
+                }
+                if (constraintsViolatedWithout > 0 && null != finalEc) {
+                    elasticityCapability = finalEc;
+                    return elasticityCapability;
+                }
+            } }else {
+                LinkedHashMap<ElasticityCapability, Double> strategies = new LinkedHashMap<ElasticityCapability, Double>();
+                double maxImprovedStrategies = 0;
+                ElasticityCapability forStrategiesEC = null;
+                boolean foundNotPredictable = false;
+                for (ElasticityCapability ec : dependencyGraph.getAllElasticityCapabilities()) {
+                    ECEnforcementEffect eCEnforcementEffect = new ECEnforcementEffect(behavior, cloudService, monitoringInterface, ec);
+                    strategies.put(ec, eCEnforcementEffect.getImprovedStrategies(initialContext));
+                    if (strategies.get(ec)==ECEnforcementEffect.MAX_CONSTRAINTS){
+                        foundNotPredictable=true;
+                    }
+                    if (maxImprovedStrategies < strategies.get(ec)) {
+                        maxImprovedStrategies = strategies.get(ec);
+                        forStrategiesEC = ec;
+                    }
+                    
+                }
+                
+                if (!foundNotPredictable && forStrategiesEC != null && constraintsViolatedWithout == 0) {
+                    return forStrategiesEC;
+                }
 
-        return elasticityCapability;
-        }
+            }
+        
         return null;
     }
 
     public boolean checkWhetherPerformanceIsAcceptable() {
         double stdDevSum = 0;
         double bigNb = 1000000;
-        
-        int nbActions=0;
-        if (timeITWasNotOK!=null){
-        Date now = new Date();
-        
-         long diff = now.getTime() - this.timeITWasNotOK.getTime();
-        long diffMinutes = diff / (60 * 1000) % 60;
-        if (diffMinutes<MINUTES_TO_WAIT_AFTER_ABNORMAL_DISTANCE){
-            return false;
+
+        int nbActions = 0;
+        if (timeITWasNotOK != null) {
+            Date now = new Date();
+
+            long diff = now.getTime() - this.timeITWasNotOK.getTime();
+            long diffMinutes = diff / (60 * 1000) % 60;
+            if (diffMinutes < MINUTES_TO_WAIT_AFTER_ABNORMAL_DISTANCE) {
+                return false;
+            }
         }
-        }
-        
+
         for (ElasticityCapability capability : dependencyGraph.getAllElasticityCapabilities()) {
             if (behavior.avgActionTime(capability, dependencyGraph.getNodeWithID(capability.getServicePartID())) > 0) {
-                stdDevSum += behavior.stdDevActionTime(capability,  dependencyGraph.getNodeWithID(capability.getServicePartID()));
-                nbActions +=1;
+                stdDevSum += behavior.stdDevActionTime(capability, dependencyGraph.getNodeWithID(capability.getServicePartID()));
+                nbActions += 1;
             } else {
                 stdDevSum += bigNb;
-                nbActions +=1;
+                nbActions += 1;
 
             }
         }
-        if (stdDevSum/nbActions < bigNb) {
+        if (stdDevSum / nbActions < bigNb) {
             return true;
         } else {
             return false;
@@ -162,6 +175,7 @@ public class PlanningGreedyWithADVISE implements PlanningAlgorithmInterface {
     }
 
     public void initializeContexts() {
+        withoutEnforcing = new LinkedList<ContextRepresentation>();
         List<MonitoringSnapshot> snapshots = monitoringInterface.getAllMonitoringInformationOnPeriod(ECPBehavioralModel.CHANGE_INTERVAL);
         if (snapshots.size() > 0) {
 
@@ -220,7 +234,7 @@ public class PlanningGreedyWithADVISE implements PlanningAlgorithmInterface {
                         value += coef[j] * Math.pow(i + ECPBehavioralModel.CHANGE_INTERVAL, j);
                     }
                     //expectedValues.get(node).get(metric).add(value);
-                    expectedValues.get(node).get(metric).add(samplePoints[observations.length-1]);
+                    expectedValues.get(node).get(metric).add(samplePoints[observations.length - 1]);
                 }
             }
         }
@@ -267,21 +281,24 @@ public class PlanningGreedyWithADVISE implements PlanningAlgorithmInterface {
     public void replaceDependencyGraph(DependencyGraph dependencyGraph) {
         this.dependencyGraph = dependencyGraph;
     }
-    public void discoverPlan(){
-         initializeContexts();
-                ElasticityCapability capability = findCapabilityToEnforce();
-                if (capability!=null){
-                ActionPlanEnforcement actionPlanEnforcement = new ActionPlanEnforcement(enforcementAPI);
-                actionPlanEnforcement.enforceElasticityCapability(dependencyGraph, capability);
+
+    public void discoverPlan() {
+        initializeContexts();
+        ElasticityCapability capability = findCapabilityToEnforce();
+        if (capability != null) {
+            ActionPlanEnforcement actionPlanEnforcement = new ActionPlanEnforcement(enforcementAPI);
+            actionPlanEnforcement.enforceElasticityCapability(dependencyGraph, capability);
+        }
     }
-    }
+
     @Override
     public void run() {
+        timer = new Timer();
         timer.scheduleAtFixedRate(new TimerTask() {
             @Override
             public void run() {
-                    discoverPlan();
-                
+                discoverPlan();
+
             }
         }, Configuration.getRefreshPeriod(), Configuration.getRefreshPeriod());
     }

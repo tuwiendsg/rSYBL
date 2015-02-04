@@ -48,7 +48,7 @@ public class ECEnforcementEffect {
     private LinkedHashMap<String, LinkedHashMap<String, LinkedList<Double>>> measurements = new LinkedHashMap<String, LinkedHashMap<String, LinkedList<Double>>>();
     private DependencyGraph dependencyGraph;
     private double ACCEPTABLE_DISTANCE= 400;
-    public double MAX_CONSTRAINTS = 10000;
+    public static double MAX_CONSTRAINTS = 100000;
     private MonitoringAPIInterface monitoringInterface;
     private Node cloudService;
     private ComputeBehavior behavior;
@@ -66,7 +66,9 @@ public class ECEnforcementEffect {
 
     public double getImprovedStrategies(ContextRepresentation beforeContextRepresentation) {
         ContextEvaluation contextEvaluation = new ContextEvaluation();
-
+          if (withEnforcing.get(withEnforcing.size()-1).getDistance()<ACCEPTABLE_DISTANCE)
+              return MAX_CONSTRAINTS;
+          else
         return contextEvaluation.countFixedStrategies(dependencyGraph, withEnforcing.get(withEnforcing.size() - 1), beforeContextRepresentation);
     }
 
@@ -125,8 +127,12 @@ public class ECEnforcementEffect {
                     metrics.put(node, new LinkedHashMap<String, Double>());
                 }
                 for (String metric : result.get(node).keySet()) {
-                    
-                    metrics.get(node).put(metric, result.get(node).get(metric).getValue().getValues().get(i));
+                    if (result.get(node).get(metric).getValue().getValues().size()>i) {
+                        metrics.get(node).put(metric, result.get(node).get(metric).getValue().getValues().get(i));
+                    }
+                    else {
+                        metrics.get(node).put(metric,result.get(node).get(metric).getValue().getValues().get(result.get(node).get(metric).getValue().getValues().size()-1));
+                    }
                     distance+= result.get(node).get(metric).getKey();
                     nbDistances++;
                 }

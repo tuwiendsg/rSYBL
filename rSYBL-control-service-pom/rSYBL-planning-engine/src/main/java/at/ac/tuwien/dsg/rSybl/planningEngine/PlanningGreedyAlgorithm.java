@@ -671,6 +671,7 @@ public class PlanningGreedyAlgorithm implements PlanningAlgorithmInterface {
     
     @Override
     public void run() {
+        t=new Timer();
         t.scheduleAtFixedRate(new TimerTask(){
             @Override
             public void run(){
@@ -700,6 +701,7 @@ public class PlanningGreedyAlgorithm implements PlanningAlgorithmInterface {
     @Override
     public void start() {
         if (Configuration.getADVISEEnabled()){
+           evaluateLearningPerformance = new Timer();
         evaluateLearningPerformance.scheduleAtFixedRate(new TimerTask(){
         public void run(){
             checkWhetherLearningIsAccurateAndSwitch();
