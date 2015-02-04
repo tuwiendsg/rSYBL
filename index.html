@@ -39,13 +39,62 @@
           <span class="credits left">Project maintained by <a href="https://github.com/tuwiendsg">tuwiendsg</a></span>
           
         </div>
-  <div id="menu">
-    <li>lala</li>
-  </div>
-        
 
+        
+<section><h2>The SYBL language</h2>
+  SYBL is a language enabling elasticity requirements description for cloud services.
+SYBL can be used by cloud providers, software providers, application developers or even end-users to describe their elasticity requirements concerning the application. The language allows for different levels of specification facilitating finer-grained elasticity specifications and enforcement depending on the actual needs of the users.
+SYBL enables different levels at which users can specify elasticity requirements: application, component and programming. Application level allows for elasticity from the perspective of the whole application, while component-level and code-level elasticity requirements define user's elasticity needs for component, and respectively, sequnces of code.
+
+<h3>SYBL Backus Naur Form (BNF)</h3>
+Constraint := constraintName : CONSTRAINT ComplexCondition 
+Monitoring := monitoringName : MONITORING varName=MetricFormula 
+Strategy := strategyName : STRATEGY WHEN ComplexCondition : action(parameterList)|  
+		strategyName : STRATEGY WAIT ComplexCondition| 
+		strategyName : STRATEGY STOP| 
+		strategyName : STRATEGY RESUME		 
+
+MetricFormula := metric | number | metricFormula MathOperator metric | metricFormula 
+		MathOperator number 
+ComplexCondition := Condition | ComplexCondition BitwiseOperator Condition|
+		(ComplexCondition BitwiseOperator Condition) 
+Condition := metric RelationOperator number| number RelationOperator metric | 
+	    Violated(name)|Fulfilled(name) 
+MathOperator := + | - | * | / 
+BitwiseOperator := OR | AND | XOR | NOT 
+RelationOperator := <|>|>=|<=|==|!= 
+
+<h3>Examples of using SYBL</h3>
+Cost-related elasticity requirements
+A cloud customer can specify that when the total cost is higher than 800 euro, there should be a scale-in action for keeping costs in acceptable limits. 
+@SYBL_ApplicationContext(strategies="St1: STRATEGY CASE total_cost>800 Euro : ScaleIn")
+Quality-related elasticity requirements
+A software provider can specify constraints on the response time depending on the number of users currently accessing the provided software.
+@SYBL_ComponentContext(constraints=
+	"Co1: CONSTRAINT rt<2ms WHEN nbUsers<1000;
+	Co2: CONSTRAINT rt<4ms WHEN nbUsers>=1000")
+A developer could specify that the result from a data analytics algorithm must reach a certain data accuracy under a cost constraint without caring how many resources should be used for executing the code of that algorithm.
+@SYBL_ProgrammingContext(constraints=
+	"Co1: CONSTRAINT dataAccuracy>90%; 
+	Co2:CONSTRAINT dataAccuracy>95% WHEN total_cost>400;
+	Co3:CONSTRAINT total_cost<800;"
+priorities=
+	"Priority(Co2)>Priority(Co1);
+	Priority(Co3)>Priority(Co1);")	
+					
+Elasticity requirements on the relation between cost and quality
+A cloud provider could specify its pricing schema or price computation policies, for example that when availability is higher than 99% the cost should increase by 10%.
+@SYBL_ApplicationContext(strategies="St1: STRATEGY CASE availability>99%: 
+				IncreaseCostBy(total_cost/10)")
+				
+  
+</section>
+<section><h2>The rSYBL elasticity controller</h2></section>
+<center><figure>
+  <img src="http://www.infosys.tuwien.ac.at/research/viecom/SYBL/images/runtime.png"/>
+</figure></center>
 <section>
-  <p>Installing rSYBL</p>
+  <h2>Installing rSYBL</h2>
 </section>
 <section>
 <a id="support-or-contact" class="anchor" href="#support-or-contact" aria-hidden="true"><span class="octicon octicon-link"></span></a>Please contact <a>Georgiana Copil</a> if you need help in using rSYBL.</a></h3>
