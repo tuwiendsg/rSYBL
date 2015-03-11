@@ -46,7 +46,17 @@ public class Cluster  {
     public NDimensionalPoint getCentroid() {
         return centroid;
     }
-
+    public NDimensionalPoint getClosestPoint(NDimensionalPoint point){
+        double minDist = Double.MAX_VALUE;
+        NDimensionalPoint result = null;
+        for (NDimensionalPoint p:points){
+            if (minDist>p.computeDistance(point, point.getValues().size())){
+                minDist = p.computeDistance(point, point.getValues().size());
+                result = p;
+            }
+        }
+        return result;
+    }
     /**
      * @param centroid the centroid to set
      */
@@ -134,7 +144,6 @@ public class Cluster  {
             }
         }
     }
-
     public NDimensionalPoint computeCentroidWithSmallestDistance() {
         NDimensionalPoint center = points.get(0);
         double minDist = NDimensionalPoint.MAX_DIST;

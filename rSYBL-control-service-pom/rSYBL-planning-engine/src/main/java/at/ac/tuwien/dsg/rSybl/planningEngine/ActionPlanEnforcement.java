@@ -18,6 +18,7 @@ import at.ac.tuwien.dsg.csdg.inputProcessing.multiLevelModel.primitives.ServiceE
 import at.ac.tuwien.dsg.csdg.outputProcessing.OutputProcessing;
 import at.ac.tuwien.dsg.csdg.outputProcessing.OutputProcessingFactory;
 import at.ac.tuwien.dsg.csdg.outputProcessing.OutputProcessingInterface;
+import at.ac.tuwien.dsg.csdg.outputProcessing.eventsNotification.EventNotification;
 import at.ac.tuwien.dsg.rSybl.cloudInteractionUnit.api.EnforcementAPIInterface;
 import at.ac.tuwien.dsg.rSybl.planningEngine.ContextRepresentation.Pair;
 
@@ -45,13 +46,13 @@ public class ActionPlanEnforcement {
 
     }
 
-    public void enforceResult(ArrayList<Pair<ActionEffect, Integer>> result, DependencyGraph dependencyGraph, double violationDegree) {
+    public void enforceResult(ArrayList<Pair<ActionEffect, Integer>> result, DependencyGraph dependencyGraph, double violationDegree,String constraintsFixed, String strategiesImproved, EventNotification event) {
         this.violationDegree = violationDegree;
-        enforceResult(result, dependencyGraph);
+        enforceResult(result, dependencyGraph,constraintsFixed,strategiesImproved,event);
 
     }
-
-    public void enforceResult(ArrayList<Pair<ActionEffect, Integer>> result, DependencyGraph dependencyGraph) {
+   
+    public void enforceResult(ArrayList<Pair<ActionEffect, Integer>> result, DependencyGraph dependencyGraph, String constraintsFixed, String strategiesImproved, EventNotification event) {
         HashMap<Node, ElasticityCapability> capabilities = new HashMap<Node, ElasticityCapability>();
         for (Pair<ActionEffect, Integer> pair : result) {
             for (ElasticityCapability elasticityCapability : pair.getFirst().getTargetedEntity().getElasticityCapabilities()) {
@@ -64,6 +65,7 @@ public class ActionPlanEnforcement {
             }
         }
         outputProcessing.saveActionPlan(capabilities);
+        
         if (!dependencyGraph.isInControlState()) {
             PlanningLogger.logger.info("Not enforcing action due to breakpoint ");
             return;
@@ -74,7 +76,7 @@ public class ActionPlanEnforcement {
             List<Thread> threadsToExec = new ArrayList<Thread>();
             PlanningLogger.logger.info("~~~ paralel actions executed " + actionsToEnf.size());
             for (Pair<ActionEffect, Integer> action : actionsToEnf) {
-                EnforceActionInThread enforceActionInThread = new EnforceActionInThread(action.getFirst(), dependencyGraph);
+                EnforceActionInThread enforceActionInThread = new EnforceActionInThread(action.getFirst(), dependencyGraph,event,constraintsFixed,strategiesImproved);
 
                 Thread t = new Thread(enforceActionInThread);
                 t.start();
@@ -136,7 +138,9 @@ public class ActionPlanEnforcement {
         ElasticityCapability elasticityCapability;
         DependencyGraph dependencyGraph;
         Node node;
-
+        private String improvedStrategies;
+        private String violatedConstraints;
+        private EventNotification eventNotification;
         public EnforceElasticityCapabilityInThread(ElasticityCapability actionEffect, Node node, DependencyGraph dependencyGraph) {
             this.elasticityCapability = actionEffect;
             this.node = node;
@@ -147,18 +151,40 @@ public class ActionPlanEnforcement {
         public void run() {
             PlanningLogger.logger.info("Executing action from thread......................... " + elasticityCapability.getName() + " on " + node.getId());
             String[] primitives ;
+            String primitivesEnforced="";
+            String capabilitiesEnforced ="";
              primitives = elasticityCapability
                     .getPrimitiveOperations().split(";");
           
             for (int i = 0; i < primitives.length; i++) {
+                boolean added=false;
                 if (!enforcePrimitive(primitives[i], node, dependencyGraph)) {
                     PlanningLogger.logger.info("Failed Enforcing " + primitives[i] + ", cancelling the entire elasticity capability " + elasticityCapability.getName() + "-" + node.getId());
                     break;
                 } else {
+                    primitivesEnforced+=primitives[i]+"; ";
+                                if (added==false){
+                                    capabilitiesEnforced+=elasticityCapability.getName()+"; ";
+                                    added=true;
+                                }
                     PlanningLogger.logger.info("Successfully enforced " + primitives[i] + ", continuing with capability " + elasticityCapability.getName() + "-" + node.getId());
 
                 }
             }
+                 if (!primitivesEnforced.equalsIgnoreCase("")){
+                            if (!violatedConstraints.equalsIgnoreCase(violatedConstraints) && !improvedStrategies.equalsIgnoreCase(improvedStrategies)){
+                               eventNotification.sendEvent("VIOLATED_CONSTRAINTS-"+violatedConstraints+"; "+" IMPROVED_STRATEGIES-"+improvedStrategies+" capabilities-"+capabilitiesEnforced+" ;"+" primitives-"+primitivesEnforced);
+
+                            }else{
+                                if (!violatedConstraints.equalsIgnoreCase(violatedConstraints) ){
+                               eventNotification.sendEvent("VIOLATED_CONSTRAINTS-"+violatedConstraints+"; "+" capabilities-"+capabilitiesEnforced+" ;"+" primitives-"+primitivesEnforced);
+                                } 
+                                 if ( !improvedStrategies.equalsIgnoreCase(improvedStrategies)){
+                               eventNotification.sendEvent(" IMPROVED_STRATEGIES-"+improvedStrategies+" capabilities-"+capabilitiesEnforced+" ;"+" primitives-"+primitivesEnforced);
+                                 }
+                            }
+                            
+                        }
         }
         //}
     }
@@ -167,16 +193,23 @@ public class ActionPlanEnforcement {
 
         ActionEffect actionEffect;
         DependencyGraph dependencyGraph;
-
-        public EnforceActionInThread(ActionEffect actionEffect, DependencyGraph dependencyGraph) {
+        private String improvedStrategies;
+        private String violatedConstraints;
+        private EventNotification eventNotification;
+        public EnforceActionInThread(ActionEffect actionEffect, DependencyGraph dependencyGraph, EventNotification event, String violatedConstraints, String improvedStrategies) {
             this.actionEffect = actionEffect;
             this.dependencyGraph = dependencyGraph;
+            this.violatedConstraints = violatedConstraints;
+            this.improvedStrategies = improvedStrategies;
+            eventNotification=event;
         }
 
         @Override
         public void run() {
             PlanningLogger.logger.info("Executing action from thread......................... " + actionEffect.getActionType() + " on " + actionEffect.getTargetedEntityID());
             String actionName = actionEffect.getActionType().toLowerCase();
+            String primitivesEnforced = "";
+            String capabilitiesEnforced = "";
             for (ElasticityCapability elasticityCapability : actionEffect
                     .getTargetedEntity().getElasticityCapabilities()) {
                 if (checkECPossible(actionEffect)) {
@@ -185,23 +218,45 @@ public class ActionPlanEnforcement {
 
                         String[] primitives = elasticityCapability
                                 .getPrimitiveOperations().split(";");
+                        boolean added = false;
                         for (int i = 0; i < primitives.length; i++) {
                             if (!enforcePrimitive(primitives[i],
                                     actionEffect.getTargetedEntity(), dependencyGraph)) {
+                                
                                 PlanningLogger.logger.info("Failed Enforcing " + primitives[i] + ", cancelling the entire elasticity capability " + actionEffect.getActionType() + "-" + actionEffect.getTargetedEntityID());
                                 break;
                             } else {
+                                primitivesEnforced+=primitives[i]+"; ";
+                                if (added==false){
+                                    capabilitiesEnforced+=elasticityCapability.getName()+"; ";
+                                    added=true;
+                                }
                                 PlanningLogger.logger.info("Successfully enforced " + primitives[i] + ", continuing with capability " + actionEffect.getActionType() + "-" + actionEffect.getTargetedEntityID());
 
                             }
                         }
+                        
                         break;
                     }
                     //}
                 }
             }
+        if (!primitivesEnforced.equalsIgnoreCase("")){
+                            if (!violatedConstraints.equalsIgnoreCase(violatedConstraints) && !improvedStrategies.equalsIgnoreCase(improvedStrategies)){
+                               eventNotification.sendEvent("VIOLATED_CONSTRAINTS-"+violatedConstraints+"; "+" IMPROVED_STRATEGIES-"+improvedStrategies+" capabilities-"+capabilitiesEnforced+" ;"+" primitives-"+primitivesEnforced);
 
+                            }else{
+                                if (!violatedConstraints.equalsIgnoreCase(violatedConstraints) ){
+                               eventNotification.sendEvent("VIOLATED_CONSTRAINTS-"+violatedConstraints+"; "+" capabilities-"+capabilitiesEnforced+" ;"+" primitives-"+primitivesEnforced);
+                                } 
+                                 if ( !improvedStrategies.equalsIgnoreCase(improvedStrategies)){
+                               eventNotification.sendEvent(" IMPROVED_STRATEGIES-"+improvedStrategies+" capabilities-"+capabilitiesEnforced+" ;"+" primitives-"+primitivesEnforced);
+                                 }
+                            }
+                            
+                        }
         }
+        
     }
 
     public List<ArrayList<Pair<ActionEffect, Integer>>> parallellizeResult(ArrayList<Pair<ActionEffect, Integer>> result) {

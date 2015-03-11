@@ -74,12 +74,18 @@ public class NDimensionalPoint implements Cloneable{
       public double computeDistance(Object o, int newSize){
         if (o.getClass()==this.getClass()){
             NDimensionalPoint newPoint = (NDimensionalPoint) o;
-            if (newPoint.values.size()==newSize && newPoint.values.size()<=newSize){
+            if (newPoint.values.size()==newSize && values.size()>=newSize){
                 double dist = 0.0;
                 for (int i=0;i<newSize;i++){
-                        dist+=Math.pow(newPoint.getValues().get(i) -values.get(i),2);
+                    try{
+                       dist+=Math.pow(newPoint.getValues().get(i) -values.get(i),2);
+                    }catch(Exception e){
+                        e.printStackTrace();;
+                    }
                 }
                 return Math.sqrt(dist);
+                                
+                
             }else
             {
                 return MAX_DIST;

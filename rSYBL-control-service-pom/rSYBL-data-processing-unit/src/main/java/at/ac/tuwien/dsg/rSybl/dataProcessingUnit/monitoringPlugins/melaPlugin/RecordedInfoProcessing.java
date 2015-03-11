@@ -22,7 +22,7 @@ public class RecordedInfoProcessing {
     public static void main(String[] args){
         MELA_API3 mela_api3 = new MELA_API3();
         Node node = new Node();
-        node.setId("ElasticIoTPlatform");
+        node.setId("ElasticIoTPlatformNoDB");
         mela_api3.setCurrentCloudService(node);
         List<MonitoringSnapshot> list= mela_api3.getAllMonitoringInformation();
         boolean created = false;

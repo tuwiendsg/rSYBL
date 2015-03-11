@@ -65,13 +65,29 @@ public class ECEnforcementEffect {
         initializeContexts(snapshots);
     }
 
-    public double getImprovedStrategies(ContextRepresentation beforeContextRepresentation) {
+    public double getOverallImprovedStrategies(ContextRepresentation beforeContextRepresentation) {
+        double overallImprovedStrategies = 0.0;
+        ContextEvaluation contextEvaluation = new ContextEvaluation();
+        double avgDist=0.0;
+        for (ContextRepresentation contextRepresentation : withEnforcing) {
+            overallImprovedStrategies += contextEvaluation.countFixedStrategies(dependencyGraph, contextRepresentation,beforeContextRepresentation);
+            avgDist+=contextRepresentation.getDistance();
+        }
+        
+        if (withEnforcing.isEmpty()|| (avgDist/withEnforcing.size()>ACCEPTABLE_DISTANCE))
+            return MAX_CONSTRAINTS;
+        else
+        return overallImprovedStrategies / withEnforcing.size();
+        
+    }
+       public double getImprovedStrategies(ContextRepresentation beforeContextRepresentation) {
         ContextEvaluation contextEvaluation = new ContextEvaluation();
           if (withEnforcing.get(withEnforcing.size()-1).getDistance()>ACCEPTABLE_DISTANCE)
               return MAX_CONSTRAINTS;
           else
         return contextEvaluation.countFixedStrategies(dependencyGraph, withEnforcing.get(withEnforcing.size() - 1), beforeContextRepresentation);
     }
+
 
     public double getFinalStateViolatedConstraints() {
         ContextEvaluation contextEvaluation = new ContextEvaluation();
@@ -87,7 +103,7 @@ public class ECEnforcementEffect {
         ContextEvaluation contextEvaluation = new ContextEvaluation();
         double avgDist=0.0;
         for (ContextRepresentation contextRepresentation : withEnforcing) {
-            overallViolatedConstraints += contextEvaluation.countViolatedConstraints(dependencyGraph, contextRepresentation);
+            overallViolatedConstraints += contextEvaluation.evaluateViolationDegree(dependencyGraph, contextRepresentation);
             avgDist+=contextRepresentation.getDistance();
         }
         

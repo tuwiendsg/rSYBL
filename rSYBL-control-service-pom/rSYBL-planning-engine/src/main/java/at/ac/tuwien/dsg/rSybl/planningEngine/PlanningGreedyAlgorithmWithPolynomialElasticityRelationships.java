@@ -19,6 +19,7 @@ import at.ac.tuwien.dsg.csdg.elasticityInformation.elasticityRequirements.Condit
 import at.ac.tuwien.dsg.csdg.elasticityInformation.elasticityRequirements.SYBLSpecification;
 import at.ac.tuwien.dsg.csdg.elasticityInformation.elasticityRequirements.Strategy;
 import at.ac.tuwien.dsg.csdg.inputProcessing.multiLevelModel.abstractModelXML.SYBLDirectiveMappingFromXML;
+import at.ac.tuwien.dsg.csdg.outputProcessing.eventsNotification.EventNotification;
 import at.ac.tuwien.dsg.rSybl.cloudInteractionUnit.api.EnforcementAPIInterface;
 import at.ac.tuwien.dsg.rSybl.dataProcessingUnit.api.MonitoringAPIInterface;
 import at.ac.tuwien.dsg.rSybl.planningEngine.ContextRepresentation.Pair;
@@ -39,13 +40,15 @@ public class PlanningGreedyAlgorithmWithPolynomialElasticityRelationships implem
     private ContextRepresentation lastContextRepresentation;
     private String strategiesThatNeedToBeImproved = "";
     private int REFRESH_PERIOD = 120000;
-
-    
+    private EventNotification eventNotification;
+        
     public PlanningGreedyAlgorithmWithPolynomialElasticityRelationships(DependencyGraph cloudService,
             MonitoringAPIInterface monitoringAPI, EnforcementAPIInterface enforcementAPI) {
         this.dependencyGraph = cloudService;
         this.monitoringAPI = monitoringAPI;
+        eventNotification = EventNotification.getEventNotification();
         this.enforcementAPI = enforcementAPI;
+        this.eventNotification = eventNotification;
         REFRESH_PERIOD = Configuration.getRefreshPeriod();
         t = new Thread(this);
     }
@@ -354,7 +357,7 @@ public class PlanningGreedyAlgorithmWithPolynomialElasticityRelationships implem
             monitoringAPI.sendMessageToAnalysisService("Requirements"+contextRepresentation.getViolatedConstraints()+" are violated, and rSYBL can't solve the problem.");
         }else{
         ActionPlanEnforcement actionPlanEnforcement = new ActionPlanEnforcement(enforcementAPI);
-        actionPlanEnforcement.enforceResult(result,dependencyGraph);
+        actionPlanEnforcement.enforceResult(result, dependencyGraph,contextRepresentation.getFixedConstraints(lastContextRepresentation),contextRepresentation.getImprovedStrategies(lastContextRepresentation, strategiesThatNeedToBeImproved),eventNotification);
         }
     }
 

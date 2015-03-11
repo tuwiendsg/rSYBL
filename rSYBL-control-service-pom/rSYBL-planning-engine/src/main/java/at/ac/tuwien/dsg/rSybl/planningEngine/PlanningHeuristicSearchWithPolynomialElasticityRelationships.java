@@ -7,6 +7,7 @@ package at.ac.tuwien.dsg.rSybl.planningEngine;
 import at.ac.tuwien.dsg.csdg.DependencyGraph;
 import at.ac.tuwien.dsg.csdg.Node;
 import at.ac.tuwien.dsg.csdg.Relationship;
+import at.ac.tuwien.dsg.csdg.outputProcessing.eventsNotification.EventNotification;
 import at.ac.tuwien.dsg.rSybl.cloudInteractionUnit.api.EnforcementAPIInterface;
 import at.ac.tuwien.dsg.rSybl.dataProcessingUnit.api.MonitoringAPIInterface;
 import at.ac.tuwien.dsg.rSybl.planningEngine.staticData.ActionEffect;
@@ -34,13 +35,15 @@ public class PlanningHeuristicSearchWithPolynomialElasticityRelationships implem
     private Thread currentThread = null;
     private SortedMap<Double, List<ActionEffect>> searchContext = new TreeMap<Double, List<ActionEffect>>();
     private double LAMBDA = 1.0;
+    private EventNotification eventNotification;
 
     public PlanningHeuristicSearchWithPolynomialElasticityRelationships(DependencyGraph cloudService,
             MonitoringAPIInterface monitoringAPI, EnforcementAPIInterface enforcementAPI) {
         this.dependencyGraph = cloudService;
         this.monitoringAPI = monitoringAPI;
         this.enforcementAPI = enforcementAPI;
-
+        this.eventNotification = eventNotification;
+        eventNotification= EventNotification.getEventNotification();
         REFRESH_PERIOD = Configuration.getRefreshPeriod();
         currentThread = new Thread(this);
     }
@@ -265,7 +268,7 @@ public class PlanningHeuristicSearchWithPolynomialElasticityRelationships implem
                 }
             }
             if (res.size() > 0) {
-                actionPlanEnforcement.enforceResult(res, dependencyGraph);
+        actionPlanEnforcement.enforceResult(res, dependencyGraph,"","",eventNotification);
             }
             try {
                 currentThread.sleep(REFRESH_PERIOD);

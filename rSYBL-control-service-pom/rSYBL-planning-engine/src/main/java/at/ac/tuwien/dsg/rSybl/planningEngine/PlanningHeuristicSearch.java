@@ -8,6 +8,7 @@ import java.util.TreeMap;
 import at.ac.tuwien.dsg.csdg.DependencyGraph;
 import at.ac.tuwien.dsg.csdg.Node;
 import at.ac.tuwien.dsg.csdg.Relationship;
+import at.ac.tuwien.dsg.csdg.outputProcessing.eventsNotification.EventNotification;
 import at.ac.tuwien.dsg.rSybl.cloudInteractionUnit.api.EnforcementAPIInterface;
 import at.ac.tuwien.dsg.rSybl.dataProcessingUnit.api.MonitoringAPIInterface;
 import at.ac.tuwien.dsg.rSybl.planningEngine.ContextRepresentation.Pair;
@@ -29,13 +30,14 @@ public class PlanningHeuristicSearch implements PlanningAlgorithmInterface {
     private Thread currentThread = null;
     private SortedMap<Double, List<ActionEffect>> searchContext = new TreeMap<Double, List<ActionEffect>>();
     private double LAMBDA = 1.0;
-
+    private EventNotification eventNotification;
     public PlanningHeuristicSearch(DependencyGraph cloudService,
             MonitoringAPIInterface monitoringAPI, EnforcementAPIInterface enforcementAPI) {
         this.dependencyGraph = cloudService;
         this.monitoringAPI = monitoringAPI;
         this.enforcementAPI = enforcementAPI;
-
+        eventNotification=EventNotification.getEventNotification();
+        this.eventNotification = eventNotification;
         REFRESH_PERIOD = Configuration.getRefreshPeriod();
         currentThread = new Thread(this);
     }
@@ -249,6 +251,7 @@ public class PlanningHeuristicSearch implements PlanningAlgorithmInterface {
             searchContext = new TreeMap<Double, List<ActionEffect>>();
             ArrayList<ActionEffect> actionEffects = new ArrayList<ActionEffect>();
             searchContext.put(CS_UNHEALTHY_STATE, actionEffects);
+                       
             recursiveBranchAndBoundEvaluation();
             ActionPlanEnforcement actionPlanEnforcement = new ActionPlanEnforcement(enforcementAPI);
             ArrayList<Pair<ActionEffect, Integer>> res = new ArrayList<Pair<ActionEffect, Integer>>();
@@ -259,7 +262,7 @@ public class PlanningHeuristicSearch implements PlanningAlgorithmInterface {
                 }
             }
             if (res.size() > 0) {
-                actionPlanEnforcement.enforceResult(res, dependencyGraph);
+        actionPlanEnforcement.enforceResult(res, dependencyGraph,"","",eventNotification);
             }
             try {
                 currentThread.sleep(REFRESH_PERIOD);

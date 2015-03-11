@@ -15,7 +15,7 @@
 	        <AssociatedVM IP="10.99.0.44"/>
 			
 	</DeploymentUnit>
-	<DeploymentUnit serviceUnitID="DataNodeServiceUnit"
+	<DeploymentUnit serviceUnitID="C2100466386"
 		defaultFlavor="m1.tiny" defaultImage="efebc24d-7dac-422a-a6eb-4bb499ee94db" >
 	        <AssociatedVM IP="10.99.0.91"/>
 						<ElasticityCapability Name="scaleOut" PrimitiveOperationsSequence="scaleOut" Endpoint="" Type=""/>

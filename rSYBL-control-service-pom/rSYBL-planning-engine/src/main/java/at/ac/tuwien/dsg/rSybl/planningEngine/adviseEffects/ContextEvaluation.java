@@ -300,8 +300,8 @@ public class ContextEvaluation {
         return nbFixedStrategies;
     }
 
-    public int countFixedStrategies(DependencyGraph dependencyGraph,ContextRepresentation currentContextRepresentation,ContextRepresentation previousContextRepresentation) {
-        int nbFixedStrategies = 0;
+    public double countFixedStrategies(DependencyGraph dependencyGraph,ContextRepresentation currentContextRepresentation,ContextRepresentation previousContextRepresentation) {
+        double nbFixedStrategies = 0;
         for (ElasticityRequirement elReq : dependencyGraph.getAllElasticityRequirements()) {
             SYBLSpecification syblSpecification = SYBLDirectiveMappingFromXML.mapFromSYBLAnnotation(elReq.getAnnotation());
             //System.out.println("Searching for monitored entity "+syblSpecification.getComponentId());
@@ -312,14 +312,17 @@ public class ContextEvaluation {
             for (Strategy strategy : syblSpecification.getStrategy()) {
                 Condition condition = strategy.getCondition();
 
-                if (evaluateCondition(dependencyGraph,condition, monitoredEntity,currentContextRepresentation)) {
+                if (evaluateCondition(dependencyGraph,condition, monitoredEntity,previousContextRepresentation)) {
                     if (strategy.getToEnforce().getActionName().toLowerCase().contains("maximize") || strategy.getToEnforce().getActionName().toLowerCase().contains("minimize")) {
                         if (strategy.getToEnforce().getActionName().toLowerCase().contains("maximize")) {
                             //PlanningLogger.logger.info("Current value for "+ strategy.getToEnforce().getParameter()+" is "+ monitoredEntity.getMonitoredValue(strategy.getToEnforce().getParameter())+" .Previous value was "+previousContextRepresentation.getValueForMetric(monitoredEntity,strategy.getToEnforce().getParameter()));
 
                             if (currentContextRepresentation.getMetricValue(monitoredEntity,strategy.getToEnforce().getParameter()) > previousContextRepresentation.getMetricValue(monitoredEntity, strategy.getToEnforce().getParameter())) {
-                                nbFixedStrategies += 1;
-                                System.out.println("Improved strategy "+ strategy.getCondition() +"-"+strategy.getToEnforce());
+                                 double val2 =  previousContextRepresentation.getMetricValue(monitoredEntity, strategy.getToEnforce().getParameter());
+                                double val1=currentContextRepresentation.getMetricValue(monitoredEntity, strategy.getToEnforce().getParameter());
+                               
+                                nbFixedStrategies += 1.0*(val1-val2)/val2;
+//                                System.out.println("Improved strategy "+ strategy.getCondition() +"-"+strategy.getToEnforce());
 
                             }
                         }
@@ -327,8 +330,14 @@ public class ContextEvaluation {
                             //	PlanningLogger.logger.info("Current value for "+ strategy.getToEnforce().getParameter()+" is "+ monitoredEntity.getMonitoredValue(strategy.getToEnforce().getParameter())+" .Previous value was "+previousContextRepresentation.getValueForMetric(monitoredEntity,strategy.getToEnforce().getParameter()));
 
                             if (currentContextRepresentation.getMetricValue(monitoredEntity, strategy.getToEnforce().getParameter()) < previousContextRepresentation.getMetricValue(monitoredEntity, strategy.getToEnforce().getParameter())) {
-                                nbFixedStrategies += 1;
-                                System.out.println("Improved strategy "+ strategy.getCondition() +"-"+strategy.getToEnforce());
+                                double val2 =  previousContextRepresentation.getMetricValue(monitoredEntity, strategy.getToEnforce().getParameter());
+                                double val1=currentContextRepresentation.getMetricValue(monitoredEntity, strategy.getToEnforce().getParameter());
+                                if (val1<0){
+                                    nbFixedStrategies+=1;
+                                }else{
+                                     nbFixedStrategies += 1.0*(val2-val1)/val1 ;
+                                }
+//                                System.out.println("Improved strategy "+ strategy.getCondition() +"-"+strategy.getToEnforce());
                                         
                             }
                         }

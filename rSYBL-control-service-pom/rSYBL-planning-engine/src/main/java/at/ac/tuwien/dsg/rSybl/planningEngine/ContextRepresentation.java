@@ -131,7 +131,6 @@ public class ContextRepresentation {
         //find all targeted metrics
         createMonitoredService();
     }
-
     private MonitoredEntity findTargetedMetrics(Node entity, MonitoredEntity monitoredEntity) {
         monitoredEntity.setId(entity.getId());
         SYBLDescriptionParser descriptionParser = new SYBLDescriptionParser();
@@ -963,7 +962,27 @@ public class ContextRepresentation {
         }
         return null;
     }
+    public String getFixedConstraints(ContextRepresentation lastContext) {
+        String constr = "";
+        for (ElasticityRequirement elReq : dependencyGraph.getAllElasticityRequirements()) {
+            SYBLSpecification syblSpecification = SYBLDirectiveMappingFromXML.mapFromSYBLAnnotation(elReq.getAnnotation());
 
+            //System.out.println("Searching for monitored entity "+syblSpecification.getComponentId());
+            MonitoredEntity monitoredEntity = findMonitoredEntity(syblSpecification.getComponentId());
+            if (monitoredEntity == null) {
+                PlanningLogger.logger.info("Not finding monitored entity " + monitoredEntity + " " + syblSpecification.getComponentId());
+            }
+
+            for (Constraint constraint : syblSpecification.getConstraint()) {
+                if (lastContext.getViolatedConstraints().contains(constraint.getId())){
+                if (evaluateCondition(constraint.getCondition(), monitoredEntity) && evaluateCondition(constraint.getToEnforce(), monitoredEntity)) {
+                    constr += constraint.getId() + " ";
+                }
+                }
+            }
+        }
+        return constr;
+    }
     public String getViolatedConstraints() {
         String constr = "";
         for (ElasticityRequirement elReq : dependencyGraph.getAllElasticityRequirements()) {
@@ -1021,7 +1040,41 @@ public class ContextRepresentation {
         }
         return str;
     }
+ public String getImprovedStrategies(ContextRepresentation previousContextRepresentation) {
+        String str = "";
+        for (ElasticityRequirement elReq : dependencyGraph.getAllElasticityRequirements()) {
+            SYBLSpecification syblSpecification = SYBLDirectiveMappingFromXML.mapFromSYBLAnnotation(elReq.getAnnotation());
+            //System.out.println("Searching for monitored entity "+syblSpecification.getComponentId());
+            MonitoredEntity monitoredEntity = findMonitoredEntity(syblSpecification.getComponentId());
+            if (monitoredEntity == null) {
+                PlanningLogger.logger.info("Not finding monitored entity " + monitoredEntity + " " + syblSpecification.getComponentId());
+            }
+            for (Strategy strategy : syblSpecification.getStrategy()) {
+                Condition condition = strategy.getCondition();
+             
+                    if (evaluateCondition(condition, monitoredEntity)) {
+                        if (strategy.getToEnforce().getActionName().toLowerCase().contains("maximize") || strategy.getToEnforce().getActionName().toLowerCase().contains("minimize")) {
+                            if (strategy.getToEnforce().getActionName().toLowerCase().contains("maximize")) {
+                                //PlanningLogger.logger.info("Current value for "+ strategy.getToEnforce().getParameter()+" is "+ monitoredEntity.getMonitoredValue(strategy.getToEnforce().getParameter())+" .Previous value was "+previousContextRepresentation.getValueForMetric(monitoredEntity,strategy.getToEnforce().getParameter()));
 
+                                if (monitoredEntity.getMonitoredValue(strategy.getToEnforce().getParameter()) > previousContextRepresentation.getValueForMetric(monitoredEntity, strategy.getToEnforce().getParameter())) {
+                                    str += strategy.getId() + " ";
+                                }
+                            }
+                            if (strategy.getToEnforce().getActionName().toLowerCase().contains("minimize")) {
+                                //	PlanningLogger.logger.info("Current value for "+ strategy.getToEnforce().getParameter()+" is "+ monitoredEntity.getMonitoredValue(strategy.getToEnforce().getParameter())+" .Previous value was "+previousContextRepresentation.getValueForMetric(monitoredEntity,strategy.getToEnforce().getParameter()));
+
+                                if (monitoredEntity.getMonitoredValue(strategy.getToEnforce().getParameter()) < previousContextRepresentation.getValueForMetric(monitoredEntity, strategy.getToEnforce().getParameter())) {
+                                    str += strategy.getId() + " ";
+                                }
+                            }
+                        
+                    }
+                }
+            }
+        }
+        return str;
+    }
     public double quantifyBinaryRestriction(BinaryRestriction binaryRestriction, MonitoredEntity monitoredEntity) {
         double fulfilled = 0.0;
         Double currentLeftValue = 0.0;

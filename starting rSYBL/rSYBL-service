@@ -31,7 +31,8 @@ case "$1" in
 		log_progress_msg "rSYBL"
 		# Make sure we have our PIDDIR, even if it's on a tmpfs
 		# install -o root -g root -m 755 -d $PIDDIR
-        if ! start-stop-daemon --start --chdir $DAEMONDIR --quiet --pidfile $PIDFILE --make-pidfile --background --exec $JAVA -- -DLOG_DIR=$LOG_DIR -jar -Djsse.enableSNIExtension=false -Djavax.xml.bind.JAXBContext=com.sun.xml.internal.bind.v2.ContextFactory $DAEMON -httpPort $MELA_HTTP_PORT; then
+		
+		if ! start-stop-daemon --start --chdir $DAEMONDIR --quiet --pidfile $PIDFILE --make-pidfile --background --exec $JAVA -- -DLOG_DIR=$LOG_DIR -jar -Djsse.enableSNIExtension=false -Djavax.xml.bind.JAXBContext=com.sun.xml.internal.bind.v2.ContextFactory $DAEMON -httpPort $MELA_HTTP_PORT; then
 		    log_end_msg 1
 		    exit 1
 		fi

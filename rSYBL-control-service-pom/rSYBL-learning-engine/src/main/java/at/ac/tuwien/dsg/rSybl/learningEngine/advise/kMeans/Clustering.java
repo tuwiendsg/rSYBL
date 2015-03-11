@@ -105,12 +105,17 @@ public class Clustering {
     public  ArrayList<MyEntry<Double,NDimensionalPoint>> getClustersByDistance(NDimensionalPoint point){
         ArrayList<MyEntry<Double,NDimensionalPoint>> orderedCluster = new ArrayList<> ();
         for (Cluster c:clusters){
-            c.computeCentroidAsAverage();
+           // c.computeCentroidAsAverage();
             double dist = NDimensionalPoint.MAX_DIST;
-            if (c.getCentroid()!=null && !c.getPoints().isEmpty())
-             dist = c.getCentroid().computeDistance(point, point.getValues().size());
+            NDimensionalPoint res  = null;
+            
+            if (c.getCentroid()!=null && c.getClosestPoint(point).computeDistance(point,point.getValues().size())<dist){
+            // dist = c.computeDistance(point, point.getValues().size());
+             res=c.getClosestPoint(point);
+             dist = res.computeDistance(point,point.getValues().size());
+            }
             if (orderedCluster.size()==0){
-               orderedCluster.add(new MyEntry<>(dist,c.getCentroid()));
+               orderedCluster.add(new MyEntry<>(dist,res));
 
             }else{
                 int x = -1;
@@ -120,12 +125,12 @@ public class Clustering {
                 }
             }
             if (x==-1){
-                orderedCluster.add(0,new MyEntry<>(dist,c.getCentroid()));
+                orderedCluster.add(0,new MyEntry<>(dist,res));
             }else{
             if (x+1<orderedCluster.size())
-                orderedCluster.add(x+1, new MyEntry<>(dist,c.getCentroid()));
+                orderedCluster.add(x+1, new MyEntry<>(dist,res));
             else
-                orderedCluster.add(new MyEntry<>(dist,c.getCentroid()));
+                orderedCluster.add(new MyEntry<>(dist,res));
             }
             }    
         }

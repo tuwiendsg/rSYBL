@@ -8,4 +8,5 @@ public interface PlanningAlgorithmInterface extends Runnable{
 	public void setEffects(String effects);
         public void replaceDependencyGraph(DependencyGraph dependencyGraph);
         public void takeMainRole();
+
 }

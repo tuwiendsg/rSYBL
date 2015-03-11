@@ -60,7 +60,17 @@ public class Configuration {
 
         }
     }
-    
+    public static String getQueueName(){
+        return configuration.getProperty("QueueName");
+    }
+
+    public static boolean getMQEnabled(){
+        if (configuration.getProperty("EventQueueEnabled")!=null){
+            return Boolean.parseBoolean(configuration.getProperty("EventQueueEnabled"));
+        }else {
+            return false;
+        }
+    }
     public static String getDeploymentDescriptionPath()
     {
     	return configuration.getProperty("DeploymentDescriptionPath");

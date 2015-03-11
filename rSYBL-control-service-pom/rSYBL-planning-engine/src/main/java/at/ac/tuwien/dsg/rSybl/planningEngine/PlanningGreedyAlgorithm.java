@@ -36,6 +36,7 @@ import at.ac.tuwien.dsg.csdg.elasticityInformation.elasticityRequirements.Condit
 import at.ac.tuwien.dsg.csdg.elasticityInformation.elasticityRequirements.SYBLSpecification;
 import at.ac.tuwien.dsg.csdg.elasticityInformation.elasticityRequirements.Strategy;
 import at.ac.tuwien.dsg.csdg.inputProcessing.multiLevelModel.abstractModelXML.SYBLDirectiveMappingFromXML;
+import at.ac.tuwien.dsg.csdg.outputProcessing.eventsNotification.EventNotification;
 import at.ac.tuwien.dsg.rSybl.cloudInteractionUnit.api.EnforcementAPIInterface;
 import at.ac.tuwien.dsg.rSybl.dataProcessingUnit.api.MonitoringAPIInterface;
 import at.ac.tuwien.dsg.rSybl.planningEngine.ContextRepresentation.Pair;
@@ -64,7 +65,7 @@ public class PlanningGreedyAlgorithm implements PlanningAlgorithmInterface {
     private int REFRESH_PERIOD = 120000;
     Deque<HashMap<String,Boolean>> stack = new ArrayDeque<HashMap<String,Boolean>>();
     PlanningGreedyWithADVISE planningGreedyWithADVISE ;
-    
+    private EventNotification eventNotification;
     private Timer evaluateLearningPerformance = new Timer();
     
     public PlanningGreedyAlgorithm(DependencyGraph cloudService,
@@ -72,6 +73,7 @@ public class PlanningGreedyAlgorithm implements PlanningAlgorithmInterface {
         this.dependencyGraph = cloudService;
         this.monitoringAPI = monitoringAPI;
         this.enforcementAPI = enforcementAPI;
+        this.eventNotification= EventNotification.getEventNotification();
         REFRESH_PERIOD = Configuration.getRefreshPeriod();
         if (Configuration.getADVISEEnabled()){
         planningGreedyWithADVISE= new PlanningGreedyWithADVISE(monitoringAPI, cloudService.getCloudService(), enforcementAPI,this);
@@ -102,6 +104,7 @@ public class PlanningGreedyAlgorithm implements PlanningAlgorithmInterface {
         planningGreedyWithADVISE.start();
        }
     }
+    
     public boolean checkIfActionPossible(ActionEffect actionEffect) {
         if (actionEffect.isConditional()){
             if(!actionEffect.evaluateConditions(dependencyGraph, monitoringAPI)) return false;
@@ -359,7 +362,6 @@ public class PlanningGreedyAlgorithm implements PlanningAlgorithmInterface {
                         contextRepresentation.doAction(actionEffect,servicePartID);
                         
                         foundActions.add(contextRepresentation.new Pair<ActionEffect, String>(actionEffect, servicePartID));
-
                         int fixedStr = contextRepresentation.countFixedStrategies(beforeActionContextRepresentation, strategiesThatNeedToBeImproved);
                         PlanningLogger.logger.info("PlanningAlgorithm: Trying the action " + actionEffect.getActionName() + "constraints violated : " + contextRepresentation.getViolatedConstraints() + " Strategies improved " + contextRepresentation.getImprovedStrategies(beforeActionContextRepresentation, strategiesThatNeedToBeImproved));
 
@@ -394,7 +396,6 @@ public class PlanningGreedyAlgorithm implements PlanningAlgorithmInterface {
                 }
             int maxAction = -20;
             List<Pair<ActionEffect, String>> action = null;
-
             for (Integer val : fixedDirectives.keySet()) {
                 PlanningLogger.logger.info("fixed directives  " + val);
                 if (val > maxAction) {
@@ -448,12 +449,13 @@ public class PlanningGreedyAlgorithm implements PlanningAlgorithmInterface {
         for (int i=0;i<result.size();i++){
             contextRepresentation.doAction(result.get(i).getFirst());
         }
+       
         if (result.size()==0 && contextRepresentation.countViolatedConstraints()>0){
             monitoringAPI.sendMessageToAnalysisService("Requirements "+contextRepresentation.getViolatedConstraints()+" are violated, and rSYBL can not solve the problem.");
         }else{
         
         ActionPlanEnforcement actionPlanEnforcement = new ActionPlanEnforcement(enforcementAPI);
-        actionPlanEnforcement.enforceResult(result, dependencyGraph);
+        actionPlanEnforcement.enforceResult(result, dependencyGraph,contextRepresentation.getFixedConstraints(lastContextRepresentation),contextRepresentation.getImprovedStrategies(lastContextRepresentation, strategiesThatNeedToBeImproved),eventNotification);
         }
     }
     public void findAndExecuteBestActions() {
@@ -665,13 +667,14 @@ public class PlanningGreedyAlgorithm implements PlanningAlgorithmInterface {
         }else{
             
         ActionPlanEnforcement actionPlanEnforcement = new ActionPlanEnforcement(enforcementAPI);
-        actionPlanEnforcement.enforceResult(result, dependencyGraph);
+        actionPlanEnforcement.enforceResult(result, dependencyGraph,contextRepresentation.getFixedConstraints(lastContextRepresentation),contextRepresentation.getImprovedStrategies(lastContextRepresentation, strategiesThatNeedToBeImproved),eventNotification);
         }
     }
     
     @Override
     public void run() {
         t=new Timer();
+        try{
         t.scheduleAtFixedRate(new TimerTask(){
             @Override
             public void run(){
@@ -696,6 +699,9 @@ public class PlanningGreedyAlgorithm implements PlanningAlgorithmInterface {
             }
             }
         }, REFRESH_PERIOD, REFRESH_PERIOD);
+        }catch(Exception exception){
+           PlanningLogger.logger.error(exception.getMessage());
+        }
     }
 
     @Override
@@ -706,7 +712,7 @@ public class PlanningGreedyAlgorithm implements PlanningAlgorithmInterface {
         public void run(){
             checkWhetherLearningIsAccurateAndSwitch();
         }
-        }, REFRESH_PERIOD, REFRESH_PERIOD);
+        }, 0, REFRESH_PERIOD);
         }
         
         run();
@@ -746,4 +752,6 @@ public class PlanningGreedyAlgorithm implements PlanningAlgorithmInterface {
         PlanningLogger.logger.info("SWITCHING to Initial Greedy Algorithm");
         this.start();
     }
+
+    
 }

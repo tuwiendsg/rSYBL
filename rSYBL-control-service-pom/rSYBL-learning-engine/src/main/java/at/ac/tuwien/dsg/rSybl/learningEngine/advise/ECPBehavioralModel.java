@@ -196,12 +196,22 @@ public class ECPBehavioralModel {
                             }
                         } else {
                             if (start > 0 && end > 0) {
+                                if (!(start-CHANGE_INTERVAL<0) && !((end+CHANGE_INTERVAL)>snapshots.size())){
                                 significatIndexes.add(start + (end - start) / 2);
                                 actionLengths.add(end - start);
+                                }
                                 start = -1;
                                 end = -1;
                             }
                         }
+                    }
+                    if ((snapshot.getOngoingActions()==null || snapshot.getOngoingActions().isEmpty()) && (start>=0 &&end>=0 )){
+                           if (!(start-CHANGE_INTERVAL<0) && !((end+CHANGE_INTERVAL)>snapshots.size())){
+                                significatIndexes.add(start + (end - start) / 2);
+                                actionLengths.add(end - start);
+                                }
+                                start = -1;
+                                end = -1;
                     }
                     i++;
                 }
@@ -316,6 +326,7 @@ public class ECPBehavioralModel {
                 nodeBehaviors.put(sp, behavior);
             }
         }
+        System.out.println("");
     }
 
     public void initializeBehaviorClusters(List<MonitoringSnapshot> snapshots) {
@@ -347,7 +358,7 @@ public class ECPBehavioralModel {
             behavior.setMetricClusters(clustering);
             this.nodeBehaviors.put(sp, behavior);
         }
-
+        System.out.println("");
     }
 
     public void refreshCorrelationMatrix() {
@@ -400,6 +411,7 @@ public class ECPBehavioralModel {
 
                     Clustering cluster = nodeBehaviors.get(sp).getMetricClusters().get(metric);
                     if (cluster != null) {
+                //        System.out.println(metric);
                         List<MyEntry<Double, NDimensionalPoint>> b = cluster.getClustersByDistance(currentBehavior.get(sp).get(metric));
                         if (!expectedBehavior.containsKey(sp)) {
                             expectedBehavior.put(sp, new LinkedHashMap<String, List<MyEntry<Double, NDimensionalPoint>>>());
@@ -494,7 +506,7 @@ public class ECPBehavioralModel {
                     }
                     List<Double> values =null ;
                     try{
-                     values = expectedBehavior.get(sp).get(metric).get(selected[i]).getValue().getValues();
+                     values = expectedBehavior.get(sp).get(metricNames[i]).get(selected[i]).getValue().getValues();
                     }catch(Exception ex){
                         ex.printStackTrace();
                     }

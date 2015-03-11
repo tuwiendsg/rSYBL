@@ -1,28 +1,25 @@
-<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
-<CloudService id="CloudService">
-	<ServiceTopology id="DataEndServiceTopology">
-		<SYBLDirective Constraints="Co1:CONSTRAINT latency &lt; 0.5 ms;Co2:CONSTRAINT cpuUsage &lt; 80 %"/>
-			<Relationship>
-			<Master>DataControllerServiceUnit</Master>
-			<Slave>DataNodeServiceUnit</Slave>
-		</Relationship>
-		<ServiceUnit id="DataControllerServiceUnit" />
-		<ServiceUnit id="DataNodeServiceUnit" >
-		<SYBLDirective Strategies="St3:STRATEGY CASE cpuUsage &lt; 40 : scalein"/>
+<CloudService id="IoTDaaSControl">
+    <ServiceTopology id="DataEndTopology">
+        <ServiceUnit id="DataControllerUnit"/>
+        <ServiceUnit id="DataNodeUnit">
+            <SYBLDirective Constraints="" Monitoring="" Priorities="" Strategies="ST1:STRATEGY CASE cpuUsage &lt; 40 %:scalein;"/>
+        </ServiceUnit>
+        <SYBLDirective Constraints="DataEndCO1:CONSTRAINT cpuUsage &lt; 20 %;" Monitoring="" Priorities="" Strategies=""/>
+    </ServiceTopology>
+    <ServiceTopology id="Gateway">
+				<SYBLDirective Constraints="Co1:CONSTRAINT avgBufferSize &lt; 50" Monitoring="" Priorities="" Strategies=""/>
+        <ServiceUnit id="QueueUnit"/>
+        <ServiceUnit id="LocalProcessingUnit">
+		<SYBLDirective Constraints="" Monitoring="" Priorities="" Strategies="St1:STRATEGY CASE bufferSize &lt; 5 #:scalein;"/>
 		</ServiceUnit>
-	</ServiceTopology>
-	<ServiceTopology id="EventProcessingServiceTopology">
-			<SYBLDirective Constraints="Co3:CONSTRAINT responseTime &lt; 600 ms" />
-		<Relationship>
-			<Master>LoadBalancerServiceUnit</Master>
-			<Slave>EventProcessingServiceUnit</Slave>
-		</Relationship>
-		<ServiceUnit id="LoadBalancerServiceUnit" />
-		<ServiceUnit id="EventProcessingServiceUnit" >
-		        <SYBLDirective Strategies="St2:STRATEGY CASE responseTime &lt; 200 ms AND throughput &lt; 200 : scalein" />					
-		</ServiceUnit>
-	</ServiceTopology>
+        
+    </ServiceTopology>
+    <ServiceTopology id="EventProcessingTopology">
+        <ServiceUnit id="LoadBalancerUnit"/>
+        <ServiceUnit id="EventProcessingUnit">
+            <SYBLDirective Constraints="" Monitoring="" Priorities="" Strategies="ST2:STRATEGY CASE responseTime &lt; 10 ms AND throughput &lt; 10 operations/s:scalein;"/>
+        </ServiceUnit>
+        <ServiceUnit id="MOMUnit"/>
+        <SYBLDirective Constraints="C02:CONSTRAINT responseTime &lt; 20 ms;" Monitoring="" Priorities="" Strategies=""/>
+    </ServiceTopology>
 </CloudService>
-
-
-
