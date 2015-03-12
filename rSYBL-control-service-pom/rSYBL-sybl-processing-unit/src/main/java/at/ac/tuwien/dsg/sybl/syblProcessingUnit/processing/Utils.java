@@ -31,6 +31,9 @@ import java.util.HashMap;
 import at.ac.tuwien.dsg.csdg.DependencyGraph;
 import at.ac.tuwien.dsg.csdg.Node;
 import at.ac.tuwien.dsg.csdg.elasticityInformation.ElasticityCapability;
+import at.ac.tuwien.dsg.csdg.elasticityInformation.ElasticityRequirement;
+import at.ac.tuwien.dsg.csdg.elasticityInformation.elasticityRequirements.Strategy;
+import at.ac.tuwien.dsg.csdg.elasticityInformation.elasticityRequirements.ToEnforce;
 import at.ac.tuwien.dsg.rSybl.cloudInteractionUnit.api.EnforcementAPIInterface;
 import at.ac.tuwien.dsg.rSybl.cloudInteractionUnit.utils.Configuration;
 import at.ac.tuwien.dsg.rSybl.dataProcessingUnit.api.MonitoringAPIInterface;
@@ -314,6 +317,11 @@ public void processStrategies(String strategies) {
 
 }
 public void doEnforcementWithPrimitives(String enf, String strategyName){
+    Strategy s = new Strategy();
+    s.setId(strategyName);
+    ToEnforce enforce = new ToEnforce();
+    enforce.setActionName(enf);
+    s.setToEnforce(enforce);
 	if (!enf.contains("minimize") &&  !enf.contains("maximize")){
 		if (enf.contains("(")){
 			String actionName = enf.split("[(]")[0];
@@ -322,13 +330,14 @@ public void doEnforcementWithPrimitives(String enf, String strategyName){
 			String parameter = eliminateSpaces(enf.split("[(]")[1].split("[)]")[0]);
 			Node entity = dependencyGraph.getNodeWithID(parameter);
 			ElasticityCapabilityEnforcement capabilityEnforcement = new ElasticityCapabilityEnforcement(enforcementAPI);
-			capabilityEnforcement.enforceActionGivenPrimitives(actionName, entity, dependencyGraph);
+			capabilityEnforcement.enforceActionGivenPrimitives(actionName, entity, dependencyGraph,null,s);
 		}else{
 			String actionName = eliminateSpaces(enf);
 			
 
 			ElasticityCapabilityEnforcement capabilityEnforcement = new ElasticityCapabilityEnforcement(enforcementAPI);
-			capabilityEnforcement.enforceActionGivenPrimitives(actionName, currentEntity, dependencyGraph);
+			capabilityEnforcement.enforceActionGivenPrimitives(actionName, currentEntity, dependencyGraph,null,s);
+                        
 		}
 		}
 }

@@ -11,19 +11,26 @@ import at.ac.tuwien.dsg.csdg.Node;
 import at.ac.tuwien.dsg.csdg.Node.NodeType;
 import at.ac.tuwien.dsg.csdg.Relationship.RelationshipType;
 import at.ac.tuwien.dsg.csdg.elasticityInformation.ElasticityCapability;
+import at.ac.tuwien.dsg.csdg.elasticityInformation.elasticityRequirements.Constraint;
+import at.ac.tuwien.dsg.csdg.elasticityInformation.elasticityRequirements.Strategy;
 import at.ac.tuwien.dsg.csdg.inputProcessing.multiLevelModel.InputProcessing;
 import at.ac.tuwien.dsg.csdg.inputProcessing.multiLevelModel.primitives.ElasticityPrimitive;
 import at.ac.tuwien.dsg.csdg.inputProcessing.multiLevelModel.primitives.ElasticityPrimitiveDependency;
 import at.ac.tuwien.dsg.csdg.inputProcessing.multiLevelModel.primitives.ElasticityPrimitivesDescription;
 import at.ac.tuwien.dsg.csdg.inputProcessing.multiLevelModel.primitives.ServiceElasticityPrimitives;
+import at.ac.tuwien.dsg.csdg.outputProcessing.eventsNotification.ActionPlanEvent;
+import at.ac.tuwien.dsg.csdg.outputProcessing.eventsNotification.EventNotification;
+import at.ac.tuwien.dsg.csdg.outputProcessing.eventsNotification.IEvent;
 import at.ac.tuwien.dsg.rSybl.cloudInteractionUnit.api.EnforcementAPIInterface;
 import at.ac.tuwien.dsg.sybl.syblProcessingUnit.utils.SYBLDirectivesEnforcementLogger;
+import java.util.AbstractMap;
 
 public class ElasticityCapabilityEnforcement {
 
     EnforcementAPIInterface enforcementAPI = null;
     ElasticityPrimitivesDescription primitivesDescription = null;
-
+    ActionPlanEvent actionPlanEvent = new ActionPlanEvent();
+    EventNotification eventNotification = EventNotification.getEventNotification();
     public ElasticityCapabilityEnforcement(EnforcementAPIInterface apiInterface) {
         enforcementAPI = apiInterface;
         try {
@@ -62,7 +69,14 @@ public class ElasticityCapabilityEnforcement {
     }
 
     public void enforceActionGivenPrimitives(
-            String actionName, Node target, DependencyGraph dependencyGraph) {
+            String actionName, Node target, DependencyGraph dependencyGraph, Constraint c, Strategy s) {
+                actionPlanEvent = new ActionPlanEvent();
+        actionPlanEvent.setServiceId(dependencyGraph.getCloudService().getId());
+        actionPlanEvent.setStage(IEvent.Stage.START);
+        eventNotification.sendEvent(actionPlanEvent);
+        actionPlanEvent=new ActionPlanEvent();
+        actionPlanEvent.setServiceId(dependencyGraph.getCloudService().getId());
+        actionPlanEvent.setStage(IEvent.Stage.FINISHED);
         if (!dependencyGraph.isInControlState()) {
             SYBLDirectivesEnforcementLogger.logger.info("Not enforcing action due to breakpoint ");
             return;
@@ -82,13 +96,19 @@ public class ElasticityCapabilityEnforcement {
                         break;
                     } else {
                         SYBLDirectivesEnforcementLogger.logger.info("Successfully enforced " + primitives[i] + ", continuing with capability "  );
-
+                        actionPlanEvent.addEffect(new AbstractMap.SimpleEntry<String,String>(primitives[i],elasticityCapability.getServicePartID()));
                     }
                     }
                     break;
                 }
             }
         }
+        if (c!=null){
+            actionPlanEvent.addConstraint(c);
+        }else{
+            actionPlanEvent.addStrategy(s);
+        }
+        eventNotification.sendEvent(actionPlanEvent);
     }
 
     public Object parseParameter(String param, Node node,

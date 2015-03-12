@@ -24,6 +24,7 @@ import at.ac.tuwien.dsg.csdg.DependencyGraph;
 import at.ac.tuwien.dsg.csdg.Node;
 import at.ac.tuwien.dsg.csdg.elasticityInformation.ElasticityCapability;
 import at.ac.tuwien.dsg.csdg.elasticityInformation.ElasticityRequirement;
+import at.ac.tuwien.dsg.csdg.outputProcessing.eventsNotification.EventNotification;
 import at.ac.tuwien.dsg.rSybl.dataProcessingUnit.api.model.MonitoringSnapshot;
 import at.ac.tuwien.dsg.rSybl.dataProcessingUnit.monitoringPlugins.OfferedMonitoredMetrics;
 import at.ac.tuwien.dsg.rSybl.dataProcessingUnit.monitoringPlugins.interfaces.MonitoringInterface;
@@ -37,7 +38,7 @@ public class MonitoringAPI implements MonitoringAPIInterface {
     private String compositionRules = "";
     private Node controlledService;
     private MonitoringInterface offeredMonitoringMetrics;
-
+    
     public MonitoringAPI() {
 
     }
@@ -336,6 +337,7 @@ public class MonitoringAPI implements MonitoringAPIInterface {
     public void scaleinstarted(Node arg0) {
         executingControlAction = true;
         offeredMonitoringMetrics.notifyControlActionStarted("scaleIn", arg0);
+        
     }
 
     public void scaleinended(Node arg0) {

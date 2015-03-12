@@ -455,7 +455,7 @@ public class PlanningGreedyAlgorithm implements PlanningAlgorithmInterface {
         }else{
         
         ActionPlanEnforcement actionPlanEnforcement = new ActionPlanEnforcement(enforcementAPI);
-        actionPlanEnforcement.enforceResult(result, dependencyGraph,contextRepresentation.getFixedConstraints(lastContextRepresentation),contextRepresentation.getImprovedStrategies(lastContextRepresentation, strategiesThatNeedToBeImproved),eventNotification);
+        actionPlanEnforcement.enforceResult(result, dependencyGraph,contextRepresentation.getFixedConstraintsAsConstraints(lastContextRepresentation),contextRepresentation.getImprovedStrategiesAsStrategies(lastContextRepresentation, strategiesThatNeedToBeImproved));
         }
     }
     public void findAndExecuteBestActions() {
@@ -667,7 +667,7 @@ public class PlanningGreedyAlgorithm implements PlanningAlgorithmInterface {
         }else{
             
         ActionPlanEnforcement actionPlanEnforcement = new ActionPlanEnforcement(enforcementAPI);
-        actionPlanEnforcement.enforceResult(result, dependencyGraph,contextRepresentation.getFixedConstraints(lastContextRepresentation),contextRepresentation.getImprovedStrategies(lastContextRepresentation, strategiesThatNeedToBeImproved),eventNotification);
+        actionPlanEnforcement.enforceResult(result, dependencyGraph,contextRepresentation.getFixedConstraintsAsConstraints(lastContextRepresentation),contextRepresentation.getImprovedStrategiesAsStrategies(lastContextRepresentation, strategiesThatNeedToBeImproved));
         }
     }
     

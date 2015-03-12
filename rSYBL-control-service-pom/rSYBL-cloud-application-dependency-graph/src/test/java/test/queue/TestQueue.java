@@ -1,5 +1,6 @@
 package test.queue;
 
+import at.ac.tuwien.dsg.csdg.outputProcessing.eventsNotification.ActionPlanEvent;
 import static org.junit.Assert.*;
 
 import javax.annotation.Resource;
@@ -36,7 +37,9 @@ public class TestQueue {
         if (Configuration.getMQEnabled() == true) {
             QUEUE_NAME = Configuration.getQueueName();
             mQProducer = new MQProducer();
-            mQProducer.sendMessage("Co1 violated ");
+            ActionPlanEvent actionPlanEvent = new ActionPlanEvent();
+            actionPlanEvent.setServiceId("lala");
+            mQProducer.sendMessage(actionPlanEvent);
         }
 
     }

@@ -16,6 +16,11 @@
 	<artifactId>rSYBL-cloud-application-dependency-graph</artifactId>
 
 	<dependencies>
+	 <dependency>
+            <groupId>log4j</groupId>
+            <artifactId>log4j</artifactId>
+            <version>1.2.17</version>
+        </dependency>
          <dependency>
             <groupId>com.googlecode.json-simple</groupId>
             <artifactId>json-simple</artifactId>
@@ -28,12 +33,17 @@
 	<version>4.8.1</version>
 </dependency>
 
-        <dependency>
-            <groupId>org.apache.activemq</groupId>
-            <artifactId>activemq-all</artifactId>
-            <version>5.11.1</version>
-        </dependency>
+ <dependency>
+  <groupId>org.apache.activemq</groupId>
+  <artifactId>activemq-all</artifactId>
+  <version>5.11.1</version>
+</dependency>
 
+<dependency>
+	<groupId>org.apache.activemq</groupId>
+	<artifactId>activemq-jms-pool</artifactId>
+	<version>5.9.0</version>
+</dependency>
 
 	</dependencies>
 	

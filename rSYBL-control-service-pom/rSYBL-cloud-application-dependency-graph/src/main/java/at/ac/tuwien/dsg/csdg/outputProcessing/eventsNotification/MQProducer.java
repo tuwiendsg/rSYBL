@@ -11,6 +11,7 @@ import javax.jms.Connection;
 import javax.jms.DeliveryMode;
 import javax.jms.Destination;
 import javax.jms.MessageProducer;
+import javax.jms.ObjectMessage;
 import javax.jms.Session;
 import javax.jms.TextMessage;
 import org.apache.activemq.ActiveMQConnection;
@@ -77,15 +78,13 @@ public class MQProducer {
 
     }
 
-    public void sendMessage(String event) {
+    public void sendMessage(IEvent event) {
         try {
-            TextMessage message = session.createTextMessage(event);
+            ObjectMessage message = session.createObjectMessage(event);
 
             // Tell the producer to send the message
             producer.send(message);
 
-            // print what we did
-            System.out.println("sent: " + message.getText());
         } catch (Exception e) {
             DependencyGraphLogger.logger.error(e.getCause());
         }

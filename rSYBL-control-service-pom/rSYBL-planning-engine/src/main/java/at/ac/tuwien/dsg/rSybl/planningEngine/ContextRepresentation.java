@@ -962,6 +962,7 @@ public class ContextRepresentation {
         }
         return null;
     }
+    
     public String getFixedConstraints(ContextRepresentation lastContext) {
         String constr = "";
         for (ElasticityRequirement elReq : dependencyGraph.getAllElasticityRequirements()) {
@@ -983,6 +984,28 @@ public class ContextRepresentation {
         }
         return constr;
     }
+        public List<Constraint> getFixedConstraintsAsConstraints(ContextRepresentation lastContext) {
+        List<Constraint> constr = new ArrayList<Constraint>();
+        for (ElasticityRequirement elReq : dependencyGraph.getAllElasticityRequirements()) {
+            SYBLSpecification syblSpecification = SYBLDirectiveMappingFromXML.mapFromSYBLAnnotation(elReq.getAnnotation());
+
+            //System.out.println("Searching for monitored entity "+syblSpecification.getComponentId());
+            MonitoredEntity monitoredEntity = findMonitoredEntity(syblSpecification.getComponentId());
+            if (monitoredEntity == null) {
+                PlanningLogger.logger.info("Not finding monitored entity " + monitoredEntity + " " + syblSpecification.getComponentId());
+            }
+
+            for (Constraint constraint : syblSpecification.getConstraint()) {
+                if (lastContext.getViolatedConstraints().contains(constraint.getId())){
+                if (evaluateCondition(constraint.getCondition(), monitoredEntity) && evaluateCondition(constraint.getToEnforce(), monitoredEntity)) {
+                    constr.add(constraint);
+                }
+                }
+            }
+        }
+        return constr;
+    }
+        
     public String getViolatedConstraints() {
         String constr = "";
         for (ElasticityRequirement elReq : dependencyGraph.getAllElasticityRequirements()) {
@@ -1004,7 +1027,41 @@ public class ContextRepresentation {
         }
         return constr;
     }
+ public List<Strategy> getImprovedStrategiesAsStrategies(ContextRepresentation previousContextRepresentation, String strategiesNeedingToBe) {
+        List<Strategy> str = new ArrayList<Strategy>();
+        for (ElasticityRequirement elReq : dependencyGraph.getAllElasticityRequirements()) {
+            SYBLSpecification syblSpecification = SYBLDirectiveMappingFromXML.mapFromSYBLAnnotation(elReq.getAnnotation());
+            //System.out.println("Searching for monitored entity "+syblSpecification.getComponentId());
+            MonitoredEntity monitoredEntity = findMonitoredEntity(syblSpecification.getComponentId());
+            if (monitoredEntity == null) {
+                PlanningLogger.logger.info("Not finding monitored entity " + monitoredEntity + " " + syblSpecification.getComponentId());
+            }
+            for (Strategy strategy : syblSpecification.getStrategy()) {
+                Condition condition = strategy.getCondition();
+                if (strategiesNeedingToBe.contains(strategy.getId())) {
+                    if (evaluateCondition(condition, monitoredEntity)) {
+                        if (strategy.getToEnforce().getActionName().toLowerCase().contains("maximize") || strategy.getToEnforce().getActionName().toLowerCase().contains("minimize")) {
+                            if (strategy.getToEnforce().getActionName().toLowerCase().contains("maximize")) {
+                                //PlanningLogger.logger.info("Current value for "+ strategy.getToEnforce().getParameter()+" is "+ monitoredEntity.getMonitoredValue(strategy.getToEnforce().getParameter())+" .Previous value was "+previousContextRepresentation.getValueForMetric(monitoredEntity,strategy.getToEnforce().getParameter()));
 
+                                if (monitoredEntity.getMonitoredValue(strategy.getToEnforce().getParameter()) > previousContextRepresentation.getValueForMetric(monitoredEntity, strategy.getToEnforce().getParameter())) {
+                                    str.add(strategy);
+                                }
+                            }
+                            if (strategy.getToEnforce().getActionName().toLowerCase().contains("minimize")) {
+                                //	PlanningLogger.logger.info("Current value for "+ strategy.getToEnforce().getParameter()+" is "+ monitoredEntity.getMonitoredValue(strategy.getToEnforce().getParameter())+" .Previous value was "+previousContextRepresentation.getValueForMetric(monitoredEntity,strategy.getToEnforce().getParameter()));
+
+                                if (monitoredEntity.getMonitoredValue(strategy.getToEnforce().getParameter()) < previousContextRepresentation.getValueForMetric(monitoredEntity, strategy.getToEnforce().getParameter())) {
+                                    str.add(strategy);
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+        return str;
+    }
     public String getImprovedStrategies(ContextRepresentation previousContextRepresentation, String strategiesNeedingToBe) {
         String str = "";
         for (ElasticityRequirement elReq : dependencyGraph.getAllElasticityRequirements()) {
@@ -1040,6 +1097,43 @@ public class ContextRepresentation {
         }
         return str;
     }
+    
+    public List<Strategy> getImprovedStrategiesAsStrategies(ContextRepresentation previousContextRepresentation) {
+        List<Strategy> str = new ArrayList<Strategy>();
+        for (ElasticityRequirement elReq : dependencyGraph.getAllElasticityRequirements()) {
+            SYBLSpecification syblSpecification = SYBLDirectiveMappingFromXML.mapFromSYBLAnnotation(elReq.getAnnotation());
+            //System.out.println("Searching for monitored entity "+syblSpecification.getComponentId());
+            MonitoredEntity monitoredEntity = findMonitoredEntity(syblSpecification.getComponentId());
+            if (monitoredEntity == null) {
+                PlanningLogger.logger.info("Not finding monitored entity " + monitoredEntity + " " + syblSpecification.getComponentId());
+            }
+            for (Strategy strategy : syblSpecification.getStrategy()) {
+                Condition condition = strategy.getCondition();
+             
+                    if (evaluateCondition(condition, monitoredEntity)) {
+                        if (strategy.getToEnforce().getActionName().toLowerCase().contains("maximize") || strategy.getToEnforce().getActionName().toLowerCase().contains("minimize")) {
+                            if (strategy.getToEnforce().getActionName().toLowerCase().contains("maximize")) {
+                                //PlanningLogger.logger.info("Current value for "+ strategy.getToEnforce().getParameter()+" is "+ monitoredEntity.getMonitoredValue(strategy.getToEnforce().getParameter())+" .Previous value was "+previousContextRepresentation.getValueForMetric(monitoredEntity,strategy.getToEnforce().getParameter()));
+
+                                if (monitoredEntity.getMonitoredValue(strategy.getToEnforce().getParameter()) > previousContextRepresentation.getValueForMetric(monitoredEntity, strategy.getToEnforce().getParameter())) {
+                                    str.add(strategy);
+                                }
+                            }
+                            if (strategy.getToEnforce().getActionName().toLowerCase().contains("minimize")) {
+                                //	PlanningLogger.logger.info("Current value for "+ strategy.getToEnforce().getParameter()+" is "+ monitoredEntity.getMonitoredValue(strategy.getToEnforce().getParameter())+" .Previous value was "+previousContextRepresentation.getValueForMetric(monitoredEntity,strategy.getToEnforce().getParameter()));
+
+                                if (monitoredEntity.getMonitoredValue(strategy.getToEnforce().getParameter()) < previousContextRepresentation.getValueForMetric(monitoredEntity, strategy.getToEnforce().getParameter())) {
+                                    str.add(strategy);
+                                }
+                            }
+                        
+                    }
+                }
+            }
+        }
+        return str;
+    }
+    
  public String getImprovedStrategies(ContextRepresentation previousContextRepresentation) {
         String str = "";
         for (ElasticityRequirement elReq : dependencyGraph.getAllElasticityRequirements()) {

@@ -34,18 +34,11 @@ public class EventNotification {
         }
         return eventNotification;
     }
-    public void sendEvent(Event event) {
+    public void sendEvent(IEvent event) {
         if (Configuration.getMQEnabled()==true){
         	try{
-        	ByteArrayOutputStream byteArrayOutputStream  = new ByteArrayOutputStream();
-             JAXBContext jaxbContext = JAXBContext.newInstance(Event.class);
-             Marshaller jaxbMarshaller = jaxbContext.createMarshaller();
-
-             // output pretty printed
-             jaxbMarshaller.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, true);
-
-             jaxbMarshaller.marshal(event, byteArrayOutputStream);
-         rabbitMQProducer.sendMessage(new String(byteArrayOutputStream.toByteArray(), "UTF-8"));
+        
+         rabbitMQProducer.sendMessage(event);
         	}catch(Exception e){
         		DependencyGraphLogger.logger.error(e.getCause());
         	}

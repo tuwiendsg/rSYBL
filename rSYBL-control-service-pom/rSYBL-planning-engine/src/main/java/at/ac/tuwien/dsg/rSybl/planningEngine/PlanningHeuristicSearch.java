@@ -8,6 +8,8 @@ import java.util.TreeMap;
 import at.ac.tuwien.dsg.csdg.DependencyGraph;
 import at.ac.tuwien.dsg.csdg.Node;
 import at.ac.tuwien.dsg.csdg.Relationship;
+import at.ac.tuwien.dsg.csdg.elasticityInformation.elasticityRequirements.Constraint;
+import at.ac.tuwien.dsg.csdg.elasticityInformation.elasticityRequirements.Strategy;
 import at.ac.tuwien.dsg.csdg.outputProcessing.eventsNotification.EventNotification;
 import at.ac.tuwien.dsg.rSybl.cloudInteractionUnit.api.EnforcementAPIInterface;
 import at.ac.tuwien.dsg.rSybl.dataProcessingUnit.api.MonitoringAPIInterface;
@@ -262,7 +264,7 @@ public class PlanningHeuristicSearch implements PlanningAlgorithmInterface {
                 }
             }
             if (res.size() > 0) {
-        actionPlanEnforcement.enforceResult(res, dependencyGraph,"","",eventNotification);
+        actionPlanEnforcement.enforceResult(res, dependencyGraph,new ArrayList<Constraint>(),new ArrayList<Strategy>());
             }
             try {
                 currentThread.sleep(REFRESH_PERIOD);
