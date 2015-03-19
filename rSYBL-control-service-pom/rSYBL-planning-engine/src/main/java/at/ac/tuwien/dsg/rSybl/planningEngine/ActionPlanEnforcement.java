@@ -22,7 +22,6 @@ import at.ac.tuwien.dsg.csdg.outputProcessing.OutputProcessing;
 import at.ac.tuwien.dsg.csdg.outputProcessing.OutputProcessingFactory;
 import at.ac.tuwien.dsg.csdg.outputProcessing.OutputProcessingInterface;
 import at.ac.tuwien.dsg.csdg.outputProcessing.eventsNotification.ActionPlanEvent;
-import at.ac.tuwien.dsg.csdg.outputProcessing.eventsNotification.Event;
 import at.ac.tuwien.dsg.csdg.outputProcessing.eventsNotification.EventNotification;
 import at.ac.tuwien.dsg.csdg.outputProcessing.eventsNotification.IEvent;
 import at.ac.tuwien.dsg.rSybl.cloudInteractionUnit.api.EnforcementAPIInterface;
