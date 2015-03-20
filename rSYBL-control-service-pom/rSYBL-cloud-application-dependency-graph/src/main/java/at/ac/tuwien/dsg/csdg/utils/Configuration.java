@@ -97,6 +97,9 @@ public class Configuration {
     public static String getOutputProcessingClass(){
         return configuration.getProperty("OutputProcessingClass");
     }
+    public static String getQueueUrl(){
+        return configuration.getProperty("QueueUrl");
+    }
     public static String getCloudServiceTOSCADescription()
     {
     	

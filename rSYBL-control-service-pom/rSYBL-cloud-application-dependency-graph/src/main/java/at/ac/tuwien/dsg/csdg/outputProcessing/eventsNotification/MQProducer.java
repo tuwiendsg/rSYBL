@@ -27,7 +27,7 @@ import org.apache.activemq.broker.TransportConnector;
 public class MQProducer {
 
     private String QUEUE_NAME = "events";
-
+    private String QUEUE_url = "tcp://localhost:61616";
 
     private Connection connection;
     private Session session = null;
@@ -36,6 +36,9 @@ public class MQProducer {
     public MQProducer() {
         if (Configuration.getQueueName()!=null){
             QUEUE_NAME=Configuration.getQueueName();
+        }
+        if (Configuration.getQueueUrl()!=null){
+            QUEUE_url = Configuration.getQueueUrl();
         }
         initiateQueue();
 
@@ -50,7 +53,7 @@ public class MQProducer {
            // configure the broker
  
             TransportConnector connector = new TransportConnector();
-            connector.setUri(new URI("tcp://localhost:61616"));
+            connector.setUri(new URI(QUEUE_url));
             broker.addConnector(connector);
             broker.start();
         	 ActiveMQConnectionFactory connectionFactory = new ActiveMQConnectionFactory(ActiveMQConnection.DEFAULT_BROKER_URL);
@@ -68,9 +71,6 @@ public class MQProducer {
              // Create a MessageProducer from the Session to the Topic or Queue
              producer = session.createProducer(destination);
              producer.setDeliveryMode(DeliveryMode.PERSISTENT);
-
-          
-
 
         } catch (Exception e) {
             DependencyGraphLogger.logger.error(e.getMessage());

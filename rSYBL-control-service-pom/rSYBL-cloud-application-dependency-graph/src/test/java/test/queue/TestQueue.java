@@ -49,7 +49,7 @@ public class TestQueue {
         if (Configuration.getMQEnabled() == true) {
             try {
                 factory = new ActiveMQConnectionFactory(
-                        ActiveMQConnection.DEFAULT_BROKER_URL);
+                        "tcp://localhost:61616");
                 connection = factory.createConnection();
                 connection.start();
                 session = connection.createSession(false, Session.AUTO_ACKNOWLEDGE);
