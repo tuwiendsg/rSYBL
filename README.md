@@ -7,7 +7,7 @@
 
 Usage information can be found in the <a href="https://github.com/tuwiendsg/rSYBL/blob/master/userGuide.pdf">user guide</a>, in the <a href="https://github.com/tuwiendsg/rSYBL/wiki">wiki</a> and on its <a href="http://www.infosys.tuwien.ac.at/research/viecom/SYBL">webpage</a>.
 
-If you are looking into developing new features for rSYBL, please check the <a href="https://github.com/tuwiendsg/rSYBL/wiki/Development-Guide">documentation</a>. As rSYBL has a plug-in based structure, developing new enforcement/monitoring mechanisms, or decision algorithms is quite easy. For any kind of issues, please get in <a href="mailto:e.copil@dsg.tuwien.ac.at">contact</a> with us. 
+If you are looking into developing new features for rSYBL, please check the <a href="https://github.com/tuwiendsg/rSYBL/wiki/Development-Guide">Development Guide</a>. As rSYBL has a plug-in based structure, developing new enforcement/monitoring mechanisms, or decision algorithms is quite easy. For any kind of issues, please get in <a href="mailto:e.copil@dsg.tuwien.ac.at">contact</a> with us. 
 
 For any research work in which rSYBL is used, please cite the following papers:
  - for the framework: Georgiana Copil, Daniel Moldovan, Hong-Linh Truong, Schahram Dustdar, "<a href="http://link.springer.com/chapter/10.1007/978-3-642-45005-1_31">Multi-Level Elasticity Control of Cloud Services</a>", the 11th International Conference on Service Oriented Computing. Berlin, Germany, 2-5 December, 2013. Check the <a href="http://www.slideshare.net/georgiana_copil/sybl-multilevel-elasticity-control-of-cloud-services">presentation</a> given at ICSOC.
