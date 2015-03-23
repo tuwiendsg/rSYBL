@@ -118,11 +118,11 @@ public class MultipleEnforcementAPIs implements EnforcementAPIInterface {
                     }
                     enforcementAPI.setExecutingControlAction(false);
                 } catch (Exception e) {
-                    ActionPlanEvent actionEvent = new ActionPlanEvent();
+                    
+                    ActionEvent actionEvent = new ActionEvent();
                     actionEvent.setStage(IEvent.Stage.START);
                     actionEvent.setType(IEvent.Type.ERROR);
                     actionEvent.setServiceId(getControlledService().getId());
-                    actionEvent.addEffect(new AbstractMap.SimpleEntry<String, String>("ERROR", "When enforcing scale in on " + arg0.getId()));
                     eventNotification.sendEvent(actionEvent);
 
                     RuntimeLogger.logger.error("Big big big error "

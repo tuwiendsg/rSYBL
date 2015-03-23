@@ -74,9 +74,7 @@ public class ElasticityCapabilityEnforcement {
         actionPlanEvent.setServiceId(dependencyGraph.getCloudService().getId());
         actionPlanEvent.setStage(IEvent.Stage.START);
         eventNotification.sendEvent(actionPlanEvent);
-        actionPlanEvent=new ActionPlanEvent();
-        actionPlanEvent.setServiceId(dependencyGraph.getCloudService().getId());
-        actionPlanEvent.setStage(IEvent.Stage.FINISHED);
+       IEvent.Stage stage =null ;
         if (!dependencyGraph.isInControlState()) {
             SYBLDirectivesEnforcementLogger.logger.info("Not enforcing action due to breakpoint ");
             return;
@@ -93,7 +91,8 @@ public class ElasticityCapabilityEnforcement {
                         if (!enforcePrimitive(primitivesDescription, primitives[i],
                                 target, dependencyGraph)) {
                             SYBLDirectivesEnforcementLogger.logger.info("Failed Enforcing " + primitives[i] + ", cancelling the entire elasticity capability " );
-                        break;
+                        stage= IEvent.Stage.FAILED;
+                            break;
                     } else {
                         SYBLDirectivesEnforcementLogger.logger.info("Successfully enforced " + primitives[i] + ", continuing with capability "  );
                         actionPlanEvent.addEffect(new AbstractMap.SimpleEntry<String,String>(primitives[i],elasticityCapability.getServicePartID()));
@@ -103,6 +102,13 @@ public class ElasticityCapabilityEnforcement {
                 }
             }
         }
+         actionPlanEvent=new ActionPlanEvent();
+        actionPlanEvent.setServiceId(dependencyGraph.getCloudService().getId());
+        if (stage==null){
+            stage=IEvent.Stage.FINISHED;
+        }
+        actionPlanEvent.setStage(stage);
+
         if (c!=null){
             actionPlanEvent.addConstraint(c);
         }else{

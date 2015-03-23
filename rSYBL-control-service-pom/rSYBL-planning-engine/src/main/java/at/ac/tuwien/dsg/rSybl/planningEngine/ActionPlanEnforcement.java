@@ -31,7 +31,8 @@ import at.ac.tuwien.dsg.rSybl.planningEngine.staticData.ActionEffect;
 import at.ac.tuwien.dsg.rSybl.planningEngine.utils.PlanningLogger;
 import java.util.AbstractMap;
 import java.util.HashMap;
-import java.util.Map;
+
+
 
 public class ActionPlanEnforcement {
 
@@ -58,14 +59,22 @@ public class ActionPlanEnforcement {
         actionPlanEvent = new ActionPlanEvent();
         actionPlanEvent.setServiceId(dependencyGraph.getCloudService().getId());
         actionPlanEvent.setStage(IEvent.Stage.START);
+        actionPlanEvent.setConstraints(constraintsFixed);
+        actionPlanEvent.setStrategies(strategiesImproved);
+        ArrayList<AbstractMap.SimpleEntry<String,String>> res = new ArrayList<AbstractMap.SimpleEntry<String,String>>();
+        for (Pair<ActionEffect,Integer> actionEffect:result){
+            res.add(new AbstractMap.SimpleEntry(actionEffect.getFirst().getActionName(),actionEffect.getFirst().getTargetedEntityID()));
+        }
         eventNotification.sendEvent(actionPlanEvent);
         this.violationDegree = violationDegree;
+       
         actionPlanEvent=new ActionPlanEvent();
         actionPlanEvent.setServiceId(dependencyGraph.getCloudService().getId());
         actionPlanEvent.setStage(IEvent.Stage.FINISHED);
         
         enforceResult(result, dependencyGraph, constraintsFixed, strategiesImproved);
-
+   
+        
     }
 
     public void enforceResult(ArrayList<Pair<ActionEffect, Integer>> result, DependencyGraph dependencyGraph, List<Constraint> constraintsFixed, List<Strategy> strategiesImproved) {
@@ -113,7 +122,10 @@ public class ActionPlanEnforcement {
         actionPlanEvent.setConstraints(constraintsFixed);
         actionPlanEvent.setStrategies(strategiesImproved);
         eventNotification.sendEvent(actionPlanEvent);
-    }
+    }else{
+            actionPlanEvent.setStage(IEvent.Stage.FAILED);
+            eventNotification.sendEvent(actionPlanEvent);
+        }
          
 //                for (Pair<ActionEffect, Integer> actionEffect : result) {
 //			PlanningLogger.logger.info("Enforcing capability "

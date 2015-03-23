@@ -12,7 +12,7 @@ import java.io.Serializable;
  */
 public interface IEvent extends Serializable{
     public enum Stage {
-		START, FINISHED
+		START, FINISHED, FAILED
 	}
 	public enum Type {
 		NOTIFICATION, ERROR, UNHEALTHY_SP

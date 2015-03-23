@@ -55,7 +55,6 @@ import java.util.logging.Logger;
 public class PlanningGreedyAlgorithm implements PlanningAlgorithmInterface {
 
     private Timer t = new Timer();
-
     private ContextRepresentation contextRepresentation;
     private MonitoringAPIInterface monitoringAPI;
     private EnforcementAPIInterface enforcementAPI;
@@ -63,60 +62,63 @@ public class PlanningGreedyAlgorithm implements PlanningAlgorithmInterface {
     private ContextRepresentation lastContextRepresentation;
     private String strategiesThatNeedToBeImproved = "";
     private int REFRESH_PERIOD = 120000;
-    Deque<HashMap<String,Boolean>> stack = new ArrayDeque<HashMap<String,Boolean>>();
-    PlanningGreedyWithADVISE planningGreedyWithADVISE ;
+    Deque<HashMap<String, Boolean>> stack = new ArrayDeque<HashMap<String, Boolean>>();
+    PlanningGreedyWithADVISE planningGreedyWithADVISE;
     private EventNotification eventNotification;
     private Timer evaluateLearningPerformance = new Timer();
-    
+
     public PlanningGreedyAlgorithm(DependencyGraph cloudService,
             MonitoringAPIInterface monitoringAPI, EnforcementAPIInterface enforcementAPI) {
         this.dependencyGraph = cloudService;
         this.monitoringAPI = monitoringAPI;
         this.enforcementAPI = enforcementAPI;
-        this.eventNotification= EventNotification.getEventNotification();
+        this.eventNotification = EventNotification.getEventNotification();
         REFRESH_PERIOD = Configuration.getRefreshPeriod();
-        if (Configuration.getADVISEEnabled()){
-        planningGreedyWithADVISE= new PlanningGreedyWithADVISE(monitoringAPI, cloudService.getCloudService(), enforcementAPI,this);
-        planningGreedyWithADVISE.startLearningProcess();
-        
-        
-    }
-    }
-    public void checkWhetherLearningIsAccurateAndSwitch(){
-        
-       if (planningGreedyWithADVISE.checkWhetherPerformanceIsAcceptable()){
-                 
-           while (enforcementAPI.isEnforcingAction()){
-               try {
-                   Thread.sleep(1000);
-               } catch (InterruptedException ex) {
-                   Logger.getLogger(PlanningGreedyAlgorithm.class.getName()).log(Level.SEVERE, null, ex);
-               }
-           }
-        stop();
-        evaluateLearningPerformance.cancel();
-        try {
-                   Thread.sleep(1000);
-               } catch (InterruptedException ex) {
-                   Logger.getLogger(PlanningGreedyAlgorithm.class.getName()).log(Level.SEVERE, null, ex);
-               }
-        planningGreedyWithADVISE.replaceDependencyGraph(dependencyGraph);
-        planningGreedyWithADVISE.start();
-       }
-    }
-    
-    public boolean checkIfActionPossible(ActionEffect actionEffect) {
-        if (actionEffect.isConditional()){
-            if(!actionEffect.evaluateConditions(dependencyGraph, monitoringAPI)) return false;
+        if (Configuration.getADVISEEnabled()) {
+            planningGreedyWithADVISE = new PlanningGreedyWithADVISE(monitoringAPI, cloudService.getCloudService(), enforcementAPI, this);
+            planningGreedyWithADVISE.startLearningProcess();
+
+
         }
-       
+    }
+
+    public void checkWhetherLearningIsAccurateAndSwitch() {
+
+        if (planningGreedyWithADVISE.checkWhetherPerformanceIsAcceptable()) {
+
+            while (enforcementAPI.isEnforcingAction()) {
+                try {
+                    Thread.sleep(1000);
+                } catch (InterruptedException ex) {
+                    Logger.getLogger(PlanningGreedyAlgorithm.class.getName()).log(Level.SEVERE, null, ex);
+                }
+            }
+            stop();
+            evaluateLearningPerformance.cancel();
+            try {
+                Thread.sleep(1000);
+            } catch (InterruptedException ex) {
+                Logger.getLogger(PlanningGreedyAlgorithm.class.getName()).log(Level.SEVERE, null, ex);
+            }
+            planningGreedyWithADVISE.replaceDependencyGraph(dependencyGraph);
+            planningGreedyWithADVISE.start();
+        }
+    }
+
+    public boolean checkIfActionPossible(ActionEffect actionEffect) {
+        if (actionEffect.isConditional()) {
+            if (!actionEffect.evaluateConditions(dependencyGraph, monitoringAPI)) {
+                return false;
+            }
+        }
+
         // System.out.println("Targeted entity id "
         // +actionEffect.getTargetedEntityID()+entity);
 
         boolean possible = true;
         if (actionEffect.getActionType().equalsIgnoreCase("scalein")) {
-             Node entity = dependencyGraph.getNodeWithID(actionEffect.getTargetedEntityID());
-            if (entity!=null && entity.getNodeType() == NodeType.CLOUD_SERVICE) {
+            Node entity = dependencyGraph.getNodeWithID(actionEffect.getTargetedEntityID());
+            if (entity != null && entity.getNodeType() == NodeType.CLOUD_SERVICE) {
                 List<String> ips = entity.getAssociatedIps();
                 // PlanningLogger.logger.info("For action " + actionEffect.getActionName() + entity.getAllRelatedNodesOfType(RelationshipType.HOSTED_ON_RELATIONSHIP, NodeType.VIRTUAL_MACHINE).size() + " hosts");
                 Node artifact = null;
@@ -143,7 +145,7 @@ public class PlanningGreedyAlgorithm implements PlanningAlgorithmInterface {
                     return true;
                 }
             }
-            if (entity!=null && entity.getNodeType() == NodeType.SERVICE_TOPOLOGY) {
+            if (entity != null && entity.getNodeType() == NodeType.SERVICE_TOPOLOGY) {
 
                 Node master = dependencyGraph.findParentNode(entity.getId());
                 List<String> ips = master.getAssociatedIps();
@@ -225,80 +227,81 @@ public class PlanningGreedyAlgorithm implements PlanningAlgorithmInterface {
 
     public ActionEffect checkActions(String target) {
         HashMap<String, List<ActionEffect>> actionEffects = ActionEffects.getActionConditionalEffects();
-        if (actionEffects.size()>0){
-        int maxConstraints = 0;
-        ActionEffect maxConstraintsAction = null;
-        PlanningLogger.logger.info("~~~~~~~~~~~Evaluating complimentary actions for " + target);
+        if (actionEffects.size() > 0) {
+            int maxConstraints = 0;
+            ActionEffect maxConstraintsAction = null;
+            PlanningLogger.logger.info("~~~~~~~~~~~Evaluating complimentary actions for " + target);
 
-        for (List<ActionEffect> actionEffect : actionEffects.values()) {
-            for (ActionEffect effect : actionEffect) {
-                if (effect.getAffectedNodes().contains(target)) {
-                    int beforeConstraints = contextRepresentation.countViolatedConstraints();
-                    MonitoredCloudService monitoredCloudService = contextRepresentation.getMonitoredCloudService().clone();
-                    ContextRepresentation beforeContext = new ContextRepresentation(monitoredCloudService, monitoringAPI);
-                    contextRepresentation.doAction(effect);
-                    int improvedStrategies = contextRepresentation.countFixedStrategies(beforeContext);
-                    int afterConstraints = contextRepresentation.countViolatedConstraints();
-                    PlanningLogger.logger.info("With " + effect.getActionType() + " on " + effect.getTargetedEntityID() + improvedStrategies + " and constraints  " + (beforeConstraints - afterConstraints) + " violated constraints " + contextRepresentation.getViolatedConstraints());
-                    contextRepresentation.undoAction(effect);
-                    if (beforeConstraints - afterConstraints + improvedStrategies > maxConstraints && (beforeConstraints - afterConstraints + improvedStrategies) > 0) {
-                        maxConstraints = beforeConstraints - afterConstraints + improvedStrategies;
-                        maxConstraintsAction = effect;
+            for (List<ActionEffect> actionEffect : actionEffects.values()) {
+                for (ActionEffect effect : actionEffect) {
+                    if (effect.getAffectedNodes().contains(target)) {
+                        int beforeConstraints = contextRepresentation.countViolatedConstraints();
+                        MonitoredCloudService monitoredCloudService = contextRepresentation.getMonitoredCloudService().clone();
+                        ContextRepresentation beforeContext = new ContextRepresentation(monitoredCloudService, monitoringAPI);
+                        contextRepresentation.doAction(effect);
+                        int improvedStrategies = contextRepresentation.countFixedStrategies(beforeContext);
+                        int afterConstraints = contextRepresentation.countViolatedConstraints();
+                        PlanningLogger.logger.info("With " + effect.getActionType() + " on " + effect.getTargetedEntityID() + improvedStrategies + " and constraints  " + (beforeConstraints - afterConstraints) + " violated constraints " + contextRepresentation.getViolatedConstraints());
+                        contextRepresentation.undoAction(effect);
+                        if (beforeConstraints - afterConstraints + improvedStrategies > maxConstraints && (beforeConstraints - afterConstraints + improvedStrategies) > 0) {
+                            maxConstraints = beforeConstraints - afterConstraints + improvedStrategies;
+                            maxConstraintsAction = effect;
+                        }
                     }
                 }
             }
-        }
 
-        if (maxConstraintsAction != null) {
-            PlanningLogger.logger.info("Returning " + maxConstraintsAction.getActionType() + " on " + maxConstraintsAction.getTargetedEntityID());
+            if (maxConstraintsAction != null) {
+                PlanningLogger.logger.info("Returning " + maxConstraintsAction.getActionType() + " on " + maxConstraintsAction.getTargetedEntityID());
+            } else {
+                PlanningLogger.logger.info("Returning null ");
+            }
+            return maxConstraintsAction;
         } else {
-            PlanningLogger.logger.info("Returning null ");
-        }
-        return maxConstraintsAction;
-        }else{
             HashMap<String, ActionEffect> defaultEffects = ActionEffects.getActionDefaultEffects();
             int maxConstraints = 0;
-        ActionEffect maxConstraintsAction = null;
-        PlanningLogger.logger.info("~~~~~~~~~~~Evaluating complimentary actions for " + target);
+            ActionEffect maxConstraintsAction = null;
+            PlanningLogger.logger.info("~~~~~~~~~~~Evaluating complimentary actions for " + target);
 
             for (ActionEffect effect : defaultEffects.values()) {
                 boolean checkIfAvailable = false;
-                for (ElasticityCapability capability:dependencyGraph.getNodeWithID(target).getElasticityCapabilities()){
-                    if (capability.getPrimitiveOperations().contains(effect.getActionName())){
-                        checkIfAvailable=true;
-                                      
+                for (ElasticityCapability capability : dependencyGraph.getNodeWithID(target).getElasticityCapabilities()) {
+                    if (capability.getPrimitiveOperations().contains(effect.getActionName())) {
+                        checkIfAvailable = true;
+
                     }
                 }
-                if (checkIfAvailable){
-                     int beforeConstraints = contextRepresentation.countViolatedConstraints();
+                if (checkIfAvailable) {
+                    int beforeConstraints = contextRepresentation.countViolatedConstraints();
                     MonitoredCloudService monitoredCloudService = contextRepresentation.getMonitoredCloudService().clone();
                     ContextRepresentation beforeContext = new ContextRepresentation(monitoredCloudService, monitoringAPI);
-                    contextRepresentation.doAction(effect,target);
+                    contextRepresentation.doAction(effect, target);
                     int improvedStrategies = contextRepresentation.countFixedStrategies(beforeContext);
                     int afterConstraints = contextRepresentation.countViolatedConstraints();
                     PlanningLogger.logger.info("With " + effect.getActionType() + " on " + effect.getTargetedEntityID() + improvedStrategies + " and constraints  " + (beforeConstraints - afterConstraints) + " violated constraints " + contextRepresentation.getViolatedConstraints());
-                    contextRepresentation.undoAction(effect,target);
+                    contextRepresentation.undoAction(effect, target);
                     if (beforeConstraints - afterConstraints + improvedStrategies > maxConstraints && (beforeConstraints - afterConstraints + improvedStrategies) > 0) {
                         maxConstraints = beforeConstraints - afterConstraints + improvedStrategies;
                         maxConstraintsAction = effect;
                     }
-                
-                    
+
+
                 }
             }
             if (maxConstraintsAction != null) {
-            PlanningLogger.logger.info("Returning " + maxConstraintsAction.getActionType() + " on " + maxConstraintsAction.getTargetedEntityID());
-        } else {
-            PlanningLogger.logger.info("Returning null ");
-        }
-       
-        return maxConstraintsAction;
+                PlanningLogger.logger.info("Returning " + maxConstraintsAction.getActionType() + " on " + maxConstraintsAction.getTargetedEntityID());
+            } else {
+                PlanningLogger.logger.info("Returning null ");
+            }
+
+            return maxConstraintsAction;
         }
 
-        
+
     }
-    public void findAndExecuteBestActionsForDefaultEffects(){
-         strategiesThatNeedToBeImproved = "";
+
+    public void findAndExecuteBestActionsForDefaultEffects() {
+        strategiesThatNeedToBeImproved = "";
 
         if (lastContextRepresentation != null) {
             findStrategies();
@@ -307,7 +310,7 @@ public class PlanningGreedyAlgorithm implements PlanningAlgorithmInterface {
         lastContextRepresentation.initializeContext();
         //PlanningLogger.logger.info("Strategies that could be enforced. ... "+strategiesThatNeedToBeImproved+" Violated constraints: "+contextRepresentation.getViolatedConstraints());
         HashMap<String, ActionEffect> actionEffects = ActionEffects.getActionDefaultEffects();
-        if (actionEffects.size()==0){
+        if (actionEffects.size() == 0) {
             PlanningLogger.logger.info("Not trying any type of actions, action effect is null");
             return;
         }
@@ -320,7 +323,7 @@ public class PlanningGreedyAlgorithm implements PlanningAlgorithmInterface {
         ArrayList<Pair<ActionEffect, Integer>> result = new ArrayList<Pair<ActionEffect, Integer>>();
         double violationDegree = contextRepresentation.evaluateViolationDegree();
         int numberOfRemainingConstraints = numberOfBrokenConstraints;
-        if (!strategiesThatNeedToBeImproved.equalsIgnoreCase("") || numberOfBrokenConstraints > 0 && lastFixed!=0) {
+        if (!strategiesThatNeedToBeImproved.equalsIgnoreCase("") || numberOfBrokenConstraints > 0 && lastFixed != 0) {
 //		while (contextRepresentation.countViolatedConstraints() > 0
 //				&& numberOfRemainingConstraints > 0 && lastFixed>0) {
             Date date = new Date();
@@ -328,26 +331,26 @@ public class PlanningGreedyAlgorithm implements PlanningAlgorithmInterface {
             HashMap<Integer, List<Pair<ActionEffect, String>>> fixedStrategies = new HashMap<Integer, List<Pair<ActionEffect, String>>>();
             // PlanningLogger.logger.info("~~~~~~~~~~~Number of actions possible: "+actionEffects.values().size());
 
-                for (ElasticityCapability elasticityCapability:dependencyGraph.getAllElasticityCapabilities()){
-                    String servicePartID = elasticityCapability.getServicePartID();
-                    
+            for (ElasticityCapability elasticityCapability : dependencyGraph.getAllElasticityCapabilities()) {
+                String servicePartID = elasticityCapability.getServicePartID();
+
                 for (ActionEffect actionEffect : actionEffects.values()) {
                     if (checkIfActionPossible(actionEffect) && elasticityCapability.getName().toLowerCase().equalsIgnoreCase(actionEffect.getActionName())) {
-                        
+
                         List<Pair<ActionEffect, String>> foundActions = new ArrayList<Pair<ActionEffect, String>>();
-                        
+
 
 
                         for (Pair<ActionEffect, Integer> a : result) {
-                                PlanningLogger.logger.info("Executing the already found action" + a.getFirst().getActionName());
-                                contextRepresentation.doAction(a.getFirst(),((ActionEffect)a.getFirst()).getTargetedEntityID());
-                                PlanningLogger.logger.info("At " + date.getDay() + "_"
-                                        + date.getMonth() + "_" + date.getHours() + "_"
-                                        + date.getMinutes()
-                                        + ". The violated constraints are the following: "
-                                        + contextRepresentation.getViolatedConstraints());
+                            PlanningLogger.logger.info("Executing the already found action" + a.getFirst().getActionName());
+                            contextRepresentation.doAction(a.getFirst(), ((ActionEffect) a.getFirst()).getTargetedEntityID());
+                            PlanningLogger.logger.info("At " + date.getDay() + "_"
+                                    + date.getMonth() + "_" + date.getHours() + "_"
+                                    + date.getMinutes()
+                                    + ". The violated constraints are the following: "
+                                    + contextRepresentation.getViolatedConstraints());
 
-                           
+
                         }
                         int initiallyBrokenConstraints = contextRepresentation
                                 .countViolatedConstraints();
@@ -358,9 +361,9 @@ public class PlanningGreedyAlgorithm implements PlanningAlgorithmInterface {
 //							for (int current = 0; current < i; current++) {
 //								contextRepresentation.doAction(actionEffect);
 //							}
-                        
-                        contextRepresentation.doAction(actionEffect,servicePartID);
-                        
+
+                        contextRepresentation.doAction(actionEffect, servicePartID);
+
                         foundActions.add(contextRepresentation.new Pair<ActionEffect, String>(actionEffect, servicePartID));
                         int fixedStr = contextRepresentation.countFixedStrategies(beforeActionContextRepresentation, strategiesThatNeedToBeImproved);
                         PlanningLogger.logger.info("PlanningAlgorithm: Trying the action " + actionEffect.getActionName() + "constraints violated : " + contextRepresentation.getViolatedConstraints() + " Strategies improved " + contextRepresentation.getImprovedStrategies(beforeActionContextRepresentation, strategiesThatNeedToBeImproved));
@@ -373,10 +376,10 @@ public class PlanningGreedyAlgorithm implements PlanningAlgorithmInterface {
                                 .put(
                                 fixedStr, foundActions);
                         /////////////////////~~~~~~~~~~~Check complimentary actions needed~~~~~~~~~~~~~~~~//
-                       
 
 
-                        contextRepresentation.undoAction(actionEffect,servicePartID);
+
+                        contextRepresentation.undoAction(actionEffect, servicePartID);
 //							for (int current = 0; current < i; current++) {
 //								contextRepresentation.undoAction(actionEffect);
 //							}
@@ -386,14 +389,14 @@ public class PlanningGreedyAlgorithm implements PlanningAlgorithmInterface {
                         for (int i = result.size() - 1; i > 0; i--) {
                             //System.out.println("Undoing action "
                             //+ actionEffect.getActionName());
-                                PlanningLogger.logger.info("Undo-ing the already found action" + result.get(i).getFirst().getActionName());
-                                contextRepresentation.undoAction(result.get(i)
-                                        .getFirst(),((ActionEffect)result.get(i).getFirst()).getTargetedEntityID());
-                                                    }
+                            PlanningLogger.logger.info("Undo-ing the already found action" + result.get(i).getFirst().getActionName());
+                            contextRepresentation.undoAction(result.get(i)
+                                    .getFirst(), ((ActionEffect) result.get(i).getFirst()).getTargetedEntityID());
+                        }
                     }
                 }
-            
-                }
+
+            }
             int maxAction = -20;
             List<Pair<ActionEffect, String>> action = null;
             for (Integer val : fixedDirectives.keySet()) {
@@ -417,26 +420,26 @@ public class PlanningGreedyAlgorithm implements PlanningAlgorithmInterface {
             if (maxAction > 0 && action != null && !result.contains(action)) {
                 for (Pair<ActionEffect, String> actionEffect : action) {
 
-                        PlanningLogger.logger.info("Found action " + actionEffect.getFirst().getActionName()+
-                                " on "
-                                +  actionEffect.getSecond() + " Number of directives fixed: "
-                                + maxAction);
-                        lastFixed = maxAction;
-                        Node entity = dependencyGraph.getNodeWithID(((ActionEffect) actionEffect.getFirst())
-                                .getTargetedEntityID());
-                        ((ActionEffect) actionEffect.getFirst()).setTargetedEntity(entity);
-                        if (maxAction > 0) {
-                            //  result.add(actionEffect);
-                        }
-                   
+                    PlanningLogger.logger.info("Found action " + actionEffect.getFirst().getActionName()
+                            + " on "
+                            + actionEffect.getSecond() + " Number of directives fixed: "
+                            + maxAction);
+                    lastFixed = maxAction;
+                    Node entity = dependencyGraph.getNodeWithID(((ActionEffect) actionEffect.getFirst())
+                            .getTargetedEntityID());
+                    ((ActionEffect) actionEffect.getFirst()).setTargetedEntity(entity);
+                    if (maxAction > 0) {
+                        //  result.add(actionEffect);
+                    }
+
 
                 }
-                List<Pair<ActionEffect,Integer>> actions = new ArrayList<Pair<ActionEffect,Integer>>();
-                for (Pair<ActionEffect,String> a:action){
+                List<Pair<ActionEffect, Integer>> actions = new ArrayList<Pair<ActionEffect, Integer>>();
+                for (Pair<ActionEffect, String> a : action) {
                     ActionEffect newAction = a.getFirst().clone();
                     newAction.setTargetedEntityID(a.getSecond());
                     newAction.setTargetedEntity(dependencyGraph.getNodeWithID(a.getSecond()));
-                    actions.add(contextRepresentation.new Pair<ActionEffect,Integer>(newAction,1));
+                    actions.add(contextRepresentation.new Pair<ActionEffect, Integer>(newAction, 1));
                 }
                 result.addAll(actions);
             } else {
@@ -446,18 +449,19 @@ public class PlanningGreedyAlgorithm implements PlanningAlgorithmInterface {
             numberOfRemainingConstraints -= lastFixed;
 
         }
-        for (int i=0;i<result.size();i++){
+        for (int i = 0; i < result.size(); i++) {
             contextRepresentation.doAction(result.get(i).getFirst());
         }
-       
-        if (result.size()==0 && contextRepresentation.countViolatedConstraints()>0){
-            monitoringAPI.sendMessageToAnalysisService("Requirements "+contextRepresentation.getViolatedConstraints()+" are violated, and rSYBL can not solve the problem.");
-        }else{
-        
-        ActionPlanEnforcement actionPlanEnforcement = new ActionPlanEnforcement(enforcementAPI);
-        actionPlanEnforcement.enforceResult(result, dependencyGraph,contextRepresentation.getFixedConstraintsAsConstraints(lastContextRepresentation),contextRepresentation.getImprovedStrategiesAsStrategies(lastContextRepresentation, strategiesThatNeedToBeImproved));
+
+        if (result.size() == 0 && contextRepresentation.countViolatedConstraints() > 0) {
+            monitoringAPI.sendMessageToAnalysisService("Requirements " + contextRepresentation.getViolatedConstraints() + " are violated, and rSYBL can not solve the problem.");
+        } else {
+
+            ActionPlanEnforcement actionPlanEnforcement = new ActionPlanEnforcement(enforcementAPI);
+            actionPlanEnforcement.enforceResult(result, dependencyGraph, contextRepresentation.getFixedConstraintsAsConstraints(lastContextRepresentation), contextRepresentation.getImprovedStrategiesAsStrategies(lastContextRepresentation, strategiesThatNeedToBeImproved));
         }
     }
+
     public void findAndExecuteBestActions() {
 
         strategiesThatNeedToBeImproved = "";
@@ -469,7 +473,7 @@ public class PlanningGreedyAlgorithm implements PlanningAlgorithmInterface {
         lastContextRepresentation.initializeContext();
         //PlanningLogger.logger.info("Strategies that could be enforced. ... "+strategiesThatNeedToBeImproved+" Violated constraints: "+contextRepresentation.getViolatedConstraints());
         HashMap<String, List<ActionEffect>> actionEffects = ActionEffects.getActionConditionalEffects();
-        if (actionEffects.size()==0){
+        if (actionEffects.size() == 0) {
             findAndExecuteBestActionsForDefaultEffects();
             return;
         }
@@ -482,7 +486,7 @@ public class PlanningGreedyAlgorithm implements PlanningAlgorithmInterface {
         ArrayList<Pair<ActionEffect, Integer>> result = new ArrayList<Pair<ActionEffect, Integer>>();
         double violationDegree = contextRepresentation.evaluateViolationDegree();
         int numberOfRemainingConstraints = numberOfBrokenConstraints;
-        if (!strategiesThatNeedToBeImproved.equalsIgnoreCase("") || numberOfBrokenConstraints > 0 && lastFixed!=0) {
+        if (!strategiesThatNeedToBeImproved.equalsIgnoreCase("") || numberOfBrokenConstraints > 0 && lastFixed != 0) {
 //		while (contextRepresentation.countViolatedConstraints() > 0
 //				&& numberOfRemainingConstraints > 0 && lastFixed>0) {
             Date date = new Date();
@@ -535,59 +539,59 @@ public class PlanningGreedyAlgorithm implements PlanningAlgorithmInterface {
                                 fixedStr, foundActions);
                         /////////////////////~~~~~~~~~~~Check complimentary actions needed~~~~~~~~~~~~~~~~//
                         List<String> targets = contextRepresentation.simulateDataImpact(beforeActionContextRepresentation, actionEffect);
-                        if (targets!=null){
-                        for (String target : targets) {
-                            ActionEffect dataAction = checkActions(target);
-                            if (dataAction != null) {
+                        if (targets != null) {
+                            for (String target : targets) {
+                                ActionEffect dataAction = checkActions(target);
+                                if (dataAction != null) {
+                                    MonitoredCloudService newMonitoredCloudService = contextRepresentation.getMonitoredCloudService().clone();
+                                    ContextRepresentation beforeContext = new ContextRepresentation(newMonitoredCloudService, monitoringAPI);
+                                    int beforeC = contextRepresentation.countViolatedConstraints();
+                                    contextRepresentation.doAction(dataAction);
+                                    int afterC = contextRepresentation.countViolatedConstraints();
+                                    int improvedStrategies = contextRepresentation.countFixedStrategies(beforeContext);
+                                    int req = initiallyBrokenConstraints - afterC + improvedStrategies;
+
+                                    PlanningLogger.logger.info("PlanningAlgorithm: Trying the action due to DATA " + dataAction.getActionName() + "constraints violated : " + contextRepresentation.getViolatedConstraints() + " Strategies improved " + contextRepresentation.getImprovedStrategies(beforeActionContextRepresentation, strategiesThatNeedToBeImproved));
+
+                                    foundActions.add(contextRepresentation.new Pair<ActionEffect, Integer>(dataAction, 1));
+                                    fixedDirectives
+                                            .put(req, foundActions);
+                                    fixedStrategies
+                                            .put(
+                                            improvedStrategies, foundActions);
+                                    contextRepresentation.undoAction(dataAction);
+                                }
+                            }
+                            contextRepresentation.undoDataImpactSimulation(beforeActionContextRepresentation, actionEffect);
+                        }
+
+                        targets = contextRepresentation.simulateLoadImpact(beforeActionContextRepresentation, actionEffect);
+                        if (targets != null) {
+                            for (String target : targets) {
                                 MonitoredCloudService newMonitoredCloudService = contextRepresentation.getMonitoredCloudService().clone();
                                 ContextRepresentation beforeContext = new ContextRepresentation(newMonitoredCloudService, monitoringAPI);
-                                int beforeC = contextRepresentation.countViolatedConstraints();
-                                contextRepresentation.doAction(dataAction);
-                                int afterC = contextRepresentation.countViolatedConstraints();
-                                int improvedStrategies = contextRepresentation.countFixedStrategies(beforeContext);
-                                int req = initiallyBrokenConstraints - afterC + improvedStrategies;
 
-                                PlanningLogger.logger.info("PlanningAlgorithm: Trying the action due to DATA " + dataAction.getActionName() + "constraints violated : " + contextRepresentation.getViolatedConstraints() + " Strategies improved " + contextRepresentation.getImprovedStrategies(beforeActionContextRepresentation, strategiesThatNeedToBeImproved));
+                                ActionEffect loadAction = checkActions(target);
+                                if (loadAction != null) {
+                                    int beforeC = contextRepresentation.countViolatedConstraints();
+                                    contextRepresentation.doAction(loadAction);
+                                    int afterC = contextRepresentation.countViolatedConstraints();
+                                    int improvedStrategies = contextRepresentation.countFixedStrategies(beforeContext);
+                                    int req = initiallyBrokenConstraints - afterC + improvedStrategies;
 
-                                foundActions.add(contextRepresentation.new Pair<ActionEffect, Integer>(dataAction, 1));
-                                fixedDirectives
-                                        .put(req, foundActions);
-                                fixedStrategies
-                                        .put(
-                                        improvedStrategies, foundActions);
-                                contextRepresentation.undoAction(dataAction);
+                                    PlanningLogger.logger.info("PlanningAlgorithm: Trying the action due to LOAD " + loadAction.getActionName() + "constraints violated : " + contextRepresentation.getViolatedConstraints() + " Strategies improved " + contextRepresentation.getImprovedStrategies(beforeActionContextRepresentation, strategiesThatNeedToBeImproved));
+
+                                    foundActions.add(contextRepresentation.new Pair<ActionEffect, Integer>(loadAction, 1));
+                                    fixedDirectives
+                                            .put(req, foundActions);
+                                    fixedStrategies
+                                            .put(
+                                            improvedStrategies, foundActions);
+                                    contextRepresentation.undoAction(loadAction);
+                                }
                             }
-                        }
-                        contextRepresentation.undoDataImpactSimulation(beforeActionContextRepresentation, actionEffect);
-                        }
-                        
-                        targets = contextRepresentation.simulateLoadImpact(beforeActionContextRepresentation, actionEffect);
-                        if (targets!=null){
-                        for (String target : targets) {
-                            MonitoredCloudService newMonitoredCloudService = contextRepresentation.getMonitoredCloudService().clone();
-                            ContextRepresentation beforeContext = new ContextRepresentation(newMonitoredCloudService, monitoringAPI);
 
-                            ActionEffect loadAction = checkActions(target);
-                            if (loadAction != null) {
-                                int beforeC = contextRepresentation.countViolatedConstraints();
-                                contextRepresentation.doAction(loadAction);
-                                int afterC = contextRepresentation.countViolatedConstraints();
-                                int improvedStrategies = contextRepresentation.countFixedStrategies(beforeContext);
-                                int req = initiallyBrokenConstraints - afterC + improvedStrategies;
-
-                                PlanningLogger.logger.info("PlanningAlgorithm: Trying the action due to LOAD " + loadAction.getActionName() + "constraints violated : " + contextRepresentation.getViolatedConstraints() + " Strategies improved " + contextRepresentation.getImprovedStrategies(beforeActionContextRepresentation, strategiesThatNeedToBeImproved));
-
-                                foundActions.add(contextRepresentation.new Pair<ActionEffect, Integer>(loadAction, 1));
-                                fixedDirectives
-                                        .put(req, foundActions);
-                                fixedStrategies
-                                        .put(
-                                        improvedStrategies, foundActions);
-                                contextRepresentation.undoAction(loadAction);
-                            }
-                        }
-
-                        contextRepresentation.undoLoadImpactSimulation(beforeActionContextRepresentation, actionEffect);
+                            contextRepresentation.undoLoadImpactSimulation(beforeActionContextRepresentation, actionEffect);
                         }
 
                         contextRepresentation.undoAction(actionEffect);
@@ -659,62 +663,62 @@ public class PlanningGreedyAlgorithm implements PlanningAlgorithmInterface {
             numberOfRemainingConstraints -= lastFixed;
 
         }
-        for (int i=0;i<result.size();i++){
+        for (int i = 0; i < result.size(); i++) {
             contextRepresentation.doAction(result.get(i).getFirst());
         }
-        if (result.size()==0 && contextRepresentation.countViolatedConstraints()>0){
-            monitoringAPI.sendMessageToAnalysisService("Requirements "+contextRepresentation.getViolatedConstraints()+" are violated, and rSYBL can not solve the problem.");
-        }else{
-            
-        ActionPlanEnforcement actionPlanEnforcement = new ActionPlanEnforcement(enforcementAPI);
-        actionPlanEnforcement.enforceResult(result, dependencyGraph,contextRepresentation.getFixedConstraintsAsConstraints(lastContextRepresentation),contextRepresentation.getImprovedStrategiesAsStrategies(lastContextRepresentation, strategiesThatNeedToBeImproved));
+        if (result.size() == 0 && contextRepresentation.countViolatedConstraints() > 0) {
+            monitoringAPI.sendMessageToAnalysisService("Requirements " + contextRepresentation.getViolatedConstraints() + " are violated, and rSYBL can not solve the problem.");
+        } else {
+
+            ActionPlanEnforcement actionPlanEnforcement = new ActionPlanEnforcement(enforcementAPI);
+            actionPlanEnforcement.enforceResult(result, dependencyGraph, contextRepresentation.getFixedConstraintsAsConstraints(lastContextRepresentation), contextRepresentation.getImprovedStrategiesAsStrategies(lastContextRepresentation, strategiesThatNeedToBeImproved));
         }
     }
-    
+
     @Override
     public void run() {
-        t=new Timer();
-        try{
-        t.scheduleAtFixedRate(new TimerTask(){
-            @Override
-            public void run(){
-            if (dependencyGraph.isInControlState()) {
-                try {
-                    Thread.sleep(REFRESH_PERIOD);
-                } catch (InterruptedException e) {
-                    // TODO Auto-generated catch block
-                    PlanningLogger.logger.error(e.toString());
+        t = new Timer();
+        try {
+            t.scheduleAtFixedRate(new TimerTask() {
+                @Override
+                public void run() {
+                    if (dependencyGraph.isInControlState()) {
+                        try {
+                            Thread.sleep(REFRESH_PERIOD);
+                        } catch (InterruptedException e) {
+                            // TODO Auto-generated catch block
+                            PlanningLogger.logger.error(e.toString());
+                        }
+
+                        Node cloudService = monitoringAPI.getControlledService();
+
+                        dependencyGraph.setCloudService(cloudService);
+
+                        contextRepresentation = new ContextRepresentation(dependencyGraph,
+                                monitoringAPI);
+
+                        contextRepresentation.initializeContext();
+
+                        findAndExecuteBestActions();
+                    }
                 }
-
-                Node cloudService = monitoringAPI.getControlledService();
-
-                dependencyGraph.setCloudService(cloudService);
-
-                contextRepresentation = new ContextRepresentation(dependencyGraph,
-                        monitoringAPI);
-
-                contextRepresentation.initializeContext();
-
-                findAndExecuteBestActions();
-            }
-            }
-        }, REFRESH_PERIOD, REFRESH_PERIOD);
-        }catch(Exception exception){
-           PlanningLogger.logger.error(exception.getMessage());
+            }, REFRESH_PERIOD, REFRESH_PERIOD);
+        } catch (Exception exception) {
+            PlanningLogger.logger.error(exception.getMessage());
         }
     }
 
     @Override
     public void start() {
-        if (Configuration.getADVISEEnabled()){
-           evaluateLearningPerformance = new Timer();
-        evaluateLearningPerformance.scheduleAtFixedRate(new TimerTask(){
-        public void run(){
-            checkWhetherLearningIsAccurateAndSwitch();
+        if (Configuration.getADVISEEnabled()) {
+            evaluateLearningPerformance = new Timer();
+            evaluateLearningPerformance.scheduleAtFixedRate(new TimerTask() {
+                public void run() {
+                    checkWhetherLearningIsAccurateAndSwitch();
+                }
+            }, 0, REFRESH_PERIOD);
         }
-        }, 0, REFRESH_PERIOD);
-        }
-        
+
         run();
     }
 
@@ -744,7 +748,7 @@ public class PlanningGreedyAlgorithm implements PlanningAlgorithmInterface {
 
     @Override
     public void replaceDependencyGraph(DependencyGraph dependencyGraph) {
-        this.dependencyGraph=dependencyGraph;
+        this.dependencyGraph = dependencyGraph;
     }
 
     @Override
@@ -752,6 +756,4 @@ public class PlanningGreedyAlgorithm implements PlanningAlgorithmInterface {
         PlanningLogger.logger.info("SWITCHING to Initial Greedy Algorithm");
         this.start();
     }
-
-    
 }
