@@ -36,7 +36,9 @@ import at.ac.tuwien.dsg.csdg.elasticityInformation.elasticityRequirements.Condit
 import at.ac.tuwien.dsg.csdg.elasticityInformation.elasticityRequirements.SYBLSpecification;
 import at.ac.tuwien.dsg.csdg.elasticityInformation.elasticityRequirements.Strategy;
 import at.ac.tuwien.dsg.csdg.inputProcessing.multiLevelModel.abstractModelXML.SYBLDirectiveMappingFromXML;
+import at.ac.tuwien.dsg.csdg.outputProcessing.eventsNotification.CustomEvent;
 import at.ac.tuwien.dsg.csdg.outputProcessing.eventsNotification.EventNotification;
+import at.ac.tuwien.dsg.csdg.outputProcessing.eventsNotification.IEvent;
 import at.ac.tuwien.dsg.rSybl.cloudInteractionUnit.api.EnforcementAPIInterface;
 import at.ac.tuwien.dsg.rSybl.dataProcessingUnit.api.MonitoringAPIInterface;
 import at.ac.tuwien.dsg.rSybl.planningEngine.ContextRepresentation.Pair;
@@ -454,6 +456,13 @@ public class PlanningGreedyAlgorithm implements PlanningAlgorithmInterface {
         }
 
         if (result.size() == 0 && contextRepresentation.countViolatedConstraints() > 0) {
+            EventNotification eventNotification = EventNotification.getEventNotification();
+            CustomEvent customEvent = new CustomEvent();
+            customEvent.setCloudServiceID(this.dependencyGraph.getCloudService().getId());
+            customEvent.setType(IEvent.Type.NOTIFICATION);
+            customEvent.setTarget(contextRepresentation.getViolatedConstraints());
+            customEvent.setMessage("Requirements " + contextRepresentation.getViolatedConstraints() + " are violated, and rSYBL can not solve the problem.");
+            eventNotification.sendEvent(customEvent);
             monitoringAPI.sendMessageToAnalysisService("Requirements " + contextRepresentation.getViolatedConstraints() + " are violated, and rSYBL can not solve the problem.");
         } else {
 
@@ -667,6 +676,13 @@ public class PlanningGreedyAlgorithm implements PlanningAlgorithmInterface {
             contextRepresentation.doAction(result.get(i).getFirst());
         }
         if (result.size() == 0 && contextRepresentation.countViolatedConstraints() > 0) {
+            EventNotification eventNotification = EventNotification.getEventNotification();
+            CustomEvent customEvent = new CustomEvent();
+            customEvent.setCloudServiceID(this.dependencyGraph.getCloudService().getId());
+            customEvent.setType(IEvent.Type.NOTIFICATION);
+            customEvent.setTarget(contextRepresentation.getViolatedConstraints());
+            customEvent.setMessage("Requirements " + contextRepresentation.getViolatedConstraints() + " are violated, and rSYBL can not solve the problem.");
+            eventNotification.sendEvent(customEvent);
             monitoringAPI.sendMessageToAnalysisService("Requirements " + contextRepresentation.getViolatedConstraints() + " are violated, and rSYBL can not solve the problem.");
         } else {
 

@@ -15,10 +15,11 @@ public interface IEvent extends Serializable{
 		START, FINISHED, FAILED
 	}
 	public enum Type {
-		NOTIFICATION, ERROR, UNHEALTHY_SP
+		NOTIFICATION, ERROR, UNHEALTHY_SP,ELASTICITY_CONTROL
 	}
     public Stage getStage();
-
+    public Type getType();
+    
 
 	public String getServiceId() ;
 

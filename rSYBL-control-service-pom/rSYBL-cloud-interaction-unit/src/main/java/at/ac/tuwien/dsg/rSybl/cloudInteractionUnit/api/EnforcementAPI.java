@@ -38,6 +38,9 @@ import at.ac.tuwien.dsg.csdg.Node;
 import at.ac.tuwien.dsg.csdg.Relationship.RelationshipType;
 import at.ac.tuwien.dsg.csdg.elasticityInformation.ElasticityCapability;
 import at.ac.tuwien.dsg.csdg.elasticityInformation.ElasticityRequirement;
+import at.ac.tuwien.dsg.csdg.outputProcessing.eventsNotification.CustomEvent;
+import at.ac.tuwien.dsg.csdg.outputProcessing.eventsNotification.EventNotification;
+import at.ac.tuwien.dsg.csdg.outputProcessing.eventsNotification.IEvent;
 import at.ac.tuwien.dsg.rSybl.cloudInteractionUnit.enforcementPlugins.OfferedEnforcementCapabilities;
 import at.ac.tuwien.dsg.rSybl.cloudInteractionUnit.enforcementPlugins.interfaces.EnforcementInterface;
 import at.ac.tuwien.dsg.rSybl.cloudInteractionUnit.utils.Configuration;
@@ -53,6 +56,7 @@ public class EnforcementAPI {
     private Node controlledService;
     private EnforcementInterface offeredCapabilities;
     private String className;
+    private int numberOfWaits = 0;
 
     public EnforcementAPI() {
     }
@@ -134,8 +138,19 @@ public class EnforcementAPI {
             List<String> metrics = monitoringAPIInterface
                     .getAvailableMetrics(node);
             // monitoringAPIInterface.enforcingActionStarted("ScaleIn", arg0);
+            this.numberOfWaits = 0;
             while (!monitoringAPIInterface.isHealthy()) {
                 boolean myMetrics = true;
+                numberOfWaits++;
+                if (numberOfWaits > 3) {
+                    EventNotification eventNotification = EventNotification.getEventNotification();
+                    CustomEvent customEvent = new CustomEvent();
+                    customEvent.setCloudServiceID(this.getControlledService().getId());
+                    customEvent.setType(IEvent.Type.UNHEALTHY_SP);
+                    customEvent.setTarget(node.getId());
+                    customEvent.setMessage(node.getId() + "not healthy for " + (numberOfWaits * 15000) + " seconds.");
+                    eventNotification.sendEvent(customEvent);
+                }
                 RuntimeLogger.logger.info("Waiting for action....");
                 try {
                     Thread.sleep(15000);
@@ -143,7 +158,7 @@ public class EnforcementAPI {
                     // TODO Auto-generated catch block
                     ex.printStackTrace();
                 }
-               
+
 
             }
 
@@ -205,16 +220,27 @@ public class EnforcementAPI {
             }
             List<String> metrics = monitoringAPIInterface
                     .getAvailableMetrics(node);
-                        // monitoringAPIInterface.enforcingActionStarted("ScaleIn", arg0);
+            // monitoringAPIInterface.enforcingActionStarted("ScaleIn", arg0);
+            numberOfWaits = 0;
             while (!monitoringAPIInterface.isHealthy()) {
                 RuntimeLogger.logger.info("Waiting for action....");
+                numberOfWaits++;
+                if (numberOfWaits > 3) {
+                    EventNotification eventNotification = EventNotification.getEventNotification();
+                    CustomEvent customEvent = new CustomEvent();
+                    customEvent.setCloudServiceID(this.getControlledService().getId());
+                    customEvent.setType(IEvent.Type.UNHEALTHY_SP);
+                    customEvent.setTarget(node.getId());
+                    customEvent.setMessage(node.getId() + "not healthy for " + (numberOfWaits * 15000) + " seconds.");
+                    eventNotification.sendEvent(customEvent);
+                }
                 try {
                     Thread.sleep(15000);
                 } catch (InterruptedException ex) {
                     // TODO Auto-generated catch block
                     ex.printStackTrace();
                 }
-               
+
 
             }
 
@@ -235,7 +261,18 @@ public class EnforcementAPI {
             res = offeredCapabilities.scaleIn(arg0);
             List<String> metrics = monitoringAPIInterface
                     .getAvailableMetrics(arg0);
-              while (!monitoringAPIInterface.isHealthy()) {
+            numberOfWaits = 0;
+            while (!monitoringAPIInterface.isHealthy()) {
+                numberOfWaits++;
+                if (numberOfWaits > 3) {
+                    EventNotification eventNotification = EventNotification.getEventNotification();
+                    CustomEvent customEvent = new CustomEvent();
+                    customEvent.setCloudServiceID(this.getControlledService().getId());
+                    customEvent.setType(IEvent.Type.UNHEALTHY_SP);
+                    customEvent.setTarget(arg0.getId());
+                    customEvent.setMessage(arg0.getId() + "not healthy for " + (numberOfWaits * 15000) + " seconds.");
+                    eventNotification.sendEvent(customEvent);
+                }
                 RuntimeLogger.logger.info("Waiting for action....");
                 try {
                     Thread.sleep(15000);
@@ -243,7 +280,7 @@ public class EnforcementAPI {
                     // TODO Auto-generated catch block
                     ex.printStackTrace();
                 }
-               
+
 
             }
 
@@ -264,17 +301,28 @@ public class EnforcementAPI {
         res = offeredCapabilities.scaleOut(arg0);
         List<String> metrics = monitoringAPIInterface.getAvailableMetrics(arg0);
         // monitoringAPIInterface.enforcingActionStarted("ScaleOut", arg0);
-           while (!monitoringAPIInterface.isHealthy()) {
-                RuntimeLogger.logger.info("Waiting for action....");
-                try {
-                    Thread.sleep(15000);
-                } catch (InterruptedException ex) {
-                    // TODO Auto-generated catch block
-                    ex.printStackTrace();
-                }
-               
-
+        numberOfWaits = 0;
+        while (!monitoringAPIInterface.isHealthy()) {
+            numberOfWaits++;
+            if (numberOfWaits > 3) {
+                EventNotification eventNotification = EventNotification.getEventNotification();
+                CustomEvent customEvent = new CustomEvent();
+                customEvent.setCloudServiceID(this.getControlledService().getId());
+                customEvent.setType(IEvent.Type.UNHEALTHY_SP);
+                customEvent.setTarget(arg0.getId());
+                customEvent.setMessage(arg0.getId() + "not healthy for " + (numberOfWaits * 15000) + " seconds.");
+                eventNotification.sendEvent(customEvent);
             }
+            RuntimeLogger.logger.info("Waiting for action....");
+            try {
+                Thread.sleep(15000);
+            } catch (InterruptedException ex) {
+                // TODO Auto-generated catch block
+                ex.printStackTrace();
+            }
+
+
+        }
         try {
             Thread.sleep(60000);
         } catch (InterruptedException ex) {
@@ -293,17 +341,28 @@ public class EnforcementAPI {
         res = offeredCapabilities.scaleOut(violationDegree, arg0);
         List<String> metrics = monitoringAPIInterface.getAvailableMetrics(arg0);
         // monitoringAPIInterface.enforcingActionStarted("ScaleOut", arg0);
-           while (!monitoringAPIInterface.isHealthy()) {
-                RuntimeLogger.logger.info("Waiting for action....");
-                try {
-                    Thread.sleep(15000);
-                } catch (InterruptedException ex) {
-                    // TODO Auto-generated catch block
-                    ex.printStackTrace();
-                }
-               
-
+        numberOfWaits = 0;
+        while (!monitoringAPIInterface.isHealthy()) {
+            numberOfWaits++;
+            if (numberOfWaits > 3) {
+                EventNotification eventNotification = EventNotification.getEventNotification();
+                CustomEvent customEvent = new CustomEvent();
+                customEvent.setCloudServiceID(this.getControlledService().getId());
+                customEvent.setType(IEvent.Type.UNHEALTHY_SP);
+                customEvent.setTarget(arg0.getId());
+                customEvent.setMessage(arg0.getId() + " not healthy for " + (numberOfWaits * 15000) + " seconds.");
+                eventNotification.sendEvent(customEvent);
             }
+            RuntimeLogger.logger.info("Waiting for action....");
+            try {
+                Thread.sleep(15000);
+            } catch (InterruptedException ex) {
+                // TODO Auto-generated catch block
+                ex.printStackTrace();
+            }
+
+
+        }
         try {
             Thread.sleep(60000);
         } catch (InterruptedException ex) {
@@ -358,18 +417,28 @@ public class EnforcementAPI {
                     // TODO Auto-generated catch block
                     ex.printStackTrace();
                 }
+                numberOfWaits = 0;
+                while (!monitoringAPIInterface.isHealthy()) {
+                    numberOfWaits++;
+                    if (numberOfWaits > 3) {
+                        EventNotification eventNotification = EventNotification.getEventNotification();
+                        CustomEvent customEvent = new CustomEvent();
+                        customEvent.setCloudServiceID(this.getControlledService().getId());
+                        customEvent.setType(IEvent.Type.UNHEALTHY_SP);
+                        customEvent.setTarget(e.getId());
+                        customEvent.setMessage(e.getId() + " not healthy for " + (numberOfWaits * 15000) + " seconds.");
+                        eventNotification.sendEvent(customEvent);
+                    }
+                    RuntimeLogger.logger.info("Waiting for action....");
+                    try {
+                        Thread.sleep(15000);
+                    } catch (InterruptedException ex) {
+                        // TODO Auto-generated catch block
+                        ex.printStackTrace();
+                    }
 
-                   while (!monitoringAPIInterface.isHealthy()) {
-                RuntimeLogger.logger.info("Waiting for action....");
-                try {
-                    Thread.sleep(15000);
-                } catch (InterruptedException ex) {
-                    // TODO Auto-generated catch block
-                    ex.printStackTrace();
+
                 }
-               
-
-            }
             } else {
                 res = false;
 
@@ -431,18 +500,28 @@ public class EnforcementAPI {
                     // TODO Auto-generated catch block
                     ex.printStackTrace();
                 }
-
-                  while (!monitoringAPIInterface.isHealthy()) {
-                RuntimeLogger.logger.info("Waiting for action....");
-                try {
-                    Thread.sleep(15000);
-                } catch (InterruptedException ex) {
-                    // TODO Auto-generated catch block
-                    ex.printStackTrace();
+                numberOfWaits=0;
+                while (!monitoringAPIInterface.isHealthy()) {
+                    RuntimeLogger.logger.info("Waiting for action....");
+                     numberOfWaits++;
+                if (numberOfWaits>3){
+                    EventNotification eventNotification = EventNotification.getEventNotification();
+                    CustomEvent customEvent = new CustomEvent();
+                    customEvent.setCloudServiceID(this.getControlledService().getId());
+                    customEvent.setType(IEvent.Type.UNHEALTHY_SP);
+                    customEvent.setTarget(e.getId());
+                    customEvent.setMessage(e.getId()+" not healthy for "+(numberOfWaits*15000)+" seconds.");
+                    eventNotification.sendEvent(customEvent);
                 }
-               
+                    try {
+                        Thread.sleep(15000);
+                    } catch (InterruptedException ex) {
+                        // TODO Auto-generated catch block
+                        ex.printStackTrace();
+                    }
 
-            }
+
+                }
             } else {
                 res = false;
 

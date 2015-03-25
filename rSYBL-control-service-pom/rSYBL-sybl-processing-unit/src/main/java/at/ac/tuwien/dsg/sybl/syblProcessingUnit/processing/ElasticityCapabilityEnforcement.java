@@ -18,7 +18,6 @@ import at.ac.tuwien.dsg.csdg.inputProcessing.multiLevelModel.primitives.Elastici
 import at.ac.tuwien.dsg.csdg.inputProcessing.multiLevelModel.primitives.ElasticityPrimitiveDependency;
 import at.ac.tuwien.dsg.csdg.inputProcessing.multiLevelModel.primitives.ElasticityPrimitivesDescription;
 import at.ac.tuwien.dsg.csdg.inputProcessing.multiLevelModel.primitives.ServiceElasticityPrimitives;
-import at.ac.tuwien.dsg.csdg.outputProcessing.eventsNotification.ActionPlanEvent;
 import at.ac.tuwien.dsg.csdg.outputProcessing.eventsNotification.EventNotification;
 import at.ac.tuwien.dsg.csdg.outputProcessing.eventsNotification.IEvent;
 import at.ac.tuwien.dsg.rSybl.cloudInteractionUnit.api.EnforcementAPIInterface;
@@ -29,7 +28,6 @@ public class ElasticityCapabilityEnforcement {
 
     EnforcementAPIInterface enforcementAPI = null;
     ElasticityPrimitivesDescription primitivesDescription = null;
-    ActionPlanEvent actionPlanEvent = new ActionPlanEvent();
     EventNotification eventNotification = EventNotification.getEventNotification();
     public ElasticityCapabilityEnforcement(EnforcementAPIInterface apiInterface) {
         enforcementAPI = apiInterface;
@@ -70,10 +68,6 @@ public class ElasticityCapabilityEnforcement {
 
     public void enforceActionGivenPrimitives(
             String actionName, Node target, DependencyGraph dependencyGraph, Constraint c, Strategy s) {
-                actionPlanEvent = new ActionPlanEvent();
-        actionPlanEvent.setServiceId(dependencyGraph.getCloudService().getId());
-        actionPlanEvent.setStage(IEvent.Stage.START);
-        eventNotification.sendEvent(actionPlanEvent);
        IEvent.Stage stage =null ;
         if (!dependencyGraph.isInControlState()) {
             SYBLDirectivesEnforcementLogger.logger.info("Not enforcing action due to breakpoint ");
@@ -95,26 +89,16 @@ public class ElasticityCapabilityEnforcement {
                             break;
                     } else {
                         SYBLDirectivesEnforcementLogger.logger.info("Successfully enforced " + primitives[i] + ", continuing with capability "  );
-                        actionPlanEvent.addEffect(new AbstractMap.SimpleEntry<String,String>(primitives[i],elasticityCapability.getServicePartID()));
                     }
                     }
                     break;
                 }
             }
         }
-         actionPlanEvent=new ActionPlanEvent();
-        actionPlanEvent.setServiceId(dependencyGraph.getCloudService().getId());
+        
         if (stage==null){
             stage=IEvent.Stage.FINISHED;
         }
-        actionPlanEvent.setStage(stage);
-
-        if (c!=null){
-            actionPlanEvent.addConstraint(c);
-        }else{
-            actionPlanEvent.addStrategy(s);
-        }
-        eventNotification.sendEvent(actionPlanEvent);
     }
 
     public Object parseParameter(String param, Node node,

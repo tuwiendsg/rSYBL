@@ -24,6 +24,7 @@ import at.ac.tuwien.dsg.csdg.outputProcessing.OutputProcessingInterface;
 import at.ac.tuwien.dsg.csdg.outputProcessing.eventsNotification.ActionPlanEvent;
 import at.ac.tuwien.dsg.csdg.outputProcessing.eventsNotification.EventNotification;
 import at.ac.tuwien.dsg.csdg.outputProcessing.eventsNotification.IEvent;
+import at.ac.tuwien.dsg.csdg.outputProcessing.eventsNotification.IEvent.Type;
 import at.ac.tuwien.dsg.rSybl.cloudInteractionUnit.api.EnforcementAPIInterface;
 import at.ac.tuwien.dsg.rSybl.planningEngine.ContextRepresentation.Pair;
 
@@ -31,8 +32,6 @@ import at.ac.tuwien.dsg.rSybl.planningEngine.staticData.ActionEffect;
 import at.ac.tuwien.dsg.rSybl.planningEngine.utils.PlanningLogger;
 import java.util.AbstractMap;
 import java.util.HashMap;
-
-
 
 public class ActionPlanEnforcement {
 
@@ -42,6 +41,7 @@ public class ActionPlanEnforcement {
     private double violationDegree = 0;
     private ActionPlanEvent actionPlanEvent = new ActionPlanEvent();
     private EventNotification eventNotification = EventNotification.getEventNotification();
+
     public ActionPlanEnforcement(EnforcementAPIInterface apiInterface) {
 
         enforcementAPI = apiInterface;
@@ -56,30 +56,35 @@ public class ActionPlanEnforcement {
     }
 
     public void enforceResult(ArrayList<Pair<ActionEffect, Integer>> result, DependencyGraph dependencyGraph, double violationDegree, List<Constraint> constraintsFixed, List<Strategy> strategiesImproved) {
-        actionPlanEvent = new ActionPlanEvent();
-        actionPlanEvent.setServiceId(dependencyGraph.getCloudService().getId());
-        actionPlanEvent.setStage(IEvent.Stage.START);
-        actionPlanEvent.setConstraints(constraintsFixed);
-        actionPlanEvent.setStrategies(strategiesImproved);
-        ArrayList<AbstractMap.SimpleEntry<String,String>> res = new ArrayList<AbstractMap.SimpleEntry<String,String>>();
-        for (Pair<ActionEffect,Integer> actionEffect:result){
-            res.add(new AbstractMap.SimpleEntry(actionEffect.getFirst().getActionName(),actionEffect.getFirst().getTargetedEntityID()));
+        if (result.size() > 0) {
+            actionPlanEvent = new ActionPlanEvent();
+            actionPlanEvent.setServiceId(dependencyGraph.getCloudService().getId());
+            actionPlanEvent.setStage(IEvent.Stage.START);
+            actionPlanEvent.setType(Type.ELASTICITY_CONTROL);
+            actionPlanEvent.setConstraints(constraintsFixed);
+            actionPlanEvent.setStrategies(strategiesImproved);
+            ArrayList<AbstractMap.SimpleEntry<String, String>> res = new ArrayList<AbstractMap.SimpleEntry<String, String>>();
+            for (Pair<ActionEffect, Integer> actionEffect : result) {
+                res.add(new AbstractMap.SimpleEntry(actionEffect.getFirst().getActionName(), actionEffect.getFirst().getTargetedEntityID()));
+            }
+            eventNotification.sendEvent(actionPlanEvent);
+            this.violationDegree = violationDegree;
+
+            actionPlanEvent = new ActionPlanEvent();
+            actionPlanEvent.setType(Type.ELASTICITY_CONTROL);
+            actionPlanEvent.setConstraints(constraintsFixed);
+            actionPlanEvent.setStrategies(strategiesImproved);
+            actionPlanEvent.setServiceId(dependencyGraph.getCloudService().getId());
+            actionPlanEvent.setStage(IEvent.Stage.FINISHED);
+
+            enforceResult(result, dependencyGraph, constraintsFixed, strategiesImproved);
         }
-        eventNotification.sendEvent(actionPlanEvent);
-        this.violationDegree = violationDegree;
-       
-        actionPlanEvent=new ActionPlanEvent();
-        actionPlanEvent.setServiceId(dependencyGraph.getCloudService().getId());
-        actionPlanEvent.setStage(IEvent.Stage.FINISHED);
-        
-        enforceResult(result, dependencyGraph, constraintsFixed, strategiesImproved);
-   
-        
+
     }
 
     public void enforceResult(ArrayList<Pair<ActionEffect, Integer>> result, DependencyGraph dependencyGraph, List<Constraint> constraintsFixed, List<Strategy> strategiesImproved) {
         HashMap<Node, ElasticityCapability> capabilities = new HashMap<Node, ElasticityCapability>();
-        
+
         for (Pair<ActionEffect, Integer> pair : result) {
             for (ElasticityCapability elasticityCapability : pair.getFirst().getTargetedEntity().getElasticityCapabilities()) {
                 if (checkECPossible(pair.getFirst())) {
@@ -118,15 +123,14 @@ public class ActionPlanEnforcement {
             }
 
         }
-        if ((actionPlanEvent.getEffect()!=null && actionPlanEvent.getEffect().size()>0)){
-        actionPlanEvent.setConstraints(constraintsFixed);
-        actionPlanEvent.setStrategies(strategiesImproved);
-        eventNotification.sendEvent(actionPlanEvent);
-    }else{
+        if ((actionPlanEvent.getEffect() != null && actionPlanEvent.getEffect().size() > 0)) {
+
+            eventNotification.sendEvent(actionPlanEvent);
+        } else {
             actionPlanEvent.setStage(IEvent.Stage.FAILED);
             eventNotification.sendEvent(actionPlanEvent);
         }
-         
+
 //                for (Pair<ActionEffect, Integer> actionEffect : result) {
 //			PlanningLogger.logger.info("Enforcing capability "
 //					+ actionEffect.getFirst().getActionType() + " on "
@@ -192,6 +196,7 @@ public class ActionPlanEnforcement {
             for (int i = 0; i < primitives.length; i++) {
                 boolean added = false;
                 if (!enforcePrimitive(primitives[i], node, dependencyGraph)) {
+                    actionPlanEvent.addEffect(new AbstractMap.SimpleEntry(primitives[i], elasticityCapability.getServicePartID()));
                     PlanningLogger.logger.info("Failed Enforcing " + primitives[i] + ", cancelling the entire elasticity capability " + elasticityCapability.getName() + "-" + node.getId());
                     break;
                 } else {
@@ -199,14 +204,13 @@ public class ActionPlanEnforcement {
                         capabilitiesEnforced += elasticityCapability.getName() + "; ";
                         added = true;
                     }
-                    actionPlanEvent.addEffect(new AbstractMap.SimpleEntry(primitives[i],elasticityCapability.getServicePartID()) );
+                    actionPlanEvent.addEffect(new AbstractMap.SimpleEntry(primitives[i], elasticityCapability.getServicePartID()));
                     PlanningLogger.logger.info("Successfully enforced " + primitives[i] + ", continuing with capability " + elasticityCapability.getName() + "-" + node.getId());
 
                 }
             }
-        
-            }
-        
+
+        }
         //}
     }
 
@@ -219,7 +223,7 @@ public class ActionPlanEnforcement {
         private EventNotification eventNotification;
 
         public EnforceActionInThread(ActionEffect actionEffect, DependencyGraph dependencyGraph, List<Constraint> violatedConstraints, List<Strategy> improvedStrategies) {
-            
+
             this.actionEffect = actionEffect;
             this.dependencyGraph = dependencyGraph;
             this.violatedConstraints = violatedConstraints;
@@ -245,6 +249,7 @@ public class ActionPlanEnforcement {
                         for (int i = 0; i < primitives.length; i++) {
                             if (!enforcePrimitive(primitives[i],
                                     actionEffect.getTargetedEntity(), dependencyGraph)) {
+                                actionPlanEvent.addEffect(new AbstractMap.SimpleEntry(primitives[i], elasticityCapability.getServicePartID()));
 
                                 PlanningLogger.logger.info("Failed Enforcing " + primitives[i] + ", cancelling the entire elasticity capability " + actionEffect.getActionType() + "-" + actionEffect.getTargetedEntityID());
                                 break;
@@ -254,7 +259,7 @@ public class ActionPlanEnforcement {
                                     capabilitiesEnforced += elasticityCapability.getName() + "; ";
                                     added = true;
                                 }
-                                actionPlanEvent.addEffect(new AbstractMap.SimpleEntry(primitives[i],elasticityCapability.getServicePartID()) );
+                                actionPlanEvent.addEffect(new AbstractMap.SimpleEntry(primitives[i], elasticityCapability.getServicePartID()));
 
                                 PlanningLogger.logger.info("Successfully enforced " + primitives[i] + ", continuing with capability " + actionEffect.getActionType() + "-" + actionEffect.getTargetedEntityID());
 
@@ -266,7 +271,7 @@ public class ActionPlanEnforcement {
                     //}
                 }
             }
-            
+
         }
     }
 
@@ -366,10 +371,12 @@ public class ActionPlanEnforcement {
                     if (!enforcePrimitive(primitives[i],
                             actionEffect.getTargetedEntity(), dependencyGraph)) {
                         PlanningLogger.logger.info("Failed Enforcing " + primitives[i] + ", cancelling the entire elasticity capability " + actionEffect.getActionType() + "-" + actionEffect.getTargetedEntityID());
+                        actionPlanEvent.addEffect(new AbstractMap.SimpleEntry(primitives[i], elasticityCapability.getServicePartID()));
+
                         break;
                     } else {
                         PlanningLogger.logger.info("Successfully enforced " + primitives[i] + ", continuing with capability " + actionEffect.getActionType() + "-" + actionEffect.getTargetedEntityID());
-                                            actionPlanEvent.addEffect(new AbstractMap.SimpleEntry(primitives[i],elasticityCapability.getServicePartID()) );
+                        actionPlanEvent.addEffect(new AbstractMap.SimpleEntry(primitives[i], elasticityCapability.getServicePartID()));
 
                     }
                 }

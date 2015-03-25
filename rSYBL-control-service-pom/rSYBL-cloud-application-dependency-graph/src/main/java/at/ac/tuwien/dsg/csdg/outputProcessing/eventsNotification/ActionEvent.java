@@ -53,12 +53,12 @@ public class ActionEvent implements IEvent {
 		this.actionId = actionId;
 	}
 
-	public Stage getType() {
-		return stage;
+	public Type getType() {
+		return type;
 	}
 
-	public void setType(Stage type) {
-		this.stage = type;
+	public void setType(Type type) {
+		this.type = type;
 	}
 
 	public Stage getStage() {
@@ -69,9 +69,6 @@ public class ActionEvent implements IEvent {
 		this.stage = stage;
 	}
 
-	public void setType(Type type) {
-		this.type = type;
-	}
 
     @Override
     public String getServiceId() {
