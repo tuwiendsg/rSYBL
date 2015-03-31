@@ -12,7 +12,6 @@ public class ActionEvent implements IEvent {
 	protected String serviceId;
 	protected String targetId; // e.g. the id of a UNIT
 	protected String actionId;
-
 	private Type type;
 
 
@@ -74,5 +73,7 @@ public class ActionEvent implements IEvent {
     public String getServiceId() {
         return serviceId;
     }
+
+   
 
 }

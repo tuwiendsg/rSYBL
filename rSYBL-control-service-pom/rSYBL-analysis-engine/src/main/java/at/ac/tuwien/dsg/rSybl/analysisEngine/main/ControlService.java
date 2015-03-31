@@ -42,6 +42,7 @@ import at.ac.tuwien.dsg.csdg.inputProcessing.tosca.TOSCAProcessing;
 import at.ac.tuwien.dsg.csdg.outputProcessing.OutputProcessing;
 import at.ac.tuwien.dsg.csdg.outputProcessing.OutputProcessingFactory;
 import at.ac.tuwien.dsg.csdg.outputProcessing.OutputProcessingInterface;
+import at.ac.tuwien.dsg.csdg.outputProcessing.eventsNotification.EventNotification;
 
 import at.ac.tuwien.dsg.rSybl.analysisEngine.utils.AnalysisLogger;
 import at.ac.tuwien.dsg.rSybl.analysisEngine.utils.Configuration;
@@ -124,6 +125,9 @@ public class ControlService {
     }
     public void stop() {
         monitoringAPI.removeService(dependencyGraph.getCloudService());
+        EventNotification eventNotification = EventNotification.getEventNotification();
+        eventNotification.clearAllEvents();
+        
         dependencyGraph.setWaitState();
         if (planningAlgorithm != null) {
             planningAlgorithm.stop();

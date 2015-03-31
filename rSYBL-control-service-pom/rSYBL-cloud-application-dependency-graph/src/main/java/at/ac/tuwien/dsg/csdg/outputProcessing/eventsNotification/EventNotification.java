@@ -34,6 +34,17 @@ public class EventNotification {
         }
         return eventNotification;
     }
+    public void clearAllEvents(){
+       if (Configuration.getMQEnabled()==true){
+        	try{
+        
+         rabbitMQProducer.clearAllEvents();
+         rabbitMQProducer.initiateQueue();
+        	}catch(Exception e){
+        		DependencyGraphLogger.logger.error(e.getCause());
+        	}
+        }
+    }
     public void sendEvent(IEvent event) {
         if (Configuration.getMQEnabled()==true){
         	try{

@@ -18,8 +18,10 @@ import at.ac.tuwien.dsg.csdg.inputProcessing.multiLevelModel.primitives.Elastici
 import at.ac.tuwien.dsg.csdg.inputProcessing.multiLevelModel.primitives.ElasticityPrimitiveDependency;
 import at.ac.tuwien.dsg.csdg.inputProcessing.multiLevelModel.primitives.ElasticityPrimitivesDescription;
 import at.ac.tuwien.dsg.csdg.inputProcessing.multiLevelModel.primitives.ServiceElasticityPrimitives;
+import at.ac.tuwien.dsg.csdg.outputProcessing.eventsNotification.ActionPlanEvent;
 import at.ac.tuwien.dsg.csdg.outputProcessing.eventsNotification.EventNotification;
 import at.ac.tuwien.dsg.csdg.outputProcessing.eventsNotification.IEvent;
+import at.ac.tuwien.dsg.csdg.outputProcessing.eventsNotification.IEvent.Stage;
 import at.ac.tuwien.dsg.rSybl.cloudInteractionUnit.api.EnforcementAPIInterface;
 import at.ac.tuwien.dsg.sybl.syblProcessingUnit.utils.SYBLDirectivesEnforcementLogger;
 import java.util.AbstractMap;
@@ -29,6 +31,7 @@ public class ElasticityCapabilityEnforcement {
     EnforcementAPIInterface enforcementAPI = null;
     ElasticityPrimitivesDescription primitivesDescription = null;
     EventNotification eventNotification = EventNotification.getEventNotification();
+
     public ElasticityCapabilityEnforcement(EnforcementAPIInterface apiInterface) {
         enforcementAPI = apiInterface;
         try {
@@ -68,36 +71,58 @@ public class ElasticityCapabilityEnforcement {
 
     public void enforceActionGivenPrimitives(
             String actionName, Node target, DependencyGraph dependencyGraph, Constraint c, Strategy s) {
-       IEvent.Stage stage =null ;
+        IEvent.Stage stage = null;
+        boolean started = false;
         if (!dependencyGraph.isInControlState()) {
             SYBLDirectivesEnforcementLogger.logger.info("Not enforcing action due to breakpoint ");
             return;
-        }else{
-            SYBLDirectivesEnforcementLogger.logger.info("Starting enforcing action"+actionName+" on target "+target+".");
+        } else {
+            SYBLDirectivesEnforcementLogger.logger.info("Starting enforcing action" + actionName + " on target " + target + ".");
         }
         for (ElasticityCapability elasticityCapability : target.getElasticityCapabilities()) {
             if (elasticityCapability.getName().trim().equalsIgnoreCase(actionName.trim()) && checkECPossible(elasticityCapability)) {
                 if (!elasticityCapability.getName().toLowerCase().contains("scalein") || (elasticityCapability.getName().toLowerCase().contains("scalein") && target.getAllRelatedNodesOfType(RelationshipType.HOSTED_ON_RELATIONSHIP, NodeType.VIRTUAL_MACHINE).size() > 1)) {
+                    ActionPlanEvent actionPlanEvent = new ActionPlanEvent();
+                    actionPlanEvent.setServiceId(dependencyGraph.getCloudService().getId());
+                    actionPlanEvent.addEffect(new AbstractMap.SimpleEntry<String, String>("elasticityCapability.getName().toLowerCase()", target.getId()));
+                    actionPlanEvent.addConstraint(c);
+                    actionPlanEvent.addStrategy(s);
+                    actionPlanEvent.setType(IEvent.Type.ELASTICITY_CONTROL);
+                    actionPlanEvent.setStage(Stage.START);
+                    EventNotification en = EventNotification.getEventNotification();
+                    en.sendEvent(actionPlanEvent);
+                    started = true;
                     String[] primitives = elasticityCapability
                             .getPrimitiveOperations().split(";");
                     for (int i = 0; i < primitives.length; i++) {
 
                         if (!enforcePrimitive(primitivesDescription, primitives[i],
                                 target, dependencyGraph)) {
-                            SYBLDirectivesEnforcementLogger.logger.info("Failed Enforcing " + primitives[i] + ", cancelling the entire elasticity capability " );
-                        stage= IEvent.Stage.FAILED;
+                            SYBLDirectivesEnforcementLogger.logger.info("Failed Enforcing " + primitives[i] + ", cancelling the entire elasticity capability ");
+                            stage = IEvent.Stage.FAILED;
                             break;
-                    } else {
-                        SYBLDirectivesEnforcementLogger.logger.info("Successfully enforced " + primitives[i] + ", continuing with capability "  );
-                    }
+                        } else {
+
+                            SYBLDirectivesEnforcementLogger.logger.info("Successfully enforced " + primitives[i] + ", continuing with capability ");
+                        }
                     }
                     break;
                 }
             }
         }
-        
-        if (stage==null){
-            stage=IEvent.Stage.FINISHED;
+        if (started) {
+            if (stage == null) {
+                stage = IEvent.Stage.FINISHED;
+            }
+            ActionPlanEvent actionPlanEvent = new ActionPlanEvent();
+            actionPlanEvent.setServiceId(dependencyGraph.getCloudService().getId());
+            actionPlanEvent.addEffect(new AbstractMap.SimpleEntry<String, String>("elasticityCapability.getName().toLowerCase()", target.getId()));
+            actionPlanEvent.addConstraint(c);
+            actionPlanEvent.addStrategy(s);
+            actionPlanEvent.setType(IEvent.Type.ELASTICITY_CONTROL);
+            actionPlanEvent.setStage(stage);
+            EventNotification en = EventNotification.getEventNotification();
+            en.sendEvent(actionPlanEvent);
         }
     }
 
@@ -294,12 +319,12 @@ public class ElasticityCapabilityEnforcement {
             for (ElasticityCapability capability : node
                     .getElasticityCapabilities()) {
                 if (capability.getName().toLowerCase().contains(actionName)) {
-					 if (capability.getName().toLowerCase().contains(".")) {
-                    target = capability.getName().split("\\.")[0].toLowerCase();
+                    if (capability.getName().toLowerCase().contains(".")) {
+                        target = capability.getName().split("\\.")[0].toLowerCase();
+                    }
                 }
             }
         }
-				   }
         if (target.equalsIgnoreCase("")) {
             switch (actionName.toLowerCase()) {
                 case "scaleout":
@@ -421,34 +446,34 @@ public class ElasticityCapabilityEnforcement {
 
                                 String methodName = elasticityPrimitive
                                         .getMethodName();
-                                
+
                                 if (methodName.equalsIgnoreCase("")) {
-                                    if (!target.equalsIgnoreCase("")){
-                                    boolean x = enforcementAPI.enforceAction(target,
-                                            actionName, node, parameters);
-                                    if (!x) {
-                                        res = false;
-                                    }
-                                    }else{
-                                       boolean x = enforcementAPI.enforceAction(
-                                            actionName, node, parameters);
-                                    if (!x) {
-                                        res = false;
-                                    } 
+                                    if (!target.equalsIgnoreCase("")) {
+                                        boolean x = enforcementAPI.enforceAction(target,
+                                                actionName, node, parameters);
+                                        if (!x) {
+                                            res = false;
+                                        }
+                                    } else {
+                                        boolean x = enforcementAPI.enforceAction(
+                                                actionName, node, parameters);
+                                        if (!x) {
+                                            res = false;
+                                        }
                                     }
                                 } else {
-                                    if (!target.equalsIgnoreCase("")){
-                                    boolean x = enforcementAPI.enforceAction(target,
-                                            methodName, node, parameters);
-                                    if (!x) {
-                                        res = false;
-                                    }
-                                    }else{
-                                       boolean x = enforcementAPI.enforceAction(
-                                            methodName, node, parameters);
-                                    if (!x) {
-                                        res = false;
-                                    } 
+                                    if (!target.equalsIgnoreCase("")) {
+                                        boolean x = enforcementAPI.enforceAction(target,
+                                                methodName, node, parameters);
+                                        if (!x) {
+                                            res = false;
+                                        }
+                                    } else {
+                                        boolean x = enforcementAPI.enforceAction(
+                                                methodName, node, parameters);
+                                        if (!x) {
+                                            res = false;
+                                        }
                                     }
                                 }
                                 for (ElasticityPrimitiveDependency elasticityPrimitiveDependency : afterPrimitives) {

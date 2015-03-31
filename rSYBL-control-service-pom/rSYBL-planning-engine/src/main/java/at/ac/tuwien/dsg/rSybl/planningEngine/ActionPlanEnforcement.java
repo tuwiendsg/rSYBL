@@ -126,10 +126,7 @@ public class ActionPlanEnforcement {
         if ((actionPlanEvent.getEffect() != null && actionPlanEvent.getEffect().size() > 0)) {
 
             eventNotification.sendEvent(actionPlanEvent);
-        } else {
-            actionPlanEvent.setStage(IEvent.Stage.FAILED);
-            eventNotification.sendEvent(actionPlanEvent);
-        }
+        } 
 
 //                for (Pair<ActionEffect, Integer> actionEffect : result) {
 //			PlanningLogger.logger.info("Enforcing capability "
