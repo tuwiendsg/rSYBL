@@ -34,7 +34,7 @@ public class MQProducer {
     private Session session = null;
     private MessageProducer producer;
     private TransportConnector connector;
-
+    private BrokerService broker;
     public MQProducer() {
         if (Configuration.getQueueName() != null) {
             QUEUE_NAME = Configuration.getQueueName();
@@ -49,10 +49,11 @@ public class MQProducer {
     public void clearAllEvents() {
         try {
             connection.stop();
-            BrokerService broker = new BrokerService();
             try {
-                broker.stopGracefully(connector.getName(), QUEUE_NAME, 2000, 2000);
+//                broker.stopGracefully(connector.getName(), QUEUE_NAME, 2000, 2000);
+                               broker.stop();
             } catch (Exception ex) {
+//                ex.printStackTrace();;
                 DependencyGraphLogger.logger.error(ex.getMessage());
             }
             try {
@@ -68,7 +69,7 @@ public class MQProducer {
 
     public void initiateQueue() {
         // get the initial context
-        BrokerService broker = new BrokerService();
+        broker = new BrokerService();
 
 
         try {

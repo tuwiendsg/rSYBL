@@ -70,7 +70,7 @@ public class TestQueue {
     @After
     public void closeQueue() {
         if (Configuration.getMQEnabled() == true) {
-
+            mQProducer.clearAllEvents();
             mQProducer.closeQueue();
         }
     }
