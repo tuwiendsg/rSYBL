@@ -142,7 +142,7 @@ public class EnforcementAPI {
             while (!monitoringAPIInterface.isHealthy()) {
                 boolean myMetrics = true;
                 numberOfWaits++;
-                if (numberOfWaits > 3) {
+                if (numberOfWaits > 10) {
                     EventNotification eventNotification = EventNotification.getEventNotification();
                     CustomEvent customEvent = new CustomEvent();
                     customEvent.setCloudServiceID(this.getControlledService().getId());
@@ -225,7 +225,7 @@ public class EnforcementAPI {
             while (!monitoringAPIInterface.isHealthy()) {
                 RuntimeLogger.logger.info("Waiting for action....");
                 numberOfWaits++;
-                if (numberOfWaits > 3) {
+                if (numberOfWaits > 10) {
                     EventNotification eventNotification = EventNotification.getEventNotification();
                     CustomEvent customEvent = new CustomEvent();
                     customEvent.setCloudServiceID(this.getControlledService().getId());
@@ -264,7 +264,7 @@ public class EnforcementAPI {
             numberOfWaits = 0;
             while (!monitoringAPIInterface.isHealthy()) {
                 numberOfWaits++;
-                if (numberOfWaits > 3) {
+                if (numberOfWaits > 10) {
                     EventNotification eventNotification = EventNotification.getEventNotification();
                     CustomEvent customEvent = new CustomEvent();
                     customEvent.setCloudServiceID(this.getControlledService().getId());
@@ -304,7 +304,7 @@ public class EnforcementAPI {
         numberOfWaits = 0;
         while (!monitoringAPIInterface.isHealthy()) {
             numberOfWaits++;
-            if (numberOfWaits > 3) {
+            if (numberOfWaits > 10) {
                 EventNotification eventNotification = EventNotification.getEventNotification();
                 CustomEvent customEvent = new CustomEvent();
                 customEvent.setCloudServiceID(this.getControlledService().getId());
@@ -344,7 +344,7 @@ public class EnforcementAPI {
         numberOfWaits = 0;
         while (!monitoringAPIInterface.isHealthy()) {
             numberOfWaits++;
-            if (numberOfWaits > 3) {
+            if (numberOfWaits > 10) {
                 EventNotification eventNotification = EventNotification.getEventNotification();
                 CustomEvent customEvent = new CustomEvent();
                 customEvent.setCloudServiceID(this.getControlledService().getId());
@@ -420,7 +420,7 @@ public class EnforcementAPI {
                 numberOfWaits = 0;
                 while (!monitoringAPIInterface.isHealthy()) {
                     numberOfWaits++;
-                    if (numberOfWaits > 3) {
+                    if (numberOfWaits > 10) {
                         EventNotification eventNotification = EventNotification.getEventNotification();
                         CustomEvent customEvent = new CustomEvent();
                         customEvent.setCloudServiceID(this.getControlledService().getId());
@@ -504,7 +504,7 @@ public class EnforcementAPI {
                 while (!monitoringAPIInterface.isHealthy()) {
                     RuntimeLogger.logger.info("Waiting for action....");
                      numberOfWaits++;
-                if (numberOfWaits>3){
+                if (numberOfWaits>10){
                     EventNotification eventNotification = EventNotification.getEventNotification();
                     CustomEvent customEvent = new CustomEvent();
                     customEvent.setCloudServiceID(this.getControlledService().getId());
