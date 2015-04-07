@@ -17,10 +17,10 @@ public class ActionPlanEvent implements Serializable, IEvent {
 	protected Stage stageType;
         private Type type;
 	protected String serviceId;
-        private List<Constraint> constraint = new ArrayList<Constraint>();
-                private List<Strategy> strategy = new ArrayList<Strategy>();
+        private ArrayList<Constraint> constraint = new ArrayList<Constraint>();
+                private ArrayList<Strategy> strategy = new ArrayList<Strategy>();
 
-	private List<Map.Entry<String,String>> effect = new ArrayList<Map.Entry<String,String>>();
+	private ArrayList<Map.Entry<String,String>> effect = new ArrayList<Map.Entry<String,String>>();
 	public ActionPlanEvent() {
 
 	}
@@ -59,7 +59,7 @@ public class ActionPlanEvent implements Serializable, IEvent {
     /**
      * @param cause the cause to set
      */
-    public void setConstraints(List<Constraint> cause) {
+    public void setConstraints(ArrayList<Constraint> cause) {
         this.constraint = cause;
     }
     public void addConstraint(Constraint c){
@@ -69,7 +69,7 @@ public class ActionPlanEvent implements Serializable, IEvent {
     public List<Strategy> getStrategies(){
         return strategy;
     }
-    public void setStrategies(List<Strategy> str){
+    public void setStrategies(ArrayList<Strategy> str){
         strategy=str;
     }
     public void addStrategy(Strategy s){
@@ -78,14 +78,14 @@ public class ActionPlanEvent implements Serializable, IEvent {
     /**
      * @return the effect
      */
-    public List<Map.Entry<String,String>> getEffect() {
+    public ArrayList<Map.Entry<String,String>> getEffect() {
         return effect;
     }
 
     /**
      * @param effect the effect to set
      */
-    public void setEffect(List<Map.Entry<String,String>> effect) {
+    public void setEffect(ArrayList<Map.Entry<String,String>> effect) {
         this.effect = effect;
     }
     public void addEffect( Map.Entry<String,String> actionTarget){

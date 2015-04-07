@@ -24,6 +24,7 @@
 
 package at.ac.tuwien.dsg.csdg.elasticityInformation.elasticityRequirements;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 import javax.xml.bind.annotation.XmlAccessType;
@@ -620,7 +621,7 @@ import javax.xml.bind.annotation.XmlValue;
     "monitoring",
     "priorities","id"
 })
-public class SYBLSpecification {
+public class SYBLSpecification  implements Serializable{
 
     @XmlElement(name = "Constraint", required = true)
     protected List<Constraint> constraints = new ArrayList<Constraint>();

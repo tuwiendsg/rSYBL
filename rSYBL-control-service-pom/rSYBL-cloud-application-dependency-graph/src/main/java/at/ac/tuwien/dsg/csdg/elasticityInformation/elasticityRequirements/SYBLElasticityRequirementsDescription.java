@@ -24,6 +24,7 @@ package at.ac.tuwien.dsg.csdg.elasticityInformation.elasticityRequirements;
 
 import java.io.File;
 import java.io.IOException;
+import java.io.Serializable;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
@@ -44,7 +45,7 @@ import org.omg.CORBA.portable.InputStream;
 @XmlAccessorType(XmlAccessType.FIELD)
 
 @XmlRootElement(name = "SYBLElasticityRequirementsDescription")
-public class SYBLElasticityRequirementsDescription {
+public class SYBLElasticityRequirementsDescription implements Serializable {
     @XmlElement(name = "SYBLSpecification", required = true)
 	private List<SYBLSpecification> syblSpecifications = new ArrayList<SYBLSpecification>();
 

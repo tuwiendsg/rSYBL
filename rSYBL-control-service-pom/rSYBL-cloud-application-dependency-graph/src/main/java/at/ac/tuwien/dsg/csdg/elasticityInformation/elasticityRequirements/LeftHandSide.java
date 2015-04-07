@@ -1,5 +1,6 @@
 package at.ac.tuwien.dsg.csdg.elasticityInformation.elasticityRequirements;
 
+import java.io.Serializable;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlElement;
@@ -35,7 +36,7 @@ import javax.xml.bind.annotation.XmlType;
  */
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "")
-public class LeftHandSide {
+public class LeftHandSide  implements Serializable{
 
     @XmlElement(name = "Metric", required = false)
     protected String metric;

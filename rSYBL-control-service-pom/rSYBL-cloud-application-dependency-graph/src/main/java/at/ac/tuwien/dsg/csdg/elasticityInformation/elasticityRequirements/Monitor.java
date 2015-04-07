@@ -22,6 +22,7 @@
 
 package at.ac.tuwien.dsg.csdg.elasticityInformation.elasticityRequirements;
 
+import java.io.Serializable;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlAttribute;
@@ -60,7 +61,7 @@ import javax.xml.bind.annotation.XmlValue;
 @XmlType(name = "", propOrder = {
     "metric"
 })
-public  class Monitor {
+public  class Monitor  implements Serializable{
 
     @XmlElement(name = "Metric", required = true)
     protected String metric;

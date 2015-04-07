@@ -22,6 +22,7 @@
 
 package at.ac.tuwien.dsg.csdg.elasticityInformation.elasticityRequirements;
 
+import java.io.Serializable;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlAttribute;
@@ -216,7 +217,7 @@ import javax.xml.bind.annotation.XmlType;
     "toEnforce",
     "condition"
 })
-public class Constraint {
+public class Constraint implements Serializable{
 
     @XmlElement(name = "ToEnforce", required = true)
     protected Condition toEnforce;

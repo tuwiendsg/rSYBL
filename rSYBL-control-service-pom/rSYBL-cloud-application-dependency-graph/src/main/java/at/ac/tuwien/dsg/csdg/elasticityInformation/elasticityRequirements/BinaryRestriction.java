@@ -22,6 +22,7 @@
 
 package at.ac.tuwien.dsg.csdg.elasticityInformation.elasticityRequirements;
 
+import java.io.Serializable;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlAttribute;
@@ -93,7 +94,7 @@ import javax.xml.bind.annotation.XmlType;
     "leftHandSide",
     "rightHandSide"
 })
-public class BinaryRestriction {
+public class BinaryRestriction  implements Serializable{
 
     @XmlElement(name = "LeftHandSide", required = true)
     protected LeftHandSide leftHandSide;

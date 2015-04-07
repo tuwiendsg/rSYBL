@@ -22,6 +22,7 @@
 
 package at.ac.tuwien.dsg.csdg.elasticityInformation.elasticityRequirements;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -136,7 +137,7 @@ import javax.xml.bind.annotation.XmlType;
     "binaryRestrictions",
     "unaryRestrictions"
 })
-public class Condition {
+public class Condition  implements Serializable{
 
     @XmlElement(name = "BinaryRestrictionsConjunction", required = true) // in disjunctive normal form 
     protected List<BinaryRestrictionsConjunction> binaryRestrictions = new ArrayList<BinaryRestrictionsConjunction>();

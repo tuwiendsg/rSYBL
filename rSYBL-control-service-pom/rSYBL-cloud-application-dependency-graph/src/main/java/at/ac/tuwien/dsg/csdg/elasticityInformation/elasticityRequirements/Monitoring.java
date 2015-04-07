@@ -22,6 +22,7 @@
 
 package at.ac.tuwien.dsg.csdg.elasticityInformation.elasticityRequirements;
 
+import java.io.Serializable;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlAttribute;
@@ -153,7 +154,7 @@ import javax.xml.bind.annotation.XmlType;
     "condition",
     "monitor"
 })
-public  class Monitoring {
+public  class Monitoring  implements Serializable{
 
     @XmlElement(name = "Condition", required = true)
     protected Condition condition;

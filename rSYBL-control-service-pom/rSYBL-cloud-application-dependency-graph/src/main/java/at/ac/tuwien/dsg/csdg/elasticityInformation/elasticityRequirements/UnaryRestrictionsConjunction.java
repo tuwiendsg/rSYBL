@@ -22,6 +22,7 @@
 
 package at.ac.tuwien.dsg.csdg.elasticityInformation.elasticityRequirements;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -73,7 +74,7 @@ import javax.xml.bind.annotation.XmlType;
 @XmlType(name = "", propOrder = {
     "unaryRestrictions"
 })
-public class UnaryRestrictionsConjunction {
+public class UnaryRestrictionsConjunction  implements Serializable{
 	  @XmlElement(name = "UnaryRestrictionsConjunction", required = true) // the conjunction
 		private List<UnaryRestriction> unaryRestrictions = new ArrayList<UnaryRestriction>();
 

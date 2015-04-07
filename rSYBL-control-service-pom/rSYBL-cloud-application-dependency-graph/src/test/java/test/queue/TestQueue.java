@@ -47,6 +47,7 @@ public class TestQueue {
     @Test
     public void testProducer() {
         if (Configuration.getMQEnabled() == true) {
+           
             try {
                 factory = new ActiveMQConnectionFactory(
                         "tcp://localhost:61616");
@@ -61,6 +62,8 @@ public class TestQueue {
                     System.out.println("Message is : " + text.getText());
 
                 }
+                Thread.sleep(2000);
+             
             } catch (Exception e) {
                 fail(e.getMessage());
             }

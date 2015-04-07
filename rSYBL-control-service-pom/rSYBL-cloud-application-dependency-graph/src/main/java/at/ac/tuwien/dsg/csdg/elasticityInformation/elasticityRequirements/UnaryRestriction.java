@@ -22,6 +22,7 @@
 
 package at.ac.tuwien.dsg.csdg.elasticityInformation.elasticityRequirements;
 
+import java.io.Serializable;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlAttribute;
@@ -71,7 +72,7 @@ import javax.xml.bind.annotation.XmlType;
     "metric",
     "referenceTo"
 })
-public class UnaryRestriction {
+public class UnaryRestriction  implements Serializable{
 
     @XmlElement(name = "Metric", required = false)
     protected String metric;

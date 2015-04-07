@@ -55,7 +55,7 @@ public class ActionPlanEnforcement {
 
     }
 
-    public void enforceResult(ArrayList<Pair<ActionEffect, Integer>> result, DependencyGraph dependencyGraph, double violationDegree, List<Constraint> constraintsFixed, List<Strategy> strategiesImproved) {
+    public void enforceResult(ArrayList<Pair<ActionEffect, Integer>> result, DependencyGraph dependencyGraph, double violationDegree, ArrayList<Constraint> constraintsFixed, ArrayList<Strategy> strategiesImproved) {
         if (result.size() > 0) {
             actionPlanEvent = new ActionPlanEvent();
             actionPlanEvent.setServiceId(dependencyGraph.getCloudService().getId());
