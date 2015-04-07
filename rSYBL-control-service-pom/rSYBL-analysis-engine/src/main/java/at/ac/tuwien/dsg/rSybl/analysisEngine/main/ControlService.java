@@ -147,7 +147,9 @@ public class ControlService {
         enforcementAPI.undeployService(dependencyGraph.getCloudService());
     }
  public void removeFromMonitoring(){
+     if (monitoringAPI!=null){
         monitoringAPI.removeService(dependencyGraph.getCloudService());
+     }
     }
 
     public void setDependencyGraph(DependencyGraph dependencyGraph) {
