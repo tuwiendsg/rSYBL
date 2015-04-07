@@ -124,6 +124,7 @@ public class ControlService {
         dependencyGraph.setControlState();
     }
     public void stop() {
+        if (dependencyGraph.isInControlState()){
         monitoringAPI.removeService(dependencyGraph.getCloudService());
         EventNotification eventNotification = EventNotification.getEventNotification();
         eventNotification.clearAllEvents();
@@ -141,6 +142,7 @@ public class ControlService {
         enforcementAPI = null;
         effects = "";
         metricCompositionRules = "";
+        }
     }
     
     public void undeployService(){
