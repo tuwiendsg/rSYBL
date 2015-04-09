@@ -84,9 +84,11 @@ public class ElasticityCapabilityEnforcement {
                 if (!elasticityCapability.getName().toLowerCase().contains("scalein") || (elasticityCapability.getName().toLowerCase().contains("scalein") && target.getAllRelatedNodesOfType(RelationshipType.HOSTED_ON_RELATIONSHIP, NodeType.VIRTUAL_MACHINE).size() > 1)) {
                     ActionPlanEvent actionPlanEvent = new ActionPlanEvent();
                     actionPlanEvent.setServiceId(dependencyGraph.getCloudService().getId());
-                    actionPlanEvent.addEffect(new AbstractMap.SimpleEntry<String, String>("elasticityCapability.getName().toLowerCase()", target.getId()));
-                    actionPlanEvent.addConstraint(c);
-                    actionPlanEvent.addStrategy(s);
+                    actionPlanEvent.addEffect(new AbstractMap.SimpleEntry<>(elasticityCapability.getName().toLowerCase(), target.getId()));
+                    if (c!=null){
+                    actionPlanEvent.addConstraint(c);}
+                    if (s!=null){
+                    actionPlanEvent.addStrategy(s);}
                     actionPlanEvent.setType(IEvent.Type.ELASTICITY_CONTROL);
                     actionPlanEvent.setStage(Stage.START);
                     EventNotification en = EventNotification.getEventNotification();
@@ -116,9 +118,11 @@ public class ElasticityCapabilityEnforcement {
             }
             ActionPlanEvent actionPlanEvent = new ActionPlanEvent();
             actionPlanEvent.setServiceId(dependencyGraph.getCloudService().getId());
-            actionPlanEvent.addEffect(new AbstractMap.SimpleEntry<String, String>("elasticityCapability.getName().toLowerCase()", target.getId()));
-            actionPlanEvent.addConstraint(c);
-            actionPlanEvent.addStrategy(s);
+          //  actionPlanEvent.addEffect(new AbstractMap.SimpleEntry<String, String>(elasticityCapability.getName().toLowerCase(), target.getId()));
+            if (c!=null){
+            actionPlanEvent.addConstraint(c);}
+            if (s!=null){
+            actionPlanEvent.addStrategy(s);}
             actionPlanEvent.setType(IEvent.Type.ELASTICITY_CONTROL);
             actionPlanEvent.setStage(stage);
             EventNotification en = EventNotification.getEventNotification();
