@@ -4,10 +4,16 @@
  */
 package at.ac.tuwien.dsg.csdg.outputProcessing.eventsNotification;
 
+import javax.xml.bind.annotation.XmlAccessType;
+import javax.xml.bind.annotation.XmlAccessorType;
+import javax.xml.bind.annotation.XmlRootElement;
+
 /**
  *
  * @author Georgiana
  */
+@XmlAccessorType(XmlAccessType.FIELD)
+@XmlRootElement
 public class CustomEvent implements IEvent{
     private Stage stage;
     private Type type ;

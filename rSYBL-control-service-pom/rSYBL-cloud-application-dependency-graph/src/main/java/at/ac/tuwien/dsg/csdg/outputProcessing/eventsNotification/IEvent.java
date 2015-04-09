@@ -6,10 +6,17 @@ package at.ac.tuwien.dsg.csdg.outputProcessing.eventsNotification;
 
 import java.io.Serializable;
 
+import javax.xml.bind.annotation.XmlAccessType;
+import javax.xml.bind.annotation.XmlAccessorType;
+import javax.xml.bind.annotation.XmlRootElement;
+import javax.xml.bind.annotation.XmlSeeAlso;
+
 /**
  *
  * @author Georgiana
  */
+@XmlSeeAlso({ ActionPlanEvent.class, ActionEvent.class, CustomEvent.class })
+@XmlAccessorType(XmlAccessType.FIELD)
 public interface IEvent extends Serializable{
     public enum Stage {
 		START, FINISHED, FAILED
