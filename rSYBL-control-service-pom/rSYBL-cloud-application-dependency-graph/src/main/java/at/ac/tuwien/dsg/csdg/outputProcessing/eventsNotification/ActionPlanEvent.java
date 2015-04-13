@@ -21,11 +21,11 @@ public class ActionPlanEvent implements Serializable, IEvent {
 
 	private static final long serialVersionUID = -869510354040946630L;
 
-	protected Stage stageType;
+	protected Stage stage;
         private Type type;
 	protected String serviceId;
-        private ArrayList<Constraint> constraint = new ArrayList<Constraint>();
-                private ArrayList<Strategy> strategy = new ArrayList<Strategy>();
+        private ArrayList<Constraint> constraints = new ArrayList<Constraint>();
+                private ArrayList<Strategy> strategies = new ArrayList<Strategy>();
 
 	private ArrayList<Map.Entry<String,String>> effect = new ArrayList<Map.Entry<String,String>>();
 	public ActionPlanEvent() {
@@ -34,18 +34,18 @@ public class ActionPlanEvent implements Serializable, IEvent {
 
 	public ActionPlanEvent(Stage type, String serviceId) {
 		super();
-		this.stageType = type;
+		this.stage = type;
 		this.serviceId = serviceId;
 	}
 
 
         
 	public Stage getStage() {
-		return stageType;
+		return stage;
 	}
 
 	public void setStage(Stage type) {
-		this.stageType = type;
+		this.stage = type;
 	}
 
 	public String getServiceId() {
@@ -60,27 +60,27 @@ public class ActionPlanEvent implements Serializable, IEvent {
      * @return the cause
      */
     public List<Constraint> getConstraints() {
-        return constraint;
+        return constraints;
     }
 
     /**
      * @param cause the cause to set
      */
     public void setConstraints(ArrayList<Constraint> cause) {
-        this.constraint = cause;
+        this.constraints = cause;
     }
     public void addConstraint(Constraint c){
-        constraint.add(c);
+        constraints.add(c);
     }
     
-    public List<Strategy> getStrategies(){
-        return strategy;
+    public ArrayList<Strategy> getStrategies(){
+        return strategies;
     }
     public void setStrategies(ArrayList<Strategy> str){
-        strategy=str;
+        strategies=str;
     }
     public void addStrategy(Strategy s){
-        strategy.add(s);
+        strategies.add(s);
     }
     /**
      * @return the effect
