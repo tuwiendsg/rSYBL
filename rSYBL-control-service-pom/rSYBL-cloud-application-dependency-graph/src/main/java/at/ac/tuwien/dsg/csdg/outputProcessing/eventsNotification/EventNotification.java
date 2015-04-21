@@ -13,46 +13,50 @@ import javax.xml.bind.Marshaller;
 import at.ac.tuwien.dsg.csdg.utils.Configuration;
 import at.ac.tuwien.dsg.csdg.utils.DependencyGraphLogger;
 
-
 /**
  *
  * @author Georgiana
  */
 public class EventNotification {
-    String lastEvent="";
+
+    String lastEvent = "";
     private static EventNotification eventNotification;
     private MQProducer rabbitMQProducer;
-    private EventNotification(){
-        if (Configuration.getMQEnabled()==true){
-        rabbitMQProducer = new MQProducer();
+
+    private EventNotification() {
+        if (Configuration.getMQEnabled() == true) {
+            rabbitMQProducer = new MQProducer();
         }
     }
-    public static EventNotification getEventNotification(){
-        if (eventNotification==null){
-            eventNotification=new EventNotification();
-            
+
+    public static EventNotification getEventNotification() {
+        if (eventNotification == null) {
+            eventNotification = new EventNotification();
+
         }
         return eventNotification;
     }
-    public void clearAllEvents(){
-       if (Configuration.getMQEnabled()==true){
-        	try{
-        
-         rabbitMQProducer.clearAllEvents();
-         rabbitMQProducer.initiateQueue();
-        	}catch(Exception e){
-        		DependencyGraphLogger.logger.error(e.getCause());
-        	}
+
+    public void clearAllEvents() {
+        if (Configuration.getMQEnabled() == true) {
+            try {
+
+                rabbitMQProducer.clearAllEvents();
+                rabbitMQProducer.initiateQueue();
+            } catch (Exception e) {
+                DependencyGraphLogger.logger.error(e.getCause());
+            }
         }
     }
+
     public void sendEvent(IEvent event) {
-        if (Configuration.getMQEnabled()==true){
-        	try{
-        
-         rabbitMQProducer.sendMessage(event);
-        	}catch(Exception e){
-        		DependencyGraphLogger.logger.error(e.getCause());
-        	}
+        if (Configuration.getMQEnabled() == true) {
+            try {
+
+                rabbitMQProducer.sendMessage(event);
+            } catch (Exception e) {
+                DependencyGraphLogger.logger.error(e.getCause());
+            }
         }
     }
 }

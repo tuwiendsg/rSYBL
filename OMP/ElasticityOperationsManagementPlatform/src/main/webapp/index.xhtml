@@ -1,0 +1,156 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:p="http://primefaces.org/ui" xmlns:c="http://xmlns.jcp.org/jsp/jstl/core">
+
+    <f:view contentType="text/html">
+        <h:head>
+            <f:facet name="first">
+                <meta content='text/html; charset=UTF-8' http-equiv="Content-Type"/>
+                <title>Elasticity Operations Platform</title>
+            </f:facet>
+            <script type="text/javascript">
+                function handleLoginRequest(xhr, status, args) {
+                    if (args.validationFailed || !args.loggedIn) {
+                        PF('dlg').jq.effect("shake", {times: 5}, 100);
+                    }
+                    else {
+                        PF('dlg').hide();
+                        $('#loginLink').fadeOut();
+                    }
+                }
+            </script>
+        </h:head>
+
+        <h:body>
+
+            <p:layout fullPage="true">
+
+                <p:layoutUnit position="north" size="100" resizable="true" closable="true" collapsible="true">
+                    <p:layout>
+                        <p:layoutUnit size="250" position="west" >
+                            <center>
+                                <p:graphicImage width="150" value="https://raw.githubusercontent.com/tuwiendsg/rSYBL/master/OMP/OperationsManagementPlatform/images/logo.jpg"/>
+                            </center>
+                        </p:layoutUnit>
+                        <p:layoutUnit position="center" >
+                            <center>
+                                <p:outputLabel style=" font-size: 250%; font-family: Georgia, serif" >Elasticity Operations Management Platform</p:outputLabel>
+                            </center>
+                        </p:layoutUnit>
+                        <p:layoutUnit size="250" position="east" >
+                            <h:form> 
+                                <center>
+                                    <h:outputLabel>Login here:</h:outputLabel> <br/>
+                                    <h:outputLink value="javascript:void(0)" onclick="PF('dlg').show();" title="login">
+                                        <p:graphicImage value="https://raw.githubusercontent.com/tuwiendsg/rSYBL/master/OMP/OperationsManagementPlatform/images/login.jpg" />
+                                    </h:outputLink>
+                                </center>
+                            </h:form>
+
+
+                        </p:layoutUnit>
+                    </p:layout>
+                </p:layoutUnit>
+
+                <p:layoutUnit position="south" size="100" closable="true" collapsible="true">
+                    <p:layout>
+                        <p:layoutUnit size="250" position="west" >
+                            <center>
+                                <p:graphicImage width="70" value="http://www.infosys.tuwien.ac.at/images/dsg-logo.jpg"/>
+                            </center>
+                        </p:layoutUnit>
+                        <p:layoutUnit position="center" >
+                            <center>
+                                <p:outputLabel style=" font-size: 250%; font-family: Georgia, serif">Distributed Systems Group</p:outputLabel>
+                            </center>
+                        </p:layoutUnit>
+                        <p:layoutUnit size="250" position="east" >
+                            <center>
+                                <p:outputLabel>Contact: <a href="mailto:e.copil@dsg.tuwien.ac.at">Georgiana Copil</a></p:outputLabel>
+                            </center>
+                        </p:layoutUnit>
+                    </p:layout>
+                </p:layoutUnit>
+
+                <p:layoutUnit position="west" size="250" header="Menu" collapsible="true">
+                    <h:form>
+                        <p:growl autoUpdate="true"/>
+
+                        <p:panelMenu >
+                            <p:submenu label="Elasticity Operations Documentation">
+                                <p:menuitem value="Platform" action="#{informationManagedBean.activatePlatformPanel}" icon="ui-icon-home" />
+                                <p:menuitem value="Roles" action="#{informationManagedBean.activateRolesPanel}"   icon="ui-icon-person" />
+                                <p:menuitem value="Processes" action="#{informationManagedBean.activateProcessesPanel}" icon="ui-icon-script" />
+                                <p:menuitem value="Elasticity Controller" action="#{informationManagedBean.activateECPanel}"   icon="ui-icon-calculator" />
+
+                            </p:submenu>
+                            <p:submenu label="Elasticity Operations">
+                                <p:menuitem value="Services" action="#{informationManagedBean.activateServices}" update=":panels" icon="ui-icon-document" />
+                            </p:submenu>
+
+                        </p:panelMenu>
+                    </h:form>
+                </p:layoutUnit>
+
+                <p:layoutUnit position="center">
+                    <h:form id="panels">
+                        <p:growl id="msgs" showDetail="true" />
+
+                        <p:panel widgetVar="platformW" id="platform" toggleable="true" toggleSpeed="500" header="Platform Description"  style="margin-bottom:20px">
+                            <p:ajax event="close" listener="#{informationManagedBean.onClose}" update="msgs" />
+                            <h:panelGrid columns="2" cellpadding="10">
+                            </h:panelGrid>
+                        </p:panel>
+
+                        <p:panel widgetVar="rolesW" id="roles" closable="true" toggleable="true" closeSpeed="500" toggleSpeed="500" visible="#{informationManagedBean.roles}" header="Organization Roles"  style="margin-bottom:20px" >
+                            <p:ajax event="close" listener="#{informationManagedBean.onClose}" update="msgs" />
+                            <h:panelGrid columns="2" cellpadding="10">
+                            </h:panelGrid>
+                        </p:panel>
+                        <p:panel widgetVar="processesW" id="processes" closable="true" toggleable="true" closeSpeed="500" toggleSpeed="500" visible="#{informationManagedBean.processes}" header="Organization Processes"  style="margin-bottom:20px" >
+                            <p:ajax event="close" listener="#{informationManagedBean.onClose}" update="msgs" />
+                            <h:panelGrid columns="2" cellpadding="10">
+                            </h:panelGrid>
+                        </p:panel>
+                        <p:panel widgetVar="ecW" id="ec" closable="true" toggleable="true" closeSpeed="500" toggleSpeed="500" visible="#{informationManagedBean.eC}"  header="Automated Elasticity Controller"  style="margin-bottom:20px" >
+                            <p:ajax event="close" listener="#{informationManagedBean.onClose}" update="msgs" />
+                            <h:panelGrid columns="2" cellpadding="10">
+                            </h:panelGrid>
+                        </p:panel>
+                        <p:panel widgetVar="servicesW" id="services" closable="true" toggleable="true" closeSpeed="500" toggleSpeed="500" visible="#{informationManagedBean.services}"  header="Elastic Services"  style="margin-bottom:20px" >
+                            <p:ajax event="close" listener="#{informationManagedBean.onClose}" update="msgs" />
+                            <h:panelGrid columns="2" cellpadding="10">
+                            </h:panelGrid>
+                        </p:panel>
+                    </h:form>
+
+                    <h:form>
+                        <p:growl id="growl" sticky="true" showDetail="true" life="3000" />
+
+                        <p:dialog header="Login" widgetVar="dlg" resizable="false">
+                            <h:panelGrid columns="2" cellpadding="5">
+                                <h:outputLabel for="username" value="Username:" />
+                                <p:inputText id="username" value="#{userManagedBean.username}" required="true" label="username" />
+
+                                <h:outputLabel for="password" value="Password:" />
+                                <p:password id="password" value="#{userManagedBean.password}" required="true" label="password" />
+
+                                <f:facet name="footer">
+                                    <p:commandButton value="Login" update="growl" actionListener="#{userManagedBean.login}"
+                                                     oncomplete="handleLoginRequest(xhr, status, args)" />
+                                </f:facet>  
+                            </h:panelGrid>
+                        </p:dialog>
+                    </h:form>
+                </p:layoutUnit>
+
+            </p:layout>
+
+        </h:body>
+
+    </f:view>
+</html>
+

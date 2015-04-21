@@ -1,0 +1,140 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+To change this license header, choose License Headers in Project Properties.
+To change this template file, choose Tools | Templates
+and open the template in the editor.
+-->
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:p="http://primefaces.org/ui" xmlns:c="http://xmlns.jcp.org/jsp/jstl/core">
+    <f:view contentType="text/html">
+        <h:head>
+            <f:facet name="first">
+                <meta content='text/html; charset=UTF-8' http-equiv="Content-Type"/>
+                <title>Elasticity Operations Platform</title>
+            </f:facet>
+            <style type="text/css">
+                .ui-diagram-element {	
+                    width:15em; 
+                    height:5em;
+                    line-height:5em;
+                    text-align: center;
+                    box-shadow: 0 5px 20px rgba(0, 0, 0, 0.8);
+                    border-radius: 10em;
+                    border: 1px solid #5CB8E6;
+                    background-color: #66CCFF;
+                    color: #000000;
+                }
+                .ui-diagram-current-user {
+                    background-color: #FFC2A3;
+                    color: #000000;
+                }
+
+                .ui-diagram-user {
+                    background-color: #85E085;
+                    color: #000000;
+                }
+                .ui-diagram-responsibility {
+                    background-color: #D1D1FF;
+                    color: #000000;
+                }
+
+                .ui-diagram-element:hover {
+                    background-color: #5CB8E6;
+                }
+            </style>
+        </h:head>
+
+        <h:body>
+
+            <p:layout fullPage="true">
+
+                <p:layoutUnit position="north" size="100" resizable="true" closable="true" collapsible="true">
+                    <p:layout>
+                        <p:layoutUnit size="250" position="west" >
+                            <center>
+                                <p:graphicImage width="150" value="https://raw.githubusercontent.com/tuwiendsg/rSYBL/master/OMP/OperationsManagementPlatform/images/logo.jpg"/>
+                            </center>
+                        </p:layoutUnit>
+                        <p:layoutUnit position="center" >
+                            <center>
+                                <p:outputLabel style=" font-size: 250%; font-family: Georgia, serif" >Elasticity Operations Management Platform</p:outputLabel>
+                            </center>
+                        </p:layoutUnit>
+                        <p:layoutUnit size="250" position="east" >
+                            <h:form> 
+                                <center>
+
+                                    <p:menuButton  id="settingsButton" value="User #{userManagedBean.username} Settings" >
+                                        <p:menuitem value="LogOut" actionListener="#{userManagedBean.logout()}"  icon="ui-icon-power" />
+
+                                    </p:menuButton>
+
+                            <p:clock />
+
+                                </center>
+                            </h:form>
+
+
+                        </p:layoutUnit>
+                    </p:layout>
+                </p:layoutUnit>
+
+                <p:layoutUnit position="south" size="100" closable="true" collapsible="true">
+                    <p:layout>
+                        <p:layoutUnit size="250" position="west" >
+                            <center>
+                                <p:graphicImage width="70" value="http://www.infosys.tuwien.ac.at/images/dsg-logo.jpg"/>
+                            </center>
+                        </p:layoutUnit>
+                        <p:layoutUnit position="center" >
+                            <center>
+                                <p:outputLabel style=" font-size: 250%; font-family: Georgia, serif">Distributed Systems Group</p:outputLabel>
+                            </center>
+                        </p:layoutUnit>
+                        <p:layoutUnit size="250" position="east" >
+                            <center>
+                                <p:outputLabel>Contact: <a href="mailto:e.copil@dsg.tuwien.ac.at">Georgiana Copil</a></p:outputLabel>
+                            </center>
+                        </p:layoutUnit>
+                    </p:layout>
+                </p:layoutUnit>
+
+                <p:layoutUnit position="west" size="250" header="Menu" collapsible="true">
+                    <h:form>
+                        <p:growl autoUpdate="true"/>
+
+                        <p:panelMenu>
+                            <p:submenu label="Management" rendered="true">
+                                <p:menuitem value="Interactions" icon="ui-icon-home" action="#{informationManagedBean.activateRoleInteractions()}" />
+                                <p:menuitem value="Services" icon="ui-icon-document" action="#{informationManagedBean.activateAssociatedServices()}"/>
+                                <p:menuitem value="Interaction Partners" icon="ui-icon-person"  />
+                                <p:menuitem value="My Responsibilities" icon="ui-icon-document" action="loggedPageUserResponsibilities.xhtml?faces-redirect=true;"/>
+
+                            </p:submenu>
+
+
+                        </p:panelMenu>
+                    </h:form>
+
+
+                </p:layoutUnit>
+
+                <p:layoutUnit position="center">
+
+
+                    <p:diagram value="#{userComponentsBean.diagram}" style="height:900px" styleClass="ui-widget-content" />
+
+
+
+                </p:layoutUnit>
+
+            </p:layout>
+
+        </h:body>
+
+    </f:view>
+</html>

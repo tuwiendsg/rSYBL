@@ -1,0 +1,139 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+To change this license header, choose License Headers in Project Properties.
+To change this template file, choose Tools | Templates
+and open the template in the editor.
+-->
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:p="http://primefaces.org/ui" xmlns:c="http://xmlns.jcp.org/jsp/jstl/core">
+    <f:view contentType="text/html">
+        <h:head>
+            <f:facet name="first">
+                <meta content='text/html; charset=UTF-8' http-equiv="Content-Type"/>
+                <title>Elasticity Operations Platform</title>
+            </f:facet>
+            <style type="text/css">
+                .ui-diagram-element {	
+                    width:5em; 
+                    height:5em;
+                    line-height:5em;
+                    text-align: center;
+                    box-shadow: 0 5px 10px rgba(0, 0, 0, 0.8);
+                    border-radius: 5em;
+                    border: 1px solid #404a4e;
+                    background-color: #404a4e;
+                    color: #cccccc;
+                }
+
+                .ui-diagram-element:hover {
+                    background-color: #20282b;
+                }
+            </style>
+        </h:head>
+
+        <h:body>
+
+            <p:layout fullPage="true">
+
+                <p:layoutUnit position="north" size="100" resizable="true" closable="true" collapsible="true">
+                    <p:layout>
+                        <p:layoutUnit size="250" position="west" >
+                            <center>
+                                <p:graphicImage width="150" value="https://raw.githubusercontent.com/tuwiendsg/rSYBL/master/OMP/OperationsManagementPlatform/images/logo.jpg"/>
+                            </center>
+                        </p:layoutUnit>
+                        <p:layoutUnit position="center" >
+                            <center>
+                                <p:outputLabel style=" font-size: 250%; font-family: Georgia, serif" >Elasticity Operations Management Platform</p:outputLabel>
+                            </center>
+                        </p:layoutUnit>
+                        <p:layoutUnit size="250" position="east" >
+                            <h:form> 
+                                <center>
+
+                                    <p:menuButton  id="settingsButton" value="User #{userManagedBean.username} Settings" >
+                                        <p:menuitem value="LogOut" actionListener="#{userManagedBean.logout()}"  icon="ui-icon-power" />
+
+                                    </p:menuButton>
+                                    <p:clock />
+
+                                </center>
+                            </h:form>
+
+
+                        </p:layoutUnit>
+                    </p:layout>
+                </p:layoutUnit>
+
+                <p:layoutUnit position="south" size="100" closable="true" collapsible="true">
+                    <p:layout>
+                        <p:layoutUnit size="250" position="west" >
+                            <center>
+                                <p:graphicImage width="70" value="http://www.infosys.tuwien.ac.at/images/dsg-logo.jpg"/>
+                            </center>
+                        </p:layoutUnit>
+                        <p:layoutUnit position="center" >
+                            <center>
+                                <p:outputLabel style=" font-size: 250%; font-family: Georgia, serif">Distributed Systems Group</p:outputLabel>
+                            </center>
+                        </p:layoutUnit>
+                        <p:layoutUnit size="250" position="east" >
+                            <center>
+                                <p:outputLabel>Contact: <a href="mailto:e.copil@dsg.tuwien.ac.at">Georgiana Copil</a></p:outputLabel>
+                            </center>
+                        </p:layoutUnit>
+                    </p:layout>
+                </p:layoutUnit>
+
+                <p:layoutUnit position="west" size="250" header="Menu" collapsible="true">
+                    <h:form>
+                        <p:growl autoUpdate="true"/>
+
+                        <p:panelMenu>
+                            <p:submenu label="Management" rendered="true">
+                                <p:menuitem value="Interactions" icon="ui-icon-home" action="#{informationManagedBean.activateRoleInteractions()}" />
+                                <p:menuitem value="Services" icon="ui-icon-document" action="#{informationManagedBean.activateAssociatedServices()}"/>
+                                <p:menuitem value="Interaction Partners" icon="ui-icon-person" action="loggedPageAllUsers.xhtml?faces-redirect=true;" />
+                                <p:menuitem value="My Responsibilities" icon="ui-icon-document" action="loggedPageUserResponsibilities.xhtml?faces-redirect=true;"/>
+                            </p:submenu>
+
+
+                        </p:panelMenu>
+                    </h:form>
+
+
+                </p:layoutUnit>
+
+                <p:layoutUnit position="center">
+                    <p:panel widgetVar="roleInteractionsW"  closable="true" closeSpeed="500" id="roleInteractions"  toggleable="true" toggleSpeed="500" visible="#{informationManagedBean.roleInteractions}" header="Elasticity Operation Interactions">
+                        <p:ajax event="close" listener="#{informationManagedBean.onClose}" />
+                        <h:form id="tabsForm">
+                            <p:growl autoUpdate="true" />
+                            <p:tabView binding="#{userComponentsBean.tv}" widgetVar="tabW"   />
+                        </h:form>
+                    </p:panel>
+                    <p:panel widgetVar="myResponsibilitiesW" id="myResponsibilities"  closable="true" closeSpeed="500"   toggleable="true" toggleSpeed="500" visible="#{informationManagedBean.myResponsibilities}" header="Current Roles and Responsibilities">
+                        <p:ajax event="close" listener="#{informationManagedBean.onClose}" />
+
+                    </p:panel>
+                    <p:panel widgetVar="myServicesW" id="myServices" closable="true" closeSpeed="500" toggleable="true" toggleSpeed="500"  visible="#{informationManagedBean.myServices}" header="Services"  style="margin-bottom:20px">
+                        <p:ajax event="close" listener="#{informationManagedBean.onClose}"  />
+                        <h:form>
+                            <p:panelGrid columns="2" binding="#{userComponentsBean.panelGridServices}" >
+                            </p:panelGrid>
+                        </h:form>
+                    </p:panel>
+
+                </p:layoutUnit>
+
+
+            </p:layout>
+
+        </h:body>
+
+    </f:view>
+</html>
