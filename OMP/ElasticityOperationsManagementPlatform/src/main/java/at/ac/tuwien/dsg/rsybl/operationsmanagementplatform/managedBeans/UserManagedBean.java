@@ -48,9 +48,9 @@ import org.primefaces.model.menu.MenuModel;
 @SessionScoped
 public class UserManagedBean implements Serializable {
 
-    @EJB(name = "SetupInitialDataSessionBean", beanName = "SetupInitialDataSessionBean", lookup = "global/ElasticityOperationsManagementPlatform/SetupInitialDataSessionBean!at.ac.tuwien.dsg.rsybl.operationsmanagementplatform.sessionbeans.interfaces.ISetupInitialDataSessionBean")
+    @EJB(name = "SetupInitialDataSessionBean",beanInterface = ISetupInitialDataSessionBean.class, beanName = "SetupInitialDataSessionBean", lookup = "global/ElasticityOperationsManagementPlatform/SetupInitialDataSessionBean!at.ac.tuwien.dsg.rsybl.operationsmanagementplatform.sessionbeans.interfaces.ISetupInitialDataSessionBean")
     ISetupInitialDataSessionBean iSetupInitialDataSessionBean;
-    @EJB(name = "UserManagementBean", beanName = "UserManagementBean", lookup = "name=global/ElasticityOperationsManagementPlatform/UserManagementBean!at.ac.tuwien.dsg.rsybl.operationsmanagementplatform.sessionbeans.interfaces.IUserManagementSessionBean")
+    @EJB(name = "UserManagementBean", beanInterface = IUserManagementSessionBean.class,beanName = "UserManagementBean", lookup = "global/ElasticityOperationsManagementPlatform/UserManagementBean!at.ac.tuwien.dsg.rsybl.operationsmanagementplatform.sessionbeans.interfaces.IUserManagementSessionBean")
     IUserManagementSessionBean iUserManagementSessionBean;
     DataAccess access;
     private String username;

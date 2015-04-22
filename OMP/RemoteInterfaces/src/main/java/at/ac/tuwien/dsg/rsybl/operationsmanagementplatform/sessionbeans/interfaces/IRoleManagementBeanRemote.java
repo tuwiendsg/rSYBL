@@ -5,27 +5,19 @@
  */
 package at.ac.tuwien.dsg.rsybl.operationsmanagementplatform.sessionbeans.interfaces;
 
-import at.ac.tuwien.dsg.rsybl.operationsmanagementplatform.dao.RoleDAO;
-import at.ac.tuwien.dsg.rsybl.operationsmanagementplatform.dao.UserDAO;
 import at.ac.tuwien.dsg.rsybl.operationsmanagementplatform.entities.interfaces.IResponsibility;
 import at.ac.tuwien.dsg.rsybl.operationsmanagementplatform.entities.interfaces.IRole;
-import at.ac.tuwien.dsg.rsybl.operationsmanagementplatform.entities.interfaces.IUser;
+import java.util.ArrayList;
 import java.util.List;
-import javax.ejb.Local;
 import javax.ejb.Remote;
 
 /**
  *
  * @author Georgiana
  */
-@Local
-public interface ISetupInitialDataSessionBean {
+@Remote
+public interface IRoleManagementBeanRemote {
 
-    public void initializeUsers();
 
-    public void populateWithITILRoles();
 
-    public List<IRole> findAllRoles();
-
-    public List<IResponsibility> findAllResponsibilities();
 }

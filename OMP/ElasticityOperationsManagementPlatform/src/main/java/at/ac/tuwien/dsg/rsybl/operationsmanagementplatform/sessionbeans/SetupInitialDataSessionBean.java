@@ -13,9 +13,12 @@ import at.ac.tuwien.dsg.rsybl.operationsmanagementplatform.entities.User;
 import at.ac.tuwien.dsg.rsybl.operationsmanagementplatform.entities.interfaces.IResponsibility;
 import at.ac.tuwien.dsg.rsybl.operationsmanagementplatform.entities.interfaces.IRole;
 import at.ac.tuwien.dsg.rsybl.operationsmanagementplatform.entities.interfaces.IUser;
+import at.ac.tuwien.dsg.rsybl.operationsmanagementplatform.entities.mapper.MapToCommunicationObjects;
+import at.ac.tuwien.dsg.rsybl.operationsmanagementplatform.sessionbeans.interfaces.ISetupInitialDataBeanRemote;
 import at.ac.tuwien.dsg.rsybl.operationsmanagementplatform.sessionbeans.interfaces.ISetupInitialDataSessionBean;
 import at.ac.tuwien.dsg.rsybl.operationsmanagementplatform.utils.OMPLogger;
 import at.ac.tuwien.dsg.rsybl.operationsmanagementplatform.utils.TestData;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 
@@ -39,10 +42,10 @@ import javax.persistence.PersistenceContext;
  * @author Georgiana
  */
 @Singleton
-@LocalBean
+@Remote(ISetupInitialDataBeanRemote.class)
 @Startup
 @TransactionManagement(TransactionManagementType.BEAN)
-public class SetupInitialDataSessionBean implements ISetupInitialDataSessionBean {
+public class SetupInitialDataSessionBean implements ISetupInitialDataSessionBean,ISetupInitialDataBeanRemote {
 
     @PersistenceContext
     protected EntityManager em;
@@ -128,5 +131,50 @@ public class SetupInitialDataSessionBean implements ISetupInitialDataSessionBean
         ResponsibilityDAO responsibilityDAO = new ResponsibilityDAO();
         responsibilityDAO.setEntityManager(em);
         return responsibilityDAO.findAll();
+    }
+
+
+
+    @Override
+    public List<IRole> findAllRolesRemote() {
+roleDAO = new RoleDAO();
+        roleDAO.setEntityManager(em);
+     List<IRole> result = new ArrayList<IRole>();
+     List<IRole> roles=    roleDAO.findAll(); 
+     for (IRole r: roles){
+         result.add(MapToCommunicationObjects.mapFromRole(r));
+     }
+     return result;
+    }
+
+    @Override
+    public List<IResponsibility> findAllResponsibilitiesRemote() {
+      ResponsibilityDAO responsibilityDAO = new ResponsibilityDAO();
+        responsibilityDAO.setEntityManager(em);
+     List<IResponsibility> result = new ArrayList<IResponsibility>();
+     List<IResponsibility> roles=    responsibilityDAO.findAll(); 
+     for (IResponsibility r: roles){
+         result.add(MapToCommunicationObjects.mapFromResponsibility(r));
+     }
+     return result; 
+    }
+
+    @Override
+    public List<IResponsibility> findAllResponsibilitiesForRole(String name) {
+        roleDAO = new RoleDAO();
+        roleDAO.setEntityManager(em);
+        List<IResponsibility> result = new ArrayList<IResponsibility>();
+     Set<IResponsibility> roles=roleDAO.findByRoleName(name).getResponsabilities();
+      for (IResponsibility r: roles){
+         result.add(MapToCommunicationObjects.mapFromResponsibility(r));
+     }
+     return result;
+    }
+
+    @Override
+    public int findAuthorityForRole(String role) {
+       roleDAO = new RoleDAO();
+        roleDAO.setEntityManager(em);
+        return roleDAO.findByRoleName(role).getAuthority();
     }
 }

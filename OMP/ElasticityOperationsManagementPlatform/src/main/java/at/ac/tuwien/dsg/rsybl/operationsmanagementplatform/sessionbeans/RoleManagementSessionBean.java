@@ -14,6 +14,7 @@ import at.ac.tuwien.dsg.rsybl.operationsmanagementplatform.entities.Responsibili
 import at.ac.tuwien.dsg.rsybl.operationsmanagementplatform.entities.Role;
 import at.ac.tuwien.dsg.rsybl.operationsmanagementplatform.entities.interfaces.IResponsibility;
 import at.ac.tuwien.dsg.rsybl.operationsmanagementplatform.entities.interfaces.IRole;
+import at.ac.tuwien.dsg.rsybl.operationsmanagementplatform.sessionbeans.interfaces.IRoleManagementBeanRemote;
 import java.util.ArrayList;
 import java.util.LinkedHashSet;
 import java.util.List;
@@ -41,10 +42,10 @@ import org.hibernate.Session;
  * @author Georgiana
  */
 @Stateless
+@Remote(IRoleManagementBeanRemote.class)
 @LocalBean
 @TransactionManagement(TransactionManagementType.BEAN)
-
-public class RoleManagementSessionBean implements IRoleManagementSessionBean {
+public class RoleManagementSessionBean implements IRoleManagementSessionBean,IRoleManagementBeanRemote{
 
     @Resource
     private javax.transaction.UserTransaction userTransaction;
@@ -189,5 +190,8 @@ public class RoleManagementSessionBean implements IRoleManagementSessionBean {
 
         return roleDAO.findAll();
     }
+
+
+
 
 }

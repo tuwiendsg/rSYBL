@@ -12,7 +12,9 @@ import at.ac.tuwien.dsg.rsybl.operationsmanagementplatform.entities.Role;
 import at.ac.tuwien.dsg.rsybl.operationsmanagementplatform.entities.User;
 import at.ac.tuwien.dsg.rsybl.operationsmanagementplatform.entities.interfaces.IRole;
 import at.ac.tuwien.dsg.rsybl.operationsmanagementplatform.entities.interfaces.IUser;
+import at.ac.tuwien.dsg.rsybl.operationsmanagementplatform.sessionbeans.interfaces.IUserManagementBeanRemote;
 import at.ac.tuwien.dsg.rsybl.operationsmanagementplatform.utils.OMPLogger;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -40,8 +42,9 @@ import javax.transaction.SystemException;
  */
 @Stateless
 @LocalBean
+@Remote(IUserManagementBeanRemote.class)
 @TransactionManagement(TransactionManagementType.BEAN)
-public class UserManagementBean implements IUserManagementSessionBean {
+public class UserManagementBean implements IUserManagementSessionBean, IUserManagementBeanRemote {
 
     @PersistenceContext
     protected EntityManager em;
@@ -154,5 +157,17 @@ public class UserManagementBean implements IUserManagementSessionBean {
         userDAO = new UserDAO();
         userDAO.setEntityManager(em);
         return userDAO.findAll();
+    }
+
+    @Override
+    public List<String> findAllRemote() {
+        userDAO = new UserDAO();
+        userDAO.setEntityManager(em);
+        List<String> result = new ArrayList<String>();
+        List<IUser> users = userDAO.findAll();
+        for (IUser user : users) {
+            result.add(user.getUsername());
+        }
+        return result;
     }
 }

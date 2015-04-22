@@ -63,7 +63,40 @@ public class MQProducer {
         }
 
     }
+   public void initiateRoleInteractionQueue() {
+        // get the initial context
+        broker = new BrokerService();
 
+
+        try {
+            // configure the broker
+
+            connector = new TransportConnector();
+            connector.setUri(new URI(QUEUE_url));
+            broker.addConnector(connector);
+            broker.start();
+            ActiveMQConnectionFactory connectionFactory = new ActiveMQConnectionFactory(ActiveMQConnection.DEFAULT_BROKER_URL);
+
+            // Create a Connection
+            connection = connectionFactory.createConnection();
+            connection.start();
+
+            // Create a Session
+            session = connection.createSession(false, Session.AUTO_ACKNOWLEDGE);
+
+            // Create the destination (Topic or Queue)
+            Destination destination = session.createQueue(QUEUE_NAME);
+
+            // Create a MessageProducer from the Session to the Topic or Queue
+            producer = session.createProducer(destination);
+            producer.setDeliveryMode(DeliveryMode.PERSISTENT);
+
+        } catch (Exception e) {
+            DependencyGraphLogger.logger.error(e.getMessage());
+        }
+
+    }
+   
     public void initiateQueue() {
         // get the initial context
         broker = new BrokerService();
