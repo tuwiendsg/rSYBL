@@ -3,12 +3,13 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package at.ac.tuwien.dsg.rsybl.controllercommunication.interactionProcessing;
+package at.ac.tuwien.dsg.rsybl.operationsmanagementplatform.interactWithController;
 
-import at.ac.tuwien.dsg.rsybl.controllercommunication.CommunicationManagement;
-import at.ac.tuwien.dsg.rsybl.controllercommunication.utils.Configuration;
-import at.ac.tuwien.dsg.rsybl.controllercommunication.utils.ControllerCommunicationLogger;
+
 import at.ac.tuwien.dsg.rsybl.operationsmanagementplatform.entities.communicationModel.Interaction;
+import at.ac.tuwien.dsg.rsybl.operationsmanagementplatform.sessionbeans.InteractionManagementSessionBean;
+import at.ac.tuwien.dsg.rsybl.operationsmanagementplatform.utils.Configuration;
+import at.ac.tuwien.dsg.rsybl.operationsmanagementplatform.utils.OMPLogger;
 import com.rabbitmq.client.Channel;
 import com.rabbitmq.client.Connection;
 import com.rabbitmq.client.ConnectionFactory;
@@ -38,10 +39,9 @@ public class CloudAMQPInteractions {
     private ConnectionFactory factory;
     private Connection connection;
     private Channel channel;
-    private CommunicationManagement communicationManagement;
     private List<Interaction> cachedInteractions = new ArrayList<Interaction>();
     private String EXCHANGE_NAME = "eOMP";
-    private InteractionProcessing interactionProcessing;
+    private InteractionManagementSessionBean interactionManagementSessionBean;
     /**
      * @return the cachedInteractions
      */
@@ -73,6 +73,20 @@ public class CloudAMQPInteractions {
        
     }
 
+    /**
+     * @return the controllerCommunication
+     */
+    public InteractionManagementSessionBean getControllerCommunication() {
+        return interactionManagementSessionBean;
+    }
+
+    /**
+     * @param controllerCommunication the controllerCommunication to set
+     */
+    public void setControllerCommunication(InteractionManagementSessionBean interactionManagementSessionBean) {
+        this.interactionManagementSessionBean = interactionManagementSessionBean;
+    }
+
     class ListenQueue implements Runnable {
 
         Thread t;
@@ -95,7 +109,7 @@ public class CloudAMQPInteractions {
 
                 t.start();
             } catch (Exception e) {
-                ControllerCommunicationLogger.logger.info(e.getMessage());
+                OMPLogger.logger.info(e.getMessage());
             }
         }
 
@@ -112,10 +126,9 @@ public class CloudAMQPInteractions {
                         addCachedInteractions(interaction);
                         System.out.println(" [x] Received '" + interaction.getId() + "'");
 
-                        interactionProcessing.processNewInteraction(interaction);
+                        interactionManagementSessionBean.processInteraction(interaction);
                     } catch (Exception e) {
-                        e.printStackTrace();
-                        ControllerCommunicationLogger.logger.info(e.getMessage());
+                        OMPLogger.logger.info(e.getMessage());
                     }
                 } else {
                     break;
@@ -125,12 +138,11 @@ public class CloudAMQPInteractions {
         }
     }
 
-    public CloudAMQPInteractions(CommunicationManagement communicationManagement, InteractionProcessing interactionProcessing) {
+    public CloudAMQPInteractions(InteractionManagementSessionBean interactionManagementSessionBean) {
         if (Configuration.getInteractionTopicName() != null) {
             EXCHANGE_NAME = Configuration.getInteractionTopicName();
         }
-        this.interactionProcessing = interactionProcessing;
-        this.communicationManagement = communicationManagement;
+        this.interactionManagementSessionBean = interactionManagementSessionBean;
         initiateQueues();
 //        ListenQueue listenerQueue = new ListenQueue();
 
@@ -152,7 +164,7 @@ public class CloudAMQPInteractions {
             channel = connection.createChannel();
             channel.exchangeDeclare(EXCHANGE_NAME, "topic");
         } catch (URISyntaxException | NoSuchAlgorithmException | KeyManagementException | IOException e) {
-            ControllerCommunicationLogger.logger.info(e.getMessage());
+            OMPLogger.logger.info(e.getMessage());
 
         }
     }
@@ -163,7 +175,7 @@ public class CloudAMQPInteractions {
             connection.close();
 
         } catch (IOException ex) {
-            ControllerCommunicationLogger.logger.info(ex.getMessage());
+            OMPLogger.logger.info(ex.getMessage());
         }
     }
 
@@ -187,7 +199,7 @@ public class CloudAMQPInteractions {
 
 //            connection.close();
         } catch (Exception e) {
-            ControllerCommunicationLogger.logger.info(e.getMessage());
+            OMPLogger.logger.info(e.getMessage());
 
         }
 

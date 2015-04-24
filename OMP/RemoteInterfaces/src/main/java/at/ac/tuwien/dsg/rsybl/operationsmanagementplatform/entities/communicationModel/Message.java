@@ -3,24 +3,31 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package at.ac.tuwien.dsg.rsybl.operationsmanagementplatform.communication;
+package at.ac.tuwien.dsg.rsybl.operationsmanagementplatform.entities.communicationModel;
 
 import java.io.Serializable;
+import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
+import java.util.Set;
 
 /**
  *
  * @author Georgiana
  */
-public class Message implements Serializable{
+public class Message implements Serializable {
+
+
+ 
+
     private String id;
-    private Type messageType;
+    private String messageType;
     private String priority;
     private String cloudServiceId;
     private String cause;
     private String actionEnforced;
     private Interaction interaction;
-    private List<Double> values;
+    private Set<Double> values;
     private String description;
     private String targetPartId;
 
@@ -41,14 +48,14 @@ public class Message implements Serializable{
     /**
      * @return the values
      */
-    public List<Double> getValues() {
+    public Set<Double> getValues() {
         return values;
     }
 
     /**
      * @param values the values to set
      */
-    public void setValues(List<Double> values) {
+    public void setValues(Set<Double> values) {
         this.values = values;
     }
 
@@ -79,9 +86,7 @@ public class Message implements Serializable{
     public void setTargetPartId(String targetPartId) {
         this.targetPartId = targetPartId;
     }
-     public static enum Type {
-		NOTIFICATION, EMERGENCY, WARNING
-	}
+
     /**
      * @return the id
      */
@@ -99,14 +104,14 @@ public class Message implements Serializable{
     /**
      * @return the messageType
      */
-    public Type getMessageType() {
+    public String getMessageType() {
         return messageType;
     }
 
     /**
      * @param messageType the messageType to set
      */
-    public void setMessageType(Type messageType) {
+    public void setMessageType(String messageType) {
         this.messageType = messageType;
     }
 
@@ -138,8 +143,6 @@ public class Message implements Serializable{
         this.cause = cause;
     }
 
-
-
     /**
      * @return the interaction
      */
@@ -168,5 +171,4 @@ public class Message implements Serializable{
         this.actionEnforced = actionEnforced;
     }
 
-  
 }

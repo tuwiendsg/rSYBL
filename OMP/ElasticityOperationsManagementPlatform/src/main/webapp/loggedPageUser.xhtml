@@ -113,8 +113,19 @@ and open the template in the editor.
                         <p:ajax event="close" listener="#{informationManagedBean.onClose}" />
                         <h:form id="tabsForm">
                             <p:growl autoUpdate="true" />
-                            <p:tabView binding="#{userComponentsBean.tv}" widgetVar="tabW"   />
+                            <!--<p:tabView binding="#{userComponentsBean.tv}" widgetVar="tabW"   />-->
+                            <p:tabView >
+                                <c:forEach items="#{userManagedBean.userRoles}" var="tabVar">
+                                    <p:tab title="#{tabVar}">
+                                        <p:dataList var="item" value="#{userManagedBean.getAllInteractionsForUserAsReceiver(tabVar)}">
+                                            Initiator #{item.initiator.roleName}, description #{item.message.description}
+                                            
+                                        </p:dataList>
+                                    </p:tab>
+                                </c:forEach>
+                            </p:tabView>
                         </h:form>
+                     
                     </p:panel>
                     <p:panel widgetVar="myResponsibilitiesW" id="myResponsibilities"  closable="true" closeSpeed="500"   toggleable="true" toggleSpeed="500" visible="#{informationManagedBean.myResponsibilities}" header="Current Roles and Responsibilities">
                         <p:ajax event="close" listener="#{informationManagedBean.onClose}" />
@@ -127,6 +138,7 @@ and open the template in the editor.
                             </p:panelGrid>
                         </h:form>
                     </p:panel>
+                    
 
                 </p:layoutUnit>
 

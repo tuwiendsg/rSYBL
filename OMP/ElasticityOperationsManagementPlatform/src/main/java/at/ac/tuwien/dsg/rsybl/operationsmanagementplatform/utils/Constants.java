@@ -29,5 +29,7 @@ public class Constants {
     /* ASSOCIATION NAMES (FOR QUERIES) */
     public static final String A_Responsibility = "responsibility";
     public static final String A_Role = "role";
+    public static final String A_Interaction = "interaction";
+    
 
 }

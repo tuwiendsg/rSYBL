@@ -3,8 +3,9 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package at.ac.tuwien.dsg.rsybl.operationsmanagementplatform.communication;
+package at.ac.tuwien.dsg.rsybl.operationsmanagementplatform.entities.communicationModel;
 
+import at.ac.tuwien.dsg.rsybl.operationsmanagementplatform.entities.interfaces.IInteraction;
 import at.ac.tuwien.dsg.rsybl.operationsmanagementplatform.entities.interfaces.IRole;
 import java.io.Serializable;
 import java.util.HashSet;
@@ -16,7 +17,7 @@ import java.util.Set;
  * @author Georgiana
  */
 public class Dialog implements Serializable{
-    private LinkedList<Interaction> interactions = new LinkedList<>();
+    private Set<IInteraction> interactions = new HashSet<>();
     
     private String id;
     private Set<IRole> participants = new HashSet<>();
@@ -24,18 +25,18 @@ public class Dialog implements Serializable{
     /**
      * @return the interactions
      */
-    public LinkedList<Interaction> getInteractions() {
+    public Set<IInteraction> getInteractions() {
         return interactions;
     }
 
     /**
      * @param interactions the interactions to set
      */
-    public void setInteractions(LinkedList<Interaction> interactions) {
-        this.interactions = interactions;
+    public void setInteractions(Set<IInteraction> interactions) {
+        this.interactions =  interactions;
     }
     
-    public void addInteraction(Interaction interaction){
+    public void addInteraction(IInteraction interaction){
         interactions.add(interaction);
     }
 

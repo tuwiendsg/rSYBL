@@ -4,8 +4,9 @@
  * and open the template in the editor.
  */
 
+import at.ac.tuwien.dsg.rsybl.controllercommunication.CommunicationManagement;
 import at.ac.tuwien.dsg.rsybl.controllercommunication.interactionProcessing.InitiateInteractions;
-import at.ac.tuwien.dsg.rsybl.operationsmanagementplatform.communication.Interaction;
+import at.ac.tuwien.dsg.rsybl.operationsmanagementplatform.entities.communicationModel.Interaction;
 import at.ac.tuwien.dsg.rsybl.operationsmanagementplatform.entities.communicationModel.Role;
 import at.ac.tuwien.dsg.rsybl.operationsmanagementplatform.entities.interfaces.IRole;
 import java.util.Date;
@@ -30,12 +31,14 @@ import org.junit.runners.MethodSorters;
 public class CloudAMPQTest {
 
     private static InitiateInteractions initiateInteractions;
-
+    private static CommunicationManagement communicationManagement;
+    
     public CloudAMPQTest() {
     }
 
     @BeforeClass
     public static void setUpClass() {
+        communicationManagement=new CommunicationManagement();
 //            initiateInteractions = new InitiateInteractions();
     }
 
@@ -45,7 +48,7 @@ public class CloudAMPQTest {
 
     @Test
     public void initQueueAndCreateMessage() {
-        initiateInteractions = new InitiateInteractions();
+        initiateInteractions = new InitiateInteractions(communicationManagement);
 
         Interaction myInteraction = new Interaction();
         myInteraction.setId(UUID.randomUUID().toString());
@@ -64,8 +67,8 @@ public class CloudAMPQTest {
 
     @Test
     public void readMessage() {
-        initiateInteractions = new InitiateInteractions();
-        InitiateInteractions trala = new InitiateInteractions();
+        initiateInteractions = new InitiateInteractions(communicationManagement);
+        InitiateInteractions trala = new InitiateInteractions(communicationManagement);
         trala.startListeningToMessages();
         Interaction myInteraction = new Interaction();
         myInteraction.setId(UUID.randomUUID().toString());

@@ -5,7 +5,8 @@
  */
 package at.ac.tuwien.dsg.rsybl.controllercommunication.interactionProcessing;
 
-import at.ac.tuwien.dsg.rsybl.operationsmanagementplatform.communication.Interaction;
+import at.ac.tuwien.dsg.rsybl.controllercommunication.CommunicationManagement;
+import at.ac.tuwien.dsg.rsybl.operationsmanagementplatform.entities.communicationModel.Interaction;
 import com.rabbitmq.client.ConnectionFactory;
 import com.rabbitmq.client.Connection;
 import com.rabbitmq.client.Channel;
@@ -21,10 +22,12 @@ import java.util.List;
 public class InitiateInteractions {
 
     CloudAMQPInteractions aMQPInteractions;
+       private InteractionProcessing interactionProcessing;
 
-    public InitiateInteractions() {
-        aMQPInteractions = new CloudAMQPInteractions();
-
+    public InitiateInteractions(CommunicationManagement communicationManagement) {
+        interactionProcessing = new InteractionProcessing(this);
+        aMQPInteractions = new CloudAMQPInteractions(communicationManagement,interactionProcessing);
+       
     }
 
     public void initiateInteraction(Interaction interaction) {

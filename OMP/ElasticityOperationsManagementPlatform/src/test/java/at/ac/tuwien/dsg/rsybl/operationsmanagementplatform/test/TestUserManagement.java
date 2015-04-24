@@ -65,7 +65,7 @@ public class TestUserManagement {
         p.put("omp", "new://Resource?type=DataSource");
         p.put("omp.JdbcDriver", "org.h2.Driver");
         p.put("omp.JdbcUrl",
-                "jdbc:h2:tcp://localhost:9101/omp;DB_CLOSE_DELAY=-1;LOCK_MODE=0;AUTO_SERVER=TRUE;");
+                "jdbc:h2:tcp://localhost/~/ompData;DB_CLOSE_DELAY=-1;");
         p.put("omp.UserName", "");
         p.put("omp.Password", "");
         p.put("omp.JtaManaged", "true");

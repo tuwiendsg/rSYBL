@@ -45,7 +45,7 @@ import javax.persistence.PersistenceContext;
 @Remote(ISetupInitialDataBeanRemote.class)
 @Startup
 @TransactionManagement(TransactionManagementType.BEAN)
-public class SetupInitialDataSessionBean implements ISetupInitialDataSessionBean,ISetupInitialDataBeanRemote {
+public class SetupInitialDataSessionBean implements ISetupInitialDataSessionBean, ISetupInitialDataBeanRemote {
 
     @PersistenceContext
     protected EntityManager em;
@@ -133,30 +133,28 @@ public class SetupInitialDataSessionBean implements ISetupInitialDataSessionBean
         return responsibilityDAO.findAll();
     }
 
-
-
     @Override
     public List<IRole> findAllRolesRemote() {
-roleDAO = new RoleDAO();
+        roleDAO = new RoleDAO();
         roleDAO.setEntityManager(em);
-     List<IRole> result = new ArrayList<IRole>();
-     List<IRole> roles=    roleDAO.findAll(); 
-     for (IRole r: roles){
-         result.add(MapToCommunicationObjects.mapFromRole(r));
-     }
-     return result;
+        List<IRole> result = new ArrayList<IRole>();
+        List<IRole> roles = roleDAO.findAll();
+        for (IRole r : roles) {
+            result.add(MapToCommunicationObjects.mapFromRole(r));
+        }
+        return result;
     }
 
     @Override
     public List<IResponsibility> findAllResponsibilitiesRemote() {
-      ResponsibilityDAO responsibilityDAO = new ResponsibilityDAO();
+        ResponsibilityDAO responsibilityDAO = new ResponsibilityDAO();
         responsibilityDAO.setEntityManager(em);
-     List<IResponsibility> result = new ArrayList<IResponsibility>();
-     List<IResponsibility> roles=    responsibilityDAO.findAll(); 
-     for (IResponsibility r: roles){
-         result.add(MapToCommunicationObjects.mapFromResponsibility(r));
-     }
-     return result; 
+        List<IResponsibility> result = new ArrayList<IResponsibility>();
+        List<IResponsibility> roles = responsibilityDAO.findAll();
+        for (IResponsibility r : roles) {
+            result.add(MapToCommunicationObjects.mapFromResponsibility(r));
+        }
+        return result;
     }
 
     @Override
@@ -164,16 +162,16 @@ roleDAO = new RoleDAO();
         roleDAO = new RoleDAO();
         roleDAO.setEntityManager(em);
         List<IResponsibility> result = new ArrayList<IResponsibility>();
-     Set<IResponsibility> roles=roleDAO.findByRoleName(name).getResponsabilities();
-      for (IResponsibility r: roles){
-         result.add(MapToCommunicationObjects.mapFromResponsibility(r));
-     }
-     return result;
+        Set<IResponsibility> roles = roleDAO.findByRoleName(name).getResponsabilities();
+        for (IResponsibility r : roles) {
+            result.add(MapToCommunicationObjects.mapFromResponsibility(r));
+        }
+        return result;
     }
 
     @Override
     public int findAuthorityForRole(String role) {
-       roleDAO = new RoleDAO();
+        roleDAO = new RoleDAO();
         roleDAO.setEntityManager(em);
         return roleDAO.findByRoleName(role).getAuthority();
     }

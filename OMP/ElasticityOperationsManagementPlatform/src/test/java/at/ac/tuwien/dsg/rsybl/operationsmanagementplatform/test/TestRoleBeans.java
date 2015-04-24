@@ -70,7 +70,7 @@ public class TestRoleBeans {
         p.put("omp", "new://Resource?type=DataSource");
         p.put("omp.JdbcDriver", "org.h2.Driver");
         p.put("omp.JdbcUrl",
-                "jdbc:h2:tcp://localhost:9101/omp;DB_CLOSE_DELAY=-1;LOCK_MODE=0;AUTO_SERVER=TRUE;");
+                "jdbc:h2:tcp://localhost/~/ompData;DB_CLOSE_DELAY=-1;");
         p.put("omp.UserName", "");
         p.put("omp.Password", "");
         p.put("omp.JtaManaged", "true");
@@ -105,11 +105,11 @@ public class TestRoleBeans {
     @Test
     public void testDefaultData() {
         try {
-            setupInitialDataSessionBean.populateWithITILRoles();
-            setupInitialDataSessionBean.initializeUsers();
+//            setupInitialDataSessionBean.populateWithITILRoles();
+//            setupInitialDataSessionBean.initializeUsers();
             List<IRole> roles = roleManagementSessionBean.findAllRoles();
             for (IRole r : roles) {
-                System.out.println(r.getId());
+                System.out.println("Current role "+r.getId());
             }
         } catch (Exception e) {
             e.printStackTrace();
@@ -139,7 +139,7 @@ public class TestRoleBeans {
 
             List<IRole> roles = roleManagementSessionBean.findAllRoles();
             System.err.println(roles.size());
-            assertEquals(8, roles.size());
+            assertEquals(9, roles.size());
             roleManagementSessionBean.createResponsibility("cost", new ArrayList<String>(), new ArrayList<String>());
             assertNotNull(roleManagementSessionBean.searchForResponsibilityOfType("cost"));
             List<String> responsibilities = new ArrayList<String>();
@@ -147,7 +147,7 @@ public class TestRoleBeans {
             roleManagementSessionBean.createRole(responsibilities, "sysAdmin", 1);
             roles = roleManagementSessionBean.findAllRoles();
             for (IRole r : roles) {
-                System.out.println(r.getId());
+                System.out.println("Current role "+r.getId());
             }
 
         } catch (Exception e) {

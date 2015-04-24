@@ -27,6 +27,7 @@ import javax.ejb.LocalBean;
 import javax.ejb.Lock;
 import javax.ejb.LockType;
 import javax.ejb.Remote;
+import javax.ejb.Stateful;
 
 import javax.ejb.Stateless;
 import javax.ejb.TransactionManagement;
@@ -40,7 +41,7 @@ import javax.transaction.SystemException;
  *
  * @author Georgiana
  */
-@Stateless
+@Stateful
 @LocalBean
 @Remote(IUserManagementBeanRemote.class)
 @TransactionManagement(TransactionManagementType.BEAN)
@@ -82,6 +83,7 @@ public class UserManagementBean implements IUserManagementSessionBean, IUserMana
             OMPLogger.logger.info("failed clearing user data ~~~~ " + e.getMessage());
         }
     }
+    
 
     @Override
     public void createUser(String username, String password) {
@@ -139,6 +141,8 @@ public class UserManagementBean implements IUserManagementSessionBean, IUserMana
         userDAO.setEntityManager(em);
         return userDAO.findByUsername(username);
     }
+    
+    
 
     @Override
     public boolean login(String username, String password) {

@@ -4,14 +4,14 @@
         <provider>org.hibernate.ejb.HibernatePersistence</provider>
         <properties>
             <property name="hibernate.connection.driver_class" value="org.h2.Driver" />
-            <property name="hibernate.connection.url" value="jdbc:h2:tcp://localhost:9101/omp;DB_CLOSE_DELAY=-1;LOCK_MODE=0;AUTO_SERVER=TRUE;" />
+            <property name="hibernate.connection.url" value="jdbc:h2:tcp://localhost/~/ompData;DB_CLOSE_DELAY=-1;AUTO_SERVER=TRUE;LOCK_MODE=0;" />
             <property name="hibernate.dialect" value="org.hibernate.dialect.H2Dialect" />
-            <property name="hibernate.hbm2ddl.auto" value="create-drop" />
-            <property name="hibernate.show_sql" value="false" />
-            <property name="javax.persistence.validation.mode" value="NONE" />
-            <property name="jta.UserTransaction" value="UserTransaction" />
-            <property name="transaction.factory_class" value="org.hibernate.transaction.JTATransactionFactory" />
-            <property name="hibernate.transaction.manager_lookup_class" value="org.apache.openejb.hibernate.TransactionManagerLookup" />
+            <property name="hibernate.hbm2ddl.auto" value="create" />
+            <property name="hibernate.show_sql" value="true" />
+            <property name="javax.persistence.validation.mode" value="AUTO" />
+     <property name="hibernate.cache.provider_class" value="org.hibernate.cache.NoCacheProvider"/>
+
         </properties>
     </persistence-unit>
 </persistence>
+<!--DB_CLOSE_ON_EXIT=FALSE;LOCK_MODE=0;AUTO_SERVER=TRUE;-->

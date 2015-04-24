@@ -3,7 +3,7 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package at.ac.tuwien.dsg.rsybl.operationsmanagementplatform.communication;
+package at.ac.tuwien.dsg.rsybl.operationsmanagementplatform.entities.communicationModel;
 
 import at.ac.tuwien.dsg.rsybl.operationsmanagementplatform.entities.interfaces.IRole;
 import java.io.Serializable;

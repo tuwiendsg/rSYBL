@@ -42,12 +42,7 @@
             <artifactId>openejb-client</artifactId>
             <version>4.7.1</version>
         </dependency>
-        <dependency>
-            <groupId>org.springframework.amqp</groupId>
-            <artifactId>spring-rabbit</artifactId>
-            <version>1.4.3.RELEASE</version>
-        </dependency>
-             <dependency>
+                <dependency>
 		<groupId>com.sun.jersey</groupId>
 		<artifactId>jersey-client</artifactId>
 		<version>1.8</version>

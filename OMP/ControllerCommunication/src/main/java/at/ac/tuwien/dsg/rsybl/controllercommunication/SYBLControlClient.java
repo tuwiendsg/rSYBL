@@ -150,6 +150,21 @@ public class SYBLControlClient {
         System.out.println(response);
     }
 
+    private void callDELETE(String body, String methodName) {
+
+        Client c = Client.create();
+
+        c.getProperties().put(
+                ClientConfig.PROPERTY_FOLLOW_REDIRECTS, true);
+        WebResource r = c.resource(REST_API_URL + "/" + methodName);
+        String response = r.accept(
+                MediaType.APPLICATION_XML_TYPE).
+                header("Content-Type", "application/xml; charset=utf-8").
+                header("Accept", "application/xml, multipart/related").
+                delete(String.class, body);
+        System.out.println(response);
+    }
+
     private void callPOST(String body, String methodName) {
 
         URL url = null;
@@ -204,9 +219,40 @@ public class SYBLControlClient {
         callPUT("", applicationID + "/stopControl");
     }
 
+    public void removeApplicationFromControl(String applicationID) {
+        callDELETE("", "managedService/" + applicationID);
+
+    }
+
     public void setElasticityCapabilitiesEffects(String id, String effects) {
 
         callPUT(effects, id + "/elasticityCapabilitiesEffects");
+
+    }
+
+    public void undeployService(String id) {
+        callDELETE("", id);
+    }
+
+    public void replaceCompositionRules(String id, String compositionRules) {
+        callPOST(compositionRules, id + "/compositionRules");
+    }
+
+    public void replaceRequirements(String id, String requirements) {
+        callPOST(requirements, id + "/description");
+    }
+
+    public void replaceEffects(String id, String effects) {
+        callPOST(effects, id + "/elasticityCapabilitiesEffects");
+    }
+
+    public void startEnforcement(String id, String target, String capabilityID) {
+        callPOST("", id + "/" + target + "/" + "/testElasticityCapability/" + capabilityID);
+
+    }
+
+    public void resumeControl(String id) {
+        callPOST("", id + "/startControlOnExisting");
 
     }
 }

@@ -3,12 +3,15 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package at.ac.tuwien.dsg.rsybl.operationsmanagementplatform.entities.interfaces;
+package at.ac.tuwien.dsg.rsybl.operationsmanagementplatform.sessionbeans.interfaces;
+
+import javax.ejb.Remote;
 
 /**
  *
  * @author Georgiana
  */
-public interface IThirdPartyRole {
-
+@Remote
+public interface IInteractionManagementBeanRemote {
+    
 }

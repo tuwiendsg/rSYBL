@@ -15,9 +15,11 @@ import at.ac.tuwien.dsg.csdg.outputProcessing.eventsNotification.CustomEvent;
 import at.ac.tuwien.dsg.csdg.outputProcessing.eventsNotification.IEvent;
 import at.ac.tuwien.dsg.rsybl.controllercommunication.interactionProcessing.AccessOrganizationInfo;
 import at.ac.tuwien.dsg.rsybl.controllercommunication.interactionProcessing.InitiateInteractions;
-import at.ac.tuwien.dsg.rsybl.operationsmanagementplatform.communication.Interaction;
-import at.ac.tuwien.dsg.rsybl.operationsmanagementplatform.communication.Message;
+import at.ac.tuwien.dsg.rsybl.controllercommunication.interactionProcessing.InteractionProcessing;
+import at.ac.tuwien.dsg.rsybl.operationsmanagementplatform.entities.communicationModel.Interaction;
+import at.ac.tuwien.dsg.rsybl.operationsmanagementplatform.entities.communicationModel.Message;
 import at.ac.tuwien.dsg.rsybl.operationsmanagementplatform.entities.communicationModel.Role;
+import at.ac.tuwien.dsg.rsybl.operationsmanagementplatform.entities.interfaces.IMessage;
 import at.ac.tuwien.dsg.rsybl.operationsmanagementplatform.entities.interfaces.IResponsibility;
 import at.ac.tuwien.dsg.rsybl.operationsmanagementplatform.entities.interfaces.IRole;
 import java.util.ArrayList;
@@ -26,16 +28,18 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map.Entry;
 import java.util.UUID;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import java.util.regex.Pattern;
 
 /**
  *
  * @author Georgiana
  */
-public class CommunicationManagement {
+public class CommunicationManagement implements Runnable{
 
     private InitiateInteractions initiateInteractions;
-
+    private final int  THRESHOLD=5;
     private List<IResponsibility> responsibilities;
     private List<IRole> roles;
     private List<String> metrics;
@@ -44,16 +48,37 @@ public class CommunicationManagement {
     private HashMap<IRole, List<Interaction>> queuedInteractions = new HashMap<IRole, List<Interaction>>();
     private HashMap<String, List<IRole>> metricsToRoles = new HashMap<String, List<IRole>>();
     private HashMap<String, List<IRole>> metricPatternsToRoles = new HashMap<String, List<IRole>>();
-
+    private Thread thisThread ;
     public CommunicationManagement() {
         QueueListenerrSYBL queueListenerSYBL = new QueueListenerrSYBL(this);
-        initiateInteractions = new InitiateInteractions();
+        initiateInteractions = new InitiateInteractions(this);
         initiateInteractions.startListeningToMessages();
         accessOrganizationInfo = new AccessOrganizationInfo();
+        thisThread = new Thread(this);
         init();
 
     }
-
+    public void run(){
+        while (true){
+            processInteractions();
+            try {
+            Thread.sleep(5000);
+        } catch (InterruptedException ex) {
+            Logger.getLogger(CommunicationManagement.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        }
+    }
+    private void processInteractions(){
+        for (IRole iRole:queuedInteractions.keySet()){
+            if (THRESHOLD*Math.log10(iRole.getAuthority())<=queuedInteractions.get(iRole).size()){
+                for (Interaction interaction:queuedInteractions.get(iRole)){
+                    initiateInteractions.initiateInteraction(interaction);
+                }
+                List<Interaction> interactions = new ArrayList<Interaction>();
+                queuedInteractions.put(iRole, interactions);
+            }
+        }
+    }
     private void init() {
         responsibilities = accessOrganizationInfo.getAllResponsibilities();
         roles = accessOrganizationInfo.getAllRoles();
@@ -81,6 +106,7 @@ public class CommunicationManagement {
                 }
             }
         }
+        thisThread.start();
     }
 
     private Message constructMessageFromActionPlan(ActionPlanEvent event, List<String> metrics) {
@@ -117,7 +143,7 @@ public class CommunicationManagement {
         message.setCause(cause);
         message.setTargetPartId(event.getServiceId());
         message.setId(UUID.randomUUID().toString());
-        message.setMessageType(Message.Type.NOTIFICATION);
+        message.setMessageType(IMessage.MessageType.NOTIFICATION);
         return message;
     }
 
@@ -225,6 +251,7 @@ public class CommunicationManagement {
                 List<Interaction> interactions = new ArrayList<Interaction>();
                 queuedInteractions.put(r, interactions);
             }
+            queuedInteractions.get(r).add(interaction);
         }
 
     }
@@ -232,10 +259,10 @@ public class CommunicationManagement {
     public void processCustomEvent(CustomEvent event) {
         Message message = new Message();
         if (event.getType() == IEvent.Type.ERROR) {
-            message.setMessageType(Message.Type.EMERGENCY);
+            message.setMessageType(IMessage.MessageType.EMERGENCY);
         }
         if (event.getType() == IEvent.Type.UNHEALTHY_SP) {
-            message.setMessageType(Message.Type.WARNING);
+            message.setMessageType(IMessage.MessageType.WARNING);
         }
         message.setCloudServiceId(event.getCloudServiceID());
         message.setTargetPartId(event.getTarget());
@@ -254,7 +281,23 @@ public class CommunicationManagement {
                 List<Interaction> interactions = new ArrayList<Interaction>();
                 queuedInteractions.put(r, interactions);
             }
+                        queuedInteractions.get(r).add(interaction);
+
         }
 
+    }
+
+    /**
+     * @return the initiateInteractions
+     */
+    public InitiateInteractions getInitiateInteractions() {
+        return initiateInteractions;
+    }
+
+    /**
+     * @param initiateInteractions the initiateInteractions to set
+     */
+    public void setInitiateInteractions(InitiateInteractions initiateInteractions) {
+        this.initiateInteractions = initiateInteractions;
     }
 }

@@ -9,16 +9,23 @@ import at.ac.tuwien.dsg.rsybl.operationsmanagementplatform.entities.interfaces.I
 import at.ac.tuwien.dsg.rsybl.operationsmanagementplatform.entities.interfaces.IRole;
 import at.ac.tuwien.dsg.rsybl.operationsmanagementplatform.entities.interfaces.IUser;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Set;
 import javax.annotation.PostConstruct;
+import javax.el.ExpressionFactory;
+import javax.el.ValueExpression;
+import javax.faces.application.Application;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.ManagedProperty;
 import javax.faces.bean.RequestScoped;
 import javax.faces.bean.ViewScoped;
 import javax.faces.component.html.HtmlOutputLabel;
+import javax.faces.context.FacesContext;
 import javax.inject.Inject;
+import org.primefaces.component.datalist.DataList;
+import org.primefaces.component.outputlabel.OutputLabel;
 import org.primefaces.component.panelgrid.PanelGrid;
 import org.primefaces.component.tabview.Tab;
 import org.primefaces.component.tabview.TabView;
@@ -115,14 +122,27 @@ public class UserComponentsBean {
         if (userManagedBean.isLoggedIn()) {
             tv = new TabView();
             //Setting Tab1
-
+             FacesContext fc = FacesContext.getCurrentInstance();
+            Application application = fc.getApplication();
+       
             for (IRole role : userManagedBean.getiRoles()) {
                 Tab t = new Tab();
                 t.setTitle(role.getRoleName());
+               DataList dataList = (DataList) application.createComponent(fc, "org.primefaces.component.DataList", "org.primefaces.component.DataListRenderer");
 
-                HtmlOutputLabel out1 = new HtmlOutputLabel();
-                out1.setValue("Role responsibilities " + role);
-                t.getChildren().add(out1);
+//                dataList.setValue(userManagedBean.getAllInteractionsForUserAsReceiver(role.getRoleName()));
+//                HtmlOutputLabel out1 = new HtmlOutputLabel();
+//                out1.setValue("Role responsibilities " + role);
+                ValueExpression ve = application.getExpressionFactory().createValueExpression(fc.getELContext(), "#{userManagedBean.getAllInteractionsForUserAsReceiver(\'"+role.getRoleName()+"\')}", Collection.class);
+                dataList.setValueExpression("value", ve);
+                dataList.setVar("data");
+               
+//                dataList.setItemType("#{data.id}");
+                OutputLabel  outputLabel = new OutputLabel();
+                outputLabel.setValue("#{data.id}");
+                
+                dataList.getChildren().add(outputLabel);
+                t.getChildren().add(dataList);
 
                 t.setId(role.getRoleName().trim().replace(" ", ""));
                 tv.getChildren().add(t);

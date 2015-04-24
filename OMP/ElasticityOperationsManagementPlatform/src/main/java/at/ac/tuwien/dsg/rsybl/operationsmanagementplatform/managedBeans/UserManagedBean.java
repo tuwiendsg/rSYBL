@@ -5,9 +5,11 @@
  */
 package at.ac.tuwien.dsg.rsybl.operationsmanagementplatform.managedBeans;
 
+import at.ac.tuwien.dsg.rsybl.operationsmanagementplatform.entities.interfaces.IInteraction;
 import at.ac.tuwien.dsg.rsybl.operationsmanagementplatform.entities.interfaces.IResponsibility;
 import at.ac.tuwien.dsg.rsybl.operationsmanagementplatform.entities.interfaces.IRole;
 import at.ac.tuwien.dsg.rsybl.operationsmanagementplatform.entities.interfaces.IUser;
+import at.ac.tuwien.dsg.rsybl.operationsmanagementplatform.sessionbeans.InteractionManagementSessionBean;
 import at.ac.tuwien.dsg.rsybl.operationsmanagementplatform.sessionbeans.SetupInitialDataSessionBean;
 import at.ac.tuwien.dsg.rsybl.operationsmanagementplatform.sessionbeans.UserManagementBean;
 import at.ac.tuwien.dsg.rsybl.operationsmanagementplatform.sessionbeans.interfaces.ISetupInitialDataSessionBean;
@@ -52,7 +54,11 @@ public class UserManagedBean implements Serializable {
     ISetupInitialDataSessionBean iSetupInitialDataSessionBean;
     @EJB(name = "UserManagementBean", beanInterface = IUserManagementSessionBean.class,beanName = "UserManagementBean", lookup = "global/ElasticityOperationsManagementPlatform/UserManagementBean!at.ac.tuwien.dsg.rsybl.operationsmanagementplatform.sessionbeans.interfaces.IUserManagementSessionBean")
     IUserManagementSessionBean iUserManagementSessionBean;
-    DataAccess access;
+    
+    @EJB(name = "InteractionManagementSessionBean", beanInterface = InteractionManagementSessionBean.class,beanName = "InteractionManagementSessionBean", lookup = "global/ElasticityOperationsManagementPlatform/InteractionManagementSessionBean!at.ac.tuwien.dsg.rsybl.operationsmanagementplatform.sessionbeans.interfaces.InteractionManagementSessionBean")
+    InteractionManagementSessionBean interactionManagementSessionBean;
+   
+   
     private String username;
     private String password;
     private List<String> userRoles = new ArrayList<>();
@@ -95,7 +101,13 @@ public class UserManagedBean implements Serializable {
     public void setPassword(String password) {
         this.password = password;
     }
-
+    public List<IInteraction> getAllInteractionsForUserAsReceiver(String rolename){
+            return interactionManagementSessionBean.findAllInteractionsForReceiver(rolename);
+           
+   }
+    public List<IInteraction> getAllInteractionsForUserAsInitiator(String rolename){
+        return interactionManagementSessionBean.findAllInteractionsForInitiator(rolename);
+    }
     public void login(ActionEvent event) {
 
         RequestContext context = RequestContext.getCurrentInstance();
@@ -191,5 +203,7 @@ public class UserManagedBean implements Serializable {
     public void setLoggedIn(boolean loggedIn) {
         this.loggedIn = loggedIn;
     }
+
+   
 
 }
