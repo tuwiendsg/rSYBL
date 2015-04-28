@@ -21,6 +21,7 @@ import java.util.Set;
 public class MapToCommunicationObjects {
     public static Role mapFromRole(IRole irole){
         Role role = new Role();
+        role.setId(irole.getId());
         role.setAuthority(irole.getAuthority());
         role.setRoleName(irole.getRoleName());
         Set<IResponsibility> resp = irole.getResponsabilities();
@@ -31,6 +32,7 @@ public class MapToCommunicationObjects {
     }
     public static Responsibility mapFromResponsibility(IResponsibility iResponsibility){
         Responsibility resp = new Responsibility();
+        resp.setId(iResponsibility.getId());
         resp.setAssociatedMetricPatterns(iResponsibility.getAssociatedMetricPatterns());
         resp.setAssociatedMetrics(iResponsibility.getAssociatedMetrics());
         resp.setResponsabilityType(iResponsibility.getResponsabilityType());

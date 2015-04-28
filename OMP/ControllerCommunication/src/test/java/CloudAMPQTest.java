@@ -7,6 +7,7 @@
 import at.ac.tuwien.dsg.rsybl.controllercommunication.CommunicationManagement;
 import at.ac.tuwien.dsg.rsybl.controllercommunication.interactionProcessing.InitiateInteractions;
 import at.ac.tuwien.dsg.rsybl.operationsmanagementplatform.entities.communicationModel.Interaction;
+import at.ac.tuwien.dsg.rsybl.operationsmanagementplatform.entities.communicationModel.Message;
 import at.ac.tuwien.dsg.rsybl.operationsmanagementplatform.entities.communicationModel.Role;
 import at.ac.tuwien.dsg.rsybl.operationsmanagementplatform.entities.interfaces.IRole;
 import java.util.Date;
@@ -51,13 +52,15 @@ public class CloudAMPQTest {
         initiateInteractions = new InitiateInteractions(communicationManagement);
 
         Interaction myInteraction = new Interaction();
-        myInteraction.setId(UUID.randomUUID().toString());
+        myInteraction.setUuid(UUID.randomUUID().toString());
         myInteraction.setInitiationDate(new Date());
         myInteraction.setDialogId(UUID.randomUUID().toString());
         IRole role = new Role();
-        role.setRoleName("EC");
+        role.setRoleName("Service Manager");
         IRole ecrole = new Role();
-        ecrole.setRoleName("EC");
+        ecrole.setRoleName("Elasticity Controller");
+                Message message = new Message();
+        myInteraction.setMessage(message);
         myInteraction.setInitiator(ecrole);
         myInteraction.setReceiver(role);
         initiateInteractions.initiateInteraction(myInteraction);
@@ -65,19 +68,20 @@ public class CloudAMPQTest {
 
     }
 
-    @Test
+   // @Test
     public void readMessage() {
         initiateInteractions = new InitiateInteractions(communicationManagement);
         InitiateInteractions trala = new InitiateInteractions(communicationManagement);
         trala.startListeningToMessages();
         Interaction myInteraction = new Interaction();
-        myInteraction.setId(UUID.randomUUID().toString());
+        myInteraction.setUuid(UUID.randomUUID().toString());
         myInteraction.setInitiationDate(new Date());
         myInteraction.setDialogId(UUID.randomUUID().toString());
+
         IRole role = new Role();
-        role.setRoleName("EC");
+        role.setRoleName("Service Manager");
         IRole ecrole = new Role();
-        ecrole.setRoleName("EC");
+        ecrole.setRoleName("Elasticity Controller");
         myInteraction.setInitiator(ecrole);
         myInteraction.setReceiver(role);
         initiateInteractions.initiateInteraction(myInteraction);

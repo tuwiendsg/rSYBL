@@ -41,7 +41,7 @@ import javax.transaction.SystemException;
  *
  * @author Georgiana
  */
-@Stateful
+@Stateless
 @LocalBean
 @Remote(IUserManagementBeanRemote.class)
 @TransactionManagement(TransactionManagementType.BEAN)

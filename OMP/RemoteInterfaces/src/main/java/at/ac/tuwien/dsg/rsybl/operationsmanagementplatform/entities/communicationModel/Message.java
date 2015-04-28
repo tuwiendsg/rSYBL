@@ -16,11 +16,8 @@ import java.util.Set;
  * @author Georgiana
  */
 public class Message implements Serializable {
-
-
- 
-
-    private String id;
+    private Long id;
+    private String uuid;
     private String messageType;
     private String priority;
     private String cloudServiceId;
@@ -87,19 +84,6 @@ public class Message implements Serializable {
         this.targetPartId = targetPartId;
     }
 
-    /**
-     * @return the id
-     */
-    public String getId() {
-        return id;
-    }
-
-    /**
-     * @param id the id to set
-     */
-    public void setId(String id) {
-        this.id = id;
-    }
 
     /**
      * @return the messageType
@@ -169,6 +153,34 @@ public class Message implements Serializable {
      */
     public void setActionEnforced(String actionEnforced) {
         this.actionEnforced = actionEnforced;
+    }
+
+    /**
+     * @return the id
+     */
+    public Long getId() {
+        return id;
+    }
+
+    /**
+     * @param id the id to set
+     */
+    public void setId(Long id) {
+        this.id = id;
+    }
+
+    /**
+     * @return the uuid
+     */
+    public String getUuid() {
+        return uuid;
+    }
+
+    /**
+     * @param uuid the uuid to set
+     */
+    public void setUuid(String uuid) {
+        this.uuid = uuid;
     }
 
 }

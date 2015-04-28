@@ -32,6 +32,8 @@ import at.ac.tuwien.dsg.rSybl.planningEngine.staticData.ActionEffect;
 import at.ac.tuwien.dsg.rSybl.planningEngine.utils.PlanningLogger;
 import java.util.AbstractMap;
 import java.util.HashMap;
+import java.util.Map;
+
 
 public class ActionPlanEnforcement {
 
@@ -70,14 +72,15 @@ public class ActionPlanEnforcement {
             eventNotification.sendEvent(actionPlanEvent);
             this.violationDegree = violationDegree;
 
+            
+
+            enforceResult(result, dependencyGraph, constraintsFixed, strategiesImproved);
             actionPlanEvent = new ActionPlanEvent();
             actionPlanEvent.setType(Type.ELASTICITY_CONTROL);
             actionPlanEvent.setConstraints(constraintsFixed);
             actionPlanEvent.setStrategies(strategiesImproved);
             actionPlanEvent.setServiceId(dependencyGraph.getCloudService().getId());
             actionPlanEvent.setStage(IEvent.Stage.FINISHED);
-
-            enforceResult(result, dependencyGraph, constraintsFixed, strategiesImproved);
         }
 
     }
@@ -96,13 +99,35 @@ public class ActionPlanEnforcement {
             }
         }
         outputProcessing.saveActionPlan(capabilities);
-
+        
         if (!dependencyGraph.isInControlState()) {
             PlanningLogger.logger.info("Not enforcing action due to breakpoint ");
             return;
         }
         PlanningLogger.logger.info("Number of actions to enforce" + result.size());
         List<ArrayList<Pair<ActionEffect, Integer>>> paralelRes = parallellizeResult(result);
+        if (result.size()>0){
+             actionPlanEvent = new ActionPlanEvent();
+            actionPlanEvent.setServiceId(dependencyGraph.getCloudService().getId());
+            actionPlanEvent.setStage(IEvent.Stage.START);
+            actionPlanEvent.setType(Type.ELASTICITY_CONTROL);
+            actionPlanEvent.setConstraints((ArrayList<Constraint>) constraintsFixed);
+            actionPlanEvent.setStrategies((ArrayList<Strategy>) strategiesImproved);
+        }
+        for (ArrayList<Pair<ActionEffect,Integer>> actionsToEnf:paralelRes){
+            for (Pair<ActionEffect,Integer> action:actionsToEnf){
+                actionPlanEvent.addEffect(new AbstractMap.SimpleEntry<>(action.getFirst().getTargetedEntityID(),action.getFirst().getActionName()));
+            }
+        }
+        if (actionPlanEvent.getEffect()!=null && actionPlanEvent.getEffect().size()>0){
+        eventNotification.sendEvent(actionPlanEvent);
+        }
+          actionPlanEvent = new ActionPlanEvent();
+            actionPlanEvent.setType(Type.ELASTICITY_CONTROL);
+            actionPlanEvent.setConstraints((ArrayList<Constraint>) constraintsFixed);
+            actionPlanEvent.setStrategies((ArrayList<Strategy>) strategiesImproved);
+            actionPlanEvent.setServiceId(dependencyGraph.getCloudService().getId());
+            actionPlanEvent.setStage(IEvent.Stage.FINISHED);
         for (ArrayList<Pair<ActionEffect, Integer>> actionsToEnf : paralelRes) {
             List<Thread> threadsToExec = new ArrayList<Thread>();
             PlanningLogger.logger.info("~~~ paralel actions executed " + actionsToEnf.size());
@@ -112,6 +137,8 @@ public class ActionPlanEnforcement {
                 Thread t = new Thread(enforceActionInThread);
                 t.start();
                 threadsToExec.add(t);
+//                 actionPlanEvent.addEffect(new AbstractMap.SimpleEntry<>(action.getFirst().getTargetedEntityID(),action.getFirst().getActionName()));
+
 
             }
             for (Thread actionInThread : threadsToExec) {
@@ -123,10 +150,12 @@ public class ActionPlanEnforcement {
             }
 
         }
+              
         if ((actionPlanEvent.getEffect() != null && actionPlanEvent.getEffect().size() > 0)) {
 
             eventNotification.sendEvent(actionPlanEvent);
         } 
+
 
 //                for (Pair<ActionEffect, Integer> actionEffect : result) {
 //			PlanningLogger.logger.info("Enforcing capability "

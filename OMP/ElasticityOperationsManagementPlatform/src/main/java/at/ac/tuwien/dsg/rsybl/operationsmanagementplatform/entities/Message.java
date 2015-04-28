@@ -12,6 +12,8 @@ import java.util.List;
 import java.util.Set;
 import javax.persistence.ElementCollection;
 import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.OneToOne;
 
@@ -21,20 +23,23 @@ import javax.persistence.OneToOne;
  */
 @Entity
 public class Message implements Serializable,IMessage{
+    private String uuid;
+    
     @Id
-    private String id;
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
 
     /**
      * @return the id
      */
-    public String getId() {
+    public Long getId() {
         return id;
     }
 
     /**
      * @param id the id to set
      */
-    public void setId(String id) {
+    public void setId(Long id) {
         this.id = id;
     }
    
@@ -176,6 +181,20 @@ public class Message implements Serializable,IMessage{
      */
     public void setTargetPartId(String targetPartId) {
         this.targetPartId = targetPartId;
+    }
+
+    /**
+     * @return the uuid
+     */
+    public String getUuid() {
+        return uuid;
+    }
+
+    /**
+     * @param uuid the uuid to set
+     */
+    public void setUuid(String uuid) {
+        this.uuid = uuid;
     }
     
 

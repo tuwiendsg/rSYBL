@@ -88,7 +88,7 @@ public class CloudAMQPInteractions {
             try {
 
                 String queueName = channel.queueDeclare().getQueue();
-                channel.queueBind(queueName, EXCHANGE_NAME, "EC");
+                channel.queueBind(queueName, EXCHANGE_NAME, "Elasticity Controller");
                 consumer = new QueueingConsumer(channel);
                 channel.basicConsume(queueName, true, consumer);
 //                System.out.println(" [*] Waiting for messages. To exit press CTRL+C");
@@ -110,7 +110,7 @@ public class CloudAMQPInteractions {
                         Object obj = ois.readObject();
                         Interaction interaction = (Interaction) obj;
                         addCachedInteractions(interaction);
-                        System.out.println(" [x] Received '" + interaction.getId() + "'");
+                        System.out.println(" [x] Received '" + interaction.getUuid()+ "'");
 
                         interactionProcessing.processNewInteraction(interaction);
                     } catch (Exception e) {

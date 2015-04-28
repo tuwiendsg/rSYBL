@@ -34,6 +34,7 @@ import at.ac.tuwien.dsg.csdg.elasticityInformation.ElasticityCapability;
 import at.ac.tuwien.dsg.csdg.elasticityInformation.ElasticityRequirement;
 import at.ac.tuwien.dsg.csdg.elasticityInformation.elasticityRequirements.Strategy;
 import at.ac.tuwien.dsg.csdg.elasticityInformation.elasticityRequirements.ToEnforce;
+import at.ac.tuwien.dsg.csdg.inputProcessing.multiLevelModel.abstractModelXML.SYBLDirectiveMappingFromXML;
 import at.ac.tuwien.dsg.rSybl.cloudInteractionUnit.api.EnforcementAPIInterface;
 import at.ac.tuwien.dsg.rSybl.cloudInteractionUnit.utils.Configuration;
 import at.ac.tuwien.dsg.rSybl.dataProcessingUnit.api.MonitoringAPIInterface;
@@ -316,12 +317,8 @@ public void processStrategies(String strategies) {
 	}
 
 }
-public void doEnforcementWithPrimitives(String enf, String strategyName){
-    Strategy s = new Strategy();
-    s.setId(strategyName);
-    ToEnforce enforce = new ToEnforce();
-    enforce.setActionName(enf);
-    s.setToEnforce(enforce);
+public void doEnforcementWithPrimitives(String enf, String strategyName, Strategy s){
+
 	if (!enf.contains("minimize") &&  !enf.contains("maximize")){
 		if (enf.contains("(")){
 			String actionName = enf.split("[(]")[0];
@@ -349,7 +346,7 @@ public void processStrategy(Rule r) {
 		try {
 			try {
 				if ((condition.contains("AND") && evaluateCompositeCondition(condition))||(!condition.contains("AND") &&evaluateCondition(condition)) ){
-					doEnforcementWithPrimitives( s[1],r.getName());
+					doEnforcementWithPrimitives( s[1],r.getName(),SYBLDirectiveMappingFromXML.mapFromSYBLAnnotationToXMLStrategy(r.getText()));
 				}else{
 					SYBLDirectivesEnforcementLogger.logger.info("Condition not true for strategy "+r.getName() );
 				}
@@ -367,7 +364,7 @@ public void processStrategy(Rule r) {
 		String[] actions = s[0].split(";");
 		
 		for (String action:actions){
-			doEnforcementWithPrimitives(action,r.getName());
+			doEnforcementWithPrimitives(action,r.getName(),SYBLDirectiveMappingFromXML.mapFromSYBLAnnotationToXMLStrategy(r.getText()));
 			}
 				
 		}

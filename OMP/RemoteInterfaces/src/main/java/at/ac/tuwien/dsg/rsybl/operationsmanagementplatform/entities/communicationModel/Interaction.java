@@ -15,8 +15,9 @@ import java.util.Objects;
  * @author Georgiana
  */
 public class Interaction implements Serializable, Comparable<Interaction> {
-    private String id;
-    private String dialogId;
+    private Long id;
+    private String uuid;
+    private String dialogUuid;
     private Date initiationDate;
     private IRole initiator;
     private IRole receiver;
@@ -122,31 +123,45 @@ public class Interaction implements Serializable, Comparable<Interaction> {
     }
 
     /**
+     * @return the dialogUuid
+     */
+    public String getDialogId() {
+        return dialogUuid;
+    }
+
+    /**
+     * @param dialogId the dialogUuid to set
+     */
+    public void setDialogId(String dialogId) {
+        this.dialogUuid = dialogId;
+    }
+
+    /**
      * @return the id
      */
-    public String getId() {
+    public Long getId() {
         return id;
     }
 
     /**
      * @param id the id to set
      */
-    public void setId(String id) {
+    public void setId(Long id) {
         this.id = id;
     }
 
     /**
-     * @return the dialogId
+     * @return the uuid
      */
-    public String getDialogId() {
-        return dialogId;
+    public String getUuid() {
+        return uuid;
     }
 
     /**
-     * @param dialogId the dialogId to set
+     * @param uuid the uuid to set
      */
-    public void setDialogId(String dialogId) {
-        this.dialogId = dialogId;
+    public void setUuid(String uuid) {
+        this.uuid = uuid;
     }
 
 }

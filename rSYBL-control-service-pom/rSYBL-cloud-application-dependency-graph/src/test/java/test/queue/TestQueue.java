@@ -44,6 +44,7 @@ public class TestQueue {
 
     }
 
+    
     @Test
     public void testProducer() {
         if (Configuration.getMQEnabled() == true) {

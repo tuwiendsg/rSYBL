@@ -5,9 +5,13 @@
  */
 package at.ac.tuwien.dsg.rsybl.operationsmanagementplatform.managedBeans;
 
+import at.ac.tuwien.dsg.rsybl.operationsmanagementplatform.entities.interfaces.IDialog;
+import at.ac.tuwien.dsg.rsybl.operationsmanagementplatform.entities.interfaces.IInteraction;
 import at.ac.tuwien.dsg.rsybl.operationsmanagementplatform.entities.interfaces.IResponsibility;
 import at.ac.tuwien.dsg.rsybl.operationsmanagementplatform.entities.interfaces.IRole;
 import at.ac.tuwien.dsg.rsybl.operationsmanagementplatform.entities.interfaces.IUser;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
@@ -56,99 +60,74 @@ public class UserComponentsBean {
     @ManagedProperty(value = "#{userManagedBean}")
     private UserManagedBean userManagedBean;
     private DefaultDiagramModel diagram;
+    private DefaultDiagramModel service;
+    
     private PanelGrid panelGridServices; //bound to the view
-    private TabView tv; //bound to the view
-
+    @ManagedProperty("#{roles}")
+    private RolesList rolesList;
+    
+    
     private TreeNode root;
-     private TreeNode selectedNode;
+    private TreeNode selectedNode;
     private Document selectedDocument;
-         
- 
-     
+
     public void initTable() {
         createDocuments();
     }
- 
+
     public TreeNode getRoot() {
         return root;
     }
- 
+
+    public List<RolesList.RoleDescription> getRoleNames() {
+        return rolesList.getRoles();
+    }
+    
+   
+
     public TreeNode createDocuments() {
         root = new DefaultTreeNode(new Document("Responsibility/Roles ", "Details"), null);
-        selectedNode=root;
+        selectedNode = root;
         Set<IRole> associatedRoles = userManagedBean.getiRoles();
-        
-        for (IRole role:associatedRoles){
-           Set<IResponsibility> responsibilities = role.getResponsabilities();
-           String responsibilityDetail=". Responsibilities:";
-           for (IResponsibility resp : responsibilities){
-               responsibilityDetail+=" "+resp.getResponsibilityName();
-           }
-           TreeNode roleNode=new DefaultTreeNode(new Document(role.getRoleName(),"Authority "+role.getAuthority()+" out of 10"+
-                   responsibilityDetail+"."),root);
-           for (IResponsibility responsibility:responsibilities){
-               String metrics = "";
-               for (String m:responsibility.getAssociatedMetrics()){
-                   metrics+=" "+m;
-               }
-               TreeNode responsibilityNode = new DefaultTreeNode(new Document(responsibility.getResponsibilityName(),
-              " Responsibility "+responsibility.getResponsibilityName()+", with focus on "+responsibility.getResponsabilityType()+" and interest in the following metrics: "+metrics+"."),roleNode);
-           }
-        }   
-       
-         
-        
+
+        for (IRole role : associatedRoles) {
+            Set<IResponsibility> responsibilities = role.getResponsabilities();
+            String responsibilityDetail = ". Responsibilities:";
+            for (IResponsibility resp : responsibilities) {
+                responsibilityDetail += " " + resp.getResponsibilityName();
+            }
+            TreeNode roleNode = new DefaultTreeNode(new Document(role.getRoleName(), "Authority " + role.getAuthority() + " out of 10"
+                    + responsibilityDetail + "."), root);
+            for (IResponsibility responsibility : responsibilities) {
+                String metrics = "";
+                for (String m : responsibility.getAssociatedMetrics()) {
+                    metrics += " " + m;
+                }
+                TreeNode responsibilityNode = new DefaultTreeNode(new Document(responsibility.getResponsibilityName(),
+                        " Responsibility " + responsibility.getResponsibilityName() + ", with focus on " + responsibility.getResponsabilityType() + " and interest in the following metrics: " + metrics + "."), roleNode);
+            }
+        }
+
         return root;
     }
- 
+
     public Document getSelectedDocument() {
         return selectedDocument;
     }
- 
+
     public void setSelectedDocument(Document selectedDocument) {
         this.selectedDocument = selectedDocument;
     }
-     public void setSelectedNode(TreeNode selectedNode) {
-         if (selectedNode!=null)
-        this.selectedDocument = (Document) selectedNode.getData();
+
+    public void setSelectedNode(TreeNode selectedNode) {
+        if (selectedNode != null) {
+            this.selectedDocument = (Document) selectedNode.getData();
+        }
 
     }
-     
+
     public UserComponentsBean() {
 
-    }
-
-    public void initInteractions() {
-        if (userManagedBean.isLoggedIn()) {
-            tv = new TabView();
-            //Setting Tab1
-             FacesContext fc = FacesContext.getCurrentInstance();
-            Application application = fc.getApplication();
-       
-            for (IRole role : userManagedBean.getiRoles()) {
-                Tab t = new Tab();
-                t.setTitle(role.getRoleName());
-               DataList dataList = (DataList) application.createComponent(fc, "org.primefaces.component.DataList", "org.primefaces.component.DataListRenderer");
-
-//                dataList.setValue(userManagedBean.getAllInteractionsForUserAsReceiver(role.getRoleName()));
-//                HtmlOutputLabel out1 = new HtmlOutputLabel();
-//                out1.setValue("Role responsibilities " + role);
-                ValueExpression ve = application.getExpressionFactory().createValueExpression(fc.getELContext(), "#{userManagedBean.getAllInteractionsForUserAsReceiver(\'"+role.getRoleName()+"\')}", Collection.class);
-                dataList.setValueExpression("value", ve);
-                dataList.setVar("data");
-               
-//                dataList.setItemType("#{data.id}");
-                OutputLabel  outputLabel = new OutputLabel();
-                outputLabel.setValue("#{data.id}");
-                
-                dataList.getChildren().add(outputLabel);
-                t.getChildren().add(dataList);
-
-                t.setId(role.getRoleName().trim().replace(" ", ""));
-                tv.getChildren().add(t);
-            }
-
-        }
     }
 
     public void initRoles() {
@@ -166,7 +145,7 @@ public class UserComponentsBean {
 
             for (IRole role : allRoles) {
 
-                Element el = new Element(role.getRoleName(), size / allRoles.size() * i + "em", 20 + "em");
+                Element el = new Element(role.getRoleName()+" ["+role.getAuthority()+"]", size / allRoles.size() * i + "em", 20 + "em");
                 el.addEndPoint(new DotEndPoint(EndPointAnchor.TOP));
                 el.addEndPoint(new DotEndPoint(EndPointAnchor.BOTTOM));
                 roles.put(role.getRoleName(), el);
@@ -186,9 +165,9 @@ public class UserComponentsBean {
                 i++;
                 diagram.addElement(el);
             }
-            List<IUser> myUsers = userManagedBean.getAllUsers();
+            List<IUser> myUsers = userManagedBean.getAllUsersWithoutAdmin();
 
-            for (IUser user : userManagedBean.getAllUsers()) {
+            for (IUser user : myUsers) {
                 Set<IRole> myRoles = user.getRoles();
 
                 Element us = new Element(user.getName(), (size / myUsers.size()) * (userIndex) + "em", 5 + "em");
@@ -231,10 +210,10 @@ public class UserComponentsBean {
 
     @PostConstruct
     public void init() {
-        initInteractions();
         initRoles();
         initServices();
         initTable();
+       
     }
     private List<Tab> tabs = new ArrayList<Tab>();
 
@@ -267,19 +246,7 @@ public class UserComponentsBean {
         this.userManagedBean = userManagedBean;
     }
 
-    /**
-     * @return the tv
-     */
-    public TabView getTv() {
-        return tv;
-    }
-
-    /**
-     * @param tv the tv to set
-     */
-    public void setTv(TabView tv) {
-        this.tv = tv;
-    }
+    
 
     /**
      * @return the panelGridServices
@@ -293,6 +260,28 @@ public class UserComponentsBean {
      */
     public void setPanelGridServices(PanelGrid panelGridServices) {
         this.panelGridServices = panelGridServices;
+    }
+
+    public List<IInteraction> getAllInteractionsForUserAsReceiver(String rolename) {
+        return userManagedBean.getAllInteractionsForUserAsReceiver(rolename);
+
+    }
+
+    public List<IInteraction> getAllInteractionsForUserAsInitiator(String rolename) {
+        return userManagedBean.getAllInteractionsForUserAsInitiator(rolename);
+    }
+
+    public IDialog getDialogForInteraction(String dialogID) {
+        return userManagedBean.getDialogForInteraction(dialogID);
+    }
+
+    public List<IDialog> getAllDialogsForUserAsReceiver(String rolename) {
+        return userManagedBean.getAllDialogsForUserAsReceiver(rolename);
+
+    }
+
+    public List<IDialog> getAllDialogsForUserAsInitiator(String rolename) {
+        return userManagedBean.getAllDialogsForUserAsInitiator(rolename);
     }
 
     /**
@@ -315,5 +304,21 @@ public class UserComponentsBean {
     public TreeNode getSelectedNode() {
         return selectedNode;
     }
+
+    /**
+     * @return the rolesList
+     */
+    public RolesList getRolesList() {
+        return rolesList;
+    }
+
+    /**
+     * @param rolesList the rolesList to set
+     */
+    public void setRolesList(RolesList rolesList) {
+        this.rolesList = rolesList;
+    }
+
+  
 
 }

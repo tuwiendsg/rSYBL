@@ -165,8 +165,8 @@ public class SYBLControlClient {
         System.out.println(response);
     }
 
-    private void callPOST(String body, String methodName) {
-
+    private String callPOST(String body, String methodName) {
+            String result = "";
         URL url = null;
         HttpURLConnection connection = null;
         try {
@@ -194,11 +194,12 @@ public class SYBLControlClient {
             }
 
             InputStream inputStream = connection.getInputStream();
+
             if (inputStream != null) {
                 BufferedReader reader = new BufferedReader(new InputStreamReader(inputStream));
                 String line;
                 while ((line = reader.readLine()) != null) {
-                    Logger.getLogger(SYBLControlClient.class.getName()).log(Level.SEVERE, line);
+                    result+=line;
                 }
             }
 
@@ -208,7 +209,9 @@ public class SYBLControlClient {
             if (connection != null) {
                 connection.disconnect();
             }
+            
         }
+        return result;
     }
 
     public void startApplication(String applicationID) {
@@ -250,7 +253,10 @@ public class SYBLControlClient {
         callPOST("", id + "/" + target + "/" + "/testElasticityCapability/" + capabilityID);
 
     }
-
+    public String getServices(){
+        return callPOST("","elasticservices");
+                
+    }
     public void resumeControl(String id) {
         callPOST("", id + "/startControlOnExisting");
 

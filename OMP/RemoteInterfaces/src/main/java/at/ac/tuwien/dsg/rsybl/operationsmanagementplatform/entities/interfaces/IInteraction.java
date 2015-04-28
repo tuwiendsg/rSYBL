@@ -29,12 +29,13 @@ public interface IInteraction {
 
      public void setMessage(IMessage message) ;
 
-    public String getId() ;
+    public Long getId() ;
+    public void setId(Long id);
 
-    public void setId(String id) ;
+    public String getDialogUuid() ;
 
-    public String getDialogId() ;
-
-    public void setDialogId(String dialogId);
+    public void setDialogUuid(String dialogId);
+       public String getUuid();
+    public void setUuid(String uuid);
 
 }

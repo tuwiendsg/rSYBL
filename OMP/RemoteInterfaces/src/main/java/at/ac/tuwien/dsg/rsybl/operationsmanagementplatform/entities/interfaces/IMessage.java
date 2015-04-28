@@ -34,6 +34,7 @@ public interface IMessage {
     String REPLACE_REQUIREMENTS ="ReplaceRequirements";
     String PAUSE_CONTROL="PauseControl";
     String RESUME_CONTROL="ResumeControl";
+    String GET_SERVICE="GetServices";
 }
      public String getCloudServiceId() ;
 
@@ -54,11 +55,8 @@ public interface IMessage {
 
 
     public void setTargetPartId(String targetPartId) ;
- 
-    public String getId() ;
-
-
-    public void setId(String id);
+    public Long getId() ;
+    public void setId(Long id);
 
  
     public String getMessageType() ;
@@ -83,5 +81,7 @@ public interface IMessage {
     public String getActionEnforced();
     
     public void setActionEnforced(String actionEnforced) ;
+       public String getUuid();
+    public void setUuid(String uuid);
 
 }

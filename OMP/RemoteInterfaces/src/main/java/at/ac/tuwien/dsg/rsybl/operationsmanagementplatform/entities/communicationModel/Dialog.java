@@ -5,6 +5,7 @@
  */
 package at.ac.tuwien.dsg.rsybl.operationsmanagementplatform.entities.communicationModel;
 
+import at.ac.tuwien.dsg.rsybl.operationsmanagementplatform.entities.interfaces.IDialog;
 import at.ac.tuwien.dsg.rsybl.operationsmanagementplatform.entities.interfaces.IInteraction;
 import at.ac.tuwien.dsg.rsybl.operationsmanagementplatform.entities.interfaces.IRole;
 import java.io.Serializable;
@@ -16,12 +17,12 @@ import java.util.Set;
  *
  * @author Georgiana
  */
-public class Dialog implements Serializable{
+public class Dialog implements Serializable,IDialog{
     private Set<IInteraction> interactions = new HashSet<>();
     
-    private String id;
+    private Long id;
     private Set<IRole> participants = new HashSet<>();
-    
+    private String uuid;
     /**
      * @return the interactions
      */
@@ -40,35 +41,32 @@ public class Dialog implements Serializable{
         interactions.add(interaction);
     }
 
-    /**
-     * @return the id
-     */
-    public String getId() {
-        return id;
+  
+
+
+
+    @Override
+    public String getUuid() {
+       return uuid;
+    }
+
+    @Override
+    public void setUuid(String uuid) {
+        this.uuid=uuid;
     }
 
     /**
      * @param id the id to set
      */
-    public void setId(String id) {
+    public void setId(Long id) {
         this.id = id;
     }
 
-    /**
-     * @return the participants
-     */
-    public Set<IRole> getParticipants() {
-        return participants;
+    @Override
+    public Long getId() {
+       return id;
     }
 
-    /**
-     * @param participants the participants to set
-     */
-    public void setParticipants(Set<IRole> participants) {
-        this.participants = participants;
-    }
-    
-    public void addParticipants(IRole participant){
-        participants.add(participant);
-    }
+   
+
 }

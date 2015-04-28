@@ -31,7 +31,7 @@ public class User implements Serializable, IUser {
 
     private static final long serialVersionUID = 1L;
     @Id
-    @GeneratedValue(strategy = GenerationType.TABLE)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = Constants.I_Role)
     private Long id;
 

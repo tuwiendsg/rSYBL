@@ -17,9 +17,9 @@ public interface IDialog {
     public Set<IInteraction> getInteractions();
     public void setInteractions(Set<IInteraction> interactions) ;
     public void addInteraction(IInteraction interaction);
-    public String getId() ;
-    public void setId(String id);
-    public Set<IRole> getParticipants() ;
-    public void setParticipants(Set<IRole> participants) ;
-    public void addParticipants(IRole participant);
+    public Long getId() ;
+    public void setId(Long id);
+
+    public String getUuid();
+    public void setUuid(String uuid);
 }

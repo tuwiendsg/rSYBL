@@ -33,7 +33,7 @@ public class Role implements Serializable, IRole {
     private static final long serialVersionUID = 1L;
 
     @Id
-    @GeneratedValue(strategy = GenerationType.TABLE)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     @Column(unique = true)
@@ -41,7 +41,7 @@ public class Role implements Serializable, IRole {
 
     @ManyToMany
     @JoinTable(joinColumns = {
-        @JoinColumn(name = Constants.I_Role, referencedColumnName = "ID")},
+        @JoinColumn( name = Constants.I_Role, referencedColumnName = "ID")},
             inverseJoinColumns = {
                 @JoinColumn(name = Constants.I_Responsibility, referencedColumnName = "ID")})
     private Set<Responsibility> responsabilities = new LinkedHashSet<Responsibility>();

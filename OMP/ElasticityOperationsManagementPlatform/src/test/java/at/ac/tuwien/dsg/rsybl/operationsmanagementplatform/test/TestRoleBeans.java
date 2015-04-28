@@ -70,10 +70,10 @@ public class TestRoleBeans {
         p.put("omp", "new://Resource?type=DataSource");
         p.put("omp.JdbcDriver", "org.h2.Driver");
         p.put("omp.JdbcUrl",
-                "jdbc:h2:tcp://localhost/~/ompData;DB_CLOSE_DELAY=-1;");
+                "jdbc:h2:tcp://localhost/~/ompData;AUTO_SERVER=TRUE;MVCC=true");
         p.put("omp.UserName", "");
         p.put("omp.Password", "");
-        p.put("omp.JtaManaged", "true");
+        p.put("omp.JtaManaged", "false");
 
         ejbContainer = EJBContainer.createEJBContainer(p);
 
@@ -122,9 +122,9 @@ public class TestRoleBeans {
         try {
 
             roleManagementSessionBean.clearRoleData();
-
-            setupInitialDataSessionBean.populateWithITILRoles();
+  setupInitialDataSessionBean.populateWithITILRoles();
             setupInitialDataSessionBean.initializeUsers();
+          
             ctx.unbind("inject");
         } catch (Exception e) {
             e.printStackTrace();

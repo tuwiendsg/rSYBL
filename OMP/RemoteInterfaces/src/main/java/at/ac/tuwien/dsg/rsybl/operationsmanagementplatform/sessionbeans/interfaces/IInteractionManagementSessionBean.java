@@ -5,6 +5,7 @@
  */
 package at.ac.tuwien.dsg.rsybl.operationsmanagementplatform.sessionbeans.interfaces;
 
+import at.ac.tuwien.dsg.rsybl.operationsmanagementplatform.entities.interfaces.IDialog;
 import at.ac.tuwien.dsg.rsybl.operationsmanagementplatform.entities.interfaces.IInteraction;
 import at.ac.tuwien.dsg.rsybl.operationsmanagementplatform.entities.interfaces.IMessage;
 import at.ac.tuwien.dsg.rsybl.operationsmanagementplatform.entities.interfaces.IRole;
@@ -21,4 +22,6 @@ public interface IInteractionManagementSessionBean {
     public List<IInteraction> findAllInteractions();
      public List<IInteraction> findAllInteractionsForInitiator(String username) ;
     public List<IInteraction> findAllInteractionsForReceiver(String username);
+    public List<IDialog> findAllDialogsForReceiver(String roleName);
+    public List<IDialog> findAllDialogsForInitiator(String roleName);
 }

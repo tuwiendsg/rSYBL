@@ -25,6 +25,8 @@ import java.util.Set;
 import javax.activation.DataSource;
 import javax.annotation.PostConstruct;
 import javax.annotation.Resource;
+import javax.ejb.ConcurrencyManagement;
+import javax.ejb.ConcurrencyManagementType;
 import javax.ejb.EJB;
 import javax.ejb.Local;
 import javax.ejb.LocalBean;
@@ -36,6 +38,12 @@ import javax.ejb.TransactionManagement;
 import javax.ejb.TransactionManagementType;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
+import javax.transaction.HeuristicMixedException;
+import javax.transaction.HeuristicRollbackException;
+import javax.transaction.NotSupportedException;
+import javax.transaction.RollbackException;
+import javax.transaction.SystemException;
+import org.hibernate.exception.ConstraintViolationException;
 
 /**
  *
@@ -44,6 +52,7 @@ import javax.persistence.PersistenceContext;
 @Singleton
 @Remote(ISetupInitialDataBeanRemote.class)
 @Startup
+@ConcurrencyManagement(ConcurrencyManagementType.CONTAINER)
 @TransactionManagement(TransactionManagementType.BEAN)
 public class SetupInitialDataSessionBean implements ISetupInitialDataSessionBean, ISetupInitialDataBeanRemote {
 
@@ -74,7 +83,7 @@ public class SetupInitialDataSessionBean implements ISetupInitialDataSessionBean
             testData.createInitialRoles();
             em.flush();
             userTransaction.commit();
-        } catch (Exception e) {
+        } catch (ConstraintViolationException | RollbackException | NotSupportedException | SystemException | HeuristicMixedException | HeuristicRollbackException e) {
             e.printStackTrace();
             try {
                 userTransaction.rollback();
@@ -94,20 +103,46 @@ public class SetupInitialDataSessionBean implements ISetupInitialDataSessionBean
             user.setUsername("admin");
             user.setPassword("admin");
             user.setName("SysAdmin");
-            IRole role = (IRole) em.merge(roleDAO.findByRoleName("Systems Administrator"));
+//            IRole role = (IRole) em.merge(roleDAO.findByRoleName("Systems Administrator"));
 
 //            role.setRoleName("Systems Administrator");
-            user.addRole(role);
+//            user.addRole(role);
             em.persist(user);
             em.flush();
             User georgiana = new User();
             georgiana.setUsername("georgiana");
             georgiana.setPassword("georgiana");
             georgiana.setName("Georgiana Copil");
-            for (IRole irole : roleDAO.findAll()) {
-                georgiana.addRole(em.merge(irole));
-            }
+            georgiana.setEmail("cgeorgy1987@yahoo.com");
+            IRole role = (IRole) em.merge(roleDAO.findByRoleName("Systems Administrator"));
+
+            georgiana.addRole(role);
+            role = (IRole) em.merge(roleDAO.findByRoleName("Configuration Librarian"));
+            georgiana.addRole(role);
+            georgiana.addRole(em.merge(roleDAO.findByRoleName("Incident Analyst")));
+
+//            for (IRole irole : roleDAO.findAll()) {
+//                georgiana.addRole(em.merge(irole));
+//            }
             em.persist(georgiana);
+            em.flush();
+            User linh = new User();
+            linh.setUsername("linh");
+            linh.setPassword("linh");
+            linh.setName("Hong-Linh Truong");
+            linh.setEmail("X@x.com");
+            linh.addRole(em.merge(roleDAO.findByRoleName("Procurement Analysis")));
+            linh.addRole(em.merge(roleDAO.findByRoleName("Operations Manager")));
+            em.persist(linh);
+            em.flush();
+               User schahram = new User();
+            schahram.setUsername("schahram");
+            schahram.setPassword("schahram");
+            schahram.setName("Schahram Dustdar");
+            schahram.setEmail("X@x.com");
+            schahram.addRole(em.merge(roleDAO.findByRoleName("Service Manager")));
+            schahram.addRole(em.merge(roleDAO.findByRoleName("IT Financial Manager")));
+            em.persist(schahram);
             em.flush();
             userTransaction.commit();
         } catch (Exception e) {

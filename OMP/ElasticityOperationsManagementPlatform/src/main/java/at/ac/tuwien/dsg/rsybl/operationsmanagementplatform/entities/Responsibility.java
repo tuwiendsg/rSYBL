@@ -30,10 +30,10 @@ public class Responsibility implements Serializable, IResponsibility {
     private static final long serialVersionUID = 1L;
 
     @Id
-    @GeneratedValue(strategy = GenerationType.TABLE)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @ManyToMany
+    @ManyToMany(mappedBy = "responsabilities")
     private Set<Role> roles = new LinkedHashSet<Role>();
 
     @Column(name = Constants.C_ResponsibilityType)

@@ -92,17 +92,17 @@ public class CloudAMQPInteractions {
         Thread t;
         QueueingConsumer consumer;
 
-        public ListenQueue() {
+        public ListenQueue(String roleName) {
             t = new Thread(this);
-            init();
+            init(roleName);
 
         }
 
-        private void init() {
+        private void init(String roleName) {
             try {
 
                 String queueName = channel.queueDeclare().getQueue();
-                channel.queueBind(queueName, EXCHANGE_NAME, "EC");
+                channel.queueBind(queueName, EXCHANGE_NAME, roleName);
                 consumer = new QueueingConsumer(channel);
                 channel.basicConsume(queueName, true, consumer);
 //                System.out.println(" [*] Waiting for messages. To exit press CTRL+C");
@@ -124,7 +124,7 @@ public class CloudAMQPInteractions {
                         Object obj = ois.readObject();
                         Interaction interaction = (Interaction) obj;
                         addCachedInteractions(interaction);
-                        System.out.println(" [x] Received '" + interaction.getId() + "'");
+                        System.out.println(" [x] Received '" + interaction.getUuid()+ "'");
 
                         interactionManagementSessionBean.processInteraction(interaction);
                     } catch (Exception e) {
@@ -148,9 +148,10 @@ public class CloudAMQPInteractions {
 
     }
 
-    public void startListeningToMessages() {
-        ListenQueue listenerQueue = new ListenQueue();
-
+    public void startListeningToMessages(List<String> roleNames) {
+        for (String r:roleNames){
+            ListenQueue listenerQueue = new ListenQueue(r);
+        }
     }
 
     private void initiateQueues() {

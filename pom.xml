@@ -10,8 +10,6 @@
   <modules>
     <module>rSYBL-control-service-pom</module>
     <module>rSYBL-local-service-pom</module>
-    <module>EJBTest</module>
-    <module>OperationsManagementPlatform-BusinessEnd</module>
     <module>OMP</module>
   </modules>
 	<distributionManagement>
