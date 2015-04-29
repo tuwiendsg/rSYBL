@@ -250,7 +250,12 @@ public class SyblControlWS {
 	public String getXMLRequirements(@PathParam("id")String cloudServiceId){
 		return controlCoordination.getRequirements(cloudServiceId); 
 	}
-
+@GET
+	 @Path("/{id}/elasticityRequirements/plain")
+	 @Produces("text/plain")
+	public String getSYBLRequirements(@PathParam("id")String cloudServiceId){
+		return controlCoordination.getSimpleRequirements(cloudServiceId); 
+	}
           @POST
 	 @Path("/{id}/elasticityCapabilitiesEffects")
 	 @Consumes("application/json")

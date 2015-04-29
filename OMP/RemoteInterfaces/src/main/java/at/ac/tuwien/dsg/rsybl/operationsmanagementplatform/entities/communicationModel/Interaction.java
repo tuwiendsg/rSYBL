@@ -5,6 +5,8 @@
  */
 package at.ac.tuwien.dsg.rsybl.operationsmanagementplatform.entities.communicationModel;
 
+import at.ac.tuwien.dsg.rsybl.operationsmanagementplatform.entities.interfaces.IInteraction;
+import at.ac.tuwien.dsg.rsybl.operationsmanagementplatform.entities.interfaces.IMessage;
 import at.ac.tuwien.dsg.rsybl.operationsmanagementplatform.entities.interfaces.IRole;
 import java.io.Serializable;
 import java.util.Date;
@@ -14,7 +16,7 @@ import java.util.Objects;
  *
  * @author Georgiana
  */
-public class Interaction implements Serializable, Comparable<Interaction> {
+public class Interaction implements Serializable, Comparable<Interaction>,IInteraction {
     private Long id;
     private String uuid;
     private String dialogUuid;
@@ -22,7 +24,7 @@ public class Interaction implements Serializable, Comparable<Interaction> {
     private IRole initiator;
     private IRole receiver;
     private Message message;
-
+    private String type;
     @Override
     public int compareTo(Interaction o) {
         final int BEFORE = -1;
@@ -111,28 +113,28 @@ public class Interaction implements Serializable, Comparable<Interaction> {
     /**
      * @return the message
      */
-    public Message getMessage() {
+    public IMessage getMessage() {
         return message;
     }
 
     /**
      * @param message the message to set
      */
-    public void setMessage(Message message) {
-        this.message = message;
+    public void setMessage(IMessage message) {
+        this.message = (Message) message;
     }
 
     /**
      * @return the dialogUuid
      */
-    public String getDialogId() {
+    public String getDialogUuid() {
         return dialogUuid;
     }
 
     /**
      * @param dialogId the dialogUuid to set
      */
-    public void setDialogId(String dialogId) {
+    public void setDialogUuid(String dialogId) {
         this.dialogUuid = dialogId;
     }
 
@@ -162,6 +164,20 @@ public class Interaction implements Serializable, Comparable<Interaction> {
      */
     public void setUuid(String uuid) {
         this.uuid = uuid;
+    }
+
+    /**
+     * @return the type
+     */
+    public String getType() {
+        return type;
+    }
+
+    /**
+     * @param type the type to set
+     */
+    public void setType(String type) {
+        this.type = type;
     }
 
 }

@@ -32,7 +32,7 @@
                     <p:layout>
                         <p:layoutUnit size="250" position="west" >
                             <center>
-                                <p:graphicImage width="150" value="https://raw.githubusercontent.com/tuwiendsg/rSYBL/master/OMP/OperationsManagementPlatform/images/logo.jpg"/>
+                                <p:graphicImage width="150" value="resources/images/logo.png"/>
                             </center>
                         </p:layoutUnit>
                         <p:layoutUnit position="center" >
@@ -45,7 +45,7 @@
                                 <center>
                                     <h:outputLabel>Login here:</h:outputLabel> <br/>
                                     <h:outputLink value="javascript:void(0)" onclick="PF('dlg').show();" title="login">
-                                        <p:graphicImage value="images/login.png" />
+                                        <p:graphicImage value="resources/images/login.png" />
                                     </h:outputLink>
                                 </center>
                             </h:form>
@@ -101,29 +101,97 @@
 
                         <p:panel widgetVar="platformW" id="platform" toggleable="true" toggleSpeed="500" header="Platform Description"  style="margin-bottom:20px">
                             <p:ajax event="close" listener="#{informationManagedBean.onClose}" update="msgs" />
-                            <h:panelGrid columns="2" cellpadding="10">
+                            <h:panelGrid columns="1" cellpadding="10">
+                                The <b>elasticity Operations Management</b> (eOMP) Platform provides organization roles the necessary mechanisms for interacting with automated elasticity controllers (in this case <a href="http://tuwiendsg.github.io/rSYBL">rSYBL</a>) for managing 
+                                service operations related to elasticity control during runtime.
+                                <p:graphicImage width="600" value="resources/images/platform.png" />
+
                             </h:panelGrid>
                         </p:panel>
 
                         <p:panel widgetVar="rolesW" id="roles" closable="true" toggleable="true" closeSpeed="500" toggleSpeed="500" visible="#{informationManagedBean.roles}" header="Organization Roles"  style="margin-bottom:20px" >
                             <p:ajax event="close" listener="#{informationManagedBean.onClose}" update="msgs" />
-                            <h:panelGrid columns="2" cellpadding="10">
+                            <h:panelGrid columns="1" cellpadding="10">
+
+                                The following operations management roles are responsible for cloud service elasticity: 
+                                <p:dataList value="#{userComponentsBean.getRoleNames()}" var="item">
+                                    <f:facet name="header">
+                                        Roles
+                                    </f:facet>
+
+
+                                    #{item.roleName} - #{item.description}
+                                </p:dataList>
+
+                                The elasticity of the cloud service is controlled at runtime, and can evolve on various perspectives (i.e., cost, quality, SLA, performance, testing), each perspective being the focus of various organization roles.  Depending on the expected frequency of modifications, the roles are interested of receiving events more often or more rarely, events being aggregated from a number of modifications, or containing a single modification. For instance, cost-related modifications, need to be viewed by finance-related roles, like IT financial manager, procurement analysis, or service manager. Quality-related events (e.g., service part is not healthy, requirements not fulfilled) are of interest for operations manager and service manager. Since we are focusing on designing interaction between organization roles and elasticity controllers used, we do not focus on interaction with roles which are replaced by elasticity controller functionality (e.g., Performance and Capacity Analyst, Operations Manager, or Capacity Manager).
+
+                                Next to changes coming from the elasticity controllers, different organization roles can be interested in refining the control strategies, the costs considered by the elasticity controller, or even the control mechanisms for the current service. Therefore, modifications in behavior need to flow both from the controller to various organization roles, and vice versa, from organisation roles towards the elasticity controller, when various changes occur either in the controlled service or in the organization itself. The next section discusses the various interaction types, and proposes protocols for supporting this kind of interaction.
+
+
+
+
+
+
                             </h:panelGrid>
                         </p:panel>
                         <p:panel widgetVar="processesW" id="processes" closable="true" toggleable="true" closeSpeed="500" toggleSpeed="500" visible="#{informationManagedBean.processes}" header="Organization Processes"  style="margin-bottom:20px" >
                             <p:ajax event="close" listener="#{informationManagedBean.onClose}" update="msgs" />
-                            <h:panelGrid columns="2" cellpadding="10">
+                            <h:panelGrid cellpadding="10">
+                                <p:row>
+                                    <p:column>
+                                    <p:graphicImage width="600" value="resources/images/dialogStart.png" />
+                                    </p:column><p:column>
+                                    <p:graphicImage width="600" value="resources/images/dialogTest.png" />
+                                    </p:column>
+                                </p:row>
+                                <p:row>
+                                    <p:column colspan="2">
+                                        <p:graphicImage width="1200" value="resources/images/roles.png" />
+                                    </p:column>
+                                </p:row>
                             </h:panelGrid>
                         </p:panel>
                         <p:panel widgetVar="ecW" id="ec" closable="true" toggleable="true" closeSpeed="500" toggleSpeed="500" visible="#{informationManagedBean.eC}"  header="Automated Elasticity Controller"  style="margin-bottom:20px" >
                             <p:ajax event="close" listener="#{informationManagedBean.onClose}" update="msgs" />
-                            <h:panelGrid columns="2" cellpadding="10">
+                            <h:panelGrid columns="1" cellpadding="10">
+                             <p:graphicImage width="1200" value="resources/images/elasticityControlEngine.png" />
+                             <p:graphicImage width="1200" value="resources/images/newFlowOfElasticityControl.png" />
+
                             </h:panelGrid>
                         </p:panel>
                         <p:panel widgetVar="servicesW" id="services" closable="true" toggleable="true" closeSpeed="500" toggleSpeed="500" visible="#{informationManagedBean.services}"  header="Elastic Services"  style="margin-bottom:20px" >
                             <p:ajax event="close" listener="#{informationManagedBean.onClose}" update="msgs" />
-                            <h:panelGrid columns="2" cellpadding="10">
-                            </h:panelGrid>
+                                <h:form id="form">
+    <p:contextMenu for="servicesTable">
+       
+    </p:contextMenu>
+                                    <p:dataTable id="servicesTable" value="#{userManagedBean.services}"  rowKey="#{service}"
+                                                 selection="#{userManagedBean.selectedService}" selectionMode="single" var="service" 
+         >
+
+       <f:facet name="header">
+            Services 
+        </f:facet>
+                                        <p:column headerText="Service ID">
+                                            <h:outputText value="#{service}"/>
+                                        </p:column>
+        <p:column headerText="Requirements">
+            <p:dataList value="#{userManagedBean.getRequirements(service)}" var="requirement"> 
+            <h:outputText value="#{requirement}" />
+            </p:dataList>
+        </p:column>
+        <p:column headerText="Description">
+            <p:tree value="#{userComponentsBean.getTreeNode(service)}" var="node" dynamic="true">
+        <p:treeNode>
+            <h:outputText value="#{node}" />
+        </p:treeNode>
+    </p:tree>
+        </p:column>
+     
+    </p:dataTable> 
+ 
+    
+</h:form>
                         </p:panel>
                     </h:form>
 

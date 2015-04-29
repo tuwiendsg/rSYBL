@@ -878,4 +878,21 @@ public class ControlService {
         this.effects = effects;
 
     }
+    public String getSimpleRequirements(){
+        String reqs = "";
+        for (ElasticityRequirement requirement:dependencyGraph.getAllElasticityRequirements()){
+           
+            if (requirement.getAnnotation().getStrategies()!=null && !requirement.getAnnotation().getStrategies().equalsIgnoreCase("")){
+                reqs+=requirement.getAnnotation().getEntityID()+"-"+requirement.getAnnotation().getStrategies()+"~";
+            }
+
+            if (requirement.getAnnotation().getConstraints()!=null && !requirement.getAnnotation().getConstraints().equalsIgnoreCase("")){
+                reqs+=requirement.getAnnotation().getEntityID()+"-"+requirement.getAnnotation().getConstraints()+"~";
+            }
+               if (requirement.getAnnotation().getMonitoring()!=null && !requirement.getAnnotation().getMonitoring().equalsIgnoreCase("")){
+                reqs+=requirement.getAnnotation().getEntityID()+"-"+requirement.getAnnotation().getMonitoring()+"~";
+            }
+        }
+        return reqs;
+    }
 }

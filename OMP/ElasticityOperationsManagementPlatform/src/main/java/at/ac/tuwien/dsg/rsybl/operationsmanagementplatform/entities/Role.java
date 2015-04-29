@@ -39,7 +39,7 @@ public class Role implements Serializable, IRole {
     @Column(unique = true)
     private String roleName;
 
-    @ManyToMany
+    @ManyToMany(fetch = FetchType.EAGER)
     @JoinTable(joinColumns = {
         @JoinColumn( name = Constants.I_Role, referencedColumnName = "ID")},
             inverseJoinColumns = {

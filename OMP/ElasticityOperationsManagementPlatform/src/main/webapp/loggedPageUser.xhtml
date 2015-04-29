@@ -43,7 +43,7 @@ and open the template in the editor.
                     <p:layout>
                         <p:layoutUnit size="250" position="west" >
                             <center>
-                                <p:graphicImage width="150" value="https://raw.githubusercontent.com/tuwiendsg/rSYBL/master/OMP/OperationsManagementPlatform/images/logo.jpg"/>
+                                <p:graphicImage width="150" value="resources/images/logo.png"/>
                             </center>
                         </p:layoutUnit>
                         <p:layoutUnit position="center" >
@@ -109,23 +109,83 @@ and open the template in the editor.
                 </p:layoutUnit>
 
                 <p:layoutUnit position="center">
-                    <p:panel widgetVar="roleInteractionsW"  closable="true" closeSpeed="500" id="roleInteractions"  toggleable="true" toggleSpeed="500" visible="#{informationManagedBean.roleInteractions}" header="Elasticity Operation Interactions">
+                    <p:panel widgetVar="roleInteractionsW"   closable="true" closeSpeed="500" id="roleInteractions"  toggleable="true" toggleSpeed="500" visible="#{informationManagedBean.roleInteractions}" header="Elasticity Operation Interactions">
                         <p:ajax event="close" listener="#{informationManagedBean.onClose}" />
-                        <h:form id="tabsForm">
+                        <h:form id="tabsForm" >
                             <p:growl autoUpdate="true" />
-                            <!--<p:tabView binding="#{userComponentsBean.tv}" widgetVar="tabW"   />-->
                             <p:tabView >
                                 <c:forEach items="#{userManagedBean.userRoles}" var="tabVar">
+
                                     <p:tab title="#{tabVar}">
-                                        <p:dataList var="item" value="#{userManagedBean.getAllInteractionsForUserAsReceiver(tabVar)}">
-                                            Initiator #{item.initiator.roleName}, description #{item.message.description}
-                                            
-                                        </p:dataList>
+                                        <h3>Received messages</h3>
+                                        <p:dataTable  scrollable="true" scrollHeight="650" var="item" value="#{userComponentsBean.getAllDialogsForUserAsReceiver(tabVar)}">
+
+                                            <p:column style="width:16px">
+                                                <p:rowToggler />
+                                            </p:column>
+                                            <p:column>
+                                                <f:facet name="header">
+                                                    <h:outputText value="Interactions which compose the dialog"/>
+                                                </f:facet>
+                                                <h:outputText value="#{item.uuid}"/>
+                                            </p:column>
+
+                                            <p:rowExpansion>
+<!--<c:when test="#{item.getInteractions().size()>1}">-->
+                                                <p:dataTable  value="#{item.interactions}" var="currentInteraction" >
+                                                    <p:column headerText="Interaction UUID">
+                                                        <h:outputText value="#{currentInteraction.uuid}" />
+                                                    </p:column>
+                                                    <p:column headerText="Date">
+                                                        <h:outputText value="#{currentInteraction.initiationDate}" />
+                                                    </p:column>
+                                                    <p:column headerText="Initiator">
+                                                        <h:outputText value="#{currentInteraction.initiator.roleName}" />
+                                                    </p:column>
+                                                    <p:column headerText="Description">
+                                                        <h:outputText value="#{currentInteraction.message.description}" />
+                                                    </p:column>
+                                                    <p:column headerText="Cause">
+                                                        <h:outputText value="#{currentInteraction.message.cause}" />
+                                                    </p:column>
+                                                    <p:column headerText="Enforced">
+                                                        <h:outputText value="#{currentInteraction.message.actionEnforced}" />
+                                                    </p:column>
+                                                    <p:column headerText="Service Part">
+                                                        <h:outputText value="#{currentInteraction.message.targetPartId}" />
+                                                    </p:column>
+                                                    <p:column headerText="Message Type">
+                                                        <h:outputText value="#{currentInteraction.message.messageType}" />
+                                                    </p:column>
+                                                    <p:column headerText="Action">
+                                                        <h:form>
+                                                            <p:growl id="messages" />
+
+                                                            <p:splitButton value="Respond"  update="messages" icon="ui-icon-disk">
+                                                                <p:menuitem value="Delete"  ajax="false" icon="ui-icon-close" />
+                                                            </p:splitButton>
+                                                        </h:form>
+                                                    </p:column>
+                                                </p:dataTable>
+                                                <!--</c:when>-->
+                                                <!--                                                    <c:otherwise>
+                                                                                                        <p:panel>
+                                                                                                            Received in #{item.initiationDate} a message from role #{item.initiator.roleName}. 
+                                                
+                                                                                                            The cause of the message is #{item.message.cause}, and it concerns #{item.message.cloudServiceId}<c:if test="#{item.message.targetPartId!=''}">(particulary #{item.message.targetPartId})</c:if>.
+                                                                                                            The message has the following description: #{item.message.description}, and priority #{item.message.priority}.
+                                                                                                        </p:panel>
+                                                                                                    </c:otherwise>
+                                                                                                </c:choose>-->
+                                            </p:rowExpansion>
+                                        </p:dataTable>
                                     </p:tab>
                                 </c:forEach>
                             </p:tabView>
                         </h:form>
-                     
+<p:notificationBar position="top" effect="slide" styleClass="top" widgetVar="bar">
+    <h:outputText value="New messages received" style="font-size:36px;" />
+</p:notificationBar>
                     </p:panel>
                     <p:panel widgetVar="myResponsibilitiesW" id="myResponsibilities"  closable="true" closeSpeed="500"   toggleable="true" toggleSpeed="500" visible="#{informationManagedBean.myResponsibilities}" header="Current Roles and Responsibilities">
                         <p:ajax event="close" listener="#{informationManagedBean.onClose}" />
@@ -138,7 +198,7 @@ and open the template in the editor.
                             </p:panelGrid>
                         </h:form>
                     </p:panel>
-                    
+
 
                 </p:layoutUnit>
 

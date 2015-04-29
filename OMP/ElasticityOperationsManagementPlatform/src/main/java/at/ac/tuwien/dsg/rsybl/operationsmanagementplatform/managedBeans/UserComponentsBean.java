@@ -5,6 +5,9 @@
  */
 package at.ac.tuwien.dsg.rsybl.operationsmanagementplatform.managedBeans;
 
+import at.ac.tuwien.dsg.csdg.inputProcessing.multiLevelModel.abstractModelXML.CloudServiceXML;
+import at.ac.tuwien.dsg.csdg.inputProcessing.multiLevelModel.abstractModelXML.ServiceTopologyXML;
+import at.ac.tuwien.dsg.csdg.inputProcessing.multiLevelModel.abstractModelXML.ServiceUnitXML;
 import at.ac.tuwien.dsg.rsybl.operationsmanagementplatform.entities.interfaces.IDialog;
 import at.ac.tuwien.dsg.rsybl.operationsmanagementplatform.entities.interfaces.IInteraction;
 import at.ac.tuwien.dsg.rsybl.operationsmanagementplatform.entities.interfaces.IResponsibility;
@@ -70,7 +73,27 @@ public class UserComponentsBean {
     private TreeNode root;
     private TreeNode selectedNode;
     private Document selectedDocument;
+     
+    
+    public TreeNode getTreeNode(String serviceID){
+        CloudServiceXML cloudServiceXML = userManagedBean.getDescription(serviceID);
+        if (cloudServiceXML!=null){
+        HashMap<String,TreeNode> serviceTopologies = new HashMap<String,TreeNode>();
+        TreeNode serviceDescriptionRoot = new DefaultTreeNode("Root", null);
 
+        for (ServiceTopologyXML serviceTopologyXML:cloudServiceXML.getServiceTopologies()){
+        TreeNode node0 = new DefaultTreeNode(serviceTopologyXML.getId(), serviceDescriptionRoot);
+        serviceTopologies.put(serviceTopologyXML.getId(),node0);
+        for (ServiceUnitXML serviceUnitXML:serviceTopologyXML.getServiceUnits()){
+            TreeNode nodex = new DefaultTreeNode(serviceUnitXML.getId(),node0);
+                   
+        }
+        }
+                return serviceDescriptionRoot;
+
+        }
+       return null;
+    }
     public void initTable() {
         createDocuments();
     }

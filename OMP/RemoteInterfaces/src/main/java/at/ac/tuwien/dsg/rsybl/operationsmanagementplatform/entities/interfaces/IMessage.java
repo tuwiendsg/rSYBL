@@ -14,12 +14,7 @@ import java.util.Set;
  * @author Georgiana
  */
 public interface IMessage {
-       public interface MessageType extends Serializable{
-        String NOTIFICATION= "Notification";
-        String EMERGENCY = "Emergency";
-        String WARNING = "Warning";
-        String REQUEST = "Request";
-    }
+       
     public interface RequestTypes extends Serializable{
     String PREPARE_CONTROL = "PrepareControl";
     String SEND_SERVICE_DESCRIPTION = "SendServiceDescription";
@@ -34,8 +29,10 @@ public interface IMessage {
     String REPLACE_REQUIREMENTS ="ReplaceRequirements";
     String PAUSE_CONTROL="PauseControl";
     String RESUME_CONTROL="ResumeControl";
-    String GET_SERVICE="GetServices";
-}
+    String GET_SERVICES="GetServices";
+    String GET_SERVICE="GetService";
+    String GET_REQUIREMENTS="GetRequirements";
+    }
      public String getCloudServiceId() ;
 
 
@@ -59,9 +56,6 @@ public interface IMessage {
     public void setId(Long id);
 
  
-    public String getMessageType() ;
- 
-    public void setMessageType(String messageType) ;
  
     public String getPriority();
 

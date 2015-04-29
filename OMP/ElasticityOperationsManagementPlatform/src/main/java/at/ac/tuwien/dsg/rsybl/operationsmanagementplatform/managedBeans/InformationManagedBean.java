@@ -36,7 +36,6 @@ public class InformationManagedBean implements Serializable {
     private boolean organizationRoles = false;
     private boolean roleInteractions = false;
     private boolean myResponsibilities = false;
-
     public InformationManagedBean() {
 
     }

@@ -19,6 +19,7 @@ import at.ac.tuwien.dsg.rsybl.controllercommunication.interactionProcessing.Inte
 import at.ac.tuwien.dsg.rsybl.operationsmanagementplatform.entities.communicationModel.Interaction;
 import at.ac.tuwien.dsg.rsybl.operationsmanagementplatform.entities.communicationModel.Message;
 import at.ac.tuwien.dsg.rsybl.operationsmanagementplatform.entities.communicationModel.Role;
+import at.ac.tuwien.dsg.rsybl.operationsmanagementplatform.entities.interfaces.IInteraction;
 import at.ac.tuwien.dsg.rsybl.operationsmanagementplatform.entities.interfaces.IMessage;
 import at.ac.tuwien.dsg.rsybl.operationsmanagementplatform.entities.interfaces.IResponsibility;
 import at.ac.tuwien.dsg.rsybl.operationsmanagementplatform.entities.interfaces.IRole;
@@ -51,13 +52,62 @@ public class CommunicationManagement implements Runnable {
     private Thread thisThread;
 
     public CommunicationManagement() {
-        QueueListenerrSYBL queueListenerSYBL = new QueueListenerrSYBL(this);
-        initiateInteractions = new InitiateInteractions(this);
-        initiateInteractions.startListeningToMessages();
-        accessOrganizationInfo = new AccessOrganizationInfo();
-        thisThread = new Thread(this);
+
         init();
-        queueListenerSYBL.startListening();
+
+    }
+
+    private void init() {
+
+        boolean ok = false;
+        while (!ok) {
+            try {
+                accessOrganizationInfo = new AccessOrganizationInfo();
+                ok = true;
+            } catch (Exception e) {
+                try {
+                    ok = false;
+                    Thread.sleep(10000);
+                } catch (InterruptedException ex) {
+                    Logger.getLogger(CommunicationManagement.class.getName()).log(Level.SEVERE, null, ex);
+                }
+            }
+        }
+
+        thisThread = new Thread(this);
+        ok = false;
+        while (!ok) {
+            try {
+                QueueListenerrSYBL queueListenerSYBL = new QueueListenerrSYBL(this);
+
+                queueListenerSYBL.startListening();
+                ok = true;
+            } catch (Exception e) {
+                try {
+                    ok = false;
+                    Thread.sleep(10000);
+                } catch (InterruptedException ex) {
+                    Logger.getLogger(CommunicationManagement.class.getName()).log(Level.SEVERE, null, ex);
+                }
+            }
+        }
+        initRoles();
+        ok = false;
+        while (!ok) {
+            try {
+                initiateInteractions = new InitiateInteractions(this);
+                initiateInteractions.startListeningToMessages();
+                ok = true;
+            } catch (Exception e) {
+                try {
+                    ok = false;
+                    Thread.sleep(10000);
+                } catch (InterruptedException ex) {
+                    Logger.getLogger(CommunicationManagement.class.getName()).log(Level.SEVERE, null, ex);
+                }
+            }
+        }
+        thisThread.start();
 
     }
 
@@ -84,7 +134,7 @@ public class CommunicationManagement implements Runnable {
         }
     }
 
-    private void init() {
+    private void initRoles() {
         responsibilities = accessOrganizationInfo.getAllResponsibilities();
         roles = accessOrganizationInfo.getAllRoles();
         for (IRole role : roles) {
@@ -111,7 +161,6 @@ public class CommunicationManagement implements Runnable {
                 }
             }
         }
-        thisThread.start();
     }
 
     private Message constructMessageFromActionPlan(ActionPlanEvent event, List<String> metrics) {
@@ -149,7 +198,6 @@ public class CommunicationManagement implements Runnable {
         message.setCause(cause);
         message.setTargetPartId(event.getServiceId());
         message.setUuid(UUID.randomUUID().toString());
-        message.setMessageType(IMessage.MessageType.NOTIFICATION);
         return message;
     }
 
@@ -269,7 +317,9 @@ public class CommunicationManagement implements Runnable {
         role.setRoleName("Elasticity Controller");
         for (IRole r : currentRoles.keySet()) {
             Interaction interaction = new Interaction();
-            interaction.setDialogId(UUID.randomUUID().toString());
+            interaction.setDialogUuid(UUID.randomUUID().toString());
+            interaction.setType(IInteraction.InteractionType.NOTIFICATION);
+
             interaction.setInitiationDate(new Date());
             interaction.setInitiator(role);
             interaction.setReceiver(r);
@@ -281,17 +331,12 @@ public class CommunicationManagement implements Runnable {
             }
             queuedInteractions.get(r).add(interaction);
         }
-        
+
     }
 
     public synchronized void processCustomEvent(CustomEvent event) {
         Message message = new Message();
-        if (event.getType() == IEvent.Type.ERROR) {
-            message.setMessageType(IMessage.MessageType.EMERGENCY);
-        }
-        if (event.getType() == IEvent.Type.UNHEALTHY_SP) {
-            message.setMessageType(IMessage.MessageType.WARNING);
-        }
+
         message.setCloudServiceId(event.getCloudServiceID());
         message.setTargetPartId(event.getTarget());
         message.setDescription(event.getMessage());
@@ -299,7 +344,13 @@ public class CommunicationManagement implements Runnable {
         role.setRoleName("Elasticity Controller");
         for (IRole r : this.metricsToRoles.get("error")) {
             Interaction interaction = new Interaction();
-            interaction.setDialogId(UUID.randomUUID().toString());
+            if (event.getType() == IEvent.Type.ERROR) {
+                interaction.setType(IInteraction.InteractionType.EMERGENCY);
+            }
+            if (event.getType() == IEvent.Type.UNHEALTHY_SP) {
+                interaction.setType(IInteraction.InteractionType.WARNING);
+            }
+            interaction.setDialogUuid(UUID.randomUUID().toString());
             interaction.setInitiationDate(new Date());
             interaction.setInitiator(role);
             interaction.setReceiver(r);
@@ -311,7 +362,6 @@ public class CommunicationManagement implements Runnable {
             }
             queuedInteractions.get(r).add(interaction);
 
-      
         }
     }
 

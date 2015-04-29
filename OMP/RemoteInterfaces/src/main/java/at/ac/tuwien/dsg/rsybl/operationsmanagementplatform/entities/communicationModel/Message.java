@@ -5,6 +5,8 @@
  */
 package at.ac.tuwien.dsg.rsybl.operationsmanagementplatform.entities.communicationModel;
 
+import at.ac.tuwien.dsg.rsybl.operationsmanagementplatform.entities.interfaces.IInteraction;
+import at.ac.tuwien.dsg.rsybl.operationsmanagementplatform.entities.interfaces.IMessage;
 import java.io.Serializable;
 import java.util.Arrays;
 import java.util.Collections;
@@ -15,10 +17,9 @@ import java.util.Set;
  *
  * @author Georgiana
  */
-public class Message implements Serializable {
+public class Message implements Serializable,IMessage {
     private Long id;
     private String uuid;
-    private String messageType;
     private String priority;
     private String cloudServiceId;
     private String cause;
@@ -85,19 +86,7 @@ public class Message implements Serializable {
     }
 
 
-    /**
-     * @return the messageType
-     */
-    public String getMessageType() {
-        return messageType;
-    }
-
-    /**
-     * @param messageType the messageType to set
-     */
-    public void setMessageType(String messageType) {
-        this.messageType = messageType;
-    }
+   
 
     /**
      * @return the priority
@@ -130,15 +119,16 @@ public class Message implements Serializable {
     /**
      * @return the interaction
      */
-    public Interaction getInteraction() {
-        return interaction;
+    public IInteraction getInteraction() {
+        return (IInteraction) interaction;
     }
 
     /**
      * @param interaction the interaction to set
      */
-    public void setInteraction(Interaction interaction) {
-        this.interaction = interaction;
+    @Override
+    public void setInteraction(IInteraction interaction) {
+        this.interaction = (Interaction) interaction;
     }
 
     /**

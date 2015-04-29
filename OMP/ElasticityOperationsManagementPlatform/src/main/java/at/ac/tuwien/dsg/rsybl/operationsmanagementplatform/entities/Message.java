@@ -44,7 +44,6 @@ public class Message implements Serializable,IMessage{
     }
    
 
-    private String messageType;
     private String priority;
     private String cloudServiceId;
     private String cause;
@@ -56,19 +55,7 @@ public class Message implements Serializable,IMessage{
     private String description;
     private String targetPartId;
 
-    /**
-     * @return the messageType
-     */
-    public String getMessageType() {
-        return messageType;
-    }
-
-    /**
-     * @param messageType the messageType to set
-     */
-    public void setMessageType(String messageType) {
-        this.messageType = messageType;
-    }
+  
 
     /**
      * @return the priority

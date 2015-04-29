@@ -31,7 +31,7 @@ public class InitiateInteractions {
     }
 
     public void initiateInteraction(Interaction interaction) {
-        aMQPInteractions.initiateInteraction(interaction.getReceiver().getRoleName(), interaction);
+        aMQPInteractions.initiateInteraction("role", interaction);
     }
 
     public void startListeningToMessages() {

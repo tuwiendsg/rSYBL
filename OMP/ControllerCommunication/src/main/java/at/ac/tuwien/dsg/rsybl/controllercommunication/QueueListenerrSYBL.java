@@ -47,17 +47,14 @@ public class QueueListenerrSYBL implements Runnable {
        
     }
 
-    public void startListening() {
-        try {
+    public void startListening() throws JMSException {
             connection = factory.createConnection();
             connection.start();
             session = connection.createSession(false, Session.AUTO_ACKNOWLEDGE);
             destination = session.createQueue(QUEUE_NAME);
             consumer = session.createConsumer(destination);
             t.start();
-        } catch (Exception ex) {
-            Logger.getLogger(QueueListenerrSYBL.class.getName()).log(Level.SEVERE, null, ex);
-        }
+        
     }
     @Override
     public void run() {

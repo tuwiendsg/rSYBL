@@ -5,6 +5,7 @@
  */
 package at.ac.tuwien.dsg.rsybl.operationsmanagementplatform.managedBeans;
 
+import at.ac.tuwien.dsg.csdg.inputProcessing.multiLevelModel.abstractModelXML.CloudServiceXML;
 import at.ac.tuwien.dsg.rsybl.operationsmanagementplatform.entities.interfaces.IDialog;
 import at.ac.tuwien.dsg.rsybl.operationsmanagementplatform.entities.interfaces.IInteraction;
 import at.ac.tuwien.dsg.rsybl.operationsmanagementplatform.entities.interfaces.IResponsibility;
@@ -20,6 +21,7 @@ import static java.awt.SystemColor.menu;
 import java.awt.event.ActionListener;
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -51,7 +53,7 @@ import org.primefaces.model.menu.MenuModel;
  */
 @ManagedBean(name = "userManagedBean")
 @ApplicationScoped
-public class UserManagedBean implements Serializable {
+public class UserManagedBean implements Serializable,ActionListener{
     
     @EJB(name = "SetupInitialDataSessionBean", beanInterface = ISetupInitialDataSessionBean.class, beanName = "SetupInitialDataSessionBean", lookup = "global/ElasticityOperationsManagementPlatform/SetupInitialDataSessionBean!at.ac.tuwien.dsg.rsybl.operationsmanagementplatform.sessionbeans.interfaces.ISetupInitialDataSessionBean")
     ISetupInitialDataSessionBean iSetupInitialDataSessionBean;
@@ -66,14 +68,16 @@ public class UserManagedBean implements Serializable {
     private List<String> userRoles = new ArrayList<>();
     private Set<IRole> iRoles = new HashSet<>();
     private boolean loggedIn = false;
-
+    private List<String> services = new ArrayList<>();
+    private String selectedService = "";
     public UserManagedBean() {
         
     }
     
     @PostConstruct
     public void init() {
-     
+        interactionManagementSessionBean.addActionListener(this);
+        interactionManagementSessionBean.getServices();
     }
 
     public void processEvents(java.awt.event.ActionEvent e) {
@@ -87,11 +91,19 @@ public class UserManagedBean implements Serializable {
                     Logger.getLogger(UserManagedBean.class.getName()).log(Level.SEVERE, null, ex);
                 }
                 context.execute("PF('bar').hide();");
-                
+                     
             }
+            FacesMessage message = new FacesMessage("Please refresh");
+        FacesContext.getCurrentInstance().addMessage(null, message);
         }
     }
 
+    public String[] getRequirements(String serviceID){
+        return interactionManagementSessionBean.getElasticityRequirements("", serviceID);
+    }
+     public CloudServiceXML getDescription(String serviceID){
+        return interactionManagementSessionBean.getServiceDescription("", serviceID);
+    }
     /**
      * @return the username
      */
@@ -99,7 +111,7 @@ public class UserManagedBean implements Serializable {
         return username;
     }
 
-
+    
     /**
      * @param username the username to set
      */
@@ -173,15 +185,7 @@ public class UserManagedBean implements Serializable {
             FacesContext.getCurrentInstance().getApplication().getNavigationHandler().handleNavigation(FacesContext.getCurrentInstance(), null, "loggedPageUser.xhtml?faces-redirect=true");
             
         }
-          ActionListener refreshListener = new ActionListener() {
-            
-            @Override
-            public void actionPerformed(java.awt.event.ActionEvent e) {
-                processEvents(e);
-            }
-            
-        };
-        interactionManagementSessionBean.addActionListener(refreshListener);
+         
     }
     
     public List<IUser> getAllUsers() {
@@ -262,6 +266,39 @@ public class UserManagedBean implements Serializable {
      */
     public void setLoggedIn(boolean loggedIn) {
         this.loggedIn = loggedIn;
+    }
+
+    /**
+     * @return the services
+     */
+    public List<String> getServices() {
+             return interactionManagementSessionBean.getServices();
+    }
+
+    /**
+     * @param services the services to set
+     */
+    public void setServices(List<String> services) {
+        this.services = services;
+    }
+
+    /**
+     * @return the selectedService
+     */
+    public String getSelectedService() {
+        return selectedService;
+    }
+
+    /**
+     * @param selectedService the selectedService to set
+     */
+    public void setSelectedService(String selectedService) {
+        this.selectedService = selectedService;
+    }
+
+    @Override
+    public void actionPerformed(java.awt.event.ActionEvent e) {
+       this.processEvents(e);
     }
     
 }

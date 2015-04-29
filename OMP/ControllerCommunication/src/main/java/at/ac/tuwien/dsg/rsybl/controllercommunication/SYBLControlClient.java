@@ -38,10 +38,15 @@ import java.util.logging.Logger;
 import javax.ws.rs.core.MediaType;
 
 import javax.xml.bind.JAXBContext;
+import org.apache.http.HttpResponse;
+import org.apache.http.client.ClientProtocolException;
+import org.apache.http.client.HttpClient;
+import org.apache.http.client.methods.HttpGet;
+import org.apache.http.impl.client.HttpClientBuilder;
 
 public class SYBLControlClient {
 
-    protected String REST_API_URL = "http://localhost/rSYBL-analysis-engine-0.1-SNAPSHOT/restWS";
+    protected String REST_API_URL = "http://localhost:8280/rSYBL/restWS";
     protected String compRules;
 
     public SYBLControlClient(String rsyblurl) {
@@ -166,54 +171,33 @@ public class SYBLControlClient {
     }
 
     private String callPOST(String body, String methodName) {
-            String result = "";
-        URL url = null;
-        HttpURLConnection connection = null;
-        try {
-            url = new URL(REST_API_URL + "/" + methodName);
-            connection = (HttpURLConnection) url.openConnection();
-            connection.setDoOutput(true);
-            connection.setInstanceFollowRedirects(false);
-            connection.setRequestMethod("POST");
-            connection.setRequestProperty("Content-Type", "application/xml");
-            connection.setRequestProperty("Accept", "application/json");
+         Client c = Client.create();
 
-            //write message body
-            OutputStream os = connection.getOutputStream();
-            os.write(body.getBytes(Charset.forName("UTF-8")));
-            os.flush();
-            os.close();
-
-            InputStream errorStream = connection.getErrorStream();
-            if (errorStream != null) {
-                BufferedReader reader = new BufferedReader(new InputStreamReader(errorStream));
-                String line;
-                while ((line = reader.readLine()) != null) {
-                    Logger.getLogger(SYBLControlClient.class.getName()).log(Level.SEVERE, line);
-                }
-            }
-
-            InputStream inputStream = connection.getInputStream();
-
-            if (inputStream != null) {
-                BufferedReader reader = new BufferedReader(new InputStreamReader(inputStream));
-                String line;
-                while ((line = reader.readLine()) != null) {
-                    result+=line;
-                }
-            }
-
-        } catch (Exception e) {
-            Logger.getLogger(SYBLControlClient.class.getName()).log(Level.SEVERE, e.getMessage(), e);
-        } finally {
-            if (connection != null) {
-                connection.disconnect();
-            }
+        c.getProperties().put(
+                ClientConfig.PROPERTY_FOLLOW_REDIRECTS, true);
+        WebResource r = c.resource(REST_API_URL + "/" + methodName);
+        String response = r.accept(
+                MediaType.APPLICATION_XML_TYPE).
+                header("Content-Type", "application/xml; charset=utf-8").
+                header("Accept", "application/xml, multipart/related").
+                post(String.class, body);
+        return response;
+        
             
-        }
-        return result;
     }
+ private String callGET( String methodName) {
+           Client c = Client.create();
 
+        c.getProperties().put(
+                ClientConfig.PROPERTY_FOLLOW_REDIRECTS, true);
+        WebResource r = c.resource(REST_API_URL + "/" + methodName);
+        String response = r.accept(
+                MediaType.APPLICATION_XML_TYPE).
+                header("Content-Type", "application/xml; charset=utf-8").
+                header("Accept", "application/xml, multipart/related").
+                get(String.class);
+        return response;
+    }
     public void startApplication(String applicationID) {
         callPUT("", applicationID + "/startControl");
     }
@@ -253,10 +237,56 @@ public class SYBLControlClient {
         callPOST("", id + "/" + target + "/" + "/testElasticityCapability/" + capabilityID);
 
     }
+    public String callGETMethod(String methodName, String reqType){
+        try {
+			
+			// create HTTP Client
+			HttpClient httpClient = HttpClientBuilder.create().build();
+ 
+			// Create new getRequest with below mentioned URL
+			HttpGet getRequest = new HttpGet(REST_API_URL+"/"+methodName);
+ 
+			// Add additional header to getRequest which accepts application/xml data
+			getRequest.addHeader("accept", reqType);
+ 
+			// Execute your request and catch response
+			HttpResponse response = httpClient.execute(getRequest);
+ 
+			// Check for HTTP response code: 200 = success
+			if (response.getStatusLine().getStatusCode() != 200) {
+				throw new RuntimeException("Failed : HTTP error code : " + response.getStatusLine().getStatusCode());
+			}
+ 
+			// Get-Capture Complete application/xml body response
+			BufferedReader br = new BufferedReader(new InputStreamReader((response.getEntity().getContent())));
+			String o;
+			System.out.println("============Output:============");
+                        String output="";
+			// Simply iterate through XML response and show on console.
+			while ((o = br.readLine()) != null) {
+				output+=o;
+			}
+                        return output;
+ 
+		} catch (ClientProtocolException e) {
+			e.printStackTrace();
+ 
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+        return "";
+    }
     public String getServices(){
-        return callPOST("","elasticservices");
+        return callGETMethod("elasticservices","text/plain");
                 
     }
+      public String getService(String id){
+        return callGETMethod(id+"/description","application/xml");
+                
+    }
+      public String getRequirements(String id){
+          return callGETMethod(id+"/elasticityRequirements/plain","text/plain");
+      }
     public void resumeControl(String id) {
         callPOST("", id + "/startControlOnExisting");
 

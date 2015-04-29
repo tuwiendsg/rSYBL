@@ -137,7 +137,7 @@ public class CloudAMQPInteractions {
             }
         }
     }
-
+   
     public CloudAMQPInteractions(InteractionManagementSessionBean interactionManagementSessionBean) {
         if (Configuration.getInteractionTopicName() != null) {
             EXCHANGE_NAME = Configuration.getInteractionTopicName();
@@ -149,9 +149,9 @@ public class CloudAMQPInteractions {
     }
 
     public void startListeningToMessages(List<String> roleNames) {
-        for (String r:roleNames){
-            ListenQueue listenerQueue = new ListenQueue(r);
-        }
+//        for (String r:roleNames){
+            ListenQueue listenerQueue = new ListenQueue("role");
+//        }
     }
 
     private void initiateQueues() {
@@ -164,7 +164,7 @@ public class CloudAMQPInteractions {
             connection = factory.newConnection();
             channel = connection.createChannel();
             channel.exchangeDeclare(EXCHANGE_NAME, "topic");
-        } catch (URISyntaxException | NoSuchAlgorithmException | KeyManagementException | IOException e) {
+        } catch (Exception e) {
             OMPLogger.logger.info(e.getMessage());
 
         }
@@ -196,8 +196,10 @@ public class CloudAMQPInteractions {
 
             channel.basicPublish(EXCHANGE_NAME, role, null, bytes);
 
-            System.out.println(" [x] Sent '" + role + "':'" + message + "'");
-
+            if (((Interaction)message).getMessage()!=null){
+            System.out.println(" [x] Role Sent '" + role + "':'" + ((Interaction)message).getMessage().getDescription() + "'");
+        }
+//            connection.close();
 //            connection.close();
         } catch (Exception e) {
             OMPLogger.logger.info(e.getMessage());

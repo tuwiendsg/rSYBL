@@ -151,7 +151,7 @@ public class CloudAMQPInteractions {
             connection = factory.newConnection();
             channel = connection.createChannel();
             channel.exchangeDeclare(EXCHANGE_NAME, "topic");
-        } catch (URISyntaxException | NoSuchAlgorithmException | KeyManagementException | IOException e) {
+        } catch (Exception e) {
             ControllerCommunicationLogger.logger.info(e.getMessage());
 
         }
@@ -170,7 +170,9 @@ public class CloudAMQPInteractions {
     public void initiateInteraction(String role, Serializable message) {
 
         try {
-
+            connection = factory.newConnection();
+            channel = connection.createChannel();
+            channel.exchangeDeclare(EXCHANGE_NAME, "topic");
             byte[] bytes;
             ByteArrayOutputStream baos = new ByteArrayOutputStream();
             ObjectOutputStream oos = new ObjectOutputStream(baos);
@@ -182,10 +184,10 @@ public class CloudAMQPInteractions {
             baos.close();
 
             channel.basicPublish(EXCHANGE_NAME, role, null, bytes);
-
-            System.out.println(" [x] Sent '" + role + "':'" + message + "'");
-
-//            connection.close();
+            if (((Interaction)message).getMessage()!=null){
+            System.out.println(" [x] Sent '" + role + "':'" + ((Interaction)message).getMessage().getDescription() + "'");
+        }
+        
         } catch (Exception e) {
             ControllerCommunicationLogger.logger.info(e.getMessage());
 

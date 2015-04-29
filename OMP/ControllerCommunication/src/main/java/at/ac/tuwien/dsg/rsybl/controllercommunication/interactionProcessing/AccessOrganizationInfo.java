@@ -13,6 +13,7 @@ import at.ac.tuwien.dsg.rsybl.operationsmanagementplatform.sessionbeans.interfac
 import java.util.List;
 import java.util.Properties;
 import javax.naming.InitialContext;
+import javax.naming.NamingException;
 import javax.rmi.PortableRemoteObject;
 
 /**
@@ -24,8 +25,7 @@ public class AccessOrganizationInfo {
     ISetupInitialDataBeanRemote iSetupInitialDataBeanRemote;
     IUserManagementBeanRemote iUserManagementBeanRemote;
 
-    public AccessOrganizationInfo() {
-        try {
+    public AccessOrganizationInfo() throws NamingException {
             Properties p = new Properties();
             p.put("java.naming.factory.initial", "org.apache.openejb.client.RemoteInitialContextFactory");
             p.put("java.naming.provider.url", "http://127.0.0.1:8080/tomee/ejb");
@@ -37,9 +37,7 @@ public class AccessOrganizationInfo {
             iSetupInitialDataBeanRemote
                     = (ISetupInitialDataBeanRemote) PortableRemoteObject.narrow(obj, ISetupInitialDataBeanRemote.class);
             iUserManagementBeanRemote = (IUserManagementBeanRemote) PortableRemoteObject.narrow(newObj, IUserManagementBeanRemote.class);
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
+        
     }
     public List<IResponsibility> getAllResponsibilities(){
         return iSetupInitialDataBeanRemote.findAllResponsibilitiesRemote();

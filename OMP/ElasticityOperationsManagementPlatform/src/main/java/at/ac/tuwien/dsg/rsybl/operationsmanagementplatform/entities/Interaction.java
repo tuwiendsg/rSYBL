@@ -56,7 +56,7 @@ public class Interaction implements IInteraction,Serializable{
     private Role receiver;
     @OneToOne(cascade =  CascadeType.ALL)
     private Message message;
-
+    private String type;
     /**
      * @return the id
      */
@@ -153,6 +153,20 @@ public class Interaction implements IInteraction,Serializable{
      */
     public void setUuid(String uuid) {
         this.uuid = uuid;
+    }
+
+    /**
+     * @return the type
+     */
+    public String getType() {
+        return type;
+    }
+
+    /**
+     * @param type the type to set
+     */
+    public void setType(String type) {
+        this.type = type;
     }
    
 }

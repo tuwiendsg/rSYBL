@@ -143,6 +143,11 @@ public class ControlCoordination {
         return controls.get(cloudServiceId).getXMLRequirements();
         else return "";
     }
+    public String getSimpleRequirements(String cloudServiceId){
+        if (controls.containsKey(cloudServiceId))
+        return controls.get(cloudServiceId).getSimpleRequirements();
+        else return "";
+    }
     public void replaceRequirements(String requirements) {
         
         controls.get(currentControls).replaceElasticityRequirements(requirements);
