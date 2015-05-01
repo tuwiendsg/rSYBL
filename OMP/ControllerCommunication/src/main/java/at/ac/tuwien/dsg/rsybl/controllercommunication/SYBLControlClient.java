@@ -254,7 +254,7 @@ public class SYBLControlClient {
  
 			// Check for HTTP response code: 200 = success
 			if (response.getStatusLine().getStatusCode() != 200) {
-				throw new RuntimeException("Failed : HTTP error code : " + response.getStatusLine().getStatusCode());
+				throw new RuntimeException("Failed : HTTP error code : " + response.getStatusLine().getStatusCode()+reqType+":"+methodName);
 			}
  
 			// Get-Capture Complete application/xml body response

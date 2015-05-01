@@ -35,7 +35,11 @@ public class TestEJBConnection {
 
     @Test
     public void test() {
+        try{
         AccessOrganizationInfo accessOrganizationInfo = new AccessOrganizationInfo();
+        }catch(Exception e ){
+            fail();
+        }
     }
 
     @After

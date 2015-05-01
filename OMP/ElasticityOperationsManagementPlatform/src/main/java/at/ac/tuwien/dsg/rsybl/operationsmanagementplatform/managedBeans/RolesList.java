@@ -5,6 +5,7 @@
  */
 package at.ac.tuwien.dsg.rsybl.operationsmanagementplatform.managedBeans;
 
+import at.ac.tuwien.dsg.rsybl.operationsmanagementplatform.entities.interfaces.IDialog;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -20,7 +21,7 @@ import javax.faces.bean.ManagedBean;
 @ManagedBean(name = "roles")
 @ApplicationScoped
 public class RolesList {
-
+   
     /**
      * @return the roles
      */
@@ -35,44 +36,7 @@ public class RolesList {
         this.roles = roles;
     }
 
-    public class RoleDescription {
-
-        private String roleName;
-        private String description;
-
-        public RoleDescription() {
-
-        }
-
-        /**
-         * @return the roleName
-         */
-        public String getRoleName() {
-            return roleName;
-        }
-
-        /**
-         * @param roleName the roleName to set
-         */
-        public void setRoleName(String roleName) {
-            this.roleName = roleName;
-        }
-
-        /**
-         * @return the description
-         */
-        public String getDescription() {
-            return description;
-        }
-
-        /**
-         * @param description the description to set
-         */
-        public void setDescription(String description) {
-            this.description = description;
-        }
-
-    }
+   
     private static String[] roleName;
 
     private static String[] description;

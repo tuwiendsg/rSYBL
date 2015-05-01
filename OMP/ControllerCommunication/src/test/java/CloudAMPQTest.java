@@ -54,7 +54,7 @@ public class CloudAMPQTest {
         Interaction myInteraction = new Interaction();
         myInteraction.setUuid(UUID.randomUUID().toString());
         myInteraction.setInitiationDate(new Date());
-        myInteraction.setDialogId(UUID.randomUUID().toString());
+        myInteraction.setDialogUuid(UUID.randomUUID().toString());
         IRole role = new Role();
         role.setRoleName("Service Manager");
         IRole ecrole = new Role();
@@ -76,7 +76,7 @@ public class CloudAMPQTest {
         Interaction myInteraction = new Interaction();
         myInteraction.setUuid(UUID.randomUUID().toString());
         myInteraction.setInitiationDate(new Date());
-        myInteraction.setDialogId(UUID.randomUUID().toString());
+        myInteraction.setDialogUuid(UUID.randomUUID().toString());
 
         IRole role = new Role();
         role.setRoleName("Service Manager");

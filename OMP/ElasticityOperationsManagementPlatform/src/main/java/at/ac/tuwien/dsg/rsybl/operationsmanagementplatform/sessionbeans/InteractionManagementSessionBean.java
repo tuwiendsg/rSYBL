@@ -31,6 +31,7 @@ import java.util.Arrays;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Set;
 import java.util.UUID;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -161,6 +162,23 @@ public class InteractionManagementSessionBean implements IInteractionManagementB
 
     }
 
+    public List<IDialog> findAllDialogsForRole(String roleName) {
+        Query query = em
+                .createNamedQuery("selectDialogs");
+        query.setParameter("rolename", roleName);
+
+        return (List<IDialog>) query.getResultList();
+
+    }
+    public List<IDialog> findAllDialogsForRoleWithType(String roleName, String type){
+        
+                  Query query = em
+                .createNamedQuery("selectDialogsWithType");
+        query.setParameter("rolename", roleName);
+        query.setParameter("type", type);
+
+        return (List<IDialog>) query.getResultList();
+    }
     public void addActionListener(ActionListener actionListener) {
         this.actionListener = actionListener;
 
@@ -221,7 +239,7 @@ public class InteractionManagementSessionBean implements IInteractionManagementB
 
     }
 
-    public void postRequestForElasticityRequirements(String roleName, String serviceID) {
+    public void postRequestForElasticityRequirements(String roleName, String serviceID, String dialogUUID) {
 
         Interaction interaction = new Interaction();
         if (roleName.equalsIgnoreCase("")) {
@@ -243,10 +261,16 @@ public class InteractionManagementSessionBean implements IInteractionManagementB
             message.setActionEnforced(IMessage.RequestTypes.GET_REQUIREMENTS);
             em.persist(message);
             interaction.setMessage(message);
+            DialogDAO dialogDAO = new DialogDAO();
+            dialogDAO.setEntityManager(em);
+            Dialog d = (Dialog) dialogDAO.findByUUID(dialogUUID);
 
-            Dialog d = new Dialog();
-            d.setUuid(UUID.randomUUID().toString());
+            if (d == null) {
+                d = new Dialog();
+                d.setUuid(UUID.randomUUID().toString());
+            }
             interaction.setDialogUuid(d.getUuid());
+
             em.persist(interaction);
             d.addInteraction(interaction);
             em.persist(d);
@@ -280,19 +304,19 @@ public class InteractionManagementSessionBean implements IInteractionManagementB
 
     public String[] getElasticityRequirements(String role, String serviceID) {
         if (response.containsKey(serviceID) && response.get(serviceID).containsKey(IMessage.RequestTypes.GET_REQUIREMENTS)) {
-            
-                if (response.get(serviceID).get(IMessage.RequestTypes.GET_REQUIREMENTS) != null) {
-                    return response.get(serviceID).get(IMessage.RequestTypes.GET_REQUIREMENTS).split("~");
 
-                }
-            
+            if (response.get(serviceID).get(IMessage.RequestTypes.GET_REQUIREMENTS) != null) {
+                return response.get(serviceID).get(IMessage.RequestTypes.GET_REQUIREMENTS).split("~");
+
+            }
+
         } else {
-            this.postRequestForElasticityRequirements(role, serviceID);
+            this.postRequestForElasticityRequirements(role, serviceID, "");
         }
         return new String[1];
     }
 
-    public void postRequestForServiceDescription(String roleName, String serviceID) {
+    public void postRequestForServiceDescription(String roleName, String serviceID, String dialogUUID) {
 
         Interaction interaction = new Interaction();
         if (roleName.equalsIgnoreCase("")) {
@@ -314,9 +338,18 @@ public class InteractionManagementSessionBean implements IInteractionManagementB
             message.setActionEnforced(IMessage.RequestTypes.GET_SERVICE);
             em.persist(message);
             interaction.setMessage(message);
+            DialogDAO dialogDAO = new DialogDAO();
+            dialogDAO.setEntityManager(em);
+            Dialog d = (Dialog) dialogDAO.findByUUID(dialogUUID);
 
-            Dialog d = new Dialog();
-            d.setUuid(UUID.randomUUID().toString());
+            if (d == null) {
+                d = new Dialog();
+                d.setUuid(UUID.randomUUID().toString());
+            }
+            interaction.setDialogUuid(d.getUuid());
+
+            em.persist(interaction);
+            d.addInteraction(interaction);
             interaction.setDialogUuid(d.getUuid());
             em.persist(interaction);
             d.addInteraction(interaction);
@@ -351,26 +384,26 @@ public class InteractionManagementSessionBean implements IInteractionManagementB
 
     public CloudServiceXML getServiceDescription(String role, String serviceID) {
         if (response.containsKey(serviceID) && response.get(serviceID).containsKey(IMessage.RequestTypes.GET_SERVICE)) {
-                if (response.get(serviceID).get(IMessage.RequestTypes.GET_SERVICE) != null) {
-                     JAXBContext jc;
-                    try {
-                        jc = JAXBContext.newInstance(CloudServiceXML.class );
-                         Unmarshaller unmarshaller = jc.createUnmarshaller();
-                   CloudServiceXML  service = (CloudServiceXML) unmarshaller.unmarshal(new StringReader(response.get(serviceID).get(IMessage.RequestTypes.GET_SERVICE)));
+            if (response.get(serviceID).get(IMessage.RequestTypes.GET_SERVICE) != null) {
+                JAXBContext jc;
+                try {
+                    jc = JAXBContext.newInstance(CloudServiceXML.class);
+                    Unmarshaller unmarshaller = jc.createUnmarshaller();
+                    CloudServiceXML service = (CloudServiceXML) unmarshaller.unmarshal(new StringReader(response.get(serviceID).get(IMessage.RequestTypes.GET_SERVICE)));
                     return service;
-                    } catch (JAXBException ex) {
-                        Logger.getLogger(InteractionManagementSessionBean.class.getName()).log(Level.SEVERE, null, ex);
-                    }
-                    return null;
-
+                } catch (JAXBException ex) {
+                    Logger.getLogger(InteractionManagementSessionBean.class.getName()).log(Level.SEVERE, null, ex);
                 }
+                return null;
+
+            }
         } else {
-            this.postRequestForServiceDescription(role, serviceID);
+            this.postRequestForServiceDescription(role, serviceID, "");
         }
         return null;
     }
 
-    public synchronized void  processInteraction(at.ac.tuwien.dsg.rsybl.operationsmanagementplatform.entities.communicationModel.Interaction interaction) {
+    public synchronized void processInteraction(at.ac.tuwien.dsg.rsybl.operationsmanagementplatform.entities.communicationModel.Interaction interaction) {
         Interaction mappedInteraction = null;
         try {
 
@@ -379,15 +412,17 @@ public class InteractionManagementSessionBean implements IInteractionManagementB
             DialogDAO dialogDAO = new DialogDAO();
             dialogDAO.setEntityManager(em);
 
-            Dialog d = (Dialog) dialogDAO.findByUUID(mappedInteraction.getUuid());
+            Dialog d = (Dialog) dialogDAO.findByUUID(mappedInteraction.getDialogUuid());
 
             if (d == null) {
 
                 d = new Dialog();
                 d.addInteraction(mappedInteraction);
                 d.setUuid(mappedInteraction.getDialogUuid());
-                em.persist(d);
+                
             }
+            d.addInteraction(mappedInteraction);
+            em.persist(d);
             em.flush();
             userTransaction.commit();
 
@@ -400,11 +435,11 @@ public class InteractionManagementSessionBean implements IInteractionManagementB
         }
         if (interaction.getType().equalsIgnoreCase(IInteraction.InteractionType.REQUEST) && interaction.getMessage().getActionEnforced().equalsIgnoreCase(IMessage.RequestTypes.GET_SERVICES)) {
             if (interaction.getMessage().getDescription() != null && !interaction.getMessage().getDescription().equalsIgnoreCase("")) {
-                for (String s : interaction.getMessage().getDescription().split(",")){
-                    if (!services.contains(s)){
+                for (String s : interaction.getMessage().getDescription().split(",")) {
+                    if (!services.contains(s)) {
                         services.add(s);
-                        this.getElasticityRequirements("", s);
-                        this.getServiceDescription("", s);
+                        postRequestForElasticityRequirements("",s, "");
+                        postRequestForServiceDescription("", s,"");
                     }
                 }
 //                services.addAll(Arrays.asList(interaction.getMessage().getDescription().split(",")));
@@ -453,7 +488,7 @@ public class InteractionManagementSessionBean implements IInteractionManagementB
         message.setCause(myMessage.getCause());
         message.setCloudServiceId(myMessage.getCloudServiceId());
         message.setDescription(myMessage.getDescription());
-        message.setUuid(myMessage.getDescription());
+        message.setUuid(myMessage.getUuid());
         if (myMessage.getInteraction() != null) {
             message.setInteraction((IInteraction) mapInteraction((at.ac.tuwien.dsg.rsybl.operationsmanagementplatform.entities.communicationModel.Interaction) myMessage.getInteraction()));
         }
@@ -485,6 +520,19 @@ public class InteractionManagementSessionBean implements IInteractionManagementB
      */
     public void setServices(List<String> services) {
         this.services = services;
+    }
+
+    public List<IDialog> getDialogsForRoles(Set<IRole> roles) {
+        List<IDialog> dialogs = new ArrayList<IDialog>();
+        for (IRole role : roles) {
+            List<IDialog> cD = findAllDialogsForRole(role.getRoleName());
+            for (IDialog d : cD) {
+                if (!dialogs.contains(d)) {
+                    dialogs.add(d);
+                }
+            }
+        }
+        return dialogs;
     }
 
 }

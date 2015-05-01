@@ -307,6 +307,7 @@ public class InteractionProcessing {
                     message.setCause(interaction.getMessage().getCause());
                     message.setActionEnforced(IMessage.RequestTypes.GET_SERVICES);
                     message.setDescription(services);
+                    message.setUuid(UUID.randomUUID().toString());
                     message.setCloudServiceId(interaction.getMessage().getCloudServiceId());
 
                     interactionResponse.setInitiationDate(new Date());
@@ -327,6 +328,7 @@ public class InteractionProcessing {
                     message.setActionEnforced(IMessage.RequestTypes.GET_SERVICE);
                     message.setDescription(servs);
                     message.setCloudServiceId(interaction.getMessage().getCloudServiceId());
+                    message.setUuid(UUID.randomUUID().toString());
 
                     interactionResponse.setInitiationDate(new Date());
 
@@ -346,6 +348,7 @@ public class InteractionProcessing {
                     message.setActionEnforced(IMessage.RequestTypes.GET_REQUIREMENTS);
                     message.setDescription(reqs);
                     message.setCloudServiceId(interaction.getMessage().getCloudServiceId());
+                    message.setUuid(UUID.randomUUID().toString());
 
                     interactionResponse.setInitiationDate(new Date());
                     interactionResponse.setInitiator(interaction.getReceiver());

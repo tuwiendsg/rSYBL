@@ -39,7 +39,20 @@ import org.hibernate.annotations.Cascade;
 			query = "SELECT o FROM Dialog o "+
                                 "JOIN o.interactions AS i "+
                                 "JOIN i.receiver AS r " +
-                                "WHERE r.roleName = :rolename")
+                                "WHERE r.roleName = :rolename"),
+     @NamedQuery(name = "selectDialogs", 
+			query = "SELECT o FROM Dialog o "+
+                                "JOIN o.interactions AS i "+
+                                "JOIN i.receiver AS r " +
+                                "JOIN i.initiator AS init "+
+                                "WHERE r.roleName = :rolename OR init.roleName = :rolename"),
+    @NamedQuery(name = "selectDialogsWithType", 
+			query = "SELECT o FROM Dialog o "+
+                                "JOIN o.interactions AS i "+
+                                "JOIN i.receiver AS r " +
+                                "JOIN i.initiator AS init "+
+                                "WHERE (r.roleName = :rolename OR init.roleName = :rolename) "+
+                                " AND i.type = :type")    
 
 })
 @Entity

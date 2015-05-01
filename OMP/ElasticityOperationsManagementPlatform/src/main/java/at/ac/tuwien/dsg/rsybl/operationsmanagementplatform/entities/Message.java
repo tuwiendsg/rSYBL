@@ -10,11 +10,13 @@ import at.ac.tuwien.dsg.rsybl.operationsmanagementplatform.entities.interfaces.I
 import java.io.Serializable;
 import java.util.List;
 import java.util.Set;
+import javax.persistence.Column;
 import javax.persistence.ElementCollection;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.Lob;
 import javax.persistence.OneToOne;
 
 /**
@@ -52,6 +54,8 @@ public class Message implements Serializable,IMessage{
     private Interaction interaction;
      @ElementCollection(targetClass=Double.class)
     private Set<Double> values;
+     @Lob
+@Column(length = 10000)
     private String description;
     private String targetPartId;
 

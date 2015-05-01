@@ -62,10 +62,10 @@ public class UserManagedBean implements Serializable,ActionListener{
     
     @EJB(name = "InteractionManagementSessionBean", beanInterface = InteractionManagementSessionBean.class, beanName = "InteractionManagementSessionBean", lookup = "global/ElasticityOperationsManagementPlatform/InteractionManagementSessionBean!at.ac.tuwien.dsg.rsybl.operationsmanagementplatform.sessionbeans.interfaces.InteractionManagementSessionBean")
     InteractionManagementSessionBean interactionManagementSessionBean;
-    
+    private String selectedInteraction;
     private String username;
     private String password;
-    private List<String> userRoles = new ArrayList<>();
+    private List<RoleDescription> userRoles = new ArrayList<>();
     private Set<IRole> iRoles = new HashSet<>();
     private boolean loggedIn = false;
     private List<String> services = new ArrayList<>();
@@ -97,7 +97,10 @@ public class UserManagedBean implements Serializable,ActionListener{
         FacesContext.getCurrentInstance().addMessage(null, message);
         }
     }
-
+    public List<IDialog> getDialogsAssociatedWithCurrentUsername(){
+        
+        return interactionManagementSessionBean.getDialogsForRoles(iRoles);
+    }
     public String[] getRequirements(String serviceID){
         return interactionManagementSessionBean.getElasticityRequirements("", serviceID);
     }
@@ -137,7 +140,7 @@ public class UserManagedBean implements Serializable,ActionListener{
         return interactionManagementSessionBean.findAllInteractionsForReceiver(rolename);
         
     }
-
+    
     public List<IInteraction> getAllInteractionsForUserAsInitiator(String rolename) {
         return interactionManagementSessionBean.findAllInteractionsForInitiator(rolename);
     }
@@ -146,7 +149,10 @@ public class UserManagedBean implements Serializable,ActionListener{
         return interactionManagementSessionBean.findAllDialogsForReceiver(rolename);
         
     }
+    public List<IDialog> getAllDialogsForInteractionType(String rolename, String selectedInteractionType){
+            return interactionManagementSessionBean.findAllDialogsForRoleWithType(rolename, selectedInteractionType);
 
+    }
     public List<IDialog> getAllDialogsForUserAsInitiator(String rolename) {
         return interactionManagementSessionBean.findAllDialogsForInitiator(rolename);
     }
@@ -166,8 +172,10 @@ public class UserManagedBean implements Serializable,ActionListener{
             message = new FacesMessage(FacesMessage.SEVERITY_INFO, "Welcome", username);
             this.iRoles = iUserManagementSessionBean.searchForUserByUsername(username).getRoles();
             for (IRole iRole : iRoles) {
-                if (!iRole.getRoleName().equalsIgnoreCase("EC")) {
-                    this.userRoles.add(iRole.getRoleName());
+                if (!iRole.getRoleName().equalsIgnoreCase("Elasticity Controller")) {
+                    RoleDescription r = new RoleDescription();
+                      r.setRoleName(iRole.getRoleName());
+                    this.userRoles.add(r);
                 }
             }
         } else {
@@ -185,6 +193,7 @@ public class UserManagedBean implements Serializable,ActionListener{
             FacesContext.getCurrentInstance().getApplication().getNavigationHandler().handleNavigation(FacesContext.getCurrentInstance(), null, "loggedPageUser.xhtml?faces-redirect=true");
             
         }
+
          
     }
     
@@ -219,7 +228,7 @@ public class UserManagedBean implements Serializable,ActionListener{
         
         loggedIn = false;
         this.iRoles = new HashSet<IRole>();
-        this.userRoles = new ArrayList<String>();
+        this.userRoles = new ArrayList<RoleDescription>();
         FacesMessage message = new FacesMessage("Logged out");
         FacesContext.getCurrentInstance().addMessage(null, message);
         FacesContext.getCurrentInstance().getApplication().getNavigationHandler().handleNavigation(FacesContext.getCurrentInstance(), null, "index.xhtml");
@@ -229,14 +238,14 @@ public class UserManagedBean implements Serializable,ActionListener{
     /**
      * @return the userRoles
      */
-    public List<String> getUserRoles() {
+    public List<RoleDescription> getUserRoles() {
         return userRoles;
     }
 
     /**
      * @param userRoles the userRoles to set
      */
-    public void setUserRoles(List<String> userRoles) {
+    public void setUserRoles(List<RoleDescription> userRoles) {
         this.userRoles = userRoles;
     }
 
@@ -300,5 +309,22 @@ public class UserManagedBean implements Serializable,ActionListener{
     public void actionPerformed(java.awt.event.ActionEvent e) {
        this.processEvents(e);
     }
-    
+
+    /**
+     * @return the selectedInteraction
+     */
+    public String getSelectedInteraction() {
+        return selectedInteraction;
+    }
+
+    /**
+     * @param selectedInteraction the selectedInteraction to set
+     */
+    public void setSelectedInteraction(String selectedInteraction) {
+        this.selectedInteraction = selectedInteraction;
+    }
+//  public void refreshSelectedInteraction(String interactionUUID){
+//     
+//      this.selectedInteraction=interactionUUID;
+//  }
 }

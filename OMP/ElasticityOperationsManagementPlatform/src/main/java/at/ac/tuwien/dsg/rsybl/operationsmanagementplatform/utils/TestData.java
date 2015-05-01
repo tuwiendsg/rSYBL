@@ -222,60 +222,60 @@ public class TestData {
                 ec.setAuthority(2);
                 em.persist(ec);
             }
-            MessageDAO messageDAO = new MessageDAO();
-            messageDAO.setEntityManager(em);
-            Interaction interaction = new Interaction();
-            interaction.setUuid(UUID.randomUUID().toString());
-            interaction.setInitiationDate(new Date());
-            Message message = new Message();
-            message.setUuid(UUID.randomUUID().toString());
-            message.setDescription("Test interaction ");
-            InteractionDAO interactionDAO = new InteractionDAO();
-            interactionDAO.setEntityManager(em);
-            interaction.setInitiator(ec);
-            Dialog d1 = new Dialog();
-            d1.setUuid(UUID.randomUUID().toString());
-            
-            interaction.setReceiver(em.merge(roleDAO.findByRoleName(serviceManager.getRoleName())));
-            interaction.setDialogUuid(d1.getUuid());
-            em.persist(message);
-            
-            interaction.setMessage(message);
-            em.persist(interaction);
-            d1.addInteraction(interaction);
-            em.persist(d1);
-            Dialog d = new Dialog();
-            d.setUuid(UUID.randomUUID().toString());
-
-            interaction = new Interaction();
-            interaction.setUuid(UUID.randomUUID().toString());
-            interaction.setInitiationDate(new Date());
-            message = new Message();
-            message.setUuid(UUID.randomUUID().toString());
-            message.setDescription("Test interaction 1");
-            interaction.setDialogUuid(d.getUuid());
-            interaction.setInitiator(ec);
-            interaction.setReceiver(serviceManager);
-            em.persist(message);
-            interaction.setMessage(message);
-            em.persist(interaction);
-            d.addInteraction(interaction);
-            
-            interaction = new Interaction();
-            interaction.setUuid(UUID.randomUUID().toString());
-            interaction.setInitiationDate(new Date());
-            message = new Message();
-            message.setUuid(UUID.randomUUID().toString());
-            message.setDescription("Test interaction 2");
-            interaction.setDialogUuid(d.getUuid());
-
-            interaction.setInitiator(ec);
-            interaction.setReceiver(serviceManager);
-            em.persist(message);
-            interaction.setMessage(message);
-            em.persist(interaction);
-            d.addInteraction(interaction);
-            em.persist(d);
+//            MessageDAO messageDAO = new MessageDAO();
+//            messageDAO.setEntityManager(em);
+//            Interaction interaction = new Interaction();
+//            interaction.setUuid(UUID.randomUUID().toString());
+//            interaction.setInitiationDate(new Date());
+//            Message message = new Message();
+//            message.setUuid(UUID.randomUUID().toString());
+//            message.setDescription("Test interaction ");
+//            InteractionDAO interactionDAO = new InteractionDAO();
+//            interactionDAO.setEntityManager(em);
+//            interaction.setInitiator(ec);
+//            Dialog d1 = new Dialog();
+//            d1.setUuid(UUID.randomUUID().toString());
+//            
+//            interaction.setReceiver(em.merge(roleDAO.findByRoleName(serviceManager.getRoleName())));
+//            interaction.setDialogUuid(d1.getUuid());
+//            em.persist(message);
+//            
+//            interaction.setMessage(message);
+//            em.persist(interaction);
+//            d1.addInteraction(interaction);
+//            em.persist(d1);
+//            Dialog d = new Dialog();
+//            d.setUuid(UUID.randomUUID().toString());
+//
+//            interaction = new Interaction();
+//            interaction.setUuid(UUID.randomUUID().toString());
+//            interaction.setInitiationDate(new Date());
+//            message = new Message();
+//            message.setUuid(UUID.randomUUID().toString());
+//            message.setDescription("Test interaction 1");
+//            interaction.setDialogUuid(d.getUuid());
+//            interaction.setInitiator(ec);
+//            interaction.setReceiver(serviceManager);
+//            em.persist(message);
+//            interaction.setMessage(message);
+//            em.persist(interaction);
+//            d.addInteraction(interaction);
+//            
+//            interaction = new Interaction();
+//            interaction.setUuid(UUID.randomUUID().toString());
+//            interaction.setInitiationDate(new Date());
+//            message = new Message();
+//            message.setUuid(UUID.randomUUID().toString());
+//            message.setDescription("Test interaction 2");
+//            interaction.setDialogUuid(d.getUuid());
+//
+//            interaction.setInitiator(ec);
+//            interaction.setReceiver(serviceManager);
+//            em.persist(message);
+//            interaction.setMessage(message);
+//            em.persist(interaction);
+//            d.addInteraction(interaction);
+//            em.persist(d);
             em.flush();
         } catch (Exception e) {
             throw e;

@@ -44,7 +44,6 @@ import org.primefaces.model.diagram.DefaultDiagramModel;
 import org.primefaces.model.diagram.DiagramModel;
 import org.primefaces.model.diagram.Element;
 import org.primefaces.model.diagram.connector.FlowChartConnector;
-import org.primefaces.model.diagram.connector.StraightConnector;
 import org.primefaces.model.diagram.endpoint.BlankEndPoint;
 import org.primefaces.model.diagram.endpoint.DotEndPoint;
 import org.primefaces.model.diagram.endpoint.EndPoint;
@@ -64,36 +63,34 @@ public class UserComponentsBean {
     private UserManagedBean userManagedBean;
     private DefaultDiagramModel diagram;
     private DefaultDiagramModel service;
-    
+    private DefaultDiagramModel dialogsDiagram;
     private PanelGrid panelGridServices; //bound to the view
     @ManagedProperty("#{roles}")
     private RolesList rolesList;
-    
-    
+
     private TreeNode root;
     private TreeNode selectedNode;
     private Document selectedDocument;
-     
-    
-    public TreeNode getTreeNode(String serviceID){
+    public TreeNode getTreeNode(String serviceID) {
         CloudServiceXML cloudServiceXML = userManagedBean.getDescription(serviceID);
-        if (cloudServiceXML!=null){
-        HashMap<String,TreeNode> serviceTopologies = new HashMap<String,TreeNode>();
-        TreeNode serviceDescriptionRoot = new DefaultTreeNode("Root", null);
+        if (cloudServiceXML != null) {
+            HashMap<String, TreeNode> serviceTopologies = new HashMap<String, TreeNode>();
+            TreeNode serviceDescriptionRoot = new DefaultTreeNode("Root", null);
 
-        for (ServiceTopologyXML serviceTopologyXML:cloudServiceXML.getServiceTopologies()){
-        TreeNode node0 = new DefaultTreeNode(serviceTopologyXML.getId(), serviceDescriptionRoot);
-        serviceTopologies.put(serviceTopologyXML.getId(),node0);
-        for (ServiceUnitXML serviceUnitXML:serviceTopologyXML.getServiceUnits()){
-            TreeNode nodex = new DefaultTreeNode(serviceUnitXML.getId(),node0);
-                   
-        }
-        }
-                return serviceDescriptionRoot;
+            for (ServiceTopologyXML serviceTopologyXML : cloudServiceXML.getServiceTopologies()) {
+                TreeNode node0 = new DefaultTreeNode(serviceTopologyXML.getId(), serviceDescriptionRoot);
+                serviceTopologies.put(serviceTopologyXML.getId(), node0);
+                for (ServiceUnitXML serviceUnitXML : serviceTopologyXML.getServiceUnits()) {
+                    TreeNode nodex = new DefaultTreeNode(serviceUnitXML.getId(), node0);
+
+                }
+            }
+            return serviceDescriptionRoot;
 
         }
-       return null;
+        return null;
     }
+
     public void initTable() {
         createDocuments();
     }
@@ -102,12 +99,11 @@ public class UserComponentsBean {
         return root;
     }
 
-    public List<RolesList.RoleDescription> getRoleNames() {
+    public List<RoleDescription> getRoleNames() {
         return rolesList.getRoles();
     }
-    
-   
 
+ 
     public TreeNode createDocuments() {
         root = new DefaultTreeNode(new Document("Responsibility/Roles ", "Details"), null);
         selectedNode = root;
@@ -153,6 +149,121 @@ public class UserComponentsBean {
 
     }
 
+    public DefaultDiagramModel showDialogs() {
+        if (userManagedBean.isLoggedIn()) {
+            List<IDialog> dialogUUIDs = new ArrayList<IDialog>();
+            List<RoleDescription> roleDescriptions = userManagedBean.getUserRoles();
+           
+            for (RoleDescription roleDescription:roleDescriptions){
+                List<IDialog> selDial= roleDescription.getSelectedDialogs();
+                if (selDial!=null){
+                for (IDialog dialog:selDial){
+                    if (!dialogUUIDs.contains(dialog)){
+                        dialogUUIDs.add(dialog);
+                    }
+                }
+                }
+            }
+            dialogsDiagram = new DefaultDiagramModel();
+            if (!dialogUUIDs.isEmpty()){
+            dialogsDiagram.setMaxConnections(-1);
+            FlowChartConnector connector = new FlowChartConnector();
+            connector.setPaintStyle("{strokeStyle:'#C7B097',lineWidth:3}");
+            dialogsDiagram.setDefaultConnector(connector);
+            EndPointAnchor[] anchors_BOTTOM = {EndPointAnchor.TOP_RIGHT, EndPointAnchor.BOTTOM_RIGHT, EndPointAnchor.LEFT, EndPointAnchor.BOTTOM_LEFT, EndPointAnchor.TOP_LEFT, EndPointAnchor.CONTINUOUS, EndPointAnchor.ASSIGN};
+            EndPointAnchor[] anchors_TOP = {EndPointAnchor.TOP_LEFT, EndPointAnchor.BOTTOM_LEFT, EndPointAnchor.RIGHT, EndPointAnchor.BOTTOM_RIGHT, EndPointAnchor.BOTTOM_LEFT, EndPointAnchor.CONTINUOUS, EndPointAnchor.ASSIGN};
+            dialogsDiagram.setDefaultConnector(connector);
+            int size = 50;
+            int dialogIndex = 0;
+            for (IDialog dialog : dialogUUIDs) {
+                Set<IInteraction> interactions = dialog.getInteractions();
+                int index = 0;
+                List<IRole> roles = new ArrayList<IRole>();
+                HashMap<String, Element> elementRoles = new HashMap<String, Element>();
+                Element start = new Element("Dialog ID: " + dialog.getUuid(), "20em", (3 + size / dialogUUIDs.size() * dialogIndex) + "em");
+                start.addEndPoint(new BlankEndPoint(EndPointAnchor.BOTTOM));
+                start.setStyleClass("dialog-name");
+                dialogsDiagram.addElement(start);
+                String elements = "";
+                if (interactions.size() <= 4) {
+                    elements = "ui-diagram-bigger";
+                }
+                if (interactions.size() > 4) {
+                    elements = "ui-diagram-biggest";
+                }
+                int i = 0;
+                for (IInteraction iInteraction : interactions) {
+                    if (iInteraction.getMessage()!=null){
+                    IRole initiator = iInteraction.getInitiator();
+                    IRole receiver = iInteraction.getReceiver();
+                    Element elementInitiator;
+                    Element elementReceiver;
+//                    
+                    if (!roles.contains(initiator)) {
+                        roles.add(initiator);
+                        elementInitiator = new Element(initiator.getRoleName(), (50 * i) + "em", (10 + size / dialogUUIDs.size() * dialogIndex) + "em");
+                        elementInitiator.addEndPoint(new DotEndPoint(anchors_BOTTOM[index]));
+                        if (!elements.equalsIgnoreCase("")) {
+                            elementInitiator.setStyleClass(elements);
+                        }
+                        elementRoles.put(iInteraction.getInitiator().getRoleName(), elementInitiator);
+                        dialogsDiagram.addElement(elementInitiator);
+                        i++;
+                    } else {
+                        elementInitiator = elementRoles.get(initiator.getRoleName());
+                        elementInitiator.addEndPoint(new DotEndPoint(anchors_BOTTOM[index]));
+                    }
+                    if (!roles.contains(receiver)) {
+                        roles.add(receiver);
+                        elementReceiver = new Element(receiver.getRoleName(), (50 * i) + "em", (10 + size / dialogUUIDs.size() * dialogIndex) + "em");
+                        elementReceiver.addEndPoint(new DotEndPoint(anchors_TOP[index]));
+                        if (!elements.equalsIgnoreCase("")) {
+                            elementReceiver.setStyleClass(elements);
+                        }
+                        elementRoles.put(iInteraction.getReceiver().getRoleName(), elementReceiver);
+                        i++;
+                        dialogsDiagram.addElement(elementReceiver);
+
+                    } else {
+                        elementReceiver = elementRoles.get(receiver.getRoleName());
+                        elementReceiver.addEndPoint(new DotEndPoint(anchors_TOP[index]));
+                    }
+                    List<String> interMessage = new ArrayList<String>();
+                    interMessage.add(iInteraction.getType());
+                    if (iInteraction.getMessage().getCause()!= null && !iInteraction.getMessage().getCause().equalsIgnoreCase("")) {
+                        interMessage.add("Cause "+iInteraction.getMessage().getCause());
+                    }
+                    if (iInteraction.getMessage().getActionEnforced() != null && !iInteraction.getMessage().getActionEnforced().equalsIgnoreCase("")) {
+                        interMessage.add("Action "+iInteraction.getMessage().getActionEnforced());
+                    }
+                    if (iInteraction.getMessage().getDescription() != null && !iInteraction.getMessage().getDescription().equalsIgnoreCase("")) {
+                        interMessage.add("Descr "+iInteraction.getMessage().getDescription());
+                    }
+                    dialogsDiagram.connect(createConnection(elementInitiator.getEndPoints().get(elementInitiator.getEndPoints().size() - 1), elementReceiver.getEndPoints().get(elementReceiver.getEndPoints().size() - 1), interMessage));
+                    index++;
+                }
+                }
+                dialogIndex++;
+            }
+            }
+        }
+        return dialogsDiagram;
+    }
+
+    private Connection createConnection(EndPoint from, EndPoint to, List<String> labels) {
+        Connection conn = new Connection(from, to);
+        conn.getOverlays().add(new ArrowOverlay(20, 20, 1, 1));
+        int i = 0;
+        for (String label : labels) {
+            if (label != null) {
+//            conn.getOverlays().add(new ArrowOverlay(20*(i+1), 20, 1, 1));
+                conn.getOverlays().add(new LabelOverlay(label, "flow-label", 0.35 * (i + 1)));
+            }
+            i++;
+        }
+        return conn;
+    }
+
     public void initRoles() {
         if (userManagedBean.isLoggedIn()) {
             diagram = new DefaultDiagramModel();
@@ -168,7 +279,7 @@ public class UserComponentsBean {
 
             for (IRole role : allRoles) {
 
-                Element el = new Element(role.getRoleName()+" ["+role.getAuthority()+"]", size / allRoles.size() * i + "em", 20 + "em");
+                Element el = new Element(role.getRoleName() + " [" + role.getAuthority() + "]", size / allRoles.size() * i + "em", 20 + "em");
                 el.addEndPoint(new DotEndPoint(EndPointAnchor.TOP));
                 el.addEndPoint(new DotEndPoint(EndPointAnchor.BOTTOM));
                 roles.put(role.getRoleName(), el);
@@ -236,24 +347,9 @@ public class UserComponentsBean {
         initRoles();
         initServices();
         initTable();
-       
+        showDialogs();
     }
-    private List<Tab> tabs = new ArrayList<Tab>();
-
-    /**
-     * @return the tabs
-     */
-    public List<Tab> getTabs() {
-
-        return tabs;
-    }
-
-    /**
-     * @param tabs the tabs to set
-     */
-    public void setTabs(List<Tab> tabs) {
-        this.tabs = tabs;
-    }
+   
 
     /**
      * @return the userManagedBean
@@ -268,8 +364,6 @@ public class UserComponentsBean {
     public void setUserManagedBean(UserManagedBean userManagedBean) {
         this.userManagedBean = userManagedBean;
     }
-
-    
 
     /**
      * @return the panelGridServices
@@ -342,6 +436,39 @@ public class UserComponentsBean {
         this.rolesList = rolesList;
     }
 
-  
+    /**
+     * @return the service
+     */
+    public DefaultDiagramModel getService() {
+        return service;
+    }
 
+    /**
+     * @param service the service to set
+     */
+    public void setService(DefaultDiagramModel service) {
+        this.service = service;
+    }
+
+    /**
+     * @return the dialogsDiagram
+     */
+    public DefaultDiagramModel getDialogsDiagram() {
+        return dialogsDiagram;
+    }
+
+    /**
+     * @param dialogsDiagram the dialogsDiagram to set
+     */
+    public void setDialogsDiagram(DefaultDiagramModel dialogsDiagram) {
+        this.dialogsDiagram = dialogsDiagram;
+    }
+
+    public List<IDialog> getAllDialogsForInteractionTypes(String r,String interactionType){       
+       
+        return userManagedBean.getAllDialogsForInteractionType(r,interactionType);
+    }
+    
+
+   
 }
