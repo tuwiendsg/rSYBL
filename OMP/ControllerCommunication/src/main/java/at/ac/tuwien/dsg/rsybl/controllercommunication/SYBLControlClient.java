@@ -226,7 +226,7 @@ public class SYBLControlClient {
     }
 
     public void replaceRequirements(String id, String requirements) {
-        callPOST(requirements, id + "/description");
+        callPOST(requirements, id + "/replaceRequirements/plain");
     }
 
     public void replaceEffects(String id, String effects) {

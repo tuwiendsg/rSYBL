@@ -10,6 +10,7 @@ import at.ac.tuwien.dsg.csdg.inputProcessing.multiLevelModel.abstractModelXML.Se
 import at.ac.tuwien.dsg.csdg.inputProcessing.multiLevelModel.abstractModelXML.ServiceUnitXML;
 import at.ac.tuwien.dsg.rsybl.operationsmanagementplatform.entities.interfaces.IDialog;
 import at.ac.tuwien.dsg.rsybl.operationsmanagementplatform.entities.interfaces.IInteraction;
+import at.ac.tuwien.dsg.rsybl.operationsmanagementplatform.entities.interfaces.IMessage;
 import at.ac.tuwien.dsg.rsybl.operationsmanagementplatform.entities.interfaces.IResponsibility;
 import at.ac.tuwien.dsg.rsybl.operationsmanagementplatform.entities.interfaces.IRole;
 import at.ac.tuwien.dsg.rsybl.operationsmanagementplatform.entities.interfaces.IUser;
@@ -30,6 +31,7 @@ import javax.faces.bean.RequestScoped;
 import javax.faces.bean.ViewScoped;
 import javax.faces.component.html.HtmlOutputLabel;
 import javax.faces.context.FacesContext;
+import javax.faces.event.AjaxBehaviorEvent;
 import javax.inject.Inject;
 import org.primefaces.component.datalist.DataList;
 import org.primefaces.component.outputlabel.OutputLabel;
@@ -67,10 +69,24 @@ public class UserComponentsBean {
     private PanelGrid panelGridServices; //bound to the view
     @ManagedProperty("#{roles}")
     private RolesList rolesList;
-
+    // dialog constructs
+    private List<String> interactionTypes = new ArrayList<String>();
+    private String selectedInteractionType ="";
+    private List<String> myRoles = new ArrayList<String>();
+    private String initiatorRole="";
+    private List<String> receiverRoles = new ArrayList<String>();
+    private String receiverRole="";
+    private List<String> cloudServices =  new ArrayList<>();
+    private String selectedCloudService="";
+    private List<String> availableActions = new ArrayList<>();
+    private String selectedAction="";
+    private String parameterName ="";
+    private String parameterValue="";    
+   
     private TreeNode root;
     private TreeNode selectedNode;
     private Document selectedDocument;
+    
     public TreeNode getTreeNode(String serviceID) {
         CloudServiceXML cloudServiceXML = userManagedBean.getDescription(serviceID);
         if (cloudServiceXML != null) {
@@ -94,7 +110,27 @@ public class UserComponentsBean {
     public void initTable() {
         createDocuments();
     }
-
+   public void initiateDialogConstants(){
+        getInteractionTypes().add(IInteraction.InteractionType.EMERGENCY);
+        getInteractionTypes().add(IInteraction.InteractionType.NOTIFICATION);
+        getInteractionTypes().add(IInteraction.InteractionType.REQUEST);
+        getInteractionTypes().add(IInteraction.InteractionType.WARNING);
+        List<RoleDescription> roles =      userManagedBean.getUserRoles();
+        for (RoleDescription description:roles){
+            getMyRoles().add(description.getRoleName());
+        }
+        List<IRole> allRoles = userManagedBean.getAllRoles();
+        for (IRole role:allRoles){
+            this.getReceiverRoles().add(role.getRoleName());
+        }
+        this.setCloudServices(userManagedBean.getServices());
+        availableActions.add(IMessage.RequestTypes.REPLACE_CUSTOM_METRICS);
+        availableActions.add(IMessage.RequestTypes.REMOVE_SERVICE);
+        availableActions.add(IMessage.RequestTypes.REPLACE_REQUIREMENTS);
+        availableActions.add(IMessage.RequestTypes.PAUSE_CONTROL);
+        availableActions.add(IMessage.RequestTypes.UNDEPLOY_SERVICE);
+        
+    }
     public TreeNode getRoot() {
         return root;
     }
@@ -347,7 +383,8 @@ public class UserComponentsBean {
         initRoles();
         initServices();
         initTable();
-        showDialogs();
+//        showDialogs();
+        initiateDialogConstants();
     }
    
 
@@ -468,7 +505,196 @@ public class UserComponentsBean {
        
         return userManagedBean.getAllDialogsForInteractionType(r,interactionType);
     }
-    
+     /**
+     * @return the interactionTypes
+     */
+    public List<String> getInteractionTypes() {
+        return interactionTypes;
+    }
 
-   
+    /**
+     * @param interactionTypes the interactionTypes to set
+     */
+    public void setInteractionTypes(List<String> interactionTypes) {
+        this.interactionTypes = interactionTypes;
+    }
+
+    /**
+     * @return the selectedInteractionType
+     */
+    public String getSelectedInteractionType() {
+        return selectedInteractionType;
+    }
+
+    /**
+     * @param selectedInteractionType the selectedInteractionType to set
+     */
+    public void setSelectedInteractionType(String selectedInteractionType) {
+        this.selectedInteractionType = selectedInteractionType;
+    }
+    public void onSelectedInteractionChange(AjaxBehaviorEvent actionEvent){
+        
+    }
+
+    /**
+     * @return the receiverRoles
+     */
+    public List<String> getReceiverRoles() {
+        return receiverRoles;
+    }
+
+    /**
+     * @param receiverRoles the receiverRoles to set
+     */
+    public void setReceiverRoles(List<String> receiverRoles) {
+        this.receiverRoles = receiverRoles;
+    }
+
+    /**
+     * @return the receiverRole
+     */
+    public String getReceiverRole() {
+        return receiverRole;
+    }
+
+    /**
+     * @param receiverRole the receiverRole to set
+     */
+    public void setReceiverRole(String receiverRole) {
+        this.receiverRole = receiverRole;
+    }
+
+    /**
+     * @return the initiatorRole
+     */
+    public String getInitiatorRole() {
+        return initiatorRole;
+    }
+
+    /**
+     * @param initiatorRole the initiatorRole to set
+     */
+    public void setInitiatorRole(String initiatorRole) {
+        this.initiatorRole = initiatorRole;
+    }
+
+    /**
+     * @return the myRoles
+     */
+    public List<String> getMyRoles() {
+        return myRoles;
+    }
+
+    /**
+     * @param myRoles the myRoles to set
+     */
+    public void setMyRoles(List<String> myRoles) {
+        this.myRoles = myRoles;
+    }
+
+    /**
+     * @return the cloudServices
+     */
+    public List<String> getCloudServices() {
+        return cloudServices;
+    }
+
+    /**
+     * @param cloudServices the cloudServices to set
+     */
+    public void setCloudServices(List<String> cloudServices) {
+        this.cloudServices = cloudServices;
+    }
+
+    /**
+     * @return the selectedCloudService
+     */
+    public String getSelectedCloudService() {
+        return selectedCloudService;
+    }
+
+    /**
+     * @param selectedCloudService the selectedCloudService to set
+     */
+    public void setSelectedCloudService(String selectedCloudService) {
+        this.selectedCloudService = selectedCloudService;
+    }
+
+    /**
+     * @return the availableActions
+     */
+    public List<String> getAvailableActions() {
+        return availableActions;
+    }
+
+    /**
+     * @param availableActions the availableActions to set
+     */
+    public void setAvailableActions(List<String> availableActions) {
+        this.availableActions = availableActions;
+    }
+
+    /**
+     * @return the selectedAction
+     */
+    public String getSelectedAction() {
+        return selectedAction;
+    }
+
+    /**
+     * @param selectedAction the selectedAction to set
+     */
+    public void setSelectedAction(String selectedAction) {
+        this.selectedAction = selectedAction;
+    }
+   public void onSelectedAction(AjaxBehaviorEvent actionEvent){
+      switch(selectedAction){
+          case IMessage.RequestTypes.REMOVE_SERVICE:
+              break;
+          case IMessage.RequestTypes.REPLACE_REQUIREMENTS:
+              parameterName="Requirements Specification"; 
+              String reqs ="";
+              String returnedReq[] = userManagedBean.getRequirements(selectedCloudService);
+              for (String s :returnedReq){
+                  reqs+=s.split("-")[1]+"\n";
+              }
+              parameterValue=reqs;
+              break;
+          case IMessage.RequestTypes.REPLACE_CUSTOM_METRICS:
+              break;
+          case IMessage.RequestTypes.UNDEPLOY_SERVICE:
+              break;
+          case IMessage.RequestTypes.PAUSE_CONTROL:
+              break;
+            
+      }
+   }
+
+    /**
+     * @return the parameterName
+     */
+    public String getParameterName() {
+        return parameterName;
+    }
+
+    /**
+     * @param parameterName the parameterName to set
+     */
+    public void setParameterName(String parameterName) {
+        this.parameterName = parameterName;
+    }
+
+    /**
+     * @return the parameterValue
+     */
+    public String getParameterValue() {
+        return parameterValue;
+    }
+
+    /**
+     * @param parameterValue the parameterValue to set
+     */
+    public void setParameterValue(String parameterValue) {
+        this.parameterValue = parameterValue;
+    }
 }

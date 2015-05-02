@@ -70,6 +70,7 @@ public class UserManagedBean implements Serializable,ActionListener{
     private boolean loggedIn = false;
     private List<String> services = new ArrayList<>();
     private String selectedService = "";
+
     public UserManagedBean() {
         
     }
@@ -79,7 +80,7 @@ public class UserManagedBean implements Serializable,ActionListener{
         interactionManagementSessionBean.addActionListener(this);
         interactionManagementSessionBean.getServices();
     }
-
+ 
     public void processEvents(java.awt.event.ActionEvent e) {
         if (e.getActionCommand().equalsIgnoreCase("NEW INTERACTION")) {            
             if (RequestContext.getCurrentInstance() != null) {
@@ -225,7 +226,7 @@ public class UserManagedBean implements Serializable,ActionListener{
     public void logout() {
         username = "";
         password = "";
-        
+        this.userRoles=new ArrayList<RoleDescription>();
         loggedIn = false;
         this.iRoles = new HashSet<IRole>();
         this.userRoles = new ArrayList<RoleDescription>();
@@ -327,4 +328,6 @@ public class UserManagedBean implements Serializable,ActionListener{
 //     
 //      this.selectedInteraction=interactionUUID;
 //  }
+
+   
 }

@@ -139,9 +139,9 @@
                             <h:panelGrid cellpadding="10">
                                 <p:row>
                                     <p:column>
-                                    <p:graphicImage width="600" value="resources/images/dialogStart.png" />
+                                        <p:graphicImage width="600" value="resources/images/dialogStart.png" />
                                     </p:column><p:column>
-                                    <p:graphicImage width="600" value="resources/images/dialogTest.png" />
+                                        <p:graphicImage width="600" value="resources/images/dialogTest.png" />
                                     </p:column>
                                 </p:row>
                                 <p:row>
@@ -154,44 +154,42 @@
                         <p:panel widgetVar="ecW" id="ec" closable="true" toggleable="true" closeSpeed="500" toggleSpeed="500" visible="#{informationManagedBean.eC}"  header="Automated Elasticity Controller"  style="margin-bottom:20px" >
                             <p:ajax event="close" listener="#{informationManagedBean.onClose}" update="msgs" />
                             <h:panelGrid columns="1" cellpadding="10">
-                             <p:graphicImage width="1200" value="resources/images/elasticityControlEngine.png" />
-                             <p:graphicImage width="1200" value="resources/images/newFlowOfElasticityControl.png" />
+                                <p:graphicImage width="1200" value="resources/images/elasticityControlEngine.png" />
+                                <p:graphicImage width="1200" value="resources/images/newFlowOfElasticityControl.png" />
 
                             </h:panelGrid>
                         </p:panel>
                         <p:panel widgetVar="servicesW" id="services" closable="true" toggleable="true" closeSpeed="500" toggleSpeed="500" visible="#{informationManagedBean.services}"  header="Elastic Services"  style="margin-bottom:20px" >
                             <p:ajax event="close" listener="#{informationManagedBean.onClose}" update="msgs" />
-                                <h:form id="form">
-    <p:contextMenu for="servicesTable">
-       
-    </p:contextMenu>
-                                    <p:dataTable id="servicesTable" value="#{userManagedBean.services}"  rowKey="#{service}"
-                                                 selection="#{userManagedBean.selectedService}" selectionMode="single" var="service" 
-         >
+                            <h:form id="form">
+                                
+                                <p:dataTable id="servicesTable" value="#{userManagedBean.services}"  rowKey="#{service}"
+                                             selection="#{userManagedBean.selectedService}" selectionMode="single" var="service" 
+                                             >
 
-       <f:facet name="header">
-            Services 
-        </f:facet>
-                                        <p:column headerText="Service ID">
-                                            <h:outputText value="#{service}"/>
-                                        </p:column>
-        <p:column headerText="Requirements">
-            <p:dataList value="#{userManagedBean.getRequirements(service)}" var="requirement"> 
-            <h:outputText value="#{requirement}" />
-            </p:dataList>
-        </p:column>
-        <p:column headerText="Description">
-            <p:tree value="#{userComponentsBean.getTreeNode(service)}" var="node" dynamic="true">
-        <p:treeNode>
-            <h:outputText value="#{node}" />
-        </p:treeNode>
-    </p:tree>
-        </p:column>
-     
-    </p:dataTable> 
- 
-    
-</h:form>
+                                    <f:facet name="header">
+                                        Services 
+                                    </f:facet>
+                                    <p:column headerText="Service ID">
+                                        <h:outputText value="#{service}"/>
+                                    </p:column>
+                                    <p:column headerText="Requirements">
+                                        <p:dataList value="#{userManagedBean.getRequirements(service)}" var="requirement"> 
+                                            <h:outputText value="#{requirement}" />
+                                        </p:dataList>
+                                    </p:column>
+                                    <p:column headerText="Description">
+                                        <p:tree value="#{userComponentsBean.getTreeNode(service)}" var="node" dynamic="true">
+                                            <p:treeNode>
+                                                <h:outputText value="#{node}" />
+                                            </p:treeNode>
+                                        </p:tree>
+                                    </p:column>
+
+                                </p:dataTable> 
+
+
+                            </h:form>
                         </p:panel>
                     </h:form>
 
