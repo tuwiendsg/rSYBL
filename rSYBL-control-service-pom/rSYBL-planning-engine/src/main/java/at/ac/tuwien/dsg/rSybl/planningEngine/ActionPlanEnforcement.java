@@ -67,7 +67,7 @@ public class ActionPlanEnforcement {
             actionPlanEvent.setStrategies(strategiesImproved);
             ArrayList<AbstractMap.SimpleEntry<String, String>> res = new ArrayList<AbstractMap.SimpleEntry<String, String>>();
             for (Pair<ActionEffect, Integer> actionEffect : result) {
-                res.add(new AbstractMap.SimpleEntry(actionEffect.getFirst().getActionName(), actionEffect.getFirst().getTargetedEntityID()));
+                res.add(new AbstractMap.SimpleEntry(actionEffect.getFirst().getActionType(), actionEffect.getFirst().getTargetedEntityID()));
             }
             eventNotification.sendEvent(actionPlanEvent);
             this.violationDegree = violationDegree;

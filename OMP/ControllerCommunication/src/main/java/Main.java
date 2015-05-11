@@ -6,13 +6,13 @@ import at.ac.tuwien.dsg.rsybl.controllercommunication.CommunicationManagement;
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-
 /**
  *
  * @author Georgiana
  */
 public class Main {
-   public static void main(String[] args){
-       CommunicationManagement communicationManagement = new CommunicationManagement();
-   } 
+
+    public static void main(String[] args) {
+        CommunicationManagement communicationManagement = new CommunicationManagement();
+    }
 }

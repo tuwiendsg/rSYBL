@@ -30,8 +30,23 @@ private String monitoring;
 private String constraints;
 private String strategies;
 private String priorities;
+private String notifications;
 private AnnotationType annotationType;
 private String entityID;
+
+    /**
+     * @return the notifications
+     */
+    public String getNotifications() {
+        return notifications;
+    }
+
+    /**
+     * @param notifications the notifications to set
+     */
+    public void setNotifications(String notifications) {
+        this.notifications = notifications;
+    }
 public static enum AnnotationType{
 	   CLOUD_SERVICE, SERVICE_UNIT, SERVICE_TOPOLOGY, CODE_REGION,RELATIONSHIP;
 	 }

@@ -35,7 +35,7 @@ public class HealthWatch {
         this.dependencyGraph = dependencyGraph1;
         actionPlanEnforcement = new ActionPlanEnforcement(enforcementAPI);
     }
-
+    
     public void restartNode(Node nodeToRestart, Node servicePartToFix) {
 
         List<ElasticityCapability> caps = nodeToRestart.getElasticityCapabilitiesByKeyword("restart");

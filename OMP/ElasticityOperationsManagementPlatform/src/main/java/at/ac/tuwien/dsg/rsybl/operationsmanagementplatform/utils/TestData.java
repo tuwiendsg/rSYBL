@@ -87,6 +87,17 @@ public class TestData {
         error.setAssociatedMetrics(associatedMetrics4);
         error.setResponsabilityType("error");
         error.setResponsibilityName("Error Management");
+        
+        Responsibility warning = new Responsibility();
+        ArrayList<String> associatedMetrics76 = new ArrayList<String>();
+        associatedMetrics76.add("warning");
+        associatedMetrics76.add("incident");
+        ArrayList<String> associatedMetricsPatterns76 = new ArrayList<String>();
+        associatedMetricsPatterns76.add(".*warning.*");
+        warning.setAssociatedMetricPatterns(associatedMetricsPatterns4);
+        warning.setAssociatedMetrics(associatedMetrics4);
+        warning.setResponsabilityType("warning");
+        warning.setResponsibilityName("Warning Management");
 
         Responsibility configuration = new Responsibility();
         configuration.setResponsabilityType("configuration");
@@ -118,7 +129,7 @@ public class TestData {
         analytics.setAssociatedMetrics(associatedMetrics5);
         analytics.setResponsabilityType("analytics");
         analytics.setResponsibilityName("Service Behavior Analytics");
-
+        em.persist(warning);
         em.persist(quality);
         em.persist(resources);
         em.persist(cost);
@@ -139,10 +150,10 @@ public class TestData {
             if (serviceManager == null) {
                 serviceManager = new Role();
                 serviceManager.setRoleName("Service Manager");
-                serviceManager.addResponsability(responsibilityDAO.findResponsibilityByType("cost"));
+//                serviceManager.addResponsability(responsibilityDAO.findResponsibilityByType("cost"));
                 serviceManager.addResponsability(responsibilityDAO.findResponsibilityByType("quality"));
-                serviceManager.addResponsability(responsibilityDAO.findResponsibilityByType("error"));
-                serviceManager.addResponsability(responsibilityDAO.findResponsibilityByType("analytics"));
+//                serviceManager.addResponsability(responsibilityDAO.findResponsibilityByType("error"));
+//                serviceManager.addResponsability(responsibilityDAO.findResponsibilityByType("analytics"));
                 serviceManager.setAuthority(10);
                 em.persist(serviceManager);
             }
@@ -153,7 +164,9 @@ public class TestData {
 
                 incidentAnalyst.setRoleName("Incident Analyst");
                 incidentAnalyst.addResponsability(responsibilityDAO.findResponsibilityByType("error"));
-                incidentAnalyst.setAuthority(8);
+                                incidentAnalyst.addResponsability(responsibilityDAO.findResponsibilityByType("warning"));
+
+                incidentAnalyst.setAuthority(5);
                 em.persist(incidentAnalyst);
             }
             Role configurationLibrarian = (Role) roleDAO.findByRoleName("Configuration Librarian");
@@ -161,7 +174,7 @@ public class TestData {
                 configurationLibrarian = new Role();
                 configurationLibrarian.setRoleName("Configuration Librarian");
                 configurationLibrarian.addResponsability(responsibilityDAO.findResponsibilityByType("configuration"));
-                configurationLibrarian.setAuthority(5);
+                configurationLibrarian.setAuthority(2);
                 em.persist(configurationLibrarian);
             }
             Role itFinancialManager = (Role) roleDAO.findByRoleName("IT Financial Manager");
@@ -169,10 +182,22 @@ public class TestData {
                 itFinancialManager = new Role();
                 itFinancialManager.setRoleName("IT Financial Manager");
                 itFinancialManager.addResponsability(responsibilityDAO.findResponsibilityByType("cost"));
-                itFinancialManager.addResponsability(responsibilityDAO.findResponsibilityByType("quality"));
-                itFinancialManager.setAuthority(9);
+                itFinancialManager.setAuthority(7);
                 em.persist(itFinancialManager);
             }
+            
+             Role itQualityAnalyst = (Role) roleDAO.findByRoleName("IT Quality Analyst");
+            if (itQualityAnalyst == null) {
+                itQualityAnalyst = new Role();
+                itQualityAnalyst.setRoleName("IT Quality Analyst");
+                itQualityAnalyst.addResponsability(responsibilityDAO.findResponsibilityByType("cost"));
+                itQualityAnalyst.addResponsability(responsibilityDAO.findResponsibilityByType("quality"));
+                itQualityAnalyst.addResponsability(responsibilityDAO.findResponsibilityByType("warning"));
+
+                itQualityAnalyst.setAuthority(8);
+                em.persist(itQualityAnalyst);
+            }
+            
             Role operationsManager = (Role) roleDAO.findByRoleName("Operations Manager");
             if (operationsManager == null) {
                 operationsManager = new Role();
@@ -182,7 +207,7 @@ public class TestData {
                 operationsManager.addResponsability(responsibilityDAO.findResponsibilityByType("resources"));
                 operationsManager.addResponsability(responsibilityDAO.findResponsibilityByType("error"));
                 operationsManager.addResponsability(responsibilityDAO.findResponsibilityByType("configuration"));
-                operationsManager.setAuthority(7);
+                operationsManager.setAuthority(5);
                 em.persist(operationsManager);
             }
             Role systemsAdministrator = (Role) roleDAO.findByRoleName("Systems Administrator");
@@ -191,8 +216,11 @@ public class TestData {
                 systemsAdministrator.setRoleName("Systems Administrator");
                 systemsAdministrator.addResponsability(responsibilityDAO.findResponsibilityByType("resources"));
                 systemsAdministrator.addResponsability(responsibilityDAO.findResponsibilityByType("error"));
+                systemsAdministrator.addResponsability(responsibilityDAO.findResponsibilityByType("warning"));
+                                systemsAdministrator.addResponsability(responsibilityDAO.findResponsibilityByType("cost"));
+                systemsAdministrator.addResponsability(responsibilityDAO.findResponsibilityByType("quality"));
                 systemsAdministrator.addResponsability(responsibilityDAO.findResponsibilityByType("configuration"));
-                systemsAdministrator.setAuthority(6);
+                systemsAdministrator.setAuthority(1);
                 em.persist(systemsAdministrator);
             }
             Role procurementAnalysis = (Role) roleDAO.findByRoleName("Procurement Analysis");
@@ -201,18 +229,18 @@ public class TestData {
                 procurementAnalysis.setRoleName("Procurement Analysis");
                 procurementAnalysis.addResponsability(responsibilityDAO.findResponsibilityByType("resources"));
                 procurementAnalysis.addResponsability(responsibilityDAO.findResponsibilityByType("cost"));
-                procurementAnalysis.setAuthority(6);
+                procurementAnalysis.setAuthority(3);
                 em.persist(procurementAnalysis);
             }
-            Role systemsOperator = (Role) roleDAO.findByRoleName("Systems Operator");
-            if (systemsOperator == null) {
-                systemsOperator = new Role();
-                systemsOperator.setRoleName("Systems Operator");
-                systemsOperator.addResponsability(responsibilityDAO.findResponsibilityByType("resources"));
-                systemsOperator.addResponsability(responsibilityDAO.findResponsibilityByType("configuration"));
-                systemsOperator.setAuthority(3);
-                em.persist(systemsOperator);
-            }
+//            Role systemsOperator = (Role) roleDAO.findByRoleName("Systems Operator");
+//            if (systemsOperator == null) {
+//                systemsOperator = new Role();
+//                systemsOperator.setRoleName("Systems Operator");
+//                systemsOperator.addResponsability(responsibilityDAO.findResponsibilityByType("resources"));
+//                systemsOperator.addResponsability(responsibilityDAO.findResponsibilityByType("configuration"));
+//                systemsOperator.setAuthority(3);
+//                em.persist(systemsOperator);
+//            }
 
             Role ec = (Role)roleDAO.findByRoleName("Elasticity Controller");
             if (ec == null) {

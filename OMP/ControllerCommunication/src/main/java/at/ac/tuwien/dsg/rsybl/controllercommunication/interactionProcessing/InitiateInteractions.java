@@ -22,12 +22,12 @@ import java.util.List;
 public class InitiateInteractions {
 
     CloudAMQPInteractions aMQPInteractions;
-       private InteractionProcessing interactionProcessing;
+    private InteractionProcessing interactionProcessing;
 
     public InitiateInteractions(CommunicationManagement communicationManagement) {
         interactionProcessing = new InteractionProcessing(this);
-        aMQPInteractions = new CloudAMQPInteractions(communicationManagement,interactionProcessing);
-       
+        aMQPInteractions = new CloudAMQPInteractions(communicationManagement, interactionProcessing);
+
     }
 
     public void initiateInteraction(Interaction interaction) {

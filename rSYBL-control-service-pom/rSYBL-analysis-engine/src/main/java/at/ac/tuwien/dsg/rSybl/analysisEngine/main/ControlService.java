@@ -883,14 +883,14 @@ public class ControlService {
         for (ElasticityRequirement requirement:dependencyGraph.getAllElasticityRequirements()){
            
             if (requirement.getAnnotation().getStrategies()!=null && !requirement.getAnnotation().getStrategies().equalsIgnoreCase("")){
-                reqs+=requirement.getAnnotation().getEntityID()+"-"+requirement.getAnnotation().getStrategies()+"~";
+                reqs+=requirement.getAnnotation().getEntityID()+"-"+requirement.getAnnotation().getStrategies()+"~\n";
             }
 
             if (requirement.getAnnotation().getConstraints()!=null && !requirement.getAnnotation().getConstraints().equalsIgnoreCase("")){
-                reqs+=requirement.getAnnotation().getEntityID()+"-"+requirement.getAnnotation().getConstraints()+"~";
+                reqs+=requirement.getAnnotation().getEntityID()+"-"+requirement.getAnnotation().getConstraints()+"~\n";
             }
                if (requirement.getAnnotation().getMonitoring()!=null && !requirement.getAnnotation().getMonitoring().equalsIgnoreCase("")){
-                reqs+=requirement.getAnnotation().getEntityID()+"-"+requirement.getAnnotation().getMonitoring()+"~";
+                reqs+=requirement.getAnnotation().getEntityID()+"-"+requirement.getAnnotation().getMonitoring()+"~\n";
             }
         }
         return reqs;

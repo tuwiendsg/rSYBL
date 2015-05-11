@@ -38,24 +38,26 @@ public class QueueListenerrSYBL implements Runnable {
     private Destination destination = null;
     private MessageConsumer consumer = null;
     private CommunicationManagement communicationManagement;
+
     public QueueListenerrSYBL(CommunicationManagement communicationManagement) {
         t = new Thread(this);
         QUEUE_URL = Configuration.getQueueUrl();
         QUEUE_NAME = Configuration.getQueueName();
         factory = new ActiveMQConnectionFactory(QUEUE_URL);
-        this.communicationManagement=communicationManagement;
-       
+        this.communicationManagement = communicationManagement;
+
     }
 
     public void startListening() throws JMSException {
-            connection = factory.createConnection();
-            connection.start();
-            session = connection.createSession(false, Session.AUTO_ACKNOWLEDGE);
-            destination = session.createQueue(QUEUE_NAME);
-            consumer = session.createConsumer(destination);
-            t.start();
-        
+        connection = factory.createConnection();
+        connection.start();
+        session = connection.createSession(false, Session.AUTO_ACKNOWLEDGE);
+        destination = session.createQueue(QUEUE_NAME);
+        consumer = session.createConsumer(destination);
+        t.start();
+
     }
+
     @Override
     public void run() {
 
@@ -72,15 +74,15 @@ public class QueueListenerrSYBL implements Runnable {
 //                    System.out.println(actionPlanEvent.getConstraints().size());
 //                    System.out.println(actionPlanEvent.getStrategies().size());
 //                    System.out.println(actionPlanEvent.getStage());
-                    
+
                 }
-                if (msg.getObject().getClass()==CustomEvent.class){
+                if (msg.getObject().getClass() == CustomEvent.class) {
                     CustomEvent event = (CustomEvent) msg.getObject();
                     communicationManagement.processCustomEvent(event);
                 }
-                try{
-                Thread.sleep(3000);
-                }catch(Exception e){
+                try {
+                    Thread.sleep(3000);
+                } catch (Exception e) {
                     ControllerCommunicationLogger.logger.info(e.getMessage());
                 }
             }

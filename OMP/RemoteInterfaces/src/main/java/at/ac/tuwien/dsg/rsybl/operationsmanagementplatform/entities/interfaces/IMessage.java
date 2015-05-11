@@ -32,6 +32,8 @@ public interface IMessage {
     String GET_SERVICES="GetServices";
     String GET_SERVICE="GetService";
     String GET_REQUIREMENTS="GetRequirements";
+    String REPLACE_DESCRIPTION="ReplaceServiceDescription";
+    String DELEGATE="Delegate";
     }
      public String getCloudServiceId() ;
 

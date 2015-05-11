@@ -120,6 +120,8 @@ public class SetupInitialDataSessionBean implements ISetupInitialDataSessionBean
             role = (IRole) em.merge(roleDAO.findByRoleName("Configuration Librarian"));
             georgiana.addRole(role);
             georgiana.addRole(em.merge(roleDAO.findByRoleName("Incident Analyst")));
+                        georgiana.addRole(em.merge(roleDAO.findByRoleName("Procurement Analysis")));
+
 
 //            for (IRole irole : roleDAO.findAll()) {
 //                georgiana.addRole(em.merge(irole));
@@ -131,8 +133,9 @@ public class SetupInitialDataSessionBean implements ISetupInitialDataSessionBean
             linh.setPassword("linh");
             linh.setName("Hong-Linh Truong");
             linh.setEmail("X@x.com");
-            linh.addRole(em.merge(roleDAO.findByRoleName("Procurement Analysis")));
+            linh.addRole(em.merge(roleDAO.findByRoleName("IT Financial Manager")));
             linh.addRole(em.merge(roleDAO.findByRoleName("Operations Manager")));
+            linh.addRole(em.merge(roleDAO.findByRoleName("IT Quality Analyst")));
             em.persist(linh);
             em.flush();
                User schahram = new User();
@@ -141,7 +144,6 @@ public class SetupInitialDataSessionBean implements ISetupInitialDataSessionBean
             schahram.setName("Schahram Dustdar");
             schahram.setEmail("X@x.com");
             schahram.addRole(em.merge(roleDAO.findByRoleName("Service Manager")));
-            schahram.addRole(em.merge(roleDAO.findByRoleName("IT Financial Manager")));
             em.persist(schahram);
             em.flush();
             userTransaction.commit();

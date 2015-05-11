@@ -101,7 +101,7 @@ public class TestUserManagement {
         for (IRole r : roles) {
             System.out.println(r.getId() + " role name " + r.getRoleName());
         }
-        IRole role = roleManagementSessionBean.searchForRoleWithName("Systems Operator");
+        IRole role = roleManagementSessionBean.searchForRoleWithName("Elasticity Controller");
         userManagementSessionBean.addRole(role.getId(), "gigi");
         assertNotNull(userManagementSessionBean.searchForUserByUsername("gigi"));
     }

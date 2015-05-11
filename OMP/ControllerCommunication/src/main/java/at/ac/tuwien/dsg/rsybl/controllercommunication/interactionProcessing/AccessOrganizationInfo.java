@@ -26,23 +26,25 @@ public class AccessOrganizationInfo {
     IUserManagementBeanRemote iUserManagementBeanRemote;
 
     public AccessOrganizationInfo() throws NamingException {
-            Properties p = new Properties();
-            p.put("java.naming.factory.initial", "org.apache.openejb.client.RemoteInitialContextFactory");
-            p.put("java.naming.provider.url", "http://127.0.0.1:8080/tomee/ejb");
+        Properties p = new Properties();
+        p.put("java.naming.factory.initial", "org.apache.openejb.client.RemoteInitialContextFactory");
+        p.put("java.naming.provider.url", "http://127.0.0.1:8080/tomee/ejb");
 
-            InitialContext ctx = new InitialContext(p);
+        InitialContext ctx = new InitialContext(p);
 
-            Object obj = ctx.lookup("java:global/ElasticityOperationsManagementPlatform/SetupInitialDataSessionBean!at.ac.tuwien.dsg.rsybl.operationsmanagementplatform.sessionbeans.interfaces.ISetupInitialDataBeanRemote");
-            Object newObj = ctx.lookup("java:global/ElasticityOperationsManagementPlatform/UserManagementBean!at.ac.tuwien.dsg.rsybl.operationsmanagementplatform.sessionbeans.interfaces.IUserManagementBeanRemote");
-            iSetupInitialDataBeanRemote
-                    = (ISetupInitialDataBeanRemote) PortableRemoteObject.narrow(obj, ISetupInitialDataBeanRemote.class);
-            iUserManagementBeanRemote = (IUserManagementBeanRemote) PortableRemoteObject.narrow(newObj, IUserManagementBeanRemote.class);
-        
+        Object obj = ctx.lookup("java:global/ElasticityOperationsManagementPlatform/SetupInitialDataSessionBean!at.ac.tuwien.dsg.rsybl.operationsmanagementplatform.sessionbeans.interfaces.ISetupInitialDataBeanRemote");
+        Object newObj = ctx.lookup("java:global/ElasticityOperationsManagementPlatform/UserManagementBean!at.ac.tuwien.dsg.rsybl.operationsmanagementplatform.sessionbeans.interfaces.IUserManagementBeanRemote");
+        iSetupInitialDataBeanRemote
+                = (ISetupInitialDataBeanRemote) PortableRemoteObject.narrow(obj, ISetupInitialDataBeanRemote.class);
+        iUserManagementBeanRemote = (IUserManagementBeanRemote) PortableRemoteObject.narrow(newObj, IUserManagementBeanRemote.class);
+
     }
-    public List<IResponsibility> getAllResponsibilities(){
+
+    public List<IResponsibility> getAllResponsibilities() {
         return iSetupInitialDataBeanRemote.findAllResponsibilitiesRemote();
     }
-  public List<IRole> getAllRoles(){
+
+    public List<IRole> getAllRoles() {
         return iSetupInitialDataBeanRemote.findAllRolesRemote();
     }
 

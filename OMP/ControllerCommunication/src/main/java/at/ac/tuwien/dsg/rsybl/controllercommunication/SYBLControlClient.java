@@ -38,11 +38,17 @@ import java.util.logging.Logger;
 import javax.ws.rs.core.MediaType;
 
 import javax.xml.bind.JAXBContext;
+import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
 import org.apache.http.client.ClientProtocolException;
 import org.apache.http.client.HttpClient;
+import org.apache.http.client.methods.HttpDelete;
 import org.apache.http.client.methods.HttpGet;
+import org.apache.http.client.methods.HttpPost;
+import org.apache.http.client.methods.HttpPut;
+import org.apache.http.entity.ByteArrayEntity;
 import org.apache.http.impl.client.HttpClientBuilder;
+import static sun.misc.RequestProcessor.postRequest;
 
 public class SYBLControlClient {
 
@@ -101,194 +107,218 @@ public class SYBLControlClient {
 
     public void setApplicationDescription(String applicationID, String appDescription) {
 
-        callPUT(appDescription, applicationID + "/description/tosca");
+        callPUTMethod(applicationID + "/description/tosca", "application/xml", appDescription);
 
     }
 
     public void testElasticityCapability(String applicationID, String componentID, String elasticityCapability) {
 
-        callPUT("", applicationID + "/" + componentID + "/testElasticityCapability/" + elasticityCapability);
+        callPUTMethod(applicationID + "/" + componentID + "/testElasticityCapability/" + elasticityCapability, "application/xml", "");
 
     }
 
     public void startTest(String applicationID) {
 
-        callPUT("", applicationID + "/startTEST");
+        callPUTMethod(applicationID + "/startTEST", "application/xml", "");
 
     }
 
     public void testElasticityCapabilityWithPlugin(String applicationID, String componentID, String pluginID, String elasticityCapability) {
 
-        callPUT("", applicationID + "/" + componentID + "/testElasticityCapability/" + pluginID + "/" + elasticityCapability);
+        callPUTMethod(applicationID + "/" + componentID + "/testElasticityCapability/" + pluginID + "/" + elasticityCapability, "application/xml", "");
 
     }
 
     public void setApplicationDeployment(String applicationID, String appDescription) {
-        callPUT(appDescription, applicationID + "/deployment");
+        callPUTMethod(applicationID + "/deployment", "application/xml", appDescription);
 
     }
 
     public void prepareControl(String id) {
 
-        callPUT(id, id + "/prepareControl");
+        callPUTMethod(id + "/prepareControl", "application/xml", id);
 
     }
 
     public void setMetricsCompositionRules(String id, String rules) {
 
-        callPUT(rules, id + "/compositionRules");
+        callPUTMethod(id + "/compositionRules", "application/xml", rules);
 
     }
 
-    private void callPUT(String body, String methodName) {
-
-        Client c = Client.create();
-
-        c.getProperties().put(
-                ClientConfig.PROPERTY_FOLLOW_REDIRECTS, true);
-        WebResource r = c.resource(REST_API_URL + "/" + methodName);
-        String response = r.accept(
-                MediaType.APPLICATION_XML_TYPE).
-                header("Content-Type", "application/xml; charset=utf-8").
-                header("Accept", "application/xml, multipart/related").
-                put(String.class, body);
-        System.out.println(response);
-    }
-
-    private void callDELETE(String body, String methodName) {
-
-        Client c = Client.create();
-
-        c.getProperties().put(
-                ClientConfig.PROPERTY_FOLLOW_REDIRECTS, true);
-        WebResource r = c.resource(REST_API_URL + "/" + methodName);
-        String response = r.accept(
-                MediaType.APPLICATION_XML_TYPE).
-                header("Content-Type", "application/xml; charset=utf-8").
-                header("Accept", "application/xml, multipart/related").
-                delete(String.class, body);
-        System.out.println(response);
-    }
-
-    private String callPOST(String body, String methodName) {
-         Client c = Client.create();
-
-        c.getProperties().put(
-                ClientConfig.PROPERTY_FOLLOW_REDIRECTS, true);
-        WebResource r = c.resource(REST_API_URL + "/" + methodName);
-        String response = r.accept(
-                MediaType.APPLICATION_XML_TYPE).
-                header("Content-Type", "application/xml; charset=utf-8").
-                header("Accept", "application/xml, multipart/related").
-                post(String.class, body);
-        return response;
-        
-            
-    }
- private String callGET( String methodName) {
-           Client c = Client.create();
-
-        c.getProperties().put(
-                ClientConfig.PROPERTY_FOLLOW_REDIRECTS, true);
-        WebResource r = c.resource(REST_API_URL + "/" + methodName);
-        String response = r.accept(
-                MediaType.APPLICATION_XML_TYPE).
-                header("Content-Type", "application/xml; charset=utf-8").
-                header("Accept", "application/xml, multipart/related").
-                get(String.class);
-        return response;
-    }
     public void startApplication(String applicationID) {
-        callPUT("", applicationID + "/startControl");
+        callPUTMethod(applicationID + "/startControl", "application/xml", "");
     }
 
     public void stopApplication(String applicationID) {
-        callPUT("", applicationID + "/stopControl");
+        callPUTMethod(applicationID + "/stopControl", "application/xml", "");
     }
 
     public void removeApplicationFromControl(String applicationID) {
-        callDELETE("", "managedService/" + applicationID);
+        callDELETEMethod("managedService/" + applicationID, "application/xml");
 
     }
 
     public void setElasticityCapabilitiesEffects(String id, String effects) {
 
-        callPUT(effects, id + "/elasticityCapabilitiesEffects");
+        callPUTMethod(effects, "application/xml", id + "/elasticityCapabilitiesEffects");
 
     }
 
     public void undeployService(String id) {
-        callDELETE("", id);
+        callDELETEMethod(id, "application/xml");
     }
 
     public void replaceCompositionRules(String id, String compositionRules) {
-        callPOST(compositionRules, id + "/compositionRules");
+        callPOSTMethod(id + "/compositionRules", "application/xml", compositionRules);
     }
 
     public void replaceRequirements(String id, String requirements) {
-        callPOST(requirements, id + "/replaceRequirements/plain");
+//            String req=    requirements.replaceAll("<", "&lt;");
+//        String req2= req.replaceAll(">", "&gt;");
+        callPOSTMethod(id + "/replaceRequirements/plain", "text/plain", requirements);
     }
 
     public void replaceEffects(String id, String effects) {
-        callPOST(effects, id + "/elasticityCapabilitiesEffects");
+        callPOSTMethod(id + "/elasticityCapabilitiesEffects", "application/xml", effects);
     }
 
     public void startEnforcement(String id, String target, String capabilityID) {
-        callPOST("", id + "/" + target + "/" + "/testElasticityCapability/" + capabilityID);
+        callPOSTMethod(id + "/" + target + "/" + "/testElasticityCapability/" + capabilityID, "application/xml", "");
 
     }
-    public String callGETMethod(String methodName, String reqType){
+
+    public String callPUTMethod(String methodName, String reqType, String body) {
         try {
-			
-			// create HTTP Client
-			HttpClient httpClient = HttpClientBuilder.create().build();
- 
-			// Create new getRequest with below mentioned URL
-			HttpGet getRequest = new HttpGet(REST_API_URL+"/"+methodName);
- 
-			// Add additional header to getRequest which accepts application/xml data
-			getRequest.addHeader("accept", reqType);
- 
-			// Execute your request and catch response
-			HttpResponse response = httpClient.execute(getRequest);
- 
-			// Check for HTTP response code: 200 = success
-			if (response.getStatusLine().getStatusCode() != 200) {
-				throw new RuntimeException("Failed : HTTP error code : " + response.getStatusLine().getStatusCode()+reqType+":"+methodName);
-			}
- 
-			// Get-Capture Complete application/xml body response
-			BufferedReader br = new BufferedReader(new InputStreamReader((response.getEntity().getContent())));
-			String o;
-			System.out.println("============Output:============");
-                        String output="";
-			// Simply iterate through XML response and show on console.
-			while ((o = br.readLine()) != null) {
-				output+=o;
-			}
-                        return output;
- 
-		} catch (ClientProtocolException e) {
-			e.printStackTrace();
- 
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
+
+            HttpClient httpClient = HttpClientBuilder.create().build();
+            HttpPut putRequest = new HttpPut(REST_API_URL + "/" + methodName);
+            putRequest.addHeader("accept", reqType);
+            HttpEntity entity = new ByteArrayEntity(body.getBytes("UTF-8"));
+            putRequest.setEntity(entity);
+            HttpResponse response = httpClient.execute(putRequest);
+            if (response.getStatusLine().getStatusCode() != 200) {
+                throw new RuntimeException("Failed : HTTP error code : " + response.getStatusLine().getStatusCode() + reqType + ":" + methodName);
+            }
+            BufferedReader br = new BufferedReader(new InputStreamReader((response.getEntity().getContent())));
+            String o;
+            System.out.println("============Output:============");
+            String output = "";
+            while ((o = br.readLine()) != null) {
+                output += o;
+            }
+            return output;
+
+        } catch (ClientProtocolException e) {
+            e.printStackTrace();
+
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
         return "";
     }
-    public String getServices(){
-        return callGETMethod("elasticservices","text/plain");
-                
+
+    public String callPOSTMethod(String methodName, String reqType, String body) {
+        try {
+
+            HttpClient httpClient = HttpClientBuilder.create().build();
+            HttpPost postRequest = new HttpPost(REST_API_URL + "/" + methodName);
+            postRequest.addHeader("accept", reqType);
+            HttpEntity entity = new ByteArrayEntity(body.getBytes("UTF-8"));
+            postRequest.setEntity(entity);
+            HttpResponse response = httpClient.execute(postRequest);
+            if (response.getStatusLine().getStatusCode() != 200) {
+                System.err.println("Failed : HTTP error code : " + response.getStatusLine().getStatusCode() + reqType + ":" + methodName);
+            }
+            BufferedReader br = new BufferedReader(new InputStreamReader((response.getEntity().getContent())));
+            String o;
+            System.out.println("============Output:============");
+            String output = "";
+            while ((o = br.readLine()) != null) {
+                output += o;
+            }
+            return output;
+
+        } catch (ClientProtocolException e) {
+            e.printStackTrace();
+
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return "";
     }
-      public String getService(String id){
-        return callGETMethod(id+"/description","application/xml");
-                
+
+    public String callDELETEMethod(String methodName, String reqType) {
+        try {
+
+            HttpClient httpClient = HttpClientBuilder.create().build();
+            HttpDelete delReq = new HttpDelete(REST_API_URL + "/" + methodName);
+            delReq.addHeader("accept", reqType);
+            HttpResponse response = httpClient.execute(delReq);
+            if (response.getStatusLine().getStatusCode() != 200) {
+                throw new RuntimeException("Failed : HTTP error code : " + response.getStatusLine().getStatusCode() + reqType + ":" + methodName);
+            }
+            BufferedReader br = new BufferedReader(new InputStreamReader((response.getEntity().getContent())));
+            String o;
+            System.out.println("============Output:============");
+            String output = "";
+            while ((o = br.readLine()) != null) {
+                output += o;
+            }
+            return output;
+
+        } catch (ClientProtocolException e) {
+            e.printStackTrace();
+
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return "";
     }
-      public String getRequirements(String id){
-          return callGETMethod(id+"/elasticityRequirements/plain","text/plain");
-      }
+
+    public String callGETMethod(String methodName, String reqType) {
+        try {
+            HttpClient httpClient = HttpClientBuilder.create().build();
+            HttpGet getRequest = new HttpGet(REST_API_URL + "/" + methodName);
+            getRequest.addHeader("accept", reqType);
+            HttpResponse response = httpClient.execute(getRequest);
+            if (response.getStatusLine().getStatusCode() != 200) {
+                throw new RuntimeException("Failed : HTTP error code : " + response.getStatusLine().getStatusCode() + reqType + ":" + methodName);
+            }
+            BufferedReader br = new BufferedReader(new InputStreamReader((response.getEntity().getContent())));
+            String o;
+            System.out.println("============Output:============");
+            String output = "";
+            while ((o = br.readLine()) != null) {
+                output += o;
+            }
+            return output;
+
+        } catch (ClientProtocolException e) {
+            e.printStackTrace();
+
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return "";
+    }
+
+    public String getServices() {
+        return callGETMethod("elasticservices", "text/plain");
+
+    }
+
+    public String getService(String id) {
+        return callGETMethod(id + "/description", "application/xml");
+
+    }
+
+    public String getRequirements(String id) {
+        return callGETMethod(id + "/elasticityRequirements/plain", "text/plain");
+    }
+
     public void resumeControl(String id) {
-        callPOST("", id + "/startControlOnExisting");
+        callPOSTMethod(id + "/startControlOnExisting", "application/xml", "");
 
     }
 }

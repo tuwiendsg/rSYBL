@@ -8,6 +8,7 @@ package at.ac.tuwien.dsg.rsybl.operationsmanagementplatform.managedBeans;
 import at.ac.tuwien.dsg.csdg.inputProcessing.multiLevelModel.abstractModelXML.CloudServiceXML;
 import at.ac.tuwien.dsg.rsybl.operationsmanagementplatform.entities.interfaces.IDialog;
 import at.ac.tuwien.dsg.rsybl.operationsmanagementplatform.entities.interfaces.IInteraction;
+import at.ac.tuwien.dsg.rsybl.operationsmanagementplatform.entities.interfaces.IMessage;
 import at.ac.tuwien.dsg.rsybl.operationsmanagementplatform.entities.interfaces.IResponsibility;
 import at.ac.tuwien.dsg.rsybl.operationsmanagementplatform.entities.interfaces.IRole;
 import at.ac.tuwien.dsg.rsybl.operationsmanagementplatform.entities.interfaces.IUser;
@@ -36,6 +37,7 @@ import javax.faces.bean.ManagedBean;
 import javax.faces.bean.SessionScoped;
 import javax.faces.context.FacesContext;
 import javax.faces.event.ActionEvent;
+import javax.faces.event.AjaxBehaviorEvent;
 import org.primefaces.component.tabview.Tab;
 import org.primefaces.component.tabview.TabView;
 
@@ -52,7 +54,7 @@ import org.primefaces.model.menu.MenuModel;
  * @author Georgiana
  */
 @ManagedBean(name = "userManagedBean")
-@ApplicationScoped
+@SessionScoped
 public class UserManagedBean implements Serializable,ActionListener{
     
     @EJB(name = "SetupInitialDataSessionBean", beanInterface = ISetupInitialDataSessionBean.class, beanName = "SetupInitialDataSessionBean", lookup = "global/ElasticityOperationsManagementPlatform/SetupInitialDataSessionBean!at.ac.tuwien.dsg.rsybl.operationsmanagementplatform.sessionbeans.interfaces.ISetupInitialDataSessionBean")
@@ -98,6 +100,8 @@ public class UserManagedBean implements Serializable,ActionListener{
         FacesContext.getCurrentInstance().addMessage(null, message);
         }
     }
+    
+   
     public List<IDialog> getDialogsAssociatedWithCurrentUsername(){
         
         return interactionManagementSessionBean.getDialogsForRoles(iRoles);
@@ -324,10 +328,18 @@ public class UserManagedBean implements Serializable,ActionListener{
     public void setSelectedInteraction(String selectedInteraction) {
         this.selectedInteraction = selectedInteraction;
     }
+    
+    public void createNewInteraction(String cloudService, String interactionType, String initiator, String receiver, String action, String description){
+        interactionManagementSessionBean.initiateInteraction(selectedInteraction,cloudService,  interactionType,  initiator,  receiver,  action,  description);
+    }
+    
 //  public void refreshSelectedInteraction(String interactionUUID){
 //     
 //      this.selectedInteraction=interactionUUID;
 //  }
-
+  /**
+     * @return the interactionTypes
+     */
+   
    
 }

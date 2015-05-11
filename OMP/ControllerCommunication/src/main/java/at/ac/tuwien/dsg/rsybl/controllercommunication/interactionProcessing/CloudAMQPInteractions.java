@@ -42,6 +42,7 @@ public class CloudAMQPInteractions {
     private List<Interaction> cachedInteractions = new ArrayList<Interaction>();
     private String EXCHANGE_NAME = "eOMP";
     private InteractionProcessing interactionProcessing;
+
     /**
      * @return the cachedInteractions
      */
@@ -52,25 +53,25 @@ public class CloudAMQPInteractions {
     /**
      * @param cachedInteractions the cachedInteractions to set
      */
-    public synchronized  void setCachedInteractions(List<Interaction> cachedInteractions) {
+    public synchronized void setCachedInteractions(List<Interaction> cachedInteractions) {
         synchronized (cachedInteractions) {
             this.cachedInteractions = cachedInteractions;
         }
     }
 
     public synchronized void addCachedInteractions(Interaction i) {
-            cachedInteractions.add(i);
+        cachedInteractions.add(i);
     }
 
-    public synchronized  List<Interaction> getAndClearCachedInteractions() {
-            List<Interaction> interactions = new ArrayList<>();
-            for (Interaction interaction : cachedInteractions) {
-                interactions.add(interaction);
-            }
+    public synchronized List<Interaction> getAndClearCachedInteractions() {
+        List<Interaction> interactions = new ArrayList<>();
+        for (Interaction interaction : cachedInteractions) {
+            interactions.add(interaction);
+        }
 
-            cachedInteractions.clear();
-            return interactions;
-       
+        cachedInteractions.clear();
+        return interactions;
+
     }
 
     class ListenQueue implements Runnable {
@@ -110,7 +111,7 @@ public class CloudAMQPInteractions {
                         Object obj = ois.readObject();
                         Interaction interaction = (Interaction) obj;
                         addCachedInteractions(interaction);
-                        System.out.println(" [x] Received '" + interaction.getUuid()+ "'");
+                        System.out.println(" [x] Received '" + interaction.getUuid() + "'");
 
                         interactionProcessing.processNewInteraction(interaction);
                     } catch (Exception e) {
@@ -184,10 +185,10 @@ public class CloudAMQPInteractions {
             baos.close();
 
             channel.basicPublish(EXCHANGE_NAME, role, null, bytes);
-            if (((Interaction)message).getMessage()!=null){
-            System.out.println(" [x] Sent '" + role + "':'" + ((Interaction)message).getMessage().getDescription() + "'");
-        }
-        
+            if (((Interaction) message).getMessage() != null) {
+                System.out.println(" [x] Sent '" + role + "':'" + ((Interaction) message).getMessage().getDescription() + "'");
+            }
+
         } catch (Exception e) {
             ControllerCommunicationLogger.logger.info(e.getMessage());
 

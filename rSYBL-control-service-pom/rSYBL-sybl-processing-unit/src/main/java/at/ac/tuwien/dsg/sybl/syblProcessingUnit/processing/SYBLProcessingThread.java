@@ -53,7 +53,7 @@ public class SYBLProcessingThread implements Runnable {
 		    e.printStackTrace();
 		}
 
-    	utils = new Utils(currentEntity,syblAnnotation.getPriorities(),syblAnnotation.getMonitoring(),syblAnnotation.getConstraints(),syblAnnotation.getStrategies(),monitoringAPI,enforcementAPI,dependencyGraph);
+    	utils = new Utils(currentEntity,syblAnnotation.getNotifications(),syblAnnotation.getPriorities(),syblAnnotation.getMonitoring(),syblAnnotation.getConstraints(),syblAnnotation.getStrategies(),monitoringAPI,enforcementAPI,dependencyGraph);
 		t = new Thread(this);	
 		
 	}

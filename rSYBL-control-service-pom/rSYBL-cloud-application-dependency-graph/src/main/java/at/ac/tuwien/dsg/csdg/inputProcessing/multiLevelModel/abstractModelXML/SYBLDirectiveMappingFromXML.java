@@ -643,7 +643,7 @@ public class SYBLDirectiveMappingFromXML {
             toEnforce.setParameter(a[1]);
         }
         c.setToEnforce(toEnforce);
-        c.setId(s[0]);
+        c.setId(st[0]);
         if (strategy.toLowerCase().contains("case")) {
             Condition cond = new Condition();
 

@@ -35,6 +35,9 @@ import at.ac.tuwien.dsg.csdg.elasticityInformation.ElasticityRequirement;
 import at.ac.tuwien.dsg.csdg.elasticityInformation.elasticityRequirements.Strategy;
 import at.ac.tuwien.dsg.csdg.elasticityInformation.elasticityRequirements.ToEnforce;
 import at.ac.tuwien.dsg.csdg.inputProcessing.multiLevelModel.abstractModelXML.SYBLDirectiveMappingFromXML;
+import at.ac.tuwien.dsg.csdg.outputProcessing.eventsNotification.CustomEvent;
+import at.ac.tuwien.dsg.csdg.outputProcessing.eventsNotification.EventNotification;
+import at.ac.tuwien.dsg.csdg.outputProcessing.eventsNotification.IEvent;
 import at.ac.tuwien.dsg.rSybl.cloudInteractionUnit.api.EnforcementAPIInterface;
 import at.ac.tuwien.dsg.rSybl.cloudInteractionUnit.utils.Configuration;
 import at.ac.tuwien.dsg.rSybl.dataProcessingUnit.api.MonitoringAPIInterface;
@@ -60,11 +63,13 @@ public class Utils {
 	private String constraints = "";
 	private String strategies ="";
 	private String priorities="";
+        private String notifications="";
 	private Node currentEntity;
 	private DependencyGraph dependencyGraph;
-	public Utils(Node currentEntity,String priorities, String monitoring, String constraints, String strategies,MonitoringAPIInterface monitoringAPI, EnforcementAPIInterface enforcementAPI, DependencyGraph dependencyGraph){
+	public Utils(Node currentEntity,String notifications,String priorities, String monitoring, String constraints, String strategies,MonitoringAPIInterface monitoringAPI, EnforcementAPIInterface enforcementAPI, DependencyGraph dependencyGraph){
 		this.currentEntity=currentEntity;
 		this.priorities=priorities;
+                this.notifications=notifications;
 		this.constraints=constraints;
 		this.strategies = strategies;
 		this.monitoring=monitoring;
@@ -84,7 +89,12 @@ public class Utils {
 
 			processMonitoring(monitoring);
 		}
+if (notifications!=null && !notifications.equalsIgnoreCase("")) {
+			//SYBLDirectivesEnforcementLogger.logger.info("=============================================");
+			SYBLDirectivesEnforcementLogger.logger.info("Notification requirements are: " + notifications);
 
+			processNotifications(notifications);
+		}
 	
 		
 		try {
@@ -139,6 +149,7 @@ public class Utils {
 
 
 	}
+        
 // ==========================processing code========================================//
 public void processPriorities(String priorities,ArrayList<Rule> rules)  {
 	String[] s = priorities.split(";");
@@ -272,7 +283,59 @@ public void processConstraints(String constraints)
 //
 //	}
 }
+public void processNotifications(String notifications){
+	String[] st = notifications.split(";");
+	for (String c : st) {
+		String[] x = c.split(":");
+		
+		Rule r = new Rule();
+		r.setName(x[0]);
 
+		r.setText(c.substring(c.indexOf(":") + 1));
+                
+		if (r.getText().contains("CASE")) {
+                    String role =r.getText().split("NOTIFICATION")[0];
+                    
+		String s[] = r.getText().split(":");
+		//SYBLDirectivesEnforcementLogger.logger.info(r.getText());
+		String condition = s[0].split("CASE ")[1];
+		try {
+			try {
+				if ((condition.contains("AND") && evaluateCompositeCondition(condition))||(!condition.contains("AND") &&evaluateCondition(condition)) ){
+					doNotification(s[1],role);
+				}else{
+					SYBLDirectivesEnforcementLogger.logger.info("Condition not true for strategy "+r.getName() );
+				}
+			} catch (NoSuchMethodException | SecurityException | IllegalAccessException | IllegalArgumentException | InvocationTargetException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}catch (MeasurementNotAvailableException e){
+				SYBLDirectivesEnforcementLogger.logger.error(e.getMessage());
+			}
+		} catch (MethodNotFoundException e) {
+			e.printStackTrace();
+		}
+	}else{
+		String s[] = r.getText().split("STRATEGY ");
+		String[] actions = s[0].split(";");
+		
+		for (String action:actions){
+			doEnforcementWithPrimitives(action,r.getName(),SYBLDirectiveMappingFromXML.mapFromSYBLAnnotationToXMLStrategy(r.getName()+":"+r.getText()));
+			}
+				
+		}
+		
+	}
+}
+public void doNotification(String role, String message){
+    EventNotification eventNotification = EventNotification.getEventNotification();
+     CustomEvent customEvent = new CustomEvent();
+            customEvent.setCloudServiceID(this.dependencyGraph.getCloudService().getId());
+            customEvent.setType(IEvent.Type.NOTIFICATION);
+            customEvent.setTarget(role);
+            customEvent.setMessage(message);
+            eventNotification.sendEvent(customEvent);
+}
 public void processMonitoring(String monitoring) {
 	String[] s = monitoring.split(";");
 	for (String c : s) {
@@ -346,7 +409,7 @@ public void processStrategy(Rule r) {
 		try {
 			try {
 				if ((condition.contains("AND") && evaluateCompositeCondition(condition))||(!condition.contains("AND") &&evaluateCondition(condition)) ){
-					doEnforcementWithPrimitives( s[1],r.getName(),SYBLDirectiveMappingFromXML.mapFromSYBLAnnotationToXMLStrategy(r.getText()));
+					doEnforcementWithPrimitives( s[1],r.getName(),SYBLDirectiveMappingFromXML.mapFromSYBLAnnotationToXMLStrategy(r.getName()+":"+r.getText()));
 				}else{
 					SYBLDirectivesEnforcementLogger.logger.info("Condition not true for strategy "+r.getName() );
 				}
@@ -364,7 +427,7 @@ public void processStrategy(Rule r) {
 		String[] actions = s[0].split(";");
 		
 		for (String action:actions){
-			doEnforcementWithPrimitives(action,r.getName(),SYBLDirectiveMappingFromXML.mapFromSYBLAnnotationToXMLStrategy(r.getText()));
+			doEnforcementWithPrimitives(action,r.getName(),SYBLDirectiveMappingFromXML.mapFromSYBLAnnotationToXMLStrategy(r.getName()+":"+r.getText()));
 			}
 				
 		}
@@ -397,6 +460,7 @@ public void processMonitoringRule(Rule r) {
 	}
 }
 
+        
 public void processSimpleMonitoringRule(String monitoring)
 		throws MethodNotFoundException {
 	String[] s = monitoring.split(" ");

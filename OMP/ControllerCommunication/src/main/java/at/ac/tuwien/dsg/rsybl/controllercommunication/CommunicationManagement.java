@@ -125,7 +125,22 @@ public class CommunicationManagement implements Runnable {
     private synchronized void processInteractions() {
         for (IRole iRole : queuedInteractions.keySet()) {
             if (THRESHOLD * Math.log10(iRole.getAuthority()) <= queuedInteractions.get(iRole).size()) {
+                List<Interaction> toSend = new ArrayList<Interaction>();
                 for (Interaction interaction : queuedInteractions.get(iRole)) {
+                    boolean ok = true;
+                    for (IInteraction interactionX : toSend) {
+                        if (interactionX.getMessage() != null && interactionX.getMessage().getDescription() != null && interaction.getMessage().getDescription() != null && interactionX.getMessage().getDescription().equalsIgnoreCase(interaction.getMessage().getDescription())) {
+                            ok = false;
+                        }
+                        if (interactionX.getMessage() != null && interactionX.getMessage().getCause() != null && interaction.getMessage().getCause() != null && interactionX.getMessage().getCause().equalsIgnoreCase(interaction.getMessage().getCause())) {
+                            ok = false;
+                        }
+                    }
+                    if (ok) {
+                        toSend.add(interaction);
+                    }
+                }
+                for (Interaction interaction : toSend) {
                     initiateInteractions.initiateInteraction(interaction);
                 }
                 List<Interaction> interactions = new ArrayList<Interaction>();
@@ -166,6 +181,12 @@ public class CommunicationManagement implements Runnable {
     private Message constructMessageFromActionPlan(ActionPlanEvent event, List<String> metrics) {
         Message message = new Message();
         String enforcement = "";
+
+        if (event.getEffect() != null && event.getEffect().size() == 0) {
+            if (event.getStage() == ActionPlanEvent.Stage.START) {
+                enforcement = "Start control for reqs.";
+            }
+        }
         int i = 0;
         for (Entry<String, String> e : event.getEffect()) {
             if (i != event.getEffect().size() - 1) {
@@ -175,18 +196,25 @@ public class CommunicationManagement implements Runnable {
             }
         }
         message.setActionEnforced(enforcement);
-        String cause = "Constraints and respectively strategies violated: (i)";
-        for (Constraint c : event.getConstraints()) {
-            cause += SYBLDirectiveMappingFromXML.mapXMLConstraintToSYBLAnnotation(c);
-        }
-        cause += " (ii) ";
-        for (Strategy s : event.getStrategies()) {
-            cause += SYBLDirectiveMappingFromXML.mapFromXMLStrategyToSYBLAnnotation(s);
-        }
 
+        String cause = "";
+        if (event.getConstraints() != null && event.getConstraints().size() > 0) {
+            cause += "Constraints: ";
+            for (Constraint c : event.getConstraints()) {
+                cause += SYBLDirectiveMappingFromXML.mapXMLConstraintToSYBLAnnotation(c);
+            }
+            cause += ".";
+        }
+        if (event.getStrategies() != null && event.getStrategies().size() > 0) {
+
+            cause += "Strategies: ";
+            for (Strategy s : event.getStrategies()) {
+                cause += SYBLDirectiveMappingFromXML.mapFromXMLStrategyToSYBLAnnotation(s);
+            }
+        }
         cause += ". You received this notification from EC due to the following metrics which are affected: ";
         for (String m : metrics) {
-            if (i != event.getEffect().size() - 1) {
+            if (i != metrics.size() - 1) {
                 cause += m + ", ";
             } else {
                 cause += m;
@@ -283,7 +311,9 @@ public class CommunicationManagement implements Runnable {
         HashMap<IRole, List<String>> currentRoles = new HashMap<IRole, List<String>>();
         for (String m : currentMetrics) {
             List<IRole> myRoles = this.metricsToRoles.get(m);
+            if (metricPatternsToRoles.containsKey(m)){
             myRoles.addAll(metricPatternsToRoles.get(m));
+            }
             for (IRole r : myRoles) {
                 if (!currentRoles.containsKey(r)) {
                     ArrayList<String> ms = new ArrayList<String>();
@@ -342,26 +372,91 @@ public class CommunicationManagement implements Runnable {
         message.setDescription(event.getMessage());
         Role role = new Role();
         role.setRoleName("Elasticity Controller");
-        for (IRole r : this.metricsToRoles.get("error")) {
-            Interaction interaction = new Interaction();
-            if (event.getType() == IEvent.Type.ERROR) {
-                interaction.setType(IInteraction.InteractionType.EMERGENCY);
-            }
-            if (event.getType() == IEvent.Type.UNHEALTHY_SP) {
-                interaction.setType(IInteraction.InteractionType.WARNING);
-            }
-            interaction.setDialogUuid(UUID.randomUUID().toString());
-            interaction.setInitiationDate(new Date());
-            interaction.setInitiator(role);
-            interaction.setReceiver(r);
-            interaction.setMessage(message);
-            interaction.setUuid(UUID.randomUUID().toString());
-            if (!this.queuedInteractions.containsKey(r)) {
-                List<Interaction> interactions = new ArrayList<Interaction>();
-                queuedInteractions.put(r, interactions);
-            }
-            queuedInteractions.get(r).add(interaction);
+        switch (event.getType()) {
+            case NOTIFICATION:
+                Interaction interaction = new Interaction();
+                interaction.setType(IInteraction.InteractionType.NOTIFICATION);
+                interaction.setDialogUuid(UUID.randomUUID().toString());
+                interaction.setInitiationDate(new Date());
+                interaction.setInitiator(role);
+                IRole myRole = null;
+                for (IRole r : roles) {
+                    if (r.getRoleName().equalsIgnoreCase(event.getTarget())) {
+                        myRole = r;
+                    }
+                }
+                if (myRole != null) {
+                    interaction.setReceiver(myRole);
+                    interaction.setMessage(message);
+                    interaction.setUuid(UUID.randomUUID().toString());
+                    if (!this.queuedInteractions.containsKey(myRole)) {
+                        List<Interaction> interactions = new ArrayList<Interaction>();
+                        queuedInteractions.put(myRole, interactions);
+                    }
+                    queuedInteractions.get(myRole).add(interaction);
+                } else {
+                    if (metricsToRoles.containsKey("warning"))
+                    for (IRole r : this.metricsToRoles.get("warning")) {
+                        interaction = new Interaction();
+                        interaction.setType(IInteraction.InteractionType.WARNING);
+                        interaction.setDialogUuid(UUID.randomUUID().toString());
+                        interaction.setInitiationDate(new Date());
+                        interaction.setInitiator(role);
+                        interaction.setReceiver(r);
+                        interaction.setMessage(message);
+                        interaction.setUuid(UUID.randomUUID().toString());
+                        if (!this.queuedInteractions.containsKey(r)) {
+                            List<Interaction> interactions = new ArrayList<Interaction>();
+                            queuedInteractions.put(r, interactions);
+                        }
+                        queuedInteractions.get(r).add(interaction);
 
+                    }
+                    if (metricsToRoles.containsKey("error"))
+                    for (IRole r : this.metricsToRoles.get("error")) {
+                        interaction = new Interaction();
+                        interaction.setType(IInteraction.InteractionType.WARNING);
+                        interaction.setDialogUuid(UUID.randomUUID().toString());
+                        interaction.setInitiationDate(new Date());
+                        interaction.setInitiator(role);
+                        interaction.setReceiver(r);
+                        interaction.setMessage(message);
+                        interaction.setUuid(UUID.randomUUID().toString());
+                        if (!this.queuedInteractions.containsKey(r)) {
+                            List<Interaction> interactions = new ArrayList<Interaction>();
+                            queuedInteractions.put(r, interactions);
+                        }
+                        queuedInteractions.get(r).add(interaction);
+
+                    }
+                }
+                break;
+            case UNHEALTHY_SP:
+                if (this.metricsToRoles!=null && this.metricsToRoles.get("error")!=null){
+                 for (IRole r : this.metricsToRoles.get("error")) {
+                    interaction = new Interaction();
+                    if (event.getType() == IEvent.Type.ERROR) {
+                        interaction.setType(IInteraction.InteractionType.EMERGENCY);
+                    }
+                    if (event.getType() == IEvent.Type.UNHEALTHY_SP) {
+                        interaction.setType(IInteraction.InteractionType.WARNING);
+                    }
+                    interaction.setDialogUuid(UUID.randomUUID().toString());
+                    interaction.setInitiationDate(new Date());
+                    interaction.setInitiator(role);
+                    interaction.setReceiver(r);
+                    interaction.setMessage(message);
+                    interaction.setUuid(UUID.randomUUID().toString());
+                    if (!this.queuedInteractions.containsKey(r)) {
+                        List<Interaction> interactions = new ArrayList<Interaction>();
+                        queuedInteractions.put(r, interactions);
+                    }
+                    queuedInteractions.get(r).add(interaction);
+
+                }
+                }
+                break;
+                
         }
     }
 

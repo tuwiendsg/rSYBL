@@ -6,18 +6,27 @@ package at.ac.tuwien.dsg.csdg.outputProcessing.eventsNotification;
 
 import at.ac.tuwien.dsg.csdg.utils.Configuration;
 import at.ac.tuwien.dsg.csdg.utils.DependencyGraphLogger;
+import java.io.IOException;
 import java.net.URI;
+import java.util.List;
+import java.util.Map;
 import javax.jms.Connection;
 import javax.jms.DeliveryMode;
 import javax.jms.Destination;
 import javax.jms.JMSException;
 import javax.jms.MessageProducer;
 import javax.jms.ObjectMessage;
+import javax.jms.Queue;
 import javax.jms.Session;
+import javax.jms.Topic;
 import org.apache.activemq.ActiveMQConnection;
 import org.apache.activemq.ActiveMQConnectionFactory;
 import org.apache.activemq.broker.BrokerService;
+import org.apache.activemq.broker.ConnectionContext;
 import org.apache.activemq.broker.TransportConnector;
+import org.apache.activemq.broker.region.Subscription;
+import org.apache.activemq.command.ActiveMQDestination;
+import org.apache.activemq.store.MessageStore;
 
 /**
  *
@@ -46,6 +55,7 @@ public class MQProducer {
     public void clearAllEvents() {
         try {
             connection.stop();
+            
             try {
 //                broker.stopGracefully(connector.getName(), QUEUE_NAME, 2000, 2000);
                                broker.stop();
@@ -89,6 +99,7 @@ public class MQProducer {
 
             // Create a MessageProducer from the Session to the Topic or Queue
             producer = session.createProducer(destination);
+            
             producer.setDeliveryMode(DeliveryMode.PERSISTENT);
 
         } catch (Exception e) {
@@ -120,7 +131,8 @@ public class MQProducer {
 
             // Create the destination (Topic or Queue)
             Destination destination = session.createQueue(QUEUE_NAME);
-
+            Queue queue = (Queue) destination;
+            
             // Create a MessageProducer from the Session to the Topic or Queue
             producer = session.createProducer(destination);
             producer.setDeliveryMode(DeliveryMode.PERSISTENT);

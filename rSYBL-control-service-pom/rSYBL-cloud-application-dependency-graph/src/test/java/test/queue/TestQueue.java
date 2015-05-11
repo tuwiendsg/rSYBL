@@ -44,8 +44,8 @@ public class TestQueue {
 
     }
 
-    
-    @Test
+   
+//    @Test
     public void testProducer() {
         if (Configuration.getMQEnabled() == true) {
            
@@ -71,7 +71,7 @@ public class TestQueue {
         }
     }
 
-    @After
+//    @After
     public void closeQueue() {
         if (Configuration.getMQEnabled() == true) {
             mQProducer.clearAllEvents();

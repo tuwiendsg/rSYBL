@@ -108,7 +108,7 @@ public class InteractionProcessing {
                     initiateInteractions.initiateInteraction(interactionResponse);
                     break;
                 case IMessage.RequestTypes.REPLACE_REQUIREMENTS:
-                    syblControlClient.replaceRequirements(interaction.getMessage().getDescription(), interaction.getMessage().getCloudServiceId());
+                    syblControlClient.replaceRequirements(interaction.getMessage().getCloudServiceId(), interaction.getMessage().getDescription());
                     interactionResponse = new Interaction();
                     interactionResponse.setUuid(UUID.randomUUID().toString());
                     interactionResponse.setDialogUuid(interaction.getDialogUuid());
@@ -127,7 +127,7 @@ public class InteractionProcessing {
                     initiateInteractions.initiateInteraction(interactionResponse);
                     break;
                 case IMessage.RequestTypes.REPLACE_CUSTOM_METRICS:
-                    syblControlClient.replaceCompositionRules(interaction.getMessage().getDescription(), interaction.getMessage().getCloudServiceId());
+                    syblControlClient.replaceCompositionRules(interaction.getMessage().getCloudServiceId(), interaction.getMessage().getDescription());
                     interactionResponse = new Interaction();
                     interactionResponse.setUuid(UUID.randomUUID().toString());
                     interactionResponse.setDialogUuid(interaction.getDialogUuid());
@@ -165,7 +165,7 @@ public class InteractionProcessing {
                     initiateInteractions.initiateInteraction(interactionResponse);
                     break;
                 case IMessage.RequestTypes.SEND_CUSTOM_METRICS:
-                    syblControlClient.setMetricsCompositionRules(interaction.getMessage().getDescription(), interaction.getMessage().getCloudServiceId());
+                    syblControlClient.setMetricsCompositionRules(interaction.getMessage().getCloudServiceId(), interaction.getMessage().getDescription());
                     interactionResponse = new Interaction();
                     interactionResponse.setUuid(UUID.randomUUID().toString());
                     interactionResponse.setDialogUuid(interaction.getDialogUuid());
@@ -184,7 +184,7 @@ public class InteractionProcessing {
                     initiateInteractions.initiateInteraction(interactionResponse);
                     break;
                 case IMessage.RequestTypes.SEND_DEPLOYMENT_DESCRIPTION:
-                    syblControlClient.setApplicationDeployment(interaction.getMessage().getDescription(), interaction.getMessage().getCloudServiceId());
+                    syblControlClient.setApplicationDeployment(interaction.getMessage().getCloudServiceId(), interaction.getMessage().getDescription());
                     interactionResponse = new Interaction();
                     interactionResponse.setUuid(UUID.randomUUID().toString());
                     interactionResponse.setDialogUuid(interaction.getDialogUuid());
@@ -203,7 +203,7 @@ public class InteractionProcessing {
                     initiateInteractions.initiateInteraction(interactionResponse);
                     break;
                 case IMessage.RequestTypes.SEND_SERVICE_DESCRIPTION:
-                    syblControlClient.setApplicationDescription(interaction.getMessage().getDescription(), interaction.getMessage().getCloudServiceId());
+                    syblControlClient.setApplicationDescription(interaction.getMessage().getCloudServiceId(), interaction.getMessage().getDescription());
                     interactionResponse = new Interaction();
                     interactionResponse.setUuid(UUID.randomUUID().toString());
                     interactionResponse.setDialogUuid(interaction.getDialogUuid());

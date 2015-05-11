@@ -6,13 +6,14 @@
 package at.ac.tuwien.dsg.rsybl.operationsmanagementplatform.managedBeans;
 
 import at.ac.tuwien.dsg.rsybl.operationsmanagementplatform.entities.interfaces.IDialog;
+import java.io.Serializable;
 import java.util.List;
 
 /**
  *
  * @author Georgiana
  */
- public class RoleDescription {
+ public class RoleDescription implements Serializable{
 
         private String roleName;
         private String description;

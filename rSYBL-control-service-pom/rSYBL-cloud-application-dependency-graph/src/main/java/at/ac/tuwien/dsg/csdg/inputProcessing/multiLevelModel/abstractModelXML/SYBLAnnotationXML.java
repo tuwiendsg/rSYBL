@@ -42,6 +42,8 @@ public class SYBLAnnotationXML {
 	   	private String priorities ="";
 	   	@XmlAttribute(name="Strategies")
 		private String strategies ="";
+@XmlAttribute(name="Notifications")
+		private String notifications ="";
 
 		public String getStrategies() {
 			return strategies;
@@ -82,6 +84,20 @@ public class SYBLAnnotationXML {
 		public void setPriorities(String priorities) {
 			this.priorities = priorities;
 		}
+
+    /**
+     * @return the notifications
+     */
+    public String getNotifications() {
+        return notifications;
+    }
+
+    /**
+     * @param notifications the notifications to set
+     */
+    public void setNotifications(String notifications) {
+        this.notifications = notifications;
+    }
 	   	
 	   	
 	   	

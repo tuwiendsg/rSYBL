@@ -33,13 +33,13 @@ public class CloudAMPQTest {
 
     private static InitiateInteractions initiateInteractions;
     private static CommunicationManagement communicationManagement;
-    
+
     public CloudAMPQTest() {
     }
 
     @BeforeClass
     public static void setUpClass() {
-        communicationManagement=new CommunicationManagement();
+        communicationManagement = new CommunicationManagement();
 //            initiateInteractions = new InitiateInteractions();
     }
 
@@ -59,7 +59,7 @@ public class CloudAMPQTest {
         role.setRoleName("Service Manager");
         IRole ecrole = new Role();
         ecrole.setRoleName("Elasticity Controller");
-                Message message = new Message();
+        Message message = new Message();
         myInteraction.setMessage(message);
         myInteraction.setInitiator(ecrole);
         myInteraction.setReceiver(role);
@@ -68,7 +68,7 @@ public class CloudAMPQTest {
 
     }
 
-   // @Test
+    // @Test
     public void readMessage() {
         initiateInteractions = new InitiateInteractions(communicationManagement);
         InitiateInteractions trala = new InitiateInteractions(communicationManagement);

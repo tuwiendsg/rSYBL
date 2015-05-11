@@ -306,7 +306,8 @@ public class InteractionManagementSessionBean implements IInteractionManagementB
         if (response.containsKey(serviceID) && response.get(serviceID).containsKey(IMessage.RequestTypes.GET_REQUIREMENTS)) {
 
             if (response.get(serviceID).get(IMessage.RequestTypes.GET_REQUIREMENTS) != null) {
-                return response.get(serviceID).get(IMessage.RequestTypes.GET_REQUIREMENTS).split("~");
+                String[] responseValue = response.get(serviceID).get(IMessage.RequestTypes.GET_REQUIREMENTS).split("~");
+                return responseValue;
 
             }
 
@@ -402,7 +403,65 @@ public class InteractionManagementSessionBean implements IInteractionManagementB
         }
         return null;
     }
+    public synchronized void initiateInteraction(String dialogUUID,String cloudService, String interactionType, String initiator, String receiver, String action, String description){
 
+         Interaction interaction = new Interaction();
+
+        try {
+
+            userTransaction.begin();
+            RoleDAO roleDAO = new RoleDAO();
+            roleDAO.setEntityManager(em);
+            interaction.setUuid(UUID.randomUUID().toString());
+            interaction.setType(interactionType);
+            interaction.setInitiator(em.merge(roleDAO.findByRoleName(initiator)));
+            interaction.setReceiver(em.merge(roleDAO.findByRoleName(receiver)));
+            interaction.setInitiationDate(new Date());
+            Message message = new Message();
+            message.setUuid(UUID.randomUUID().toString());
+            message.setCloudServiceId(cloudService);
+            message.setActionEnforced(action);
+            message.setDescription(description.replace("\n", "").replace("\r", ""));
+            em.persist(message);
+            interaction.setMessage(message);
+            DialogDAO dialogDAO = new DialogDAO();
+            dialogDAO.setEntityManager(em);
+            Dialog d = (Dialog) dialogDAO.findByUUID(dialogUUID);
+
+            if (d == null) {
+                d = new Dialog();
+                d.setUuid(UUID.randomUUID().toString());
+            }
+            interaction.setDialogUuid(d.getUuid());
+
+            em.persist(interaction);
+            d.addInteraction(interaction);
+            interaction.setDialogUuid(d.getUuid());
+            em.persist(interaction);
+            d.addInteraction(interaction);
+            em.persist(d);
+            em.flush();
+            userTransaction.commit();
+
+        } catch (Exception e) {
+            try {
+                OMPLogger.logger.info("Cannot create interaction for getting services");
+                userTransaction.rollback();
+                return;
+            } catch (Exception ex) {
+                ex.printStackTrace();
+                Logger.getLogger(InteractionManagementSessionBean.class.getName()).log(Level.SEVERE, null, ex);
+                return;
+            }
+        }
+        if (interaction.getReceiver().getRoleName().equalsIgnoreCase("Elasticity Controller")){
+        aMQPInteractions.initiateInteraction(interaction.getReceiver().getRoleName(), MapToCommunicationObjects.mapFromInteraction(interaction));
+        }else{
+              aMQPInteractions.initiateInteraction("role", MapToCommunicationObjects.mapFromInteraction(interaction));
+      
+        }
+        response.get(interaction.getMessage().getCloudServiceId()).put(interaction.getMessage().getActionEnforced(), "No answer yet");
+    }
     public synchronized void processInteraction(at.ac.tuwien.dsg.rsybl.operationsmanagementplatform.entities.communicationModel.Interaction interaction) {
         Interaction mappedInteraction = null;
         try {
@@ -417,7 +476,7 @@ public class InteractionManagementSessionBean implements IInteractionManagementB
             if (d == null) {
 
                 d = new Dialog();
-                d.addInteraction(mappedInteraction);
+                //d.addInteraction(mappedInteraction);
                 d.setUuid(mappedInteraction.getDialogUuid());
                 
             }
@@ -427,6 +486,7 @@ public class InteractionManagementSessionBean implements IInteractionManagementB
             userTransaction.commit();
 
         } catch (Exception e) {
+            e.printStackTrace();
             try {
                 userTransaction.rollback();
             } catch (Exception ex) {
