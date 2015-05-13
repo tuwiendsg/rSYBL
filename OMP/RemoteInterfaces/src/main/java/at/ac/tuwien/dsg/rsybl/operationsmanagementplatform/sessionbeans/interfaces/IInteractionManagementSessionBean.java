@@ -9,6 +9,7 @@ import at.ac.tuwien.dsg.rsybl.operationsmanagementplatform.entities.interfaces.I
 import at.ac.tuwien.dsg.rsybl.operationsmanagementplatform.entities.interfaces.IInteraction;
 import at.ac.tuwien.dsg.rsybl.operationsmanagementplatform.entities.interfaces.IMessage;
 import at.ac.tuwien.dsg.rsybl.operationsmanagementplatform.entities.interfaces.IRole;
+import java.util.Date;
 import java.util.List;
 import javax.ejb.Local;
 
@@ -24,4 +25,5 @@ public interface IInteractionManagementSessionBean {
     public List<IInteraction> findAllInteractionsForReceiver(String username);
     public List<IDialog> findAllDialogsForReceiver(String roleName);
     public List<IDialog> findAllDialogsForInitiator(String roleName);
+     public Date findEarliestDate() ;
 }

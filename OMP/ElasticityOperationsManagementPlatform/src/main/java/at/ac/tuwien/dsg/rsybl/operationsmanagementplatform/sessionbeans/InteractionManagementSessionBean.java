@@ -56,7 +56,7 @@ import javax.xml.bind.Unmarshaller;
  *
  * @author Georgiana
  */
-@Stateful
+@Stateless
 @LocalBean
 @Remote(IInteractionManagementBeanRemote.class)
 @TransactionManagement(TransactionManagementType.BEAN)
@@ -161,7 +161,15 @@ public class InteractionManagementSessionBean implements IInteractionManagementB
         return (List<IDialog>) query.getResultList();
 
     }
+        @Override
+    public Date findEarliestDate() {
+        Query query = em
+                .createNamedQuery("selectEarliestInteractionDate");
+      
 
+        return (Date) query.getSingleResult();
+
+    }
     public List<IDialog> findAllDialogsForRole(String roleName) {
         Query query = em
                 .createNamedQuery("selectDialogs");

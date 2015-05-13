@@ -37,7 +37,9 @@ import org.hibernate.annotations.Cascade;
     @NamedQuery(name = "selectInteractionsOnReceivers", 
 			query = "SELECT o from Interaction o " +
                                 "JOIN o.receiver AS r " +
-                                "WHERE r.roleName = :rolename")
+                                "WHERE r.roleName = :rolename"),
+    @NamedQuery(name = "selectEarliestInteractionDate", 
+			query = "SELECT min(o.initiationDate) from Interaction o " )
 })
 public class Interaction implements IInteraction,Serializable{
 

@@ -17,34 +17,60 @@ and open the template in the editor.
                 <title>Elasticity Operations Platform</title>
             </f:facet>
             <style type="text/css">
-                .ui-diagram-element {	
-                    width:15em; 
-                    height:5em;
-                    line-height:5em;
-                    text-align: center;
-                    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.8);
-                    border-radius: 7em;
-                    border: 1px solid #5CB8E6;
-                    background-color: #66CCFF;
-                    color: #000000;
-                }
-                .ui-diagram-current-user {
-                    background-color: #FFC2A3;
-                    color: #000000;
-                }
-
-                .ui-diagram-user {
-                    background-color: #85E085;
-                    color: #000000;
-                }
-                .ui-diagram-responsibility {
-                    background-color: #D1D1FF;
-                    color: #000000;
-                }
-
-                .ui-diagram-element:hover {
-                    background-color: #5CB8E6;
-                }
+               .ui-diagram-element {	
+                width:17em; 
+                height:3em; 	
+                line-height:2em;
+                text-align: center;
+                box-shadow: 0 5px 10px rgba(0, 0, 0, 0.8);
+                border-radius: 4px;
+                border: 1px solid #646D7E;
+                background-color: #D0F5A9;
+                color: #000000;
+            }
+             .ui-diagram-bigger {	
+                width:17em; 
+                height:5em; 	
+                line-height:2em;
+                text-align: center;
+                box-shadow: 0 5px 10px rgba(0, 0, 0, 0.8);
+                border-radius: 4px;
+                border: 1px solid #646D7E;
+                background-color: #D0F5A9;
+                color: #000000;
+            }
+            .ui-diagram-biggest {	
+                width:17em; 
+                height:9em; 	
+                line-height:2em;
+                text-align: center;
+                box-shadow: 0 5px 10px rgba(0, 0, 0, 0.8);
+                border-radius: 4px;
+                border: 1px solid #646D7E;
+                background-color: #D0F5A9;
+                color: #000000;
+            }
+            .ui-diagram-element:hover {
+                background-color: #9FF781;
+            }
+            
+            .start-node {
+                width:4em;
+                border-radius: 6px;
+                background-color: #000000 !important;
+            }
+              .dialog-name {
+                width:32em;
+                border-radius: 2px;
+                font-weight: bold;
+                background-color: #EFFBF2 !important;
+                color: #000000;
+            }          
+            .flow-label {
+                color: #464F60;
+                font-size: 18px;
+                font-weight: bold;
+            }
             </style>
         </h:head>
 
@@ -72,8 +98,7 @@ and open the template in the editor.
                                         <p:menuitem value="LogOut" actionListener="#{userManagedBean.logout()}"  icon="ui-icon-power" />
 
                                     </p:menuButton>
-
-                                    <p:clock />
+<p:clock />
 
                                 </center>
                             </h:form>
@@ -115,11 +140,11 @@ and open the template in the editor.
                                     <p:menuitem value="Error" action="#{informationManagedBean.activateRoleInteractions('Error')}" />
                                     <p:menuitem value="Warning" action="#{informationManagedBean.activateRoleInteractions('Warning')}" />
 
-                                </p:submenu>                                <p:menuitem value="Dialog" icon="ui-icon-document" action="loggedPageDialogs.xhtml?faces-redirect=true;" />
-                                <p:menuitem value="Services" icon="ui-icon-document" action="#{informationManagedBean.activateAssociatedServices()}"/>
-                                <p:menuitem value="Interaction Partners" icon="ui-icon-person"  />
-                                <p:menuitem value="My Responsibilities" icon="ui-icon-document" action="loggedPageUserResponsibilities.xhtml?faces-redirect=true;"/>
+                                </p:submenu>                                                                <p:menuitem value="Dialog" icon="ui-icon-document" action="loggedPageDialogs.xhtml?faces-redirect=true;" />
 
+                                <p:menuitem value="Services" icon="ui-icon-document" action="#{informationManagedBean.activateAssociatedServices()}"/>
+                                <p:menuitem value="Interaction Partners" icon="ui-icon-person" action="loggedPageAllUsers.xhtml?faces-redirect=true;" />
+                                <p:menuitem value="My Responsibilities" icon="ui-icon-document" action="loggedPageAllUserResponsibilities.xhtml?faces-redirect=true;"/>
                             </p:submenu>
 
 
@@ -130,14 +155,16 @@ and open the template in the editor.
                 </p:layoutUnit>
 
                 <p:layoutUnit position="center">
-
-
-                    <p:diagram value="#{userComponentsBean.diagram}" style="height:900px" styleClass="ui-widget-content" />
-
-
-
+                    <div>
+                    <p:diagram value="#{userComponentsBean.dialogsDiagram}" style="height:900px" styleClass="ui-widget-content" />
+                    </div>
+                    <div>
+                    <p:chart type="pie" model="#{userComponentsBean.donutModel2}" style="width:600px;height:600px;color: #000000;" />
+                    </div>
+                    <div>
+                        <p:chart type="bubble" model="#{userComponentsBean.bubbleModel2}" />
+                    </div>
                 </p:layoutUnit>
-
             </p:layout>
 
         </h:body>

@@ -171,9 +171,9 @@ public class CloudAMQPInteractions {
     public void initiateInteraction(String role, Serializable message) {
 
         try {
-            connection = factory.newConnection();
-            channel = connection.createChannel();
-            channel.exchangeDeclare(EXCHANGE_NAME, "topic");
+//            connection = factory.newConnection();
+//            channel = connection.createChannel();
+//            channel.exchangeDeclare(EXCHANGE_NAME, "topic");
             byte[] bytes;
             ByteArrayOutputStream baos = new ByteArrayOutputStream();
             ObjectOutputStream oos = new ObjectOutputStream(baos);

@@ -23,6 +23,7 @@ import java.awt.event.ActionListener;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -332,7 +333,9 @@ public class UserManagedBean implements Serializable,ActionListener{
     public void createNewInteraction(String cloudService, String interactionType, String initiator, String receiver, String action, String description){
         interactionManagementSessionBean.initiateInteraction(selectedInteraction,cloudService,  interactionType,  initiator,  receiver,  action,  description);
     }
-    
+    public Date findEarliestDate(){
+        return interactionManagementSessionBean.findEarliestDate();
+    }
 //  public void refreshSelectedInteraction(String interactionUUID){
 //     
 //      this.selectedInteraction=interactionUUID;

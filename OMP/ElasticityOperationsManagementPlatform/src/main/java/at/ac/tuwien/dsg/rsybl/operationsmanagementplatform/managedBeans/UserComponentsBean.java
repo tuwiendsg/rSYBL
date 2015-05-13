@@ -80,67 +80,71 @@ public class UserComponentsBean {
     private DefaultDiagramModel dialogsDiagram;
     private PanelGrid panelGridServices; //bound to the view
     private PieChartModel donutModel2;
-    
+
     @ManagedProperty("#{roles}")
     private RolesList rolesList;
 
     private TreeNode root;
     private TreeNode selectedNode;
     private Document selectedDocument;
-    
-        private BubbleChartModel bubbleModel2;
-private void createBubbleModels(){
 
-         
+    private BubbleChartModel bubbleModel2;
+
+    private void createBubbleModels() {
+
         bubbleModel2 = initBubbleModel();
-        bubbleModel2.setTitle("Date ");
+        bubbleModel2.setTitle("Interactions in time ");
         bubbleModel2.setShadow(false);
         bubbleModel2.setBubbleGradients(true);
         bubbleModel2.setBubbleAlpha(0.8);
         bubbleModel2.getAxis(AxisType.X).setTickAngle(-50);
         Axis yAxis = bubbleModel2.getAxis(AxisType.Y);
+        bubbleModel2.setAnimate(true);
         yAxis.setMin(0);
+        
         yAxis.setMax(500);
+        yAxis.setLabel("Roles");
         yAxis.setTickAngle(50);
     }
-     
-    private BubbleChartModel initBubbleModel(){
+
+    private BubbleChartModel initBubbleModel() {
         BubbleChartModel model = new BubbleChartModel();
         Date now = new Date();
-        TreeMap<Date,List<IInteraction>> interactions = new TreeMap<Date,List<IInteraction>>(); 
-        
-                for (IRole role : userManagedBean.getAllRoles()){
-                  List<IInteraction> myInteractions= userManagedBean.getAllInteractionsForUserAsReceiver(role.getRoleName());
-                  for (IInteraction iInteraction :myInteractions){
-                      if (!interactions.containsKey(iInteraction.getInitiationDate())){
-                          interactions.put(iInteraction.getInitiationDate(), new ArrayList<IInteraction>());
-                      }
-                      interactions.get(iInteraction.getInitiationDate()).add(iInteraction);
-                  }
-         }
-//        int diff= 0;
-        TreeMap<Date,List<IInteraction>> aggregatedInteractions = new TreeMap<Date,List<IInteraction>>();
-//        Date prevDate =null;
-         for (Date d:interactions.keySet()){
-             String roles ="";
-//             for (IInteraction inter:interactions.get(d)){
-//                 roles+=inter.getReceiver().getRoleName()+" ";
-//             }
-             System.err.println((int) ((now.getTime()-d.getTime())/1000));
-            model.add(new BubbleChartSeries(interactions.size()+" inter.", (int) ((now.getTime()-d.getTime())/(1000)),interactions.get(d).size()*20+10,interactions.get(d).size()*10));
-             
-         }
-//        model.add(new BubbleChartSeries("Acura", 70, 183,55));
-//        model.add(new BubbleChartSeries("Alfa Romeo", 45, 92, 36));
-//        model.add(new BubbleChartSeries("AM General", 24, 104, 40));
-//        model.add(new BubbleChartSeries("Bugatti", 50, 123, 60));
-//        model.add(new BubbleChartSeries("BMW", 15, 89, 25));
-//        model.add(new BubbleChartSeries("Audi", 40, 180, 80));
-//        model.add(new BubbleChartSeries("Aston Martin", 70, 70, 48));
-         
+        Date initialDate = userManagedBean.findEarliestDate();
+        int minutesSoFar = (int) ((now.getTime() - initialDate.getTime()) / (1000 * 60));
+        TreeMap<Integer, HashMap<String, Integer>> interactionsSoFar = new TreeMap<Integer, HashMap<String, Integer>>();
+
+        for (IRole role : userManagedBean.getAllRoles()) {
+            List<IInteraction> myInteractions = userManagedBean.getAllInteractionsForUserAsReceiver(role.getRoleName());
+            for (IInteraction iInteraction : myInteractions) {
+                int place = (int) ((now.getTime() - iInteraction.getInitiationDate().getTime()) / (1000 * 60*5));
+                if (interactionsSoFar.get(place) == null) {
+                    interactionsSoFar.put(place, new HashMap<String, Integer>());
+                }
+                if (interactionsSoFar.get(place).get(role.getRoleName()) == null) {
+                    interactionsSoFar.get(place).put(role.getRoleName(), 1);
+                } else {
+                    interactionsSoFar.get(place).put(role.getRoleName(), interactionsSoFar.get(place).get(role.getRoleName()) + 1);
+                }
+            }
+        }
+
+        for (Integer pos : interactionsSoFar.keySet()) {
+            int roleID = 0;
+            for (String role : interactionsSoFar.get(pos).keySet()){
+                if(interactionsSoFar.get(pos).get(role)>0){
+                    BubbleChartSeries bubble = new BubbleChartSeries(interactionsSoFar.get(pos).get(role) + " interactions-"+role, pos*10+5, roleID *80 + 30, interactionsSoFar.get(pos).get(role) * 10);
+                    System.err.println(interactionsSoFar.get(pos).get(role) + " inter.-"+role+" At "+ (pos*10+5)+"x "+(roleID*80+30)+"y");
+            model.add(bubble);
+            
+                }
+            roleID++;
+            }
+        }
+
         return model;
     }
-      
+
     public TreeNode getTreeNode(String serviceID) {
         CloudServiceXML cloudServiceXML = userManagedBean.getDescription(serviceID);
         if (cloudServiceXML != null) {
@@ -160,10 +164,10 @@ private void createBubbleModels(){
         }
         return null;
     }
-    
-private void createDonutModels() {
-         
-        donutModel2=initDonutModel();
+
+    private void createDonutModels() {
+
+        donutModel2 = initDonutModel();
         donutModel2.setTitle("Role Interactions");
         donutModel2.setLegendPosition("e");
         donutModel2.setSliceMargin(5);
@@ -171,26 +175,24 @@ private void createDonutModels() {
         donutModel2.setDataFormat("value");
         donutModel2.setShadow(true);
     }
- 
+
     private PieChartModel initDonutModel() {
         PieChartModel model = new PieChartModel();
-         
+
         Map<String, Number> circle2 = new LinkedHashMap<String, Number>();
         Map<String, Number> circle1 = new LinkedHashMap<String, Number>();
-        for (IRole role : userManagedBean.getAllRoles()){
-            if (!role.getRoleName().equalsIgnoreCase("Elasticity Controller")){
+        for (IRole role : userManagedBean.getAllRoles()) {
+            if (!role.getRoleName().equalsIgnoreCase("Elasticity Controller")) {
                 circle1.put(role.getRoleName(), userManagedBean.getAllDialogsForUserAsReceiver(role.getRoleName()).size());
                 circle2.put(role.getRoleName(), userManagedBean.getAllInteractionsForUserAsReceiver(role.getRoleName()).size());
-                
+
             }
         }
-        model.setData(circle2);         
-      
-      
-       
-         
+        model.setData(circle2);
+
         return model;
     }
+
     public void initTable() {
         createDocuments();
     }
@@ -269,8 +271,8 @@ private void createDonutModels() {
                 FlowChartConnector connector = new FlowChartConnector();
                 connector.setPaintStyle("{strokeStyle:'#C7B097',lineWidth:3}");
                 dialogsDiagram.setDefaultConnector(connector);
-                EndPointAnchor[] anchors_BOTTOM = {EndPointAnchor.TOP_RIGHT, EndPointAnchor.BOTTOM_RIGHT, EndPointAnchor.TOP_LEFT,EndPointAnchor.BOTTOM_LEFT , EndPointAnchor.LEFT,  EndPointAnchor.CONTINUOUS, EndPointAnchor.ASSIGN};
-                EndPointAnchor[] anchors_TOP = {EndPointAnchor.TOP_LEFT, EndPointAnchor.BOTTOM_LEFT,EndPointAnchor.TOP_RIGHT, EndPointAnchor.BOTTOM_RIGHT, EndPointAnchor.RIGHT,  EndPointAnchor.CONTINUOUS, EndPointAnchor.ASSIGN};
+                EndPointAnchor[] anchors_BOTTOM = {EndPointAnchor.TOP_RIGHT, EndPointAnchor.BOTTOM_RIGHT, EndPointAnchor.TOP_LEFT, EndPointAnchor.BOTTOM_LEFT, EndPointAnchor.LEFT, EndPointAnchor.CONTINUOUS, EndPointAnchor.ASSIGN};
+                EndPointAnchor[] anchors_TOP = {EndPointAnchor.TOP_LEFT, EndPointAnchor.BOTTOM_LEFT, EndPointAnchor.TOP_RIGHT, EndPointAnchor.BOTTOM_RIGHT, EndPointAnchor.RIGHT, EndPointAnchor.CONTINUOUS, EndPointAnchor.ASSIGN};
                 dialogsDiagram.setDefaultConnector(connector);
                 int size = 80;
                 int dialogIndex = 0;
@@ -333,26 +335,26 @@ private void createDonutModels() {
                                 interMessage.add("Date=" + iInteraction.getInitiationDate());
                             }
                             if (iInteraction.getMessage().getCause() != null && !iInteraction.getMessage().getCause().equalsIgnoreCase("")) {
-                                interMessage.add(iInteraction.getType()+" in date "+iInteraction.getInitiationDate()+". Cause=" + iInteraction.getMessage().getCause());
-                            }else{
-                                interMessage.add(iInteraction.getType()+" in date "+iInteraction.getInitiationDate());
+                                interMessage.add(iInteraction.getType() + " in date " + iInteraction.getInitiationDate() + ". Cause=" + iInteraction.getMessage().getCause());
+                            } else {
+                                interMessage.add(iInteraction.getType() + " in date " + iInteraction.getInitiationDate());
                             }
                             if (iInteraction.getMessage().getActionEnforced() != null && !iInteraction.getMessage().getActionEnforced().equalsIgnoreCase("")) {
-                                
-                            if (iInteraction.getMessage().getDescription() != null && !iInteraction.getMessage().getDescription().equalsIgnoreCase("")) {
-                                                                interMessage.add("Action=" + iInteraction.getMessage().getActionEnforced());
+
+                                if (iInteraction.getMessage().getDescription() != null && !iInteraction.getMessage().getDescription().equalsIgnoreCase("")) {
+                                    interMessage.add("Action=" + iInteraction.getMessage().getActionEnforced());
 
 //                                interMessage.add("Action=" + iInteraction.getMessage().getActionEnforced()+" Description=" + iInteraction.getMessage().getDescription());
-                            }else{
-                                interMessage.add("Action=" + iInteraction.getMessage().getActionEnforced());
+                                } else {
+                                    interMessage.add("Action=" + iInteraction.getMessage().getActionEnforced());
+                                }
+                            } else {
+                                if (iInteraction.getMessage().getDescription() != null && !iInteraction.getMessage().getDescription().equalsIgnoreCase("")) {
+                                    interMessage.add("Description=" + iInteraction.getMessage().getDescription());
+
+                                }
                             }
-                            }else{
-                                  if (iInteraction.getMessage().getDescription() != null && !iInteraction.getMessage().getDescription().equalsIgnoreCase("")) {
-                                interMessage.add("Description=" + iInteraction.getMessage().getDescription());
-                                        
-                            }
-                            }
-                            
+
                             dialogsDiagram.connect(createConnection(elementInitiator.getEndPoints().get(elementInitiator.getEndPoints().size() - 1), elementReceiver.getEndPoints().get(elementReceiver.getEndPoints().size() - 1), interMessage));
                             index++;
                         }

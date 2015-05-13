@@ -47,7 +47,7 @@ public class CloudAMPQTest {
     public static void tearDownClass() {
     }
 
-    @Test
+//    @Test
     public void initQueueAndCreateMessage() {
         initiateInteractions = new InitiateInteractions(communicationManagement);
 

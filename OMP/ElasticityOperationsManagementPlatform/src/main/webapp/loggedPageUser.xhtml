@@ -469,43 +469,46 @@ and open the template in the editor.
                                     <h:outputText style="width:30%" value="Dialog UUID:" />
                                     <h:outputText style="width:70%" value="#{userManagedBean.selectedInteraction}" />
                                     <h:outputText style="width:30%" value="Interaction Type" />
-                                    <p:selectOneMenu id="selectedInteraction" value="#{userComponentsBean.selectedInteractionType}" style="width:220px">
-                                        <p:ajax listener="#{userComponentsBean.onSelectedInteractionChange}"  />
+                                    <p:selectOneMenu id="selectedInteraction" value="#{dialogBean.selectedInteractionType}" style="width:220px">
+                                        <p:ajax listener="#{dialogBean.onSelectedInteractionChange}"  />
                                         <f:selectItem itemLabel="Select Interaction" itemValue="" noSelectionOption="true" />
-                                        <f:selectItems value="#{userComponentsBean.interactionTypes}" />
+                                        <f:selectItems value="#{dialogBean.interactionTypes}" />
                                     </p:selectOneMenu>
 
                                     <h:outputText style="width:30%" value="Sending message as: " />
-                                    <p:selectOneMenu id="initiatorRole" value="#{userComponentsBean.initiatorRole}" style="width:220px">
-                                        <p:ajax listener="#{userComponentsBean.onSelectedInteractionChange}"  />
+                                    <p:selectOneMenu id="initiatorRole" value="#{dialogBean.initiatorRole}" style="width:220px">
+                                        <p:ajax listener="#{dialogBean.onSelectedInteractionChange}"  />
                                         <f:selectItem itemLabel="My roles" itemValue="" noSelectionOption="true" />
-                                        <f:selectItems value="#{userComponentsBean.myRoles}" />
+                                        <f:selectItems value="#{dialogBean.myRoles}" />
                                     </p:selectOneMenu>
                                     <h:outputText style="width:30%" value="To role: " />
-                                    <p:selectOneMenu id="receiverRole" value="#{userComponentsBean.receiverRole}" style="width:220px">
-                                        <p:ajax listener="#{userComponentsBean.onSelectedInteractionChange}"  />
+                                    <p:selectOneMenu id="receiverRole" value="#{dialogBean.receiverRole}" style="width:220px">
+                                        <p:ajax listener="#{dialogBean.onSelectedInteractionChange}"  />
                                         <f:selectItem itemLabel="Receiver" itemValue="" noSelectionOption="true" />
-                                        <f:selectItems value="#{userComponentsBean.receiverRoles}" />
+                                        <f:selectItems value="#{dialogBean.receiverRoles}" />
                                     </p:selectOneMenu>
                                     <h:outputText style="width:30%" value="Cloud service " />
-                                    <p:selectOneMenu id="selectedCloudService" value="#{userComponentsBean.selectedCloudService}" style="width:220px">
-                                        <p:ajax listener="#{userComponentsBean.onSelectedInteractionChange}"  />
+                                    <p:selectOneMenu id="selectedCloudService" value="#{dialogBean.selectedCloudService}" style="width:220px">
+                                        <p:ajax listener="#{dialogBean.onSelectedInteractionChange}"  />
                                         <f:selectItem itemLabel="Receiver" itemValue="" noSelectionOption="true" />
-                                        <f:selectItems value="#{userComponentsBean.cloudServices}" />
+                                        <f:selectItems value="#{dialogBean.cloudServices}" />
                                     </p:selectOneMenu>
                                     
-                                    <h:outputText style="width:30%" value="Message Description " />
+                                    <h:outputText style="width:30%" > <b>Message Description</b> </h:outputText>
                                     <h:outputText/>
                                     
                                     <h:outputText style="width:30%" value="Action"/>
-                                    <p:selectOneMenu id="selectedActoin" value="#{userComponentsBean.selectedAction}" style="width:220px">
-                                        <p:ajax listener="#{userComponentsBean.onSelectedAction}" update="respondPanel" />
-                                        <f:selectItem itemLabel="Receiver" itemValue="" noSelectionOption="true" />
-                                        <f:selectItems value="#{userComponentsBean.availableActions}" />
+                                    <p:selectOneMenu id="selectedActoin"  value="#{dialogBean.selectedAction}"  style="width:220px">
+                                        <p:ajax listener="#{dialogBean.onSelectedAction}" update="respondPanel" />
+                                        <f:selectItem itemLabel="Receiver"  itemValue="" noSelectionOption="true" />
+                                        <f:selectItems value="#{dialogBean.availableActions}" />
                                     </p:selectOneMenu>
                                                                     
-                                    <h:outputText style="width:30%" value="#{userComponentsBean.parameterName}"/>
-                                    <h:inputText value="#{userComponentsBean.parameterValue}"/>
+                                    <h:outputText style="width:30%" value="#{dialogBean.parameterName}"/>
+                                    <p:inputTextarea  rows="6" cols="33" value="#{dialogBean.parameterValue}"/>
+                                    
+                                    
+                                    <p:commandButton id="submit" value="Submit" action="#{dialogBean.createNewInteraction()}" icon="ui-icon-check" oncomplete="PF('respondW').hide()" />
                                 </p:panelGrid>
                             </p:panel>
                         </p:dialog>

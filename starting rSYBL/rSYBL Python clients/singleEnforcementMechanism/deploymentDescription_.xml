@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<DeploymentDescription AccessIP="localhost" CloudServiceID="IoTDaaSControl">
+    <DeploymentUnit defaultImage="" defaultFlavor="" serviceUnitID="DataControllerUnit">
+        <AssociatedVM IP="10.99.0.18" UUID="30d41ab2-8f4e-45dd-af6a-3a9bde85fbf7"/>
+    </DeploymentUnit>
+    <DeploymentUnit defaultImage="" defaultFlavor="" serviceUnitID="DataNodeUnit">
+        <AssociatedVM IP="10.99.0.14" UUID="6d3ccd4b-4807-42fd-8c63-878394315f2b"/>
+    </DeploymentUnit>
+    <DeploymentUnit defaultImage="" defaultFlavor="" serviceUnitID="QueueUnit">
+        <AssociatedVM IP="10.99.0.40" UUID="18318fe7-59f1-4ded-8683-af8abcc37267"/>
+    </DeploymentUnit>
+    <DeploymentUnit defaultImage="" defaultFlavor="" serviceUnitID="LocalProcessingUnit">
+        <AssociatedVM IP="10.99.0.39" UUID="d6effc5d-1c42-4f31-a02c-3a587d75d22d"/>
+    </DeploymentUnit>
+    <DeploymentUnit defaultImage="" defaultFlavor="" serviceUnitID="LoadBalancerUnit">
+        <AssociatedVM IP="10.99.0.42" UUID="60e81421-1c04-4772-a9a5-ce01737a9d6a"/>
+    </DeploymentUnit>
+    <DeploymentUnit defaultImage="" defaultFlavor="" serviceUnitID="EventProcessingUnit">
+        <AssociatedVM IP="10.99.0.43" UUID="051e4b7a-eb5d-4627-88ad-cfb721e7c1a8"/>
+    </DeploymentUnit>
+    <DeploymentUnit defaultImage="" defaultFlavor="" serviceUnitID="MOMUnit">
+        <AssociatedVM IP="10.99.0.44" UUID="daf8821f-3fad-4ade-ae00-83d292d5620f"/>
+    </DeploymentUnit>
+</DeploymentDescription>

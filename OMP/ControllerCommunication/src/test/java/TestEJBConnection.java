@@ -33,7 +33,7 @@ public class TestEJBConnection {
     public void setUp() {
     }
 
-    @Test
+//    @Test
     public void test() {
         try {
             AccessOrganizationInfo accessOrganizationInfo = new AccessOrganizationInfo();
