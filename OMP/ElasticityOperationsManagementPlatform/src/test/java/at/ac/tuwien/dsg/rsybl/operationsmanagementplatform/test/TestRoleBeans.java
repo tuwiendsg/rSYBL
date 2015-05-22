@@ -55,7 +55,7 @@ public class TestRoleBeans {
     public TestRoleBeans() {
     }
 
-    @BeforeClass
+//    @BeforeClass
     public static void startContainer() throws Exception {
 
         System.setProperty("openejb.validation.output.level", "VERBOSE");
@@ -80,7 +80,7 @@ public class TestRoleBeans {
         ctx = ejbContainer.getContext();
     }
 
-    @Before
+//    @Before
     public void init() throws Exception {
         ctx.bind("inject", this);
 
@@ -88,7 +88,7 @@ public class TestRoleBeans {
 //        setupInitialDataSessionBean = (ISetupInitialDataSessionBean) ctx.lookup("java:global/OperationsManagementPlatform/SetupInitialDataSessionBean!at.ac.tuwien.dsg.rsybl.operationsmanagementplatform.sessionbeans.interfaces.ISetupInitialDataSessionBean");
     }
 
-    @AfterClass
+//    @AfterClass
     public static void closeContainer() {
         if (ctx != null) {
             try {
@@ -102,7 +102,7 @@ public class TestRoleBeans {
         }
     }
 
-    @Test
+//    @Test
     public void testDefaultData() {
         try {
 //            setupInitialDataSessionBean.populateWithITILRoles();
@@ -117,7 +117,7 @@ public class TestRoleBeans {
         }
     }
 
-    @After
+//    @After
     public void release() {
         try {
 
@@ -133,7 +133,7 @@ public class TestRoleBeans {
 
     }
 
-    @Test
+//    @Test
     public void testRoleManagementBean() {
         try {
 
@@ -157,7 +157,7 @@ public class TestRoleBeans {
 
     }
 
-    @AfterClass
+//    @AfterClass
     public static void tearDown() {
         ejbContainer.close();
 

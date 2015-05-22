@@ -92,7 +92,7 @@ public class TestUserManagement {
 
     }
 
-    @Test
+//    @Test
     public void testUsername() {
         setupInitialDataSessionBean.populateWithITILRoles();
 
@@ -106,7 +106,7 @@ public class TestUserManagement {
         assertNotNull(userManagementSessionBean.searchForUserByUsername("gigi"));
     }
 
-    @Test
+//    @Test
     public void checkIfUsersExist() {
         setupInitialDataSessionBean.populateWithITILRoles();
         setupInitialDataSessionBean.initializeUsers();

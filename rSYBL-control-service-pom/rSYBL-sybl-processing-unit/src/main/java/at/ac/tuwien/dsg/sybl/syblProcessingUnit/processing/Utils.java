@@ -293,12 +293,24 @@ public void processNotifications(String notifications){
 
 		r.setText(c.substring(c.indexOf(":") + 1));
                 
-		if (r.getText().contains("CASE")) {
-                    String role =r.getText().split("NOTIFICATION")[0];
-                    
+		if (r.getText().contains("WHEN")) {
+                     String role = "";
+        int in = 0;
+        for (String sx : st) {
+            if (sx.equalsIgnoreCase("notification")) {
+                int ii = in + 1;
+                while (!st[ii].equalsIgnoreCase("when") && ii < st.length) {
+                    role += st[ii];
+                    ii++;
+                }
+
+            }
+            in++;
+        }
+
 		String s[] = r.getText().split(":");
 		//SYBLDirectivesEnforcementLogger.logger.info(r.getText());
-		String condition = s[0].split("CASE ")[1];
+		String condition = s[0].split("WHEN ")[1];
 		try {
 			try {
 				if ((condition.contains("AND") && evaluateCompositeCondition(condition))||(!condition.contains("AND") &&evaluateCondition(condition)) ){
@@ -316,7 +328,7 @@ public void processNotifications(String notifications){
 			e.printStackTrace();
 		}
 	}else{
-		String s[] = r.getText().split("STRATEGY ");
+		String s[] = r.getText().split("NOTIFY ");
 		String[] actions = s[0].split(";");
 		
 		for (String action:actions){

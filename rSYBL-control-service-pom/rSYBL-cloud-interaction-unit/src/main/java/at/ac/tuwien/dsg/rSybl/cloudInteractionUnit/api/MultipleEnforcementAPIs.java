@@ -23,8 +23,10 @@ public class MultipleEnforcementAPIs implements EnforcementAPIInterface {
     private boolean enforcingAction = false;
     HashMap<String, EnforcementAPI> enforcementAPIs = new HashMap<String, EnforcementAPI>();
     MonitoringAPIInterface monitoringAPIInterface;
-    private EventNotification eventNotification = EventNotification.getEventNotification();
-
+    private EventNotification eventNotification ;
+    public MultipleEnforcementAPIs(){
+        eventNotification = EventNotification.getEventNotification();
+    }
     // todo populate hashmap & use this in planning & sybl
     @Override
     public Node getControlledService() {

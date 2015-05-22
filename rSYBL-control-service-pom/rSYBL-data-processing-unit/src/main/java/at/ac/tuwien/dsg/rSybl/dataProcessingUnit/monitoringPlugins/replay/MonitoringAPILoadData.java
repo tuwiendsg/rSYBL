@@ -149,7 +149,16 @@ public class MonitoringAPILoadData implements MonitoringInterface {
             boolean ok= true;
             try {
                 String line = readers.get(part).readLine();
+                if (line!=null){
                 string = line.split(",");
+                }else{
+                     if (readers.get(part) != null) {
+                        readers.get(part).close();
+                    }
+                    readers.put(part, new BufferedReader(new InputStreamReader(new FileInputStream("./load/" + part + ".csv"), Charset.forName("UTF-8"))));
+                    line = readers.get(part).readLine();
+                    string = line.split(",");
+                }
             } catch (IOException ex) {
                 try {
                     if (readers.get(part) != null) {

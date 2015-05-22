@@ -631,6 +631,9 @@ public class SYBLSpecification  implements Serializable{
     protected List<Monitoring> monitoring = new ArrayList<Monitoring>();
     @XmlElement(name = "Priority")
     protected List<Priority> priorities;
+    @XmlElement(name = "Notification")
+    private List<Notification> notifications = new ArrayList<Notification>();
+    
     @XmlAttribute(name = "type")
     protected String type;
     @XmlAttribute(name="id")
@@ -774,5 +777,22 @@ public class SYBLSpecification  implements Serializable{
 	public String toString(){
 		return "Monitoring" + monitoring.toString()+" Strategies"+strategies.toString()+" Constraint"+constraints.toString();
 	}
+
+    /**
+     * @return the notifications
+     */
+    public List<Notification> getNotifications() {
+        return notifications;
+    }
+
+    /**
+     * @param notifications the notifications to set
+     */
+    public void setNotifications(List<Notification> notifications) {
+        this.notifications = notifications;
+    }
+    public void addNotification(Notification notification){
+        notifications.add(notification);
+    }
 
 }

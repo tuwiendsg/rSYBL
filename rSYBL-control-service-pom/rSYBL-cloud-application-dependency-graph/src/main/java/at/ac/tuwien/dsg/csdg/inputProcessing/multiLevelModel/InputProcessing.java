@@ -741,6 +741,7 @@ public class InputProcessing {
         syblannotation.setConstraints(syblAnnotationXML.getConstraints());
         syblannotation.setStrategies(syblAnnotationXML.getStrategies());
         syblannotation.setMonitoring(syblAnnotationXML.getMonitoring());
+        syblannotation.setNotifications(syblAnnotationXML.getNotifications());
         syblannotation.setEntityID(entityID);
         syblannotation.setAnnotationType(annotationType);
         return syblannotation;

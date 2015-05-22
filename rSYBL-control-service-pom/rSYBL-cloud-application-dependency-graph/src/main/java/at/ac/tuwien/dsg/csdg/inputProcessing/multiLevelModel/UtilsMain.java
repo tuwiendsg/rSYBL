@@ -74,6 +74,7 @@ public class UtilsMain {
              JAXBContext jc = JAXBContext.newInstance(CloudServiceXML.class );
        Unmarshaller u = jc.createUnmarshaller();
        CloudServiceXML o = (CloudServiceXML) u.unmarshal( new File( "newServiceDescription.xml" ) );
+       
        System.out.println(o.getId());
             }catch(Exception e){
                 e.printStackTrace();

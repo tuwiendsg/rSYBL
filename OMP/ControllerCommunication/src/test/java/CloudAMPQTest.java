@@ -37,13 +37,13 @@ public class CloudAMPQTest {
     public CloudAMPQTest() {
     }
 
-    @BeforeClass
+//    @BeforeClass
     public static void setUpClass() {
         communicationManagement = new CommunicationManagement();
 //            initiateInteractions = new InitiateInteractions();
     }
 
-    @AfterClass
+//    @AfterClass
     public static void tearDownClass() {
     }
 

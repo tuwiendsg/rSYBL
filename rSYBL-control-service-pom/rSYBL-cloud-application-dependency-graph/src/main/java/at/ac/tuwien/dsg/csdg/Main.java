@@ -272,13 +272,13 @@ public class Main {
 //            Logger.getLogger(Main.class.getName()).log(Level.SEVERE, null, ex);
 //        }
 
-        CloudServiceXML description = new CloudServiceXML();
-		try {
-			description.generateXSD("cloudService.xsd");
-		} catch (Exception e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
+//        CloudServiceXML description = new CloudServiceXML();
+//		try {
+//			description.generateXSD("cloudService.xsd");
+//		} catch (Exception e) {
+//			// TODO Auto-generated catch block
+//			e.printStackTrace();
+//		}
 
 //		SYBLElasticityRequirementsDescription description = new SYBLElasticityRequirementsDescription();
 //		try {

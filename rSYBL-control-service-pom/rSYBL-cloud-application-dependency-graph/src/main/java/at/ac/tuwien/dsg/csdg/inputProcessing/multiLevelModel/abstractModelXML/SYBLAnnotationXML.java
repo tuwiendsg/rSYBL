@@ -42,7 +42,7 @@ public class SYBLAnnotationXML {
 	   	private String priorities ="";
 	   	@XmlAttribute(name="Strategies")
 		private String strategies ="";
-@XmlAttribute(name="Notifications")
+                @XmlAttribute(name="Notifications")
 		private String notifications ="";
 
 		public String getStrategies() {

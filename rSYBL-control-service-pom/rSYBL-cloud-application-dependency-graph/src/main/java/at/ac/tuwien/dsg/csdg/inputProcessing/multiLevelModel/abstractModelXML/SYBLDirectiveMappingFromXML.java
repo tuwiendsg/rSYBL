@@ -1,8 +1,7 @@
 /**
  * Copyright 2013 Technische Universitat Wien (TUW), Distributed SystemsGroup
- * E184.  *
- * This work was partially supported by the European Commission in terms of the
- * CELAR FP7 project (FP7-ICT-2011-8 #317790).
+ * E184. * This work was partially supported by the European Commission in terms
+ * of the CELAR FP7 project (FP7-ICT-2011-8 #317790).
  *
  * Licensed under the Apache License, Version 2.0 (the "License"); you may not
  * use this file except in compliance with the License. You may obtain a copy of
@@ -38,6 +37,7 @@ import at.ac.tuwien.dsg.csdg.elasticityInformation.elasticityRequirements.Strate
 import at.ac.tuwien.dsg.csdg.elasticityInformation.elasticityRequirements.ToEnforce;
 import at.ac.tuwien.dsg.csdg.elasticityInformation.elasticityRequirements.UnaryRestriction;
 import at.ac.tuwien.dsg.csdg.elasticityInformation.elasticityRequirements.LeftHandSide;
+import at.ac.tuwien.dsg.csdg.elasticityInformation.elasticityRequirements.Notification;
 import at.ac.tuwien.dsg.csdg.elasticityInformation.elasticityRequirements.RightHandSide;
 import at.ac.tuwien.dsg.csdg.elasticityInformation.elasticityRequirements.SYBLAnnotation.AnnotationType;
 import at.ac.tuwien.dsg.csdg.elasticityInformation.elasticityRequirements.UnaryRestrictionsConjunction;
@@ -84,6 +84,13 @@ public class SYBLDirectiveMappingFromXML {
         for (Strategy strategy : str) {
             strategies += mapFromXMLStrategyToSYBLAnnotation(strategy);
         }
+        
+        String notifications = "";
+        List<Notification> not = syblSpecification.getNotifications();
+        for (Notification notification : not) {
+            notifications += mapFromXMLNotificationToSYBLAnnotation(notification);
+        }
+        
 
         String priorities = "";
         List<Priority> pr = syblSpecification.getPriority();
@@ -95,6 +102,7 @@ public class SYBLDirectiveMappingFromXML {
         syblAnnotation.setMonitoring(monitoring);
         syblAnnotation.setStrategies(strategies);
         syblAnnotation.setPriorities(priorities);
+        syblAnnotation.setNotifications(notifications);
         return syblAnnotation;
     }
 
@@ -189,7 +197,7 @@ public class SYBLDirectiveMappingFromXML {
         String constraints = constraint.getId() + ":CONSTRAINT ";
         constraints += conditionToString(constraint.getToEnforce());
 
-	//TODO:Add UnaryRestriction
+        //TODO:Add UnaryRestriction
         if (constraint.getCondition() != null) {
             constraints += " WHEN " + conditionToString(constraint.getCondition());
 
@@ -229,6 +237,30 @@ public class SYBLDirectiveMappingFromXML {
                 strategies += strategy.getToEnforce().getActionName() + ";";
             }
             return strategies;
+        }
+    }
+
+    public static String mapFromXMLNotificationToSYBLAnnotation(Notification notification) {
+        if (notification.getCondition() != null) {
+            String notifications = notification.getId() + ":NOTIFY " + notification.getRole() + " CASE ";
+            if (notification.getCondition() != null) {
+
+                if (notification.getCondition().getBinaryRestriction().size() > 0 || notification.getCondition().getUnaryRestrictions().size() > 0) {
+                    notifications += conditionToString(notification.getCondition());
+                }
+
+                notifications += " : ";
+            }
+
+            if (notification.getMessage() != null) {
+                notifications += notification.getMessage() + ";";
+            }
+
+            DependencyGraphLogger.logger.info(notifications);
+
+            return notifications;
+        } else {
+            return null;
         }
     }
 
@@ -317,6 +349,12 @@ public class SYBLDirectiveMappingFromXML {
             String[] strategies = syblAnnotation.getStrategies().split(";");
             for (String strategy : strategies) {
                 syblSpecification.addStrategy(mapFromSYBLAnnotationToXMLStrategy(strategy));
+            }
+        }
+        if (syblAnnotation.getNotifications() != "") {
+            String[] notifications = syblAnnotation.getNotifications().split(";");
+            for (String notification : notifications) {
+                syblSpecification.addNotification(mapFromSYBLAnnotationToXMLNotification(notification));
             }
         }
         /*
@@ -615,6 +653,284 @@ public class SYBLDirectiveMappingFromXML {
         }
 
         return c;
+    }
+
+    public static Notification mapFromSYBLAnnotationToXMLNotification(String notification) {
+        notification = notification.replaceAll("  ", " ");
+        notification = cleanRequirement(notification);
+        String[] st = notification.split("[ : ]");
+        String[] si = new String[st.length];
+        int i = 0;
+        for (String mys : st) {
+            if (!mys.equalsIgnoreCase("")) {
+                si[i] = mys;
+                i++;
+            }
+        }
+        String[] s = new String[i];
+        System.arraycopy(si, 0, s, 0, i);
+        Notification c = new Notification();
+        String message = "";
+
+        if (!s[s.length - 1].contains("(")) {
+            message = s[s.length - 1];
+        } else {
+            String[] a = s[s.length - 1].split("[ ( ) ]");
+            //System.err.println("a[0]="+a[0]);
+            message = s[s.length - 1];
+//            toEnforce.setParameter(a[1]);
+        }
+        c.setMessage(message);
+        c.setId(st[0]);
+        String role = "";
+        int in = 0;
+        for (String sx : st) {
+            if (sx.equalsIgnoreCase("notification")) {
+                int ii = in + 1;
+                while (!st[ii].equalsIgnoreCase("when") && ii < st.length) {
+                    role += st[ii];
+                    ii++;
+                }
+
+            }
+            in++;
+        }
+        c.setRole(role);
+        if (notification.toLowerCase().contains("when")) {
+            Condition cond = new Condition();
+
+            if (s.length > 5) {
+
+                if (notification.contains("AND")) {
+                    if (s.length == 8) {
+                        UnaryRestriction unaryRestriction = new UnaryRestriction();
+                        ReferenceTo referenceTo = new ReferenceTo();
+                        referenceTo.setValue(s[3]);
+                        unaryRestriction.setReferenceTo(referenceTo);
+                        UnaryRestrictionsConjunction unaryRestrictions = new UnaryRestrictionsConjunction();
+                        unaryRestrictions.add(unaryRestriction);
+                        cond.addUnaryRestrictionConjunction(unaryRestrictions);
+                        unaryRestriction = new UnaryRestriction();
+                        referenceTo = new ReferenceTo();
+                        referenceTo.setValue(s[6]);
+                        unaryRestriction.setReferenceTo(referenceTo);
+                        unaryRestrictions = new UnaryRestrictionsConjunction();
+                        unaryRestrictions.add(unaryRestriction);
+                        cond.addUnaryRestrictionConjunction(unaryRestrictions);
+                    } else {
+                        BinaryRestriction binaryRestriction = new BinaryRestriction();
+                        LeftHandSide leftHandSide2 = new LeftHandSide();
+                        RightHandSide rightHandSide2 = new RightHandSide();
+                        int index = 2;
+                        if (s[index + 1].contains("fulfilled") || s[index + 1].contains("violated") || s[index + 3].contains("fulfilled") || s[index + 3].contains("violated")) {
+                            String check = "";
+                            if (s[index + 1].contains("fulfilled") || s[index + 1].contains("violated")) {
+                                check = s[index + 1];
+                            } else {
+                                check = s[index + 3];
+                            }
+                            UnaryRestriction unaryRestriction = new UnaryRestriction();
+                            ReferenceTo func = new ReferenceTo();
+                            if (check.contains("fulfilled")) {
+                                func.setFunction("fulfilled");
+                            } else {
+                                func.setFunction("violated");
+                            }
+                            String[] a = check.split("[ ( ) ]");
+                            //System.err.println("a[0]="+a[0]);
+                            func.setName(a[1]);
+
+                            unaryRestriction.setReferenceTo(func);
+                            UnaryRestrictionsConjunction unaryRestrictions = new UnaryRestrictionsConjunction();
+                            unaryRestrictions.add(unaryRestriction);
+                            cond.addUnaryRestrictionConjunction(unaryRestrictions);
+                        } else {
+                            i = 0;
+                            if ((s[index + 1].charAt(0) >= 'a' && s[index + 1].charAt(0) <= 'z') || (s[index + 1].charAt(0) >= 'A' && s[index + 1].charAt(0) <= 'Z')) {
+                                leftHandSide2.setMetric(s[index + 1]);
+                            } else {
+                                leftHandSide2.setNumber(s[index + 1]);
+                            }
+                            if ((s[index + 3].charAt(0) >= 'a' && s[index + 3].charAt(0) <= 'z') || (s[index + 3].charAt(0) >= 'A' && s[index + 3].charAt(0) <= 'Z')) {
+                                rightHandSide2.setMetric(s[index + 3]);
+                            } else {
+                                rightHandSide2.setNumber(s[index + 3]);
+                            }
+                            switch (s[index + 2]) {
+                                case "<":
+                                    binaryRestriction.setType("lessThan");
+                                    break;
+                                case ">":
+                                    binaryRestriction.setType("greaterThan");
+                                    break;
+                                case "<=":
+                                    binaryRestriction.setType("lessThanOrEqual");
+                                    break;
+                                case ">=":
+                                    binaryRestriction.setType("greaterThanOrEqual");
+                                    break;
+                                case "&lt;":
+                                    binaryRestriction.setType("lessThan");
+                                    break;
+                                case "&gt;":
+                                    binaryRestriction.setType("greaterThan");
+                                    break;
+                                default:
+                                    binaryRestriction.setType("lessThan");
+                                    break;
+                            }
+                            binaryRestriction.setLeftHandSide(leftHandSide2);
+                            binaryRestriction.setRightHandSide(rightHandSide2);
+                        }
+                        BinaryRestrictionsConjunction binaryRestrictions = new BinaryRestrictionsConjunction();
+                        if (binaryRestriction != null) {
+                            binaryRestrictions.add(binaryRestriction);
+                        }
+
+                        index = 0;
+
+                        i = 0;
+                        for (String x : s) {
+
+                            if (x.equalsIgnoreCase("and")) {
+                                index = i;
+                            }
+                            i++;
+                        }
+                        binaryRestriction = new BinaryRestriction();
+                        leftHandSide2 = new LeftHandSide();
+                        rightHandSide2 = new RightHandSide();
+
+                        if ((s[index + 1].charAt(0) >= 'a' && s[index + 1].charAt(0) <= 'z') || (s[index + 1].charAt(0) >= 'A' && s[index + 1].charAt(0) <= 'Z')) {
+                            leftHandSide2.setMetric(s[index + 1]);
+                        } else {
+                            leftHandSide2.setNumber(s[3]);
+                        }
+                        if ((s[index + 3].charAt(0) >= 'a' && s[index + 3].charAt(0) <= 'z') || (s[index + 3].charAt(0) >= 'A' && s[index + 3].charAt(0) <= 'Z')) {
+                            rightHandSide2.setMetric(s[index + 3]);
+                        } else {
+                            rightHandSide2.setNumber(s[index + 3]);
+                        }
+                        switch (s[index + 2]) {
+                            case "<":
+                                binaryRestriction.setType("lessThan");
+                                break;
+                            case ">":
+                                binaryRestriction.setType("greaterThan");
+                                break;
+                            case "<=":
+                                binaryRestriction.setType("lessThanOrEqual");
+                                break;
+                            case ">=":
+                                binaryRestriction.setType("greaterThanOrEqual");
+                                break;
+                            case "&gt;":
+                                binaryRestriction.setType("greaterThan");
+                                break;
+
+                            case "&lt;":
+                                binaryRestriction.setType("lessThan");
+                                break;
+                            default:
+                                binaryRestriction.setType("lessThan");
+                                break;
+                        }
+                        binaryRestriction.setLeftHandSide(leftHandSide2);
+                        binaryRestriction.setRightHandSide(rightHandSide2);
+
+                        binaryRestrictions.add(binaryRestriction);
+                        cond.addBinaryRestrictionConjunction(binaryRestrictions);
+                    }
+                } else {
+
+                    if (s[3].contains("fulfilled") || s[3].contains("violated") || s[5].contains("fulfilled") || s[5].contains("violated")) {
+                        String check = "";
+                        if (s[3].contains("fulfilled") || s[3].contains("violated")) {
+                            check = s[3];
+                        } else {
+                            check = s[5];
+                        }
+                        UnaryRestriction unaryRestriction = new UnaryRestriction();
+                        ReferenceTo func = new ReferenceTo();
+                        if (check.contains("fulfilled")) {
+                            func.setFunction("fulfilled");
+                        } else {
+                            func.setFunction("violated");
+                        }
+                        String[] a = check.split("[ ( ) ]");
+                        func.setName(a[1]);
+
+                        unaryRestriction.setReferenceTo(func);
+
+                        UnaryRestrictionsConjunction unaryRestrictions = new UnaryRestrictionsConjunction();
+                        unaryRestrictions.add(unaryRestriction);
+                        cond.addUnaryRestrictionConjunction(unaryRestrictions);
+                    } else {
+                        BinaryRestriction binaryRestriction = new BinaryRestriction();
+                        LeftHandSide leftHandSide2 = new LeftHandSide();
+                        RightHandSide rightHandSide2 = new RightHandSide();
+                        if (s[3].length() > 0) {
+                            if ((s[3].charAt(0) >= 'a' && s[3].charAt(0) <= 'z') || (s[3].charAt(0) >= 'A' && s[3].charAt(0) <= 'Z')) {
+                                leftHandSide2.setMetric(s[3]);
+                            } else {
+                                leftHandSide2.setNumber(s[3]);
+                            }
+                        }
+                        if (s[5].length() > 0) {
+                            if ((s[5].charAt(0) >= 'a' && s[5].charAt(0) <= 'z') || (s[5].charAt(0) >= 'A' && s[5].charAt(0) <= 'Z')) {
+                                rightHandSide2.setMetric(s[5]);
+                            } else {
+                                rightHandSide2.setNumber(s[5]);
+                            }
+                        }
+
+                        switch (s[4]) {
+                            case "<":
+                                binaryRestriction.setType("lessThan");
+                                break;
+                            case ">":
+                                binaryRestriction.setType("greaterThan");
+                                break;
+                            case "<=":
+                                binaryRestriction.setType("lessThanOrEqual");
+                                break;
+                            case ">=":
+                                binaryRestriction.setType("greaterThanOrEqual");
+                                break;
+                            case "&gt;":
+                                binaryRestriction.setType("greaterThan");
+                                break;
+
+                            case "&lt;":
+                                binaryRestriction.setType("lessThan");
+                                break;
+                            default:
+                                binaryRestriction.setType("lessThan");
+                                break;
+                        }
+                        binaryRestriction.setLeftHandSide(leftHandSide2);
+                        binaryRestriction.setRightHandSide(rightHandSide2);
+                        BinaryRestrictionsConjunction binaryRestrictions = new BinaryRestrictionsConjunction();
+                        binaryRestrictions.add(binaryRestriction);
+                        cond.addBinaryRestrictionConjunction(binaryRestrictions);
+                    }
+                }
+            } else {
+                UnaryRestriction unaryRestriction = new UnaryRestriction();
+                ReferenceTo referenceTo = new ReferenceTo();
+                referenceTo.setValue(s[3]);
+
+                unaryRestriction.setReferenceTo(referenceTo);
+                UnaryRestrictionsConjunction unaryRestrictions = new UnaryRestrictionsConjunction();
+                unaryRestrictions.add(unaryRestriction);
+                cond.addUnaryRestrictionConjunction(unaryRestrictions);
+            }
+//	Condition condition = new Condition();
+
+            c.setCondition(cond);
+        }
+        return c;
+
     }
 
     public static Strategy mapFromSYBLAnnotationToXMLStrategy(String strategy) {
