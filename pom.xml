@@ -10,7 +10,7 @@
   <modules>
     <module>rSYBL-control-service-pom</module>
     <module>rSYBL-local-service-pom</module>
-    <module>OMP</module>
+    <module>eOMP</module>
   </modules>
 	<distributionManagement>
                 <repository>

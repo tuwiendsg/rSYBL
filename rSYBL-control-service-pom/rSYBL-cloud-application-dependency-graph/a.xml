@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<DeploymentDescription AccessIP="localhost" CloudServiceID="">
+    <DeploymentUnit defaultImage="" defaultFlavor="" serviceUnitID="">
+        <Artifact Id="" Name="wserv" Path="/home/ubuntu/tomcat" DownloadPath="downlaod">
+            <Container Id="" Name="tomcat" Path="/home/ubuntu/">
+                <AssociatedVM IP="10.0.0.1" UUID=""/>
+            </Container>
+        </Artifact>
+        <ElasticityCapability Name="scaleIn" PrimitiveOperationsSequence="M2MDaaS.decommissionWS;dryRun.scaleIn" Endpoint="" Type=""/>
+    </DeploymentUnit>
+</DeploymentDescription>

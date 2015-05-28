@@ -97,7 +97,7 @@
                 </div>
                 <div id="chart"><h2>Cloud service</h2></div>
             </div>
-            <div id="A"></div>
+            <div id="A" ></div>
 
         </div>
         <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>
@@ -253,6 +253,7 @@
                     refreshServiceDescription();
                 if (format == "sybl")
                     document.getElementById("text").value = "";
+                    getRequirementsSYBL();
                 if (format == "xmlsybl") {
                     document.getElementById("text").value = "";
                     getRequirementsXMLSYBL();
@@ -297,13 +298,13 @@
             var auxRect = "m -32,5 0,-13.25825 30.14043,0 0,13.25825 z"
 
             var margin = {top: 10, right: 120, bottom: 20, left: 140};
-            var width = window.innerWidth * 0.6;
+            var width = window.innerWidth * 0.7 -100;
             var height = window.innerHeight * 0.8 - 100; //850
             if (height <= 0){ height = 850;}	
             if (width <= 0){ width = 450;}
             var i = 0;
             var duration = 500;
-            var depth = width / 3.5;
+            var depth = width / 6;
             var metrics;
 
             var opts = {
@@ -835,6 +836,42 @@
             }
 
 
+function getRequirementsSYBL() {
+                if (serviceID!=""){
+                    getManagedServices = null;
+                    if (window.XMLHttpRequest) {
+                        refreshSYBL = new XMLHttpRequest();
+                    } else {
+                        refreshSYBL = new ActiveXObject("Microsoft.XMLHTTP");
+                    }
+
+                    refreshSYBL.onreadystatechange = processRequirementsSYBL;
+                    refreshSYBL.open("GET", "./restWS/" + serviceID + "/elasticityRequirements/plain", true);
+                    refreshSYBL.setRequestHeader('Content-type', 'application/xml');
+                    refreshSYBL.send(null);
+                }
+            }
+            
+           
+            
+            function processRequirementsSYBL() {
+                if (refreshSYBL.readyState == 4) {
+                    descr = refreshSYBL.responseText;
+                    //                //clear prev list
+
+                    //
+
+                    // Normalize for fixed-depth.
+
+                    if (format == "sybl") {
+                        var x = document.getElementById("text");
+                        x.value = descr;
+                    }
+                              
+                    //setTimeout(refreshServiceDescription, 5000);
+                }
+            }
+
             function getRequirementsXMLSYBL() {
                 if (serviceID!=""){
                     getManagedServices = null;
@@ -850,6 +887,9 @@
                     refreshXMLSYBL.send(null);
                 }
             }
+            
+           
+            
             function processRequirementsXMLSYBL() {
                 if (refreshXMLSYBL.readyState == 4) {
                     descr = refreshXMLSYBL.responseText;

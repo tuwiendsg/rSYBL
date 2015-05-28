@@ -15,7 +15,7 @@
             </Relationship>
             <ServiceUnit id="LoadBalancerServiceUnit"/>
             <ServiceUnit id="EventProcessingServiceUnit">
-                <SYBLDirective Constraints="" Monitoring="" Priorities="" Strategies="St2:STRATEGY CASE responseTime &lt; 10 ms AND throughput &lt; 20 : scalein"/>
+                <SYBLDirective Notifications="No1: NOTIFY System Administrator WHEN cpuUsage &gt; 90 % : Tralala" Constraints="" Monitoring="" Priorities="" Strategies="St2:STRATEGY CASE responseTime &lt; 10 ms AND throughput &lt; 20 : scalein"/>
             </ServiceUnit>
             
         </ServiceTopology>

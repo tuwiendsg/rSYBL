@@ -1,0 +1,524 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+To change this license header, choose License Headers in Project Properties.
+To change this template file, choose Tools | Templates
+and open the template in the editor.
+-->
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:p="http://primefaces.org/ui" xmlns:c="http://xmlns.jcp.org/jsp/jstl/core">
+    <f:view contentType="text/html">
+        <h:head>
+            <f:facet name="first">
+                <meta content='text/html; charset=UTF-8' http-equiv="Content-Type"/>
+                <title>Elasticity Operations Platform</title>
+            </f:facet>
+            <style type="text/css">
+                .ui-diagram-element {	
+                    width:5em; 
+                    height:5em;
+                    line-height:5em;
+                    text-align: center;
+                    box-shadow: 0 5px 10px rgba(0, 0, 0, 0.8);
+                    border-radius: 5em;
+                    border: 1px solid #404a4e;
+                    background-color: #404a4e;
+                    color: #cccccc;
+                }
+
+                .ui-diagram-element:hover {
+                    background-color: #20282b;
+                }
+            </style>
+        </h:head>
+
+        <h:body>
+
+            <p:layout fullPage="true">
+
+                <p:layoutUnit position="north" size="100" resizable="true" closable="true" collapsible="true">
+                    <p:layout>
+                        <p:layoutUnit size="250" position="west" >
+                            <center>
+                                <p:graphicImage width="150" value="resources/images/logo.png"/>
+                            </center>
+                        </p:layoutUnit>
+                        <p:layoutUnit position="center" >
+                            <center>
+                                <p:outputLabel style=" font-size: 250%; font-family: Georgia, serif" >Elasticity Operations Management Platform</p:outputLabel>
+                            </center>
+                        </p:layoutUnit>
+                        <p:layoutUnit size="250" position="east" >
+                            <h:form> 
+                                <center>
+
+                                    <p:menuButton  id="settingsButton" value="User #{userManagedBean.username} Settings" >
+                                        <p:menuitem value="LogOut" actionListener="#{userManagedBean.logout()}"  icon="ui-icon-power" />
+
+                                    </p:menuButton>
+                                    <p:clock />
+
+                                </center>
+                            </h:form>
+
+
+                        </p:layoutUnit>
+                    </p:layout>
+                </p:layoutUnit>
+
+                <p:layoutUnit position="south" size="100" closable="true" collapsible="true">
+                    <p:layout>
+                        <p:layoutUnit size="250" position="west" >
+                            <center>
+                                <p:graphicImage width="70" value="http://www.infosys.tuwien.ac.at/images/dsg-logo.jpg"/>
+                            </center>
+                        </p:layoutUnit>
+                        <p:layoutUnit position="center" >
+                            <center>
+                                <p:outputLabel style=" font-size: 250%; font-family: Georgia, serif">Distributed Systems Group</p:outputLabel>
+                            </center>
+                        </p:layoutUnit>
+                        <p:layoutUnit size="250" position="east" >
+                            <center>
+                                <p:outputLabel>Contact: <a href="mailto:e.copil@dsg.tuwien.ac.at">Georgiana Copil</a></p:outputLabel>
+                            </center>
+                        </p:layoutUnit>
+                    </p:layout>
+                </p:layoutUnit>
+
+                <p:layoutUnit position="west" size="250" header="Menu" collapsible="true">
+                    <h:form>
+                        <p:growl autoUpdate="true"/>
+
+                        <p:panelMenu>
+                            <p:submenu label="Management" rendered="true">
+                                <p:menuitem value="Services" icon="ui-icon-home" action="#{informationManagedBean.activateAssociatedServices()}"/>
+
+                                <p:submenu label="Interactions" icon="ui-icon-document"  >
+                                    <p:menuitem value="Request" action="#{informationManagedBean.activateRoleInteractions('Request')}" />
+                                    <p:menuitem value="Notification" action="#{informationManagedBean.activateRoleInteractions('Notification')}" />
+                                    <p:menuitem value="Error" action="#{informationManagedBean.activateRoleInteractions('Error')}" />
+                                    <p:menuitem value="Warning" action="#{informationManagedBean.activateRoleInteractions('Warning')}" />
+
+                                </p:submenu>
+                                <p:menuitem value="Dialog" icon="ui-icon-document" action="loggedPageDialogs.xhtml?faces-redirect=true;" />
+                                <p:menuitem value="My Responsibilities" icon="ui-icon-document" action="loggedPageUserResponsibilities.xhtml?faces-redirect=true;"/>
+                                <p:menuitem value="Interaction Partners" icon="ui-icon-person" action="loggedPageAllUsers.xhtml?faces-redirect=true;" />
+                            </p:submenu>
+
+
+                        </p:panelMenu>
+                    </h:form>
+
+
+                </p:layoutUnit>
+
+                <p:layoutUnit position="center">
+                    <p:panel widgetVar="roleInteractionsWarningW"   closable="true" closeSpeed="500" id="roleInteractionsWarning"  toggleable="true" toggleSpeed="500" visible="#{informationManagedBean.roleInteractionsWarning}" header="Warning Elasticity Operation Interactions">
+                        <p:ajax event="close" listener="#{informationManagedBean.onClose}" />
+
+                        <h:form id="tabviewFormWarning">
+
+                            <p:tabView >
+                                <c:forEach items="#{userManagedBean.userRoles}" var="tabVar">
+
+                                    <p:tab title="#{tabVar.roleName}">
+                                        <p:contextMenu for="warningInteractions">
+                                            <p:menuitem value="Dialog" icon="ui-icon-document" action="loggedPageDialogs.xhtml?faces-redirect=true;" />
+                                        </p:contextMenu>
+                                        <p:dataTable id="warningInteractions" rowKey="#{item.uuid}" selection="#{tabVar.selectedDialogs}"  scrollable="true" var="item" value="#{userComponentsBean.getAllDialogsForInteractionTypes(tabVar.roleName,'Warning')}">
+                                            <p:column selectionMode="multiple" style="width:16px;text-align:center"/>                                            
+                                            <p:column style="width:16px">
+                                                <p:rowToggler />
+                                            </p:column>
+                                            <p:column>
+                                                <f:facet name="header">
+                                                    <h:outputText value="Interactions which compose the dialog"/>
+                                                </f:facet>
+                                                <h:outputText value="Dialog id #{item.uuid} "/>
+                                            </p:column>
+                                            <p:column style="width:15%" headerText="Action">
+
+
+                                                <p:splitButton value="Respond"  update=":DialogForm:respondPanel" oncomplete="PF('respondW').show()"  ajax="true" icon="ui-icon-disk">
+                                                    <p:menuitem value="Delete"  ajax="false" icon="ui-icon-close" />
+                                                    <f:setPropertyActionListener value="#{item.uuid}" target="#{userManagedBean.selectedInteraction}" />
+                                                </p:splitButton>
+
+                                            </p:column>
+
+                                            <p:rowExpansion >
+<!--<c:when test="#{item.getInteractions().size()>1}">-->
+                                                <p:dataTable  scrollable="true" scrollWidth="100%" value="#{item.interactions}" var="currentInteraction" >
+                                                    <p:column headerText="Interaction UUID">
+                                                        <h:outputText value="#{currentInteraction.uuid}" />
+                                                    </p:column>
+                                                    <p:column style="width:10%" headerText="Date">
+                                                        <h:outputText value="#{currentInteraction.initiationDate}" />
+                                                    </p:column>
+                                                    <p:column style="width:10%" headerText="Initiator">
+                                                        <h:outputText value="#{currentInteraction.initiator.roleName}" />
+                                                    </p:column>
+                                                    <p:column style="width:10%" headerText="Description">
+                                                        <h:outputText value="#{currentInteraction.message.description}" />
+                                                    </p:column>
+                                                    <p:column style="width:10%" headerText="Cause">
+                                                        <h:outputText value="#{currentInteraction.message.cause}" />
+                                                    </p:column>
+                                                    <p:column style="width:10%" headerText="Enforced">
+                                                        <h:outputText value="#{currentInteraction.message.actionEnforced}" />
+                                                    </p:column>
+                                                    <p:column style="width:10%" headerText="Service Part">
+                                                        <h:outputText value="#{currentInteraction.message.targetPartId}" />
+                                                    </p:column>
+                                                    <p:column style="width:10%" headerText="Interaction type">
+                                                        <h:outputText value="#{currentInteraction.type}" />
+                                                    </p:column>
+
+                                                </p:dataTable>
+                                                <!--</c:when>-->
+                                                <!--                                                    <c:otherwise>
+                                                                                                        <p:panel>
+                                                                                                            Received in #{item.initiationDate} a message from role #{item.initiator.roleName}. 
+                                                
+                                                                                                            The cause of the message is #{item.message.cause}, and it concerns #{item.message.cloudServiceId}<c:if test="#{item.message.targetPartId!=''}">(particulary #{item.message.targetPartId})</c:if>.
+                                                                                                            The message has the following description: #{item.message.description}, and priority #{item.message.priority}.
+                                                                                                        </p:panel>
+                                                                                                    </c:otherwise>
+                                                                                                </c:choose>-->
+                                            </p:rowExpansion>
+                                        </p:dataTable>
+                                    </p:tab>
+                                </c:forEach>
+                            </p:tabView>
+                        </h:form>
+
+                    </p:panel>
+                    <p:panel widgetVar="roleInteractionsNotificationW"   closable="true" closeSpeed="500" id="roleInteractionsNotification"  toggleable="true" toggleSpeed="500" visible="#{informationManagedBean.roleInteractionsNotification}" header="Notification Elasticity Operation Interactions">
+                        <p:ajax event="close" listener="#{informationManagedBean.onClose}" />
+
+                        <h:form id="tabviewFormNotification">
+
+                            <p:tabView >
+                                <c:forEach items="#{userManagedBean.userRoles}" var="tabVar">
+
+                                    <p:tab title="#{tabVar.roleName}">
+                                        <p:contextMenu for="notificationsInteractions">
+                                            <p:menuitem value="Dialog" icon="ui-icon-document" action="loggedPageDialogs.xhtml?faces-redirect=true;" />
+
+                                        </p:contextMenu>
+                                        <p:dataTable id="notificationsInteractions"  rowKey="#{item.uuid}"  selection="#{tabVar.selectedDialogs}"  scrollable="true" var="item" value="#{userComponentsBean.getAllDialogsForInteractionTypes(tabVar.roleName,'Notification')}">
+                                            <p:column selectionMode="multiple" style="width:16px;text-align:center"/>
+                                            <p:column style="width:16px">
+                                                <p:rowToggler />
+                                            </p:column>
+                                            <p:column>
+                                                <f:facet name="header">
+                                                    <h:outputText value="Interactions which compose the dialog"/>
+                                                </f:facet>
+                                                <h:outputText value="Dialog id #{item.uuid} "/>
+                                            </p:column>
+                                            <p:column style="width:15%" headerText="Action">
+
+
+                                                <p:splitButton value="Respond"  update=":DialogForm:respondPanel" oncomplete="PF('respondW').show()"  ajax="true" icon="ui-icon-disk">
+                                                    <p:menuitem value="Delete"  ajax="false" icon="ui-icon-close" />
+                                                    <f:setPropertyActionListener value="#{item.uuid}" target="#{userManagedBean.selectedInteraction}" />
+                                                </p:splitButton>
+
+                                            </p:column>
+
+                                            <p:rowExpansion >
+<!--<c:when test="#{item.getInteractions().size()>1}">-->
+                                                <p:dataTable scrollable="true" scrollWidth="100%"  value="#{item.interactions}" var="currentInteraction" >
+                                                    <p:column style="width:10%" headerText="Interaction UUID">
+                                                        <h:outputText value="#{currentInteraction.uuid}" />
+                                                    </p:column>
+                                                    <p:column style="width:10%" headerText="Date">
+                                                        <h:outputText value="#{currentInteraction.initiationDate}" />
+                                                    </p:column>
+                                                    <p:column style="width:10%" headerText="Initiator">
+                                                        <h:outputText value="#{currentInteraction.initiator.roleName}" />
+                                                    </p:column>
+                                                    <p:column style="width:10%" headerText="Description">
+                                                        <h:outputText value="#{currentInteraction.message.description}" />
+                                                    </p:column>
+                                                    <p:column style="width:10%" headerText="Cause">
+                                                        <h:outputText value="#{currentInteraction.message.cause}" />
+                                                    </p:column>
+                                                    <p:column style="width:10%" headerText="Enforced">
+                                                        <h:outputText value="#{currentInteraction.message.actionEnforced}" />
+                                                    </p:column>
+                                                    <p:column style="width:10%" headerText="Service Part">
+                                                        <h:outputText value="#{currentInteraction.message.targetPartId}" />
+                                                    </p:column>
+                                                    <p:column style="width:10%" headerText="Interaction type">
+                                                        <h:outputText value="#{currentInteraction.type}" />
+                                                    </p:column>
+
+                                                </p:dataTable>
+                                                <!--</c:when>-->
+                                                <!--                                                    <c:otherwise>
+                                                                                                        <p:panel>
+                                                                                                            Received in #{item.initiationDate} a message from role #{item.initiator.roleName}. 
+                                                
+                                                                                                            The cause of the message is #{item.message.cause}, and it concerns #{item.message.cloudServiceId}<c:if test="#{item.message.targetPartId!=''}">(particulary #{item.message.targetPartId})</c:if>.
+                                                                                                            The message has the following description: #{item.message.description}, and priority #{item.message.priority}.
+                                                                                                        </p:panel>
+                                                                                                    </c:otherwise>
+                                                                                                </c:choose>-->
+                                            </p:rowExpansion>
+                                        </p:dataTable>
+                                    </p:tab>
+                                </c:forEach>
+                            </p:tabView>
+                        </h:form>
+
+                    </p:panel>
+                    <p:panel widgetVar="roleInteractionsErrorW"   closable="true" closeSpeed="500" id="roleInteractionsError"  toggleable="true" toggleSpeed="500" visible="#{informationManagedBean.roleInteractionsError}" header="Error Elasticity Operation Interactions">
+                        <p:ajax event="close" listener="#{informationManagedBean.onClose}" />
+
+                        <h:form id="tabviewFormError">
+
+                            <p:tabView >
+                                <c:forEach items="#{userManagedBean.userRoles}" var="tabVar">
+
+                                    <p:tab title="#{tabVar.roleName}">
+                                        <p:contextMenu for="errorInteractions">
+                                            <p:menuitem value="Dialog" icon="ui-icon-document" action="loggedPageDialogs.xhtml?faces-redirect=true;" />
+
+                                        </p:contextMenu>
+
+                                        <p:dataTable id="errorInteractions"  rowKey="#{item.uuid}" selection="#{tabVar.selectedDialogs}" scrollable="true" var="item" value="#{userComponentsBean.getAllDialogsForInteractionTypes(tabVar.roleName,'Error')}">
+                                            <p:column selectionMode="multiple" style="width:16px;text-align:center"/>
+                                            <p:column style="width:16px">
+                                                <p:rowToggler />
+                                            </p:column>
+                                            <p:column>
+                                                <f:facet name="header">
+                                                    <h:outputText value="Interactions which compose the dialog"/>
+                                                </f:facet>
+                                                <h:outputText value="Dialog id #{item.uuid} "/>
+                                            </p:column>
+
+                                            <p:column style="width:15%" headerText="Action">
+
+
+                                                <p:splitButton value="Respond"  update=":DialogForm:respondPanel" oncomplete="PF('respondW').show()"  ajax="true" icon="ui-icon-disk">
+                                                    <p:menuitem value="Delete"  ajax="false" icon="ui-icon-close" />
+                                                    <f:setPropertyActionListener value="#{item.uuid}" target="#{userManagedBean.selectedInteraction}" />
+                                                </p:splitButton>
+
+                                            </p:column>
+                                            <p:rowExpansion >
+<!--<c:when test="#{item.getInteractions().size()>1}">-->
+                                                <p:dataTable id="errorSmallTable" scrollable="true" scrollWidth="100%" value="#{item.interactions}" var="currentInteraction" >
+                                                    <p:column style="width:10%" headerText="Interaction UUID">
+                                                        <h:outputText value="#{currentInteraction.uuid}" />
+                                                    </p:column>
+                                                    <p:column style="width:10%" headerText="Date">
+                                                        <h:outputText value="#{currentInteraction.initiationDate}" />
+                                                    </p:column>
+                                                    <p:column style="width:10%" headerText="Initiator">
+                                                        <h:outputText value="#{currentInteraction.initiator.roleName}" />
+                                                    </p:column>
+                                                    <p:column style="width:10%" headerText="Description">
+                                                        <h:outputText value="#{currentInteraction.message.description}" />
+                                                    </p:column>
+                                                    <p:column style="width:10%" headerText="Cause">
+                                                        <h:outputText value="#{currentInteraction.message.cause}" />
+                                                    </p:column>
+                                                    <p:column style="width:10%" headerText="Enforced">
+                                                        <h:outputText value="#{currentInteraction.message.actionEnforced}" />
+                                                    </p:column>
+                                                    <p:column style="width:10%" headerText="Service Part">
+                                                        <h:outputText value="#{currentInteraction.message.targetPartId}" />
+                                                    </p:column>
+                                                    <p:column style="width:10%" headerText="Interaction type">
+                                                        <h:outputText value="#{currentInteraction.type}" />
+                                                    </p:column>
+
+                                                </p:dataTable>
+                                                <!--</c:when>-->
+                                                <!--                                                    <c:otherwise>
+                                                                                                        <p:panel>
+                                                                                                            Received in #{item.initiationDate} a message from role #{item.initiator.roleName}. 
+                                                
+                                                                                                            The cause of the message is #{item.message.cause}, and it concerns #{item.message.cloudServiceId}<c:if test="#{item.message.targetPartId!=''}">(particulary #{item.message.targetPartId})</c:if>.
+                                                                                                            The message has the following description: #{item.message.description}, and priority #{item.message.priority}.
+                                                                                                        </p:panel>
+                                                                                                    </c:otherwise>
+                                                                                                </c:choose>-->
+                                            </p:rowExpansion>
+                                        </p:dataTable>
+                                    </p:tab>
+                                </c:forEach>
+                            </p:tabView>
+                        </h:form>
+
+                    </p:panel>
+                    <p:panel widgetVar="roleInteractionsRequestW"   closable="true" closeSpeed="500" id="roleInteractionsRequest"  toggleable="true" toggleSpeed="500" visible="#{informationManagedBean.roleInteractionsRequest}" header="Request Elasticity Operation Interactions">
+                        <p:ajax event="close" listener="#{informationManagedBean.onClose}" />
+
+
+                        <p:tabView >
+                            <c:forEach items="#{userManagedBean.userRoles}" var="tabVar">
+
+                                <p:tab title="#{tabVar.roleName}">
+                                    <h:form>
+                                        <p:contextMenu for="requestInteractions">
+                                            <p:menuitem value="Dialog" icon="ui-icon-document" action="loggedPageDialogs.xhtml?faces-redirect=true;" />
+
+                                        </p:contextMenu>
+                                        <p:dataTable id="requestInteractions"  rowKey="#{item.uuid}" selection="#{tabVar.selectedDialogs}"  scrollable="true"  var="item" value="#{userComponentsBean.getAllDialogsForInteractionTypes(tabVar.roleName,'Request')}">
+                                            <p:column selectionMode="multiple" style="width:16px;text-align:center"/>
+                                            <p:column style="width:16px">
+                                                <p:rowToggler />
+                                            </p:column>
+
+                                            <p:column>
+                                                <f:facet name="header">
+                                                    <h:outputText value="Interactions which compose the dialog"/>
+                                                </f:facet>
+                                                <h:outputText value="Dialog id #{item.uuid} "/>
+                                            </p:column>
+
+                                            <p:column style="width:15%" headerText="Action">
+
+
+                                                <p:commandButton value="Respond"  update=":DialogForm:respondPanel" oncomplete="PF('respondW').show()"  ajax="true" icon="ui-icon-disk">
+                                                    <!--<p:menuitem value="Delete"  ajax="false" icon="ui-icon-close" />-->
+                                                    <f:setPropertyActionListener value="#{item.uuid}" target="#{userManagedBean.selectedInteraction}" />
+                                                </p:commandButton>
+
+                                            </p:column>
+                                            <p:rowExpansion >
+<!--<c:when test="#{item.getInteractions().size()>1}">-->
+
+                                                <p:dataTable  scrollable="true" scrollWidth="99%" value="#{item.interactions}" var="currentInteraction" >
+                                                    <p:column style="width:10%" headerText="Interaction UUID">
+                                                        <h:outputText value="#{currentInteraction.uuid}" />
+                                                    </p:column>
+                                                    <p:column style="width:10%" headerText="Date">
+                                                        <h:outputText value="#{currentInteraction.initiationDate}" />
+                                                    </p:column>
+                                                    <p:column style="width:10%" headerText="Initiator">
+                                                        <h:outputText value="#{currentInteraction.initiator.roleName}" />
+                                                    </p:column>
+                                                    <p:column style="width:10%" headerText="Description">
+                                                        <h:outputText value="#{currentInteraction.message.description}" />
+                                                    </p:column>
+                                                    <p:column style="width:10%" headerText="Cause">
+                                                        <h:outputText value="#{currentInteraction.message.cause}" />
+                                                    </p:column>
+                                                    <p:column style="width:10%" headerText="Enforced">
+                                                        <h:outputText value="#{currentInteraction.message.actionEnforced}" />
+                                                    </p:column>
+                                                    <p:column style="width:10%" headerText="Service Part">
+                                                        <h:outputText value="#{currentInteraction.message.targetPartId}" />
+                                                    </p:column>
+                                                    <p:column style="width:10%" headerText="Interaction type">
+                                                        <h:outputText value="#{currentInteraction.type}" />
+                                                    </p:column>
+
+                                                </p:dataTable>
+
+
+                                                <!--</c:when>-->
+                                                <!--                                                    <c:otherwise>
+                                                                                                        <p:panel>
+                                                                                                            Received in #{item.initiationDate} a message from role #{item.initiator.roleName}. 
+                                                
+                                                                                                            The cause of the message is #{item.message.cause}, and it concerns #{item.message.cloudServiceId}<c:if test="#{item.message.targetPartId!=''}">(particulary #{item.message.targetPartId})</c:if>.
+                                                                                                            The message has the following description: #{item.message.description}, and priority #{item.message.priority}.
+                                                                                                        </p:panel>
+                                                                                                    </c:otherwise>
+                                                                                                </c:choose>-->
+                                            </p:rowExpansion>
+                                        </p:dataTable>
+                                    </h:form>
+
+                                </p:tab>
+                            </c:forEach>
+                        </p:tabView>
+
+                    </p:panel>
+                    <p:panel widgetVar="myResponsibilitiesW" id="myResponsibilities"  closable="true" closeSpeed="500"   toggleable="true" toggleSpeed="500" visible="#{informationManagedBean.myResponsibilities}" header="Current Roles and Responsibilities">
+                        <p:ajax event="close" listener="#{informationManagedBean.onClose}" />
+
+                    </p:panel>
+                    <p:panel widgetVar="myServicesW" id="myServices" closable="true" closeSpeed="500" toggleable="true" toggleSpeed="500"  visible="#{informationManagedBean.myServices}" header="Services"  style="margin-bottom:20px">
+                        <p:ajax event="close" listener="#{informationManagedBean.onClose}"  />
+                        <h:form>
+                            <p:panelGrid columns="2" binding="#{userComponentsBean.panelGridServices}" >
+                            </p:panelGrid>
+                        </h:form>
+                    </p:panel>
+                    <h:form>
+                        <p:notificationBar position="top" effect="slide" styleClass="top" widgetVar="bar">
+                            <h:outputText value="New messages received" style="font-size:36px;" />
+                        </p:notificationBar>
+                    </h:form>
+                    <h:form id="DialogForm">
+                        <p:dialog style="width:90%" widgetVar="respondW" showEffect="explode" hideEffect="fade" >
+                            <p:panel id="respondPanel">
+                                <p:panelGrid  columns="2" columnClasses="label,value">
+                                    <h:outputText style="width:30%" value="Dialog UUID:" />
+                                    <h:outputText style="width:70%" value="#{userManagedBean.selectedInteraction}" />
+                                    <h:outputText style="width:30%" value="Interaction Type" />
+                                    <p:selectOneMenu id="selectedInteraction" value="#{dialogBean.selectedInteractionType}" style="width:220px">
+                                        <p:ajax listener="#{dialogBean.onSelectedInteractionChange}"  />
+                                        <f:selectItem itemLabel="Select Interaction" itemValue="" noSelectionOption="true" />
+                                        <f:selectItems value="#{dialogBean.interactionTypes}" />
+                                    </p:selectOneMenu>
+
+                                    <h:outputText style="width:30%" value="Sending message as: " />
+                                    <p:selectOneMenu id="initiatorRole" value="#{dialogBean.initiatorRole}" style="width:220px">
+                                        <p:ajax listener="#{dialogBean.onSelectedInteractionChange}"  />
+                                        <f:selectItem itemLabel="My roles" itemValue="" noSelectionOption="true" />
+                                        <f:selectItems value="#{dialogBean.myRoles}" />
+                                    </p:selectOneMenu>
+                                    <h:outputText style="width:30%" value="To role: " />
+                                    <p:selectOneMenu id="receiverRole" value="#{dialogBean.receiverRole}" style="width:220px">
+                                        <p:ajax listener="#{dialogBean.onSelectedInteractionChange}"  />
+                                        <f:selectItem itemLabel="Receiver" itemValue="" noSelectionOption="true" />
+                                        <f:selectItems value="#{dialogBean.receiverRoles}" />
+                                    </p:selectOneMenu>
+                                    <h:outputText style="width:30%" value="Cloud service " />
+                                    <p:selectOneMenu id="selectedCloudService" value="#{dialogBean.selectedCloudService}" style="width:220px">
+                                        <p:ajax listener="#{dialogBean.onSelectedInteractionChange}"  />
+                                        <f:selectItem itemLabel="Receiver" itemValue="" noSelectionOption="true" />
+                                        <f:selectItems value="#{dialogBean.cloudServices}" />
+                                    </p:selectOneMenu>
+                                    
+                                    <h:outputText style="width:30%" > <b>Message Description</b> </h:outputText>
+                                    <h:outputText/>
+                                    
+                                    <h:outputText style="width:30%" value="Action"/>
+                                    <p:selectOneMenu id="selectedActoin"  value="#{dialogBean.selectedAction}"  style="width:220px">
+                                        <p:ajax listener="#{dialogBean.onSelectedAction}" update="respondPanel" />
+                                        <f:selectItem itemLabel="Receiver"  itemValue="" noSelectionOption="true" />
+                                        <f:selectItems value="#{dialogBean.availableActions}" />
+                                    </p:selectOneMenu>
+                                                                    
+                                    <h:outputText style="width:30%" value="#{dialogBean.parameterName}"/>
+                                    <p:inputTextarea  rows="6" cols="33" value="#{dialogBean.parameterValue}"/>
+                                    
+                                    
+                                    <p:commandButton id="submit" value="Submit" action="#{dialogBean.createNewInteraction()}" icon="ui-icon-check" oncomplete="PF('respondW').hide()" />
+                                </p:panelGrid>
+                            </p:panel>
+                        </p:dialog>
+                    </h:form>
+                </p:layoutUnit>
+
+
+            </p:layout>
+
+        </h:body>
+
+    </f:view>
+</html>
