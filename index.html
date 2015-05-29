@@ -97,6 +97,212 @@ A cloud provider could specify its pricing schema or price computation policies,
   <img src="http://www.infosys.tuwien.ac.at/research/viecom/SYBL/images/runtime.png"/>
 </figure></center>
 <section>
+<a id="api"></a>
+<h2>rSYBL API</h2>
+<table style="width:100%">
+	<colgroup>
+  <col style="width:15%">
+        <col style="width:10%">
+        <col style="width:10%">
+		<col style="width:10%">
+		<col style="width:65%">
+		</colgroup>
+  <tr>
+    <th>Method Name</th>
+    <th>Type</th> 
+    <th>Input type</th>
+<th>Output type</th>
+<th>Description</th>
+  </tr>
+<tr>
+    <td>/{id}/prepareControl</td>
+    <td>PUT</td> 
+    <td>application/xml</td>
+      <td>-</td>
+<td>Sets the rSYBL controller in "prepare mode", for receiving all the necessary information for control.</td>
+  </tr>
+<tr>
+    <td>/{id}/description/tosca</td>
+    <td>PUT</td> 
+    <td>application/xml</td>
+      <td>-</td>
+<td>Sends to rSYBL the TOSCA description of service with ID id</td>
+  </tr>
+<tr>
+    <td>/{id}/description</td>
+    <td>PUT</td> 
+    <td>application/xml</td>
+      <td>-</td>
+<td>Sets rSYBL specific application structural description (e.g., <a href="https://raw.githubusercontent.com/tuwiendsg/rSYBL/master/starting%20rSYBL/rSYBL%20Python%20clients/multipleEnforcementMechanisms_multiCloud/cassandraApplicationDescriptionWithRequirements.xml">here</a> ) for service with ID id. When this is sent TOSCA description is not needed.</td>
+  </tr>
+<tr>
+    <td>/{id}/deployment</td>
+    <td>PUT</td> 
+    <td>application/xml</td>
+      <td>-</td>
+<td>Sets current service deployment description for service with ID id (e.g., <a href="https://raw.githubusercontent.com/tuwiendsg/rSYBL/master/starting%20rSYBL/rSYBL%20Python%20clients/multipleEnforcementMechanisms_multiCloud/newDeploymentDescription.xml">here</a>). </td>
+  </tr>
+<tr>
+    <td>/{id}/elasticityCapabilitiesEffects</td>
+    <td>PUT</td> 
+    <td>application/json</td>
+      <td>-</td>
+<td>Sets effects expected for primitive operations in JSON format (e.g., <a href="https://raw.githubusercontent.com/tuwiendsg/rSYBL/master/starting%20rSYBL/rSYBL%20Python%20clients/multipleEnforcementMechanisms_multiCloud/effects.json">here</a>) for service with ID id.</td>
+  </tr><tr>
+    <td>/{id}/compositionRules</td>
+    <td>PUT</td> 
+    <td>application/xml</td>
+      <td>-</td>
+<td>Sets composition rules for service metrics in MELA-specific XML format (e.g., <a href="https://raw.githubusercontent.com/tuwiendsg/rSYBL/master/starting%20rSYBL/rSYBL%20Python%20clients/multipleEnforcementMechanisms_multiCloud/compositionRules.xml">here</a>) for service with ID id.</td>
+  </tr>
+
+<tr>
+    <td>/{id}/startControl</td>
+    <td>PUT</td> 
+    <td>application/xml</td>
+      <td>-</td>
+<td>Starts the control for the service with ID id.</td>
+  </tr>
+<tr>
+    <td>/{id}/startControlOnExisting</td>
+    <td>PUT</td> 
+    <td>application/xml</td>
+      <td>-</td>
+<td>Starts the control on the service with ID id, which is already deployed and monitored.</td>
+  </tr>
+<tr>
+    <td>/{id}/stopControl</td>
+    <td>PUT</td> 
+    <td>application/xml</td>
+      <td>-</td>
+<td>Stops the control (equivalent with a pause in control, for when the service is manually modified).</td>
+  </tr>
+<tr>
+    <td>/{id}</td>
+    <td>DELETE</td> 
+    <td>-</td>
+      <td>-</td>
+<td>De-registers from rSYBL and MELA, and <i>undeploys</i> from the cloud the service with ID id.</td>
+  </tr><tr>
+    <td>/managedService/{id}</td>
+    <td>DELETE</td> 
+    <td>-</td>
+      <td>-</td>
+<td>De-registers from rSYBL and MELA service with ID id (does NOT undeploy) from the cloud. </td>
+  </tr>
+
+
+  <tr>
+    <td>/{id}/onDemandControl/unhealthy</td>
+    <td>PUT</td> 
+    <td>plain/txt</td>
+      <td>-</td>
+<td>Triggers health fix (recursive restart in top-down mode) for service with ID id, for service part sent as parameter (in the method body).</td>
+  </tr>
+
+<tr>
+    <td>/{id}/startTEST</td>
+    <td>PUT</td>
+    <td>application/xml</td> 
+      <td>-</td>
+<td>Starts the rSYBL controller in testing mode</td>
+  </tr><tr>
+    <td>/{id}/{servicePartID} /testElasticityCapability/ {capabilityID}</td>
+    <td>PUT</td> 
+    <td>application/xml</td>
+      <td>-</td>
+<td>Enforces, for service with ID id, capability with capabilityID for service part with servicePartID.</td>
+  </tr><tr>
+    <td>/{id}/{servicePartID} /testElasticityCapability /{pluginID} /{capabilityID}</td>
+    <td>PUT</td> 
+    <td>application/xml</td>
+      <td>-</td>
+<td>Enforces, for service with ID id, capability with capabilityID for service part with servicePartID, by using a specific enforcement plugin of rSYBL, with ID pluginID.</td>
+  </tr>
+
+<tr>
+    <td>/{id}/description</td>
+    <td>GET</td> 
+    <td>-</td>
+      <td>application/xml</td>
+<td>Gets current application structural description used, in rSYBL specific format (e.g., <a href="https://raw.githubusercontent.com/tuwiendsg/rSYBL/master/starting%20rSYBL/rSYBL%20Python%20clients/multipleEnforcementMechanisms_multiCloud/cassandraApplicationDescriptionWithRequirements.xml">here</a> )</td>
+  </tr>
+<tr>
+    <td>/{id}/elasticityRequirements/xml</td>
+    <td>GET</td> 
+    <td>-</td>
+      <td> application/xml</td>
+<td>Returns elasticity requirements for the service with ID id, in XML format.</td>
+  </tr>
+<tr>
+    <td>/{id}/elasticityRequirements/plain</td>
+    <td>GET</td> 
+    <td>-</td>
+      <td>text/plain</td>
+<td>Returns elasticity requirements for the service with ID id, in SYBL format.</td>
+  </tr>
+<tr>
+    <td>/{id}/structuralData/json"</td>
+    <td>GET</td> 
+    <td>-</td>
+      <td>application/json</td>
+<td>Returns the service structural description in JSON format.</td>
+  </tr><tr>
+    <td>elasticservices</td>
+    <td>GET</td> 
+    <td>-</td>
+      <td>text/plain</td>
+<td>Returns the ids of all currently controlled services, separated by ','.</td>
+  </tr>
+
+<tr>
+    <td>/{id}/deployment</td>
+    <td>POST</td> 
+    <td>application/xml</td>
+      <td>-</td>
+<td>Modifies current service deployment description for service with ID id (e.g., <a href="https://raw.githubusercontent.com/tuwiendsg/rSYBL/master/starting%20rSYBL/rSYBL%20Python%20clients/multipleEnforcementMechanisms_multiCloud/newDeploymentDescription.xml">here</a>).</td>
+  </tr>
+
+<tr>
+    <td>/{id}/description</td>
+    <td>POST</td> 
+    <td>application/xml</td>
+      <td>-</td>
+<td>Modifies for service with ID id, the service description which is sent in the body of this call.</td>
+  </tr>
+<tr>
+    <td>/{id}/compositionRules</td>
+    <td>POST</td> 
+    <td>application/xml</td>
+      <td>-</td>
+<td>Modifies composition rules for service with ID id (i.e., old ones are being replaced with the new ones sent in the message body). </td>
+  </tr>
+<tr>
+    <td>/{id}/elasticityRequirements/xml</td>
+    <td>POST</td> 
+    <td>application/xml</td>
+      <td>-</td>
+<td>Modifies elasticity requirements for the service with ID id, with the ones received. The received requirements are for this method in XML format.</td>
+  </tr>
+
+
+<tr>
+    <td>/{id}/elasticityCapabilitiesEffects</td>
+    <td>POST</td> 
+    <td>application/json</td>
+      <td>-</td>
+<td> Modifies elasticity capabilities effects for service with ID id, with the ones sent in JSON format.</td>
+  </tr>
+<tr>
+    <td>/{id}/replaceRequirements/plain</td>
+    <td>POST</td> 
+    <td>text/plain</td>
+      <td>-</td>
+<td>Replaces elasticity requirements for service with ID id with the ones received in SYBL format.</td>
+  </tr>
+</table>
+</section>
+<section>
   <h2>Installing rSYBL</h2>
   The instalation and customization process is described in prototype's <a href="https://github.com/tuwiendsg/rSYBL/wiki/User-Guide">wiki</a>.
 </section>
@@ -104,8 +310,7 @@ A cloud provider could specify its pricing schema or price computation policies,
 <a id="support-or-contact" class="anchor" href="#support-or-contact" aria-hidden="true"><span class="octicon octicon-link"></span></a>Please contact <a>Georgiana Copil</a> if you need help in using rSYBL.</a></h3>
 
 <p>Having trouble with rSYBL? Check out the documentation on the <a href="https://github.com/tuwiendsg/rSYBL/wiki">wiki</a> or contact us via <a href="mailto:e.copil@dsg.tuwien.ac.at">mail</a> and we’ll help you sort it out.</p>
-
-
+</section>
         </article>
       </div>
     </div>
