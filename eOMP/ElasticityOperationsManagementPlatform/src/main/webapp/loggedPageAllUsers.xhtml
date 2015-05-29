@@ -143,6 +143,7 @@ and open the template in the editor.
                                 </p:submenu>                                                                <p:menuitem value="Dialog" icon="ui-icon-document" action="loggedPageDialogs.xhtml?faces-redirect=true;" />
 
                                 <p:menuitem value="Services" icon="ui-icon-document" action="#{informationManagedBean.activateAssociatedServices()}"/>
+                                <p:menuitem value="Message statistics" icon="ui-icon-document" action="loggedPageUserStatistics.xhtml?faces-redirect=true;" />
                                 <p:menuitem value="Interaction Partners" icon="ui-icon-person" action="loggedPageAllUsers.xhtml?faces-redirect=true;" />
                                 <p:menuitem value="My Responsibilities" icon="ui-icon-document" action="loggedPageAllUserResponsibilities.xhtml?faces-redirect=true;"/>
                             </p:submenu>
@@ -155,12 +156,11 @@ and open the template in the editor.
                 </p:layoutUnit>
 
                 <p:layoutUnit position="center">
-                    <div>
-                    <p:diagram value="#{userComponentsBean.dialogsDiagram}" style="height:900px" styleClass="ui-widget-content" />
-                    </div>
+
                     <div>
                     <p:chart type="pie" model="#{userComponentsBean.donutModel2}" style="width:800px;height:500px;color: #000000;font-size: 140%;font-weight: bold;" />
                     </div>
+                    <br/>
                     <div>
                         <p:chart type="bubble" model="#{userComponentsBean.bubbleModel2}" style="width:1200px;height:500px;color:#000000;font-size: 160%;font-weight: bold;  "/>
                     </div>

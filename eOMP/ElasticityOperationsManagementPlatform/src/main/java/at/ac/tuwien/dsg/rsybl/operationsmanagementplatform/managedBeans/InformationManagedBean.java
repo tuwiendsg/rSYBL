@@ -169,7 +169,7 @@ public class InformationManagedBean implements Serializable {
         this.myServices = true;
         HttpServletRequest request = (HttpServletRequest) FacesContext.getCurrentInstance().getExternalContext().getRequest();
         String url = request.getRequestURL().toString();
-        if (url.toLowerCase().contains("users") || url.toLowerCase().contains("responsibilities") || url.toLowerCase().contains("dialog")) {
+        if (url.toLowerCase().contains("users") || url.toLowerCase().contains("responsibilities") || url.toLowerCase().contains("dialog")||url.toLowerCase().contains("statistics")) {
             FacesContext.getCurrentInstance().getApplication().getNavigationHandler().handleNavigation(FacesContext.getCurrentInstance(), null, "loggedPageUser.xhtml?faces-redirect=true;");
         }
 
@@ -179,9 +179,12 @@ public class InformationManagedBean implements Serializable {
     }
 
     public void activateRoleInteractions(String type) {
+        if (type.equalsIgnoreCase("")){
+            type="Notification";
+        }
         HttpServletRequest request = (HttpServletRequest) FacesContext.getCurrentInstance().getExternalContext().getRequest();
         String url = request.getRequestURL().toString();
-        if (url.toLowerCase().contains("users") || url.toLowerCase().contains("responsibilities") || url.toLowerCase().contains("dialog")) {
+        if (url.toLowerCase().contains("users") || url.toLowerCase().contains("responsibilities") || url.toLowerCase().contains("dialog")||url.toLowerCase().contains("statistics")) {
             FacesContext.getCurrentInstance().getApplication().getNavigationHandler().handleNavigation(FacesContext.getCurrentInstance(), null, "loggedPageUser.xhtml?faces-redirect=true;");
         }
         switch(type){
@@ -213,7 +216,7 @@ public class InformationManagedBean implements Serializable {
     public void activateResponsibilities() {
         HttpServletRequest request = (HttpServletRequest) FacesContext.getCurrentInstance().getExternalContext().getRequest();
         String url = request.getRequestURL().toString();
-        if (url.toLowerCase().contains("users") || url.toLowerCase().contains("responsibilities") || url.toLowerCase().contains("dialog")) {
+        if (url.toLowerCase().contains("users") || url.toLowerCase().contains("responsibilities") || url.toLowerCase().contains("dialog")||url.toLowerCase().contains("statistics")) {
             FacesContext.getCurrentInstance().getApplication().getNavigationHandler().handleNavigation(FacesContext.getCurrentInstance(), null, "loggedPageUser.xhtml?faces-redirect=true;");
         }
         this.myResponsibilities = true;

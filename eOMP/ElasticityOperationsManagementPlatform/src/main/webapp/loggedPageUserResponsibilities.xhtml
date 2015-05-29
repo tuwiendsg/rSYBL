@@ -92,16 +92,22 @@ and open the template in the editor.
                 <p:layoutUnit position="west" size="250" header="Menu" collapsible="true">
                     <h:form>
                         <p:growl autoUpdate="true"/>
-
                         <p:panelMenu>
-                            <p:submenu label="Management" rendered="true">
-                                <p:menuitem value="Interactions" icon="ui-icon-home" action="#{informationManagedBean.activateRoleInteractions()}" />
+
+                                      <p:submenu label="Management" rendered="true">
+       <p:submenu label="Interactions" icon="ui-icon-document"  >
+                                    <p:menuitem value="Request" action="#{informationManagedBean.activateRoleInteractions('Request')}" />
+                                    <p:menuitem value="Notification" action="#{informationManagedBean.activateRoleInteractions('Notification')}" />
+                                    <p:menuitem value="Error" action="#{informationManagedBean.activateRoleInteractions('Error')}" />
+                                    <p:menuitem value="Warning" action="#{informationManagedBean.activateRoleInteractions('Warning')}" />
+
+                                </p:submenu>                                                                <p:menuitem value="Dialog" icon="ui-icon-document" action="loggedPageDialogs.xhtml?faces-redirect=true;" />
+
                                 <p:menuitem value="Services" icon="ui-icon-document" action="#{informationManagedBean.activateAssociatedServices()}"/>
+                                <p:menuitem value="Message statistics" icon="ui-icon-document" action="loggedPageUserStatistics.xhtml?faces-redirect=true;" />
                                 <p:menuitem value="Interaction Partners" icon="ui-icon-person" action="loggedPageAllUsers.xhtml?faces-redirect=true;" />
                                 <p:menuitem value="My Responsibilities" icon="ui-icon-document" action="loggedPageAllUserResponsibilities.xhtml?faces-redirect=true;"/>
                             </p:submenu>
-
-
                         </p:panelMenu>
                     </h:form>
 

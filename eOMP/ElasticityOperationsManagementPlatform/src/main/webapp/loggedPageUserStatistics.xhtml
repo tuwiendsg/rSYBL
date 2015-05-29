@@ -17,65 +17,21 @@ and open the template in the editor.
                 <title>Elasticity Operations Platform</title>
             </f:facet>
             <style type="text/css">
-               .ui-diagram-element {	
-                width:17em; 
-                height:2em; 
-                font-size: 140%;
-                line-height:2em;
-                text-align: center;
-                box-shadow: 0 5px 10px rgba(0, 0, 0, 0.8);
-                border-radius: 4px;
-                border: 1px solid #646D7E;
-                background-color: #D0F5A9;
-                color: #000000;
-            }
-             .ui-diagram-bigger {	
-                width:17em; 
-                height:2em; 	
-                font-size: 140%;
-                line-height:2em;
-                text-align: center;
-                box-shadow: 0 5px 10px rgba(0, 0, 0, 0.8);
-                border-radius: 4px;
-                border: 1px solid #646D7E;
-                background-color: #D0F5A9;
-                color: #000000;
-            }
-            .ui-diagram-biggest {	
-                width:17em; 
-                height:9em; 	
-                font-size: 140%;
-                line-height:2em;
-                text-align: center;
-                box-shadow: 0 5px 10px rgba(0, 0, 0, 0.8);
-                border-radius: 4px;
-                border: 1px solid #646D7E;
-                background-color: #D0F5A9;
-                color: #000000;
-            }
-            .ui-diagram-element:hover {
-                background-color: #9FF781;
-            }
-            
-            .start-node {
-                width:4em;
-                border-radius: 6px;
-                background-color: #000000 !important;
-            }
-              .dialog-name {
-                width:32em;
-                border-radius: 2px;
-                font-weight: bold;
-                font-size: 140%;
-                background-color: #EFFBF2 !important;
-                color: #000000;
-            }          
-            .flow-label {
-                color: #464F60;
-                font-size: 18px;
-                font-size: 140%;
-                font-weight: bold;
-            }
+                .ui-diagram-element {	
+                    width:5em; 
+                    height:5em;
+                    line-height:5em;
+                    text-align: center;
+                    box-shadow: 0 5px 10px rgba(0, 0, 0, 0.8);
+                    border-radius: 5em;
+                    border: 1px solid #404a4e;
+                    background-color: #404a4e;
+                    color: #cccccc;
+                }
+
+                .ui-diagram-element:hover {
+                    background-color: #20282b;
+                }
             </style>
         </h:head>
 
@@ -138,7 +94,7 @@ and open the template in the editor.
                         <p:growl autoUpdate="true"/>
                         <p:panelMenu>
 
-                                       <p:submenu label="Management" rendered="true">
+                                     <p:submenu label="Management" rendered="true">
        <p:submenu label="Interactions" icon="ui-icon-document"  >
                                     <p:menuitem value="Request" action="#{informationManagedBean.activateRoleInteractions('Request')}" />
                                     <p:menuitem value="Notification" action="#{informationManagedBean.activateRoleInteractions('Notification')}" />
@@ -159,8 +115,45 @@ and open the template in the editor.
                 </p:layoutUnit>
 
                 <p:layoutUnit position="center">
-                    <p:diagram value="#{userComponentsBean.dialogsDiagram}" style="height:900px" styleClass="ui-widget-content" />
+                   
+ <h:form id="responsibilityViewer">
+     <p:treeTable value="#{userComponentsBean.root}" selectionMode="single" selection="#{userComponentsBean.selectedNode}" var="document">
+                                <f:facet name="header">
+                                    Current Responsibilities
+                                </f:facet>
+                                <p:column headerText="Name">
+                                    <h:outputText value="#{document.roleName}" />
+                                </p:column>
+                                <p:column headerText="Size">
+                                    <h:outputText value="#{document.details}" />
+                                </p:column>
+
+                                <p:column style="width:24px">
+                                    <p:commandLink update=":responsibilitiesViewer:documentPanel" oncomplete="PF('documentDialog').show()" title="View Detail" styleClass="ui-icon ui-icon-search">
+                                        <f:setPropertyActionListener value="#{document}" target="#{userComponentsBean.selectedDocument}" />
+                                    </p:commandLink>
+                                </p:column>
+                            </p:treeTable>
+
+
+                        </h:form>
                 </p:layoutUnit>
+                <h:form id="responsibilitiesViewer">
+                    <p:dialog id="dialog" header="Document Detail" showEffect="fade" widgetVar="documentDialog" modal="true" resizable="false">
+                        <p:outputPanel id="documentPanel">
+                            <p:panelGrid  columns="2" columnClasses="label,value" rendered="#{not empty userComponentsBean.selectedDocument}">
+                                <h:outputLabel for="name" value="Role/responsibility: " />
+                                <h:outputText id="name" value="#{userComponentsBean.selectedDocument.roleName}" style="font-weight:bold" />
+
+                                <h:outputLabel for="size" value="Details: " />
+                                <h:outputText id="size" value="#{userComponentsBean.selectedDocument.details}" style="font-weight:bold" />
+
+                               
+                            </p:panelGrid>
+                        </p:outputPanel>
+                    </p:dialog>
+                </h:form>
+                 
             </p:layout>
 
         </h:body>
