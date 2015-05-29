@@ -87,13 +87,7 @@ public class SyblControlWS {
 		 controlCoordination.setApplicationDescriptionInfoInternalModel(applicationDescriptionXML, elasticityRequirementsXML, deploymentInfoXML);
 	}
 	 
-	 @PUT
-	 @Path("/TOSCADescriptionAndStartControl")
-	 @Consumes("application/xml")
-	public void setTOSCAAndStartControl(String tosca){
-		 controlCoordination.setAndStartToscaControl(tosca);
-		 
-	}
+	
             @PUT
 	 @Path("/{id}/description/tosca")
 	 @Consumes("application/xml")
