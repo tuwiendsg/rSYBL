@@ -33,7 +33,7 @@ public class InformationManagedBean implements Serializable {
     private boolean services = false;
     private boolean roles = false;
     private boolean processes = false;
-    private boolean myServices = true;
+    private boolean myServices = false;
     private boolean organizationRoles = false;
     private boolean roleInteractionsNotification = false;
     private boolean roleInteractionsRequest = false;

@@ -166,6 +166,7 @@ public class MonitoringAPILoadData implements MonitoringInterface {
                     }
                     readers.put(part, new BufferedReader(new InputStreamReader(new FileInputStream("./load/" + part + ".csv"), Charset.forName("UTF-8"))));
                     String line = readers.get(part).readLine();
+                    line=readers.get(part).readLine();
                     string = line.split(",");
                 } catch (FileNotFoundException ex1) {
                     ex1.printStackTrace();

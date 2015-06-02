@@ -48,7 +48,7 @@ and open the template in the editor.
                         </p:layoutUnit>
                         <p:layoutUnit position="center" >
                             <center>
-                                <p:outputLabel style=" font-size: 250%; font-family: Georgia, serif" >Elasticity Operations Management Platform</p:outputLabel>
+                                <p:outputLabel style=" font-size: 200%; font-family: Georgia, serif" >Elasticity Operations Management Platform</p:outputLabel>
                             </center>
                         </p:layoutUnit>
                         <p:layoutUnit size="250" position="east" >
@@ -78,7 +78,7 @@ and open the template in the editor.
                         </p:layoutUnit>
                         <p:layoutUnit position="center" >
                             <center>
-                                <p:outputLabel style=" font-size: 250%; font-family: Georgia, serif">Distributed Systems Group</p:outputLabel>
+                                <p:outputLabel style=" font-size: 200%; font-family: Georgia, serif">Distributed Systems Group</p:outputLabel>
                             </center>
                         </p:layoutUnit>
                         <p:layoutUnit size="250" position="east" >
@@ -106,7 +106,7 @@ and open the template in the editor.
                                 <p:menuitem value="Services" icon="ui-icon-document" action="#{informationManagedBean.activateAssociatedServices()}"/>
                                 <p:menuitem value="Message statistics" icon="ui-icon-document" action="loggedPageUserStatistics.xhtml?faces-redirect=true;" />
                                 <p:menuitem value="Interaction Partners" icon="ui-icon-person" action="loggedPageAllUsers.xhtml?faces-redirect=true;" />
-                                <p:menuitem value="My Responsibilities" icon="ui-icon-document" action="loggedPageAllUserResponsibilities.xhtml?faces-redirect=true;"/>
+                                <p:menuitem value="My Responsibilities" icon="ui-icon-document" action="loggedPageUserResponsibilities.xhtml?faces-redirect=true;"/>
                             </p:submenu>
                         </p:panelMenu>
                     </h:form>
@@ -115,45 +115,15 @@ and open the template in the editor.
                 </p:layoutUnit>
 
                 <p:layoutUnit position="center">
-                   
- <h:form id="responsibilityViewer">
-     <p:treeTable value="#{userComponentsBean.root}" selectionMode="single" selection="#{userComponentsBean.selectedNode}" var="document">
-                                <f:facet name="header">
-                                    Current Responsibilities
-                                </f:facet>
-                                <p:column headerText="Name">
-                                    <h:outputText value="#{document.roleName}" />
-                                </p:column>
-                                <p:column headerText="Size">
-                                    <h:outputText value="#{document.details}" />
-                                </p:column>
-
-                                <p:column style="width:24px">
-                                    <p:commandLink update=":responsibilitiesViewer:documentPanel" oncomplete="PF('documentDialog').show()" title="View Detail" styleClass="ui-icon ui-icon-search">
-                                        <f:setPropertyActionListener value="#{document}" target="#{userComponentsBean.selectedDocument}" />
-                                    </p:commandLink>
-                                </p:column>
-                            </p:treeTable>
-
-
-                        </h:form>
+        
+                    <div>
+                    <p:chart type="pie" model="#{userComponentsBean.donutModel2}" style="width:800px;height:500px;color: #000000;font-size: 140%;font-weight: bold;" />
+                    </div>
+                    <br/>
+                    <div>
+                        <p:chart type="bubble" model="#{userComponentsBean.bubbleModel2}" style="width:1200px;height:500px;color:#000000;font-size: 160%;font-weight: bold;  "/>
+                    </div>
                 </p:layoutUnit>
-                <h:form id="responsibilitiesViewer">
-                    <p:dialog id="dialog" header="Document Detail" showEffect="fade" widgetVar="documentDialog" modal="true" resizable="false">
-                        <p:outputPanel id="documentPanel">
-                            <p:panelGrid  columns="2" columnClasses="label,value" rendered="#{not empty userComponentsBean.selectedDocument}">
-                                <h:outputLabel for="name" value="Role/responsibility: " />
-                                <h:outputText id="name" value="#{userComponentsBean.selectedDocument.roleName}" style="font-weight:bold" />
-
-                                <h:outputLabel for="size" value="Details: " />
-                                <h:outputText id="size" value="#{userComponentsBean.selectedDocument.details}" style="font-weight:bold" />
-
-                               
-                            </p:panelGrid>
-                        </p:outputPanel>
-                    </p:dialog>
-                </h:form>
-                 
             </p:layout>
 
         </h:body>
