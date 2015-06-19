@@ -46,11 +46,8 @@ import at.ac.tuwien.dsg.csdg.outputProcessing.eventsNotification.EventNotificati
 
 import at.ac.tuwien.dsg.rSybl.analysisEngine.utils.AnalysisLogger;
 import at.ac.tuwien.dsg.rSybl.analysisEngine.utils.Configuration;
-import at.ac.tuwien.dsg.rSybl.analysisEngine.utils.MonitoringThread;
-import at.ac.tuwien.dsg.rSybl.cloudInteractionUnit.api.EnforcementAPI;
 import at.ac.tuwien.dsg.rSybl.cloudInteractionUnit.api.EnforcementAPIInterface;
 import at.ac.tuwien.dsg.rSybl.cloudInteractionUnit.api.MultipleEnforcementAPIs;
-import at.ac.tuwien.dsg.rSybl.cloudInteractionUnit.utils.RuntimeLogger;
 import at.ac.tuwien.dsg.rSybl.dataProcessingUnit.api.MonitoringAPI;
 import at.ac.tuwien.dsg.rSybl.dataProcessingUnit.api.MonitoringAPIInterface;
 import at.ac.tuwien.dsg.rSybl.planningEngine.HealthWatch;

@@ -1,45 +1,38 @@
 package at.ac.tuwien.dsg.rSybl.cloudInteractionUnit.enforcementPlugins.flexiant;
 
-import java.math.BigDecimal;
-import java.math.BigInteger;
-import java.net.NetworkInterface;
+
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.GregorianCalendar;
 import java.util.List;
-import java.util.Locale;
-import java.util.TimeZone;
-import java.util.UUID;
 
 import javax.xml.datatype.DatatypeConfigurationException;
 import javax.xml.datatype.DatatypeFactory;
-import javax.xml.datatype.Duration;
 import javax.xml.datatype.XMLGregorianCalendar;
 import javax.xml.namespace.QName;
 import javax.xml.ws.BindingProvider;
 
-import org.apache.log4j.Level;
-import org.apache.log4j.Logger;
 
 import at.ac.tuwien.dsg.rSybl.cloudInteractionUnit.utils.Configuration;
 import at.ac.tuwien.dsg.rSybl.cloudInteractionUnit.utils.RuntimeLogger;
+import at.ac.tuwien.dsg.rSybl.cloudInteractionUnit.enforcementPlugins.flexiant.flexConnector.Condition;
+import at.ac.tuwien.dsg.rSybl.cloudInteractionUnit.enforcementPlugins.flexiant.flexConnector.ExtilityException;
+import at.ac.tuwien.dsg.rSybl.cloudInteractionUnit.enforcementPlugins.flexiant.flexConnector.FilterCondition;
+import at.ac.tuwien.dsg.rSybl.cloudInteractionUnit.enforcementPlugins.flexiant.flexConnector.Job;
+import at.ac.tuwien.dsg.rSybl.cloudInteractionUnit.enforcementPlugins.flexiant.flexConnector.ListResult;
+import at.ac.tuwien.dsg.rSybl.cloudInteractionUnit.enforcementPlugins.flexiant.flexConnector.NetworkType;
+import at.ac.tuwien.dsg.rSybl.cloudInteractionUnit.enforcementPlugins.flexiant.flexConnector.Nic;
+import at.ac.tuwien.dsg.rSybl.cloudInteractionUnit.enforcementPlugins.flexiant.flexConnector.QueryLimit;
+import at.ac.tuwien.dsg.rSybl.cloudInteractionUnit.enforcementPlugins.flexiant.flexConnector.ResourceMetadata;
+import at.ac.tuwien.dsg.rSybl.cloudInteractionUnit.enforcementPlugins.flexiant.flexConnector.ResourceType;
+import at.ac.tuwien.dsg.rSybl.cloudInteractionUnit.enforcementPlugins.flexiant.flexConnector.SearchFilter;
+import at.ac.tuwien.dsg.rSybl.cloudInteractionUnit.enforcementPlugins.flexiant.flexConnector.Server;
+import at.ac.tuwien.dsg.rSybl.cloudInteractionUnit.enforcementPlugins.flexiant.flexConnector.ServerStatus;
+import at.ac.tuwien.dsg.rSybl.cloudInteractionUnit.enforcementPlugins.flexiant.flexConnector.UserAPI;
+import at.ac.tuwien.dsg.rSybl.cloudInteractionUnit.enforcementPlugins.flexiant.flexConnector.UserService;
 
-import com.extl.jade.user.ExtilityException;
-import com.extl.jade.user.Job;
-import com.extl.jade.user.NetworkType;
-import com.extl.jade.user.Nic;
-import com.extl.jade.user.ResourceMetadata;
-import com.extl.jade.user.Server;
-import com.extl.jade.user.Condition;
-import com.extl.jade.user.FilterCondition;
-import com.extl.jade.user.ResourceType;
-import com.extl.jade.user.SearchFilter;
-import com.extl.jade.user.ListResult;
-import com.extl.jade.user.QueryLimit;
-import com.extl.jade.user.ServerStatus;
-import com.extl.jade.user.UserAPI;
-import com.extl.jade.user.UserService;
+
 
 public class FlexiantActions  {
 	String userEmailAddress = Configuration.getUserEMailAddress();

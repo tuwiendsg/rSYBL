@@ -38,6 +38,7 @@ import java.util.jar.JarEntry;
 import java.util.jar.JarFile;
 
 import at.ac.tuwien.dsg.csdg.Node;
+import at.ac.tuwien.dsg.rSYBL.cloudInteractionUnit.enforcementPlugins.management.ClasspathUtils;
 import at.ac.tuwien.dsg.rSybl.cloudInteractionUnit.enforcementPlugins.interfaces.EnforcementInterface;
 
 public class ManageEnforcementPlugins {
@@ -50,7 +51,9 @@ public class ManageEnforcementPlugins {
 		   	} catch (URISyntaxException e1) {
 		   		// TODO Auto-generated catch block
 		   		e1.printStackTrace();
-		   	}     try {
+		   	}   
+                        
+                        try {
 				ClasspathUtils.addDirToClasspath(directory);
 			} catch (IOException e) {
 				// TODO Auto-generated catch block

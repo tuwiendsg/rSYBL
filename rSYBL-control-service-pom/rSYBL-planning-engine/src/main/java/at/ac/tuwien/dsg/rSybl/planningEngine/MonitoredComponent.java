@@ -26,7 +26,6 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
 
-import at.ac.tuwien.dsg.rSybl.cloudInteractionUnit.utils.RuntimeLogger;
 public class MonitoredComponent extends MonitoredEntity{
 	private String id;
 	private HashMap<String,Double> monitoredData=new HashMap<String,Double>();

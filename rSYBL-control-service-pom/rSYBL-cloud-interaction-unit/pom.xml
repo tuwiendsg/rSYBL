@@ -97,7 +97,7 @@
                         <id>jadeclient</id>
                         <phase>generate-sources</phase>
                         <configuration> 
-                            <packageName>com.extl.jade.user</packageName> 
+                            <packageName>at.ac.tuwien.dsg.rSybl.cloudInteractionUnit.enforcementPlugins.flexiant.flexConnector</packageName> 
                             <sourceDestDir>src/main/java</sourceDestDir>
                             <wsdlFiles>
                                 <wsdlFile>${basedir}/src/main/resources/UserAPI.wsdl</wsdlFile>            

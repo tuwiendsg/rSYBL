@@ -588,5 +588,15 @@ public boolean containsElasticityCapability(Node entity, String capability) {
         throw new UnsupportedOperationException("Not supported yet.");
     }
 
+    @Override
+    public boolean enforceAction(String actionName, String parameter) {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+
+    @Override
+    public boolean enforceAction(String actionName, String parameter1, String parameter2) {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+
 
 }

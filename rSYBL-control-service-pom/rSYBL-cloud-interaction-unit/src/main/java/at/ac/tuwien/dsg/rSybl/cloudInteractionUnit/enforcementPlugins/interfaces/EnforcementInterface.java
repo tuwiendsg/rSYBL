@@ -33,6 +33,9 @@ public boolean scaleOut(double violationDegree,Node toBeScaled);
 public boolean scaleIn(Node toBeScaled);
 public List<String> getElasticityCapabilities();
 public boolean enforceAction(String actionName, Node entity);
+public boolean enforceAction(String actionName, String parameter);
+public boolean enforceAction(String actionName, String parameter1, String parameter2);
+
 public void setControlledService(Node controlledService);
 public Node getControlledService();
 public void setMonitoringPlugin(MonitoringAPIInterface monitoring);

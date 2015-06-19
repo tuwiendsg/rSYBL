@@ -1,13 +1,8 @@
 package at.ac.tuwien.dsg.rSybl.cloudInteractionUnit.enforcementPlugins.flexiant;
 
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.apache.log4j.Level;
-import org.apache.log4j.Logger;
-
-import com.jcraft.jsch.JSchException;
 
 import at.ac.tuwien.dsg.csdg.DependencyGraph;
 import at.ac.tuwien.dsg.csdg.Node;
@@ -15,8 +10,8 @@ import at.ac.tuwien.dsg.csdg.SimpleRelationship;
 import at.ac.tuwien.dsg.csdg.Node.NodeType;
 import at.ac.tuwien.dsg.csdg.Relationship.RelationshipType;
 import at.ac.tuwien.dsg.rSybl.cloudInteractionUnit.enforcementPlugins.interfaces.EnforcementInterface;
-
 import at.ac.tuwien.dsg.rSybl.cloudInteractionUnit.utils.RuntimeLogger;
+import at.ac.tuwien.dsg.rSybl.cloudInteractionUnit.enforcementPlugins.flexiant.flexConnector.Nic;
 import at.ac.tuwien.dsg.rSybl.dataProcessingUnit.api.MonitoringAPIInterface;
 
 public class EnforcementFlexiantAPI implements EnforcementInterface {
@@ -170,9 +165,9 @@ public class EnforcementFlexiantAPI implements EnforcementInterface {
         Node node = new Node();
 
         String ip = "";
-        List<com.extl.jade.user.Nic> nics = flexiantActions.listAllNics();
+        List<Nic> nics = flexiantActions.listAllNics();
 
-        for (com.extl.jade.user.Nic nic : nics) {
+        for (Nic nic : nics) {
             if (nic.getServerUUID() != null && nic.getServerUUID().equalsIgnoreCase(uuid)) {
                 if (nic.getIpAddresses() != null && nic.getIpAddresses().size() > 0) {
                     ip = nic.getIpAddresses().get(0).getIpAddress();
@@ -566,5 +561,15 @@ public class EnforcementFlexiantAPI implements EnforcementInterface {
     @Override
     public void undeployService(Node serviceID) {
         throw new UnsupportedOperationException("Not supported yet.");
+    }
+
+    @Override
+    public boolean enforceAction(String actionName, String parameter) {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+
+    @Override
+    public boolean enforceAction(String actionName, String parameter1, String parameter2) {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 }

@@ -20,7 +20,7 @@
  *  Author : Georgiana Copil - e.copil@dsg.tuwien.ac.at
  */
 
-package at.ac.tuwien.dsg.rSybl.cloudInteractionUnit.enforcementPlugins.management;
+package at.ac.tuwien.dsg.rSYBL.cloudInteractionUnit.enforcementPlugins.management;
 
 import java.io.File;
 import java.io.IOException;

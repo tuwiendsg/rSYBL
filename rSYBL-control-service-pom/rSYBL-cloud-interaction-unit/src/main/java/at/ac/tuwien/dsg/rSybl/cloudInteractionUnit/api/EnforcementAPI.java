@@ -637,4 +637,19 @@ public class EnforcementAPI {
     public void setExecutingControlAction(boolean executingControlAction) {
         this.executingControlAction = executingControlAction;
     }
+
+   
+    public boolean enforceAction(String actionName, String parameter) {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+
+    public boolean enforceAction(String actionName, Node e, String parameter) {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+
+    public boolean enforceAction(String actionName, Node e, String parameter1, String parameter2) {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+
+
 }

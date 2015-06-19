@@ -12,7 +12,7 @@
     <module>rSYBL-local-service-pom</module>
     <module>eOMP</module>
   </modules>
-	<distributionManagement>
+<!--	<distributionManagement>
                 <repository>
                         <id>infosys-repo</id>
                         <name>infosys-repo</name>
@@ -25,7 +25,7 @@
                         <url>scp://www.infosys.tuwien.ac.at/web/website/mvn</url>
                         <uniqueVersion>true</uniqueVersion>
                 </snapshotRepository>
-        </distributionManagement>
+        </distributionManagement>-->
 
 
         <build>
