@@ -31,6 +31,7 @@ private String constraints;
 private String strategies;
 private String priorities;
 private String notifications;
+private String governanceScopes;
 private AnnotationType annotationType;
 private String entityID;
 
@@ -46,6 +47,20 @@ private String entityID;
      */
     public void setNotifications(String notifications) {
         this.notifications = notifications;
+    }
+
+    /**
+     * @return the governanceScopes
+     */
+    public String getGovernanceScopes() {
+        return governanceScopes;
+    }
+
+    /**
+     * @param governanceScopes the governanceScopes to set
+     */
+    public void setGovernanceScopes(String governanceScopes) {
+        this.governanceScopes = governanceScopes;
     }
 public static enum AnnotationType{
 	   CLOUD_SERVICE, SERVICE_UNIT, SERVICE_TOPOLOGY, CODE_REGION,RELATIONSHIP;

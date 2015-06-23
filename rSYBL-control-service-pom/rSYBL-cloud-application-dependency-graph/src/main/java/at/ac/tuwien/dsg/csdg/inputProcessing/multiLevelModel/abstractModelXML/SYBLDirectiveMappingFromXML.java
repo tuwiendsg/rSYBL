@@ -27,6 +27,7 @@ import at.ac.tuwien.dsg.csdg.elasticityInformation.elasticityRequirements.Binary
 import at.ac.tuwien.dsg.csdg.elasticityInformation.elasticityRequirements.BinaryRestrictionsConjunction;
 import at.ac.tuwien.dsg.csdg.elasticityInformation.elasticityRequirements.Condition;
 import at.ac.tuwien.dsg.csdg.elasticityInformation.elasticityRequirements.Constraint;
+import at.ac.tuwien.dsg.csdg.elasticityInformation.elasticityRequirements.GovernanceScope;
 import at.ac.tuwien.dsg.csdg.elasticityInformation.elasticityRequirements.Monitor;
 import at.ac.tuwien.dsg.csdg.elasticityInformation.elasticityRequirements.Monitoring;
 import at.ac.tuwien.dsg.csdg.elasticityInformation.elasticityRequirements.Priority;
@@ -84,13 +85,18 @@ public class SYBLDirectiveMappingFromXML {
         for (Strategy strategy : str) {
             strategies += mapFromXMLStrategyToSYBLAnnotation(strategy);
         }
+
+          String governanceScopes = "";
+        List<GovernanceScope> scopes = syblSpecification.getGovernanceScopes();
+        for (GovernanceScope gov : scopes) {
+            governanceScopes += mapFromXMLGovernanceToSYBLAnnotation(gov);
+        }
         
         String notifications = "";
         List<Notification> not = syblSpecification.getNotifications();
         for (Notification notification : not) {
             notifications += mapFromXMLNotificationToSYBLAnnotation(notification);
         }
-        
 
         String priorities = "";
         List<Priority> pr = syblSpecification.getPriority();
@@ -103,6 +109,7 @@ public class SYBLDirectiveMappingFromXML {
         syblAnnotation.setStrategies(strategies);
         syblAnnotation.setPriorities(priorities);
         syblAnnotation.setNotifications(notifications);
+        syblAnnotation.setGovernanceScopes(governanceScopes);
         return syblAnnotation;
     }
 
@@ -207,7 +214,34 @@ public class SYBLDirectiveMappingFromXML {
         constraints += ";";
         return constraints;
     }
-
+    public static String mapFromXMLGovernanceToSYBLAnnotation(GovernanceScope governanceScope){
+        String governanceAnnotation = "";
+        governanceAnnotation+=governanceScope.getId()+":";
+        governanceAnnotation+=" GOVERNANCE_SCOPE ";
+        if (governanceScope.getQuery()!=null && !governanceScope.getQuery().equalsIgnoreCase("")){
+            governanceAnnotation+="QUERY: "+governanceScope.getQuery()+" ";
+        }
+        if (governanceScope.getConsideringUncertainty()!=null && !governanceScope.getConsideringUncertainty().equalsIgnoreCase("")){
+            governanceAnnotation+="CONSIDERING_UNCERTAINTY: "+governanceScope.getConsideringUncertainty();
+        }
+        governanceAnnotation+=";";
+        return governanceAnnotation;
+    }
+    public static GovernanceScope mapFromSYBLAnnotationToXMLGovernance(String governance){
+        GovernanceScope governanceScope = new GovernanceScope();
+        governanceScope.setId(governance.split(":")[0]);
+        String governanceRule = governance.split("GOVERNANCE_SCOPE ")[1];
+        if (governanceRule.contains("QUERY")){
+            if (governanceRule.contains("CONSIDERING_UNCERTAINTY")){
+                String[] res = governanceRule.split("QUERY")[1].split(" CONSIDERING_UNCERTAINTY");
+                governanceScope.setQuery(res[0]);
+                governanceScope.setConsideringUncertainty(res[1]);
+            }
+            
+        }
+        
+        return governanceScope;
+    }
     public static String mapFromXMLStrategyToSYBLAnnotation(Strategy strategy) {
         if (strategy.getCondition() != null) {
             String strategies = strategy.getId() + ":STRATEGY CASE ";
@@ -225,9 +259,16 @@ public class SYBLDirectiveMappingFromXML {
             } else {
                 strategies += strategy.getToEnforce().getActionName() + ";";
             }
-
+            if (strategy.getGovernanceScope()!=null && !strategy.getGovernanceScope().equals("")){
+                strategies += " FOR "+ strategy.getGovernanceScope();
+            }
+             
+            if (strategy.getUncertaintyConsideration()!=null ){
+                strategies += " CONSIDERING_UNCERTAINTY: "+strategy.getUncertaintyConsideration()+" ";
+                
+            }
             DependencyGraphLogger.logger.info(strategies);
-
+            
             return strategies;
         } else {
             String strategies = strategy.getId() + ":STRATEGY ";
@@ -238,6 +279,7 @@ public class SYBLDirectiveMappingFromXML {
             }
             return strategies;
         }
+        
     }
 
     public static String mapFromXMLNotificationToSYBLAnnotation(Notification notification) {
@@ -355,6 +397,13 @@ public class SYBLDirectiveMappingFromXML {
             String[] notifications = syblAnnotation.getNotifications().split(";");
             for (String notification : notifications) {
                 syblSpecification.addNotification(mapFromSYBLAnnotationToXMLNotification(notification));
+            }
+        }
+        
+        if (syblAnnotation.getGovernanceScopes()!=""){
+            String[] governanceScopes = syblAnnotation.getGovernanceScopes().split(";");
+            for (String gov:governanceScopes){
+                syblSpecification.addGovernanceScope(mapFromSYBLAnnotationToXMLGovernance(gov));
             }
         }
         /*
@@ -934,9 +983,31 @@ public class SYBLDirectiveMappingFromXML {
     }
 
     public static Strategy mapFromSYBLAnnotationToXMLStrategy(String strategy) {
+        Strategy c = new Strategy();
         strategy = strategy.replaceAll("  ", " ");
         strategy = cleanRequirement(strategy);
-        String[] st = strategy.split("[ : ]");
+        if (strategy.contains("CONSIDERING_UNCERTAINTY")) {
+            String cons = strategy.split("CONSIDERING_UNCERTAINTY: ")[1];
+           
+            c.setUncertaintyConsideration(cons);
+        }
+        if (strategy.contains("FOR")) {
+            String governance = strategy.split("FOR ")[1];
+            c.setGovernanceScope(governance);
+        }
+        String newStrategy = "";
+        if (strategy.contains("FOR")) {
+            if (strategy.contains("CONSIDERING_UNCERTAINTY") && strategy.indexOf("FOR") > strategy.indexOf("CONSIDERING_UNCERTAINTY")) {
+                newStrategy = strategy.substring(0, strategy.indexOf("CONSIDERING_UNCERTAINTY"));
+            } else {
+                newStrategy = strategy.substring(0, strategy.indexOf("FOR"));
+            }
+        } else {
+            if (strategy.contains("CONSIDERING_UNCERTAINTY")) {
+                newStrategy = strategy.split("CONSIDERING_UNCERTAINTY")[0];
+            }
+        }
+        String[] st = newStrategy.split("[ : ]");
         String[] si = new String[st.length];
         int i = 0;
         for (String mys : st) {
@@ -947,7 +1018,7 @@ public class SYBLDirectiveMappingFromXML {
         }
         String[] s = new String[i];
         System.arraycopy(si, 0, s, 0, i);
-        Strategy c = new Strategy();
+
         ToEnforce toEnforce = new ToEnforce();
 
         if (!s[s.length - 1].contains("(")) {

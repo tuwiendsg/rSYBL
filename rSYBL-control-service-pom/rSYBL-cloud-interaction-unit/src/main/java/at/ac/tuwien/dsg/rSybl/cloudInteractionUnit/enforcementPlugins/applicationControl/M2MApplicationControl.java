@@ -12,8 +12,8 @@ import java.util.logging.Logger;
 import at.ac.tuwien.dsg.csdg.DependencyGraph;
 import at.ac.tuwien.dsg.csdg.Node;
 import at.ac.tuwien.dsg.csdg.Node.NodeType;
-import at.ac.tuwien.dsg.csdg.Relationship;
 import at.ac.tuwien.dsg.csdg.Relationship.RelationshipType;
+import at.ac.tuwien.dsg.csdg.elasticityInformation.ElasticityCapability;
 import at.ac.tuwien.dsg.rSybl.cloudInteractionUnit.enforcementPlugins.interfaces.EnforcementInterface;
 import at.ac.tuwien.dsg.rSybl.cloudInteractionUnit.utils.Configuration;
 import at.ac.tuwien.dsg.rSybl.cloudInteractionUnit.utils.RuntimeLogger;
@@ -283,7 +283,7 @@ public class M2MApplicationControl implements EnforcementInterface{
 
      }
 
-	public List<String> getElasticityCapabilities() {
+	public List<ElasticityCapability> getElasticityCapabilities() {
 		// TODO Auto-generated method stub
 		return null;
 	}
@@ -308,33 +308,8 @@ public class M2MApplicationControl implements EnforcementInterface{
 		return false;
 	}
 
-    @Override
-    public boolean scaleOut(Node toBeScaled) {
-        throw new UnsupportedOperationException("Not supported yet.");
-    }
 
-    @Override
-    public boolean scaleOut(double violationDegree, Node toBeScaled) {
-        throw new UnsupportedOperationException("Not supported yet.");
-    }
+    
 
-    @Override
-    public boolean scaleIn(Node toBeScaled) {
-        throw new UnsupportedOperationException("Not supported yet.");
-    }
-
-    @Override
-    public void undeployService(Node serviceID) {
-        throw new UnsupportedOperationException("Not supported yet.");
-    }
-
-    @Override
-    public boolean enforceAction(String actionName, String parameter) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-    }
-
-    @Override
-    public boolean enforceAction(String actionName, String parameter1, String parameter2) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-    }
+ 
 }

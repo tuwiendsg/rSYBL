@@ -20,26 +20,27 @@
  */
 package at.ac.tuwien.dsg.rSybl.cloudInteractionUnit.enforcementPlugins.dryRun;
 
+import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 import java.util.Random;
 import java.util.UUID;
 
+import org.json.simple.JSONArray;
+import org.json.simple.JSONObject;
+import org.json.simple.parser.JSONParser;
+
 import at.ac.tuwien.dsg.csdg.DependencyGraph;
 import at.ac.tuwien.dsg.csdg.Node;
-import at.ac.tuwien.dsg.csdg.SimpleRelationship;
 import at.ac.tuwien.dsg.csdg.Node.NodeType;
 import at.ac.tuwien.dsg.csdg.Relationship.RelationshipType;
+import at.ac.tuwien.dsg.csdg.SimpleRelationship;
+import at.ac.tuwien.dsg.csdg.elasticityInformation.ElasticityCapability;
 import at.ac.tuwien.dsg.rSybl.cloudInteractionUnit.enforcementPlugins.interfaces.EnforcementInterface;
 import at.ac.tuwien.dsg.rSybl.cloudInteractionUnit.utils.Configuration;
 import at.ac.tuwien.dsg.rSybl.cloudInteractionUnit.utils.RuntimeLogger;
 import at.ac.tuwien.dsg.rSybl.dataProcessingUnit.api.MonitoringAPIInterface;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import org.json.simple.JSONArray;
-import org.json.simple.JSONObject;
-import org.json.simple.parser.JSONParser;
 
 public class DryRunEnforcementAPI implements EnforcementInterface {
 
@@ -633,11 +634,11 @@ public class DryRunEnforcementAPI implements EnforcementInterface {
         return true;
     }
 
-    public List<String> getElasticityCapabilities() {
-        List<String> list = new ArrayList<String>();
-        list.add("scaleOut");
-        list.add("scaleIn");
-        return list;
+    public List<ElasticityCapability> getElasticityCapabilities() {
+    	DependencyGraph dep = new DependencyGraph();
+    	dep.setCloudService(controlledService);
+    	return dep.getAllElasticityCapabilities();
+
     }
 
     public List<String> getElasticityCapabilities(Node cloudService) {
@@ -661,34 +662,19 @@ public class DryRunEnforcementAPI implements EnforcementInterface {
         this.monitoring = monitoring;
     }
 
-    @Override
-    public boolean enforceAction(String actionName, Node entity) {
-        // TODO Auto-generated method stub
-        return true;
-    }
+
 
     @Override
     public boolean containsElasticityCapability(Node entity, String capability) {
-        for (String cap : getElasticityCapabilities()) {
-            if (cap.equalsIgnoreCase(capability)) {
+        for (ElasticityCapability cap : getElasticityCapabilities()) {
+            if (cap.getName().equalsIgnoreCase(capability)) {
                 return true;
             }
         }
         return false;
     }
 
-    @Override
-    public void undeployService(Node serviceID) {
-       
-    }
+    
 
-    @Override
-    public boolean enforceAction(String actionName, String parameter) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-    }
-
-    @Override
-    public boolean enforceAction(String actionName, String parameter1, String parameter2) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-    }
+    
 }

@@ -27,9 +27,10 @@ import java.util.List;
 
 import at.ac.tuwien.dsg.csdg.DependencyGraph;
 import at.ac.tuwien.dsg.csdg.Node;
-import at.ac.tuwien.dsg.csdg.SimpleRelationship;
 import at.ac.tuwien.dsg.csdg.Node.NodeType;
 import at.ac.tuwien.dsg.csdg.Relationship.RelationshipType;
+import at.ac.tuwien.dsg.csdg.SimpleRelationship;
+import at.ac.tuwien.dsg.csdg.elasticityInformation.ElasticityCapability;
 import at.ac.tuwien.dsg.rSybl.cloudInteractionUnit.enforcementPlugins.interfaces.EnforcementInterface;
 import at.ac.tuwien.dsg.rSybl.cloudInteractionUnit.utils.RuntimeLogger;
 import at.ac.tuwien.dsg.rSybl.dataProcessingUnit.api.MonitoringAPIInterface;
@@ -544,17 +545,17 @@ public class EnforcementOpenstackAPI implements EnforcementInterface{
 		
 
 	}
-public List<String> getElasticityCapabilities() {
-	List<String> list = new ArrayList<String>();
-	list.add("scaleOut");
-	list.add("scaleIn");
-	return list;
+public List<ElasticityCapability> getElasticityCapabilities() {
+	DependencyGraph dep = new DependencyGraph();
+	dep.setCloudService(controlledService);
+	return dep.getAllElasticityCapabilities();
+
 }
-public List<String> getElasticityCapabilities(Node cloudService) {
-	List<String> list = new ArrayList<String>();
-	list.add("scaleOut");
-	list.add("scaleIn");
-	return list;
+public List<ElasticityCapability> getElasticityCapabilities(Node cloudService) {
+	DependencyGraph dep = new DependencyGraph();
+	dep.setCloudService(controlledService);
+	return dep.getAllElasticityCapabilities();
+
 }
 
 public void setControlledService(Node controlledService) {
@@ -570,33 +571,14 @@ public Node getControlledService() {
 public void setMonitoringPlugin(MonitoringAPIInterface monitoring) {
  this.monitoring=monitoring;	
 }
-@Override
-public boolean enforceAction(String actionName, Node entity) {
-	// TODO Auto-generated method stub
-	return false;
-}
 
 @Override
 public boolean containsElasticityCapability(Node entity, String capability) {
-	for (String cap : getElasticityCapabilities())
-		if (cap.equalsIgnoreCase(capability)) return true;
+	for (ElasticityCapability cap : getElasticityCapabilities())
+		if (cap.getName().equalsIgnoreCase(capability)) return true;
 	return false;
 }
 
-    @Override
-    public void undeployService(Node serviceID) {
-        throw new UnsupportedOperationException("Not supported yet.");
-    }
-
-    @Override
-    public boolean enforceAction(String actionName, String parameter) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-    }
-
-    @Override
-    public boolean enforceAction(String actionName, String parameter1, String parameter2) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-    }
 
 
 }

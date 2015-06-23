@@ -42,6 +42,8 @@ public class SYBLAnnotationXML {
 	   	private String priorities ="";
 	   	@XmlAttribute(name="Strategies")
 		private String strategies ="";
+                @XmlAttribute(name="GovernanceScopes")
+                private String governanceScope="";
                 @XmlAttribute(name="Notifications")
 		private String notifications ="";
 
@@ -97,6 +99,20 @@ public class SYBLAnnotationXML {
      */
     public void setNotifications(String notifications) {
         this.notifications = notifications;
+    }
+
+    /**
+     * @return the governanceScope
+     */
+    public String getGovernanceScope() {
+        return governanceScope;
+    }
+
+    /**
+     * @param governanceScope the governanceScope to set
+     */
+    public void setGovernanceScope(String governanceScope) {
+        this.governanceScope = governanceScope;
     }
 	   	
 	   	

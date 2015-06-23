@@ -171,6 +171,10 @@ public  class Strategy implements Serializable{
     protected ToEnforce toEnforce;
     @XmlAttribute(name = "Id")
     protected String id;
+    @XmlAttribute(name="Governance")
+    private String governanceScope;
+    @XmlAttribute(name="UncertaintyConsideration")
+    private String uncertaintyConsideration;
 
     /**
      * Gets the value of the condition property.
@@ -246,6 +250,34 @@ public  class Strategy implements Serializable{
 
     public String toString(){
     	return  condition.toString()+toEnforce.toString();
+    }
+
+    /**
+     * @return the uncertaintyConsideration
+     */
+    public String getUncertaintyConsideration() {
+        return uncertaintyConsideration;
+    }
+
+    /**
+     * @param uncertaintyConsideration the uncertaintyConsideration to set
+     */
+    public void setUncertaintyConsideration(String uncertaintyConsideration) {
+        this.uncertaintyConsideration = uncertaintyConsideration;
+    }
+
+    /**
+     * @return the governanceScope
+     */
+    public String getGovernanceScope() {
+        return governanceScope;
+    }
+
+    /**
+     * @param governanceScope the governanceScope to set
+     */
+    public void setGovernanceScope(String governanceScope) {
+        this.governanceScope = governanceScope;
     }
   
 

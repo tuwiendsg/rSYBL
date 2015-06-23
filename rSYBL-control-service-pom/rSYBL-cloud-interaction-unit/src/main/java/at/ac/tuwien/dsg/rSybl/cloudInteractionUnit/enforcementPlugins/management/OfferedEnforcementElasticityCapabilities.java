@@ -39,22 +39,5 @@ public class OfferedEnforcementElasticityCapabilities {
 		
 	}
 	
-	public void scaleOut(Node entity){
-		Map<Method,EnforcementInterface> methods = manageEnforcementPlugins.getMethods(manageEnforcementPlugins.getAllPlugins(cloudService));
-		for (Method method:methods.keySet()){
-			System.out.println(method.getName());
-			if (method.getName().equalsIgnoreCase("scaleOut")){
-				methods.get(method).scaleOut(entity);
-			}
-		}
-	}
-	public void scaleIn(Node entity){
-		Map<Method,EnforcementInterface> methods = manageEnforcementPlugins.getMethods(manageEnforcementPlugins.getAllPlugins(cloudService));
-		for (Method method:methods.keySet()){
-			//System.out.println(method.getName());
-			if (method.getName().equalsIgnoreCase("scaleIn")){
-				methods.get(method).scaleIn(entity);
-			}
-		}
-	}
+	
 }

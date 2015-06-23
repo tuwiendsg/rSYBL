@@ -14,14 +14,15 @@ import at.ac.tuwien.dsg.csdg.Node;
 import at.ac.tuwien.dsg.csdg.SimpleRelationship;
 import at.ac.tuwien.dsg.csdg.Node.NodeType;
 import at.ac.tuwien.dsg.csdg.Relationship.RelationshipType;
+import at.ac.tuwien.dsg.csdg.elasticityInformation.ElasticityCapability;
 import at.ac.tuwien.dsg.mela.common.monitoringConcepts.MonitoredElement;
 import at.ac.tuwien.dsg.rSybl.cloudInteractionUnit.enforcementPlugins.applicationControl.M2MApplicationControl;
 import at.ac.tuwien.dsg.rSybl.cloudInteractionUnit.enforcementPlugins.interfaces.EnforcementInterface;
 import at.ac.tuwien.dsg.rSybl.cloudInteractionUnit.enforcementPlugins.salsa.common.DefaultSalsaClient;
-
 import at.ac.tuwien.dsg.rSybl.cloudInteractionUnit.utils.Configuration;
 import at.ac.tuwien.dsg.rSybl.cloudInteractionUnit.utils.RuntimeLogger;
 import at.ac.tuwien.dsg.rSybl.dataProcessingUnit.api.MonitoringAPIInterface;
+
 import java.io.BufferedReader;
 import java.io.InputStream;
 import java.io.InputStreamReader;
@@ -115,14 +116,12 @@ public class EnforcementSALSAAPI implements EnforcementInterface {
         return null;
     }
 
-    @Override
     public void undeployService(Node serviceID) {
 
         salsaClient.undeployService(serviceID);
 
     }
 
-    @Override
     public boolean scaleOut(Node arg0) {
         //monitoring.enforcingActionStarted("ScaleOut", arg0);
         boolean res = false;
@@ -665,11 +664,11 @@ public class EnforcementSALSAAPI implements EnforcementInterface {
         return res;
     }
 
-    public List<String> getElasticityCapabilities() {
-        List<String> list = new ArrayList<String>();
-        list.add("scaleOut");
-        list.add("scaleIn");
-        return list;
+    public List<ElasticityCapability> getElasticityCapabilities() {
+    	DependencyGraph dep = new DependencyGraph();
+    	dep.setCloudService(controlledService);
+    	return dep.getAllElasticityCapabilities();
+
     }
 
     public List<String> getElasticityCapabilities(Node cloudService) {
@@ -693,34 +692,19 @@ public class EnforcementSALSAAPI implements EnforcementInterface {
         this.monitoring = monitoring;
     }
 
-    @Override
-    public boolean enforceAction(String actionName, Node entity) {
-        // TODO Auto-generated method stub
-        return false;
-    }
+ 
 
     @Override
     public boolean containsElasticityCapability(Node entity, String capability) {
-        for (String cap : getElasticityCapabilities()) {
-            if (cap.equalsIgnoreCase(capability)) {
+        for (ElasticityCapability cap : getElasticityCapabilities()) {
+            if (cap.getName().equalsIgnoreCase(capability)) {
                 return true;
             }
         }
         return false;
     }
 
-    @Override
-    public boolean scaleOut(double violationDegree, Node toBeScaled) {
-        throw new UnsupportedOperationException("Not supported yet.");
-    }
+    
 
-    @Override
-    public boolean enforceAction(String actionName, String parameter) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-    }
 
-    @Override
-    public boolean enforceAction(String actionName, String parameter1, String parameter2) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-    }
 }

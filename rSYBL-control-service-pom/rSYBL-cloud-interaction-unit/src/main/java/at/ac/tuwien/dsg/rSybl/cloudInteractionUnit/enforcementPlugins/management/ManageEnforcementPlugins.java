@@ -38,7 +38,7 @@ import java.util.jar.JarEntry;
 import java.util.jar.JarFile;
 
 import at.ac.tuwien.dsg.csdg.Node;
-import at.ac.tuwien.dsg.rSYBL.cloudInteractionUnit.enforcementPlugins.management.ClasspathUtils;
+import at.ac.tuwien.dsg.rSybl.cloudInteractionUnit.enforcementPlugins.management.ClasspathUtils;
 import at.ac.tuwien.dsg.rSybl.cloudInteractionUnit.enforcementPlugins.interfaces.EnforcementInterface;
 
 public class ManageEnforcementPlugins {

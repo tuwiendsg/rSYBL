@@ -86,7 +86,7 @@ public class EnforcementAPI {
         return executingControlAction;
     }
 
-    public boolean enforceAction(double violationDegree, String target, String actionName, Node node, Object[] parameters) {
+    public boolean enforceAction(double violationDegree, String actionName, Node node, Object[] parameters) {
         Method foundMethod = null;
         boolean res = false;
         try {
@@ -99,6 +99,10 @@ public class EnforcementAPI {
             }
 
             if (foundMethod != null) {
+                if (foundMethod.getParameterCount() != parameters.length + 2) {
+                    return false;
+                }
+
                 Class[] partypes = new Class[parameters.length + 2];
                 Object[] myParameters = new Object[parameters.length + 2];
                 partypes[0] = Double.class;
@@ -131,7 +135,7 @@ public class EnforcementAPI {
             } else {
                 res = false;
                 RuntimeLogger.logger.info("------------Method not found:> "
-                        + foundMethod + " on " + target + " " + node
+                        + foundMethod + " on " + this.className + " " + node
                         + " params " + parameters.length);
 
             }
@@ -158,7 +162,6 @@ public class EnforcementAPI {
                     // TODO Auto-generated catch block
                     ex.printStackTrace();
                 }
-
 
             }
 
@@ -187,14 +190,20 @@ public class EnforcementAPI {
             if (foundMethod != null) {
                 Class[] partypes = new Class[parameters.length + 1];
                 Object[] myParameters = new Object[parameters.length + 1];
+                if (parameters[parameters.length - 1] == null) {
+                    partypes = new Class[parameters.length];
+                    myParameters = new Object[parameters.length];
+                }
                 partypes[0] = Node.class;
                 myParameters[0] = node;
                 int i = 1;
                 for (Object o : parameters) {
-                    partypes[i] = o.getClass();
-                    myParameters[i] = o;
-                    i += 1;
+                    if (o != null) {
+                        partypes[i] = o.getClass();
+                        myParameters[i] = o;
 
+                        i += 1;
+                    }
                 }
 
                 Method actionMethod;
@@ -241,9 +250,7 @@ public class EnforcementAPI {
                     ex.printStackTrace();
                 }
 
-
             }
-
 
         } catch (SecurityException | ClassNotFoundException e1) {
             // TODO Auto-generated catch block
@@ -257,8 +264,8 @@ public class EnforcementAPI {
     public boolean scalein(Node arg0) {
         boolean res = false;
         if (arg0.getAllRelatedNodes().size() > 1) {
-
-            res = offeredCapabilities.scaleIn(arg0);
+            enforceAction("scaleIn", arg0);
+//            res = offeredCapabilities.scaleIn(arg0);
             List<String> metrics = monitoringAPIInterface
                     .getAvailableMetrics(arg0);
             numberOfWaits = 0;
@@ -281,7 +288,6 @@ public class EnforcementAPI {
                     ex.printStackTrace();
                 }
 
-
             }
 
             // monitoringAPIInterface.enforcingActionEnded("ScaleIn", arg0);
@@ -298,9 +304,8 @@ public class EnforcementAPI {
 
     public boolean scaleout(Node arg0) {
         boolean res = true;
-        res = offeredCapabilities.scaleOut(arg0);
+        res = enforceAction("scaleout", arg0);
         List<String> metrics = monitoringAPIInterface.getAvailableMetrics(arg0);
-        // monitoringAPIInterface.enforcingActionStarted("ScaleOut", arg0);
         numberOfWaits = 0;
         while (!monitoringAPIInterface.isHealthy()) {
             numberOfWaits++;
@@ -321,7 +326,6 @@ public class EnforcementAPI {
                 ex.printStackTrace();
             }
 
-
         }
         try {
             Thread.sleep(60000);
@@ -338,7 +342,7 @@ public class EnforcementAPI {
 
     public boolean scaleout(double violationDegree, Node arg0) {
         boolean res = true;
-        res = offeredCapabilities.scaleOut(violationDegree, arg0);
+        res = enforceAction(violationDegree, "scaleout", arg0);
         List<String> metrics = monitoringAPIInterface.getAvailableMetrics(arg0);
         // monitoringAPIInterface.enforcingActionStarted("ScaleOut", arg0);
         numberOfWaits = 0;
@@ -360,7 +364,6 @@ public class EnforcementAPI {
                 // TODO Auto-generated catch block
                 ex.printStackTrace();
             }
-
 
         }
         try {
@@ -437,7 +440,6 @@ public class EnforcementAPI {
                         ex.printStackTrace();
                     }
 
-
                 }
             } else {
                 res = false;
@@ -500,26 +502,25 @@ public class EnforcementAPI {
                     // TODO Auto-generated catch block
                     ex.printStackTrace();
                 }
-                numberOfWaits=0;
+                numberOfWaits = 0;
                 while (!monitoringAPIInterface.isHealthy()) {
                     RuntimeLogger.logger.info("Waiting for action....");
-                     numberOfWaits++;
-                if (numberOfWaits>10){
-                    EventNotification eventNotification = EventNotification.getEventNotification();
-                    CustomEvent customEvent = new CustomEvent();
-                    customEvent.setCloudServiceID(this.getControlledService().getId());
-                    customEvent.setType(IEvent.Type.UNHEALTHY_SP);
-                    customEvent.setTarget(e.getId());
-                    customEvent.setMessage(e.getId()+" not healthy for "+(numberOfWaits*15000)+" seconds.");
-                    eventNotification.sendEvent(customEvent);
-                }
+                    numberOfWaits++;
+                    if (numberOfWaits > 10) {
+                        EventNotification eventNotification = EventNotification.getEventNotification();
+                        CustomEvent customEvent = new CustomEvent();
+                        customEvent.setCloudServiceID(this.getControlledService().getId());
+                        customEvent.setType(IEvent.Type.UNHEALTHY_SP);
+                        customEvent.setTarget(e.getId());
+                        customEvent.setMessage(e.getId() + " not healthy for " + (numberOfWaits * 15000) + " seconds.");
+                        eventNotification.sendEvent(customEvent);
+                    }
                     try {
                         Thread.sleep(15000);
                     } catch (InterruptedException ex) {
                         // TODO Auto-generated catch block
                         ex.printStackTrace();
                     }
-
 
                 }
             } else {
@@ -542,7 +543,7 @@ public class EnforcementAPI {
     }
 
     public void undeployService(Node service) {
-        offeredCapabilities.undeployService(service);
+        enforceAction("undeployService", service);
     }
 
     public Node getControlledService() {
@@ -622,11 +623,6 @@ public class EnforcementAPI {
                         connection.disconnect();
                     }
                 }
-            } else {
-                if (capability.getCallType().toLowerCase().contains("plugin")) {
-                    res = offeredCapabilities.enforceAction(
-                            capability.getEndpoint(), e);
-                }
             }
             RuntimeLogger.logger.info("Finished enforcing action "
                     + capability.getName() + " on the node " + e + " ...");
@@ -638,7 +634,6 @@ public class EnforcementAPI {
         this.executingControlAction = executingControlAction;
     }
 
-   
     public boolean enforceAction(String actionName, String parameter) {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
@@ -650,6 +645,5 @@ public class EnforcementAPI {
     public boolean enforceAction(String actionName, Node e, String parameter1, String parameter2) {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
-
 
 }

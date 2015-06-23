@@ -470,9 +470,22 @@ public class DependencyGraph implements Serializable{
                       
                   }
                    }
-               }
+               }else{
+                  if (reqtype.equalsIgnoreCase("governanceScopes")){
+                        for(ElasticityRequirement elasticityRequirement: getAllElasticityRequirements()){
+                  if (elasticityRequirement.getAnnotation().getGovernanceScopes().split(":")[0].equalsIgnoreCase(reqID)){
+                      ElasticityRequirement newReq=elasticityRequirement;
+                      newReq.getAnnotation().setGovernanceScopes(requirement);
+                      Node n=getNodeWithID(elasticityRequirement.getAnnotation().getEntityID());
+                      n.getElasticityRequirements().remove(elasticityRequirement);
+                      n.getElasticityRequirements().add(newReq);
+                      
+                  }
+                   }
+                   }
                
            }
+               }
            
        }
        }

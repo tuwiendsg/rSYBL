@@ -20,7 +20,7 @@
  *  Author : Georgiana Copil - e.copil@dsg.tuwien.ac.at
  */
 
-package at.ac.tuwien.dsg.rSYBL.cloudInteractionUnit.enforcementPlugins.openstack;
+package at.ac.tuwien.dsg.rSybl.cloudInteractionUnit.enforcementPlugins.openstack;
 
 import java.io.File;
 import java.util.ArrayList;

@@ -833,7 +833,7 @@ public class MultipleEnforcementAPIs implements EnforcementAPIInterface {
                 actionEvent.setTargetId(node.getId());
                 actionEvent.setActionId(actionName);
                 eventNotification.sendEvent(actionEvent);
-                res = enforcementAPI.enforceAction(violationDegree, target, actionName, node, parameters);
+                res = enforcementAPI.enforceAction(violationDegree, actionName, node, parameters);
                 //RuntimeLogger.logger.info("Answer from enforcement plugin with regard to enforcement successful completion is "+res);
 
                 Node controlService = enforcementAPI.getControlledService();

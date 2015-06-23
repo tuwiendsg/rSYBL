@@ -619,7 +619,7 @@ import javax.xml.bind.annotation.XmlValue;
     "constraints",
     "strategies",
     "monitoring",
-    "priorities","id"
+    "priorities","governanceScopes","id"
 })
 public class SYBLSpecification  implements Serializable{
 
@@ -629,8 +629,10 @@ public class SYBLSpecification  implements Serializable{
     protected List<Strategy> strategies = new ArrayList<Strategy>();
     @XmlElement(name = "Monitoring", required = true)
     protected List<Monitoring> monitoring = new ArrayList<Monitoring>();
+    @XmlElement(name="GovernanceScopes")
+    private List<GovernanceScope> governanceScopes = new ArrayList<GovernanceScope>();
     @XmlElement(name = "Priority")
-    protected List<Priority> priorities;
+    protected List<Priority> priorities=new ArrayList<>();
     @XmlElement(name = "Notification")
     private List<Notification> notifications = new ArrayList<Notification>();
     
@@ -793,6 +795,23 @@ public class SYBLSpecification  implements Serializable{
     }
     public void addNotification(Notification notification){
         notifications.add(notification);
+    }
+
+    /**
+     * @return the governanceScopes
+     */
+    public List<GovernanceScope> getGovernanceScopes() {
+        return governanceScopes;
+    }
+
+    /**
+     * @param governanceScopes the governanceScopes to set
+     */
+    public void setGovernanceScopes(List<GovernanceScope> governanceScopes) {
+        this.governanceScopes = governanceScopes;
+    }
+    public void addGovernanceScope(GovernanceScope governanceScope){
+        governanceScopes.add(governanceScope);
     }
 
 }
