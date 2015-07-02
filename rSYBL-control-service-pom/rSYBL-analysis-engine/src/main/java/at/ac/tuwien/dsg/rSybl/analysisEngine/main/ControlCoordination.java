@@ -28,6 +28,7 @@ import java.util.ResourceBundle.Control;
 
 import at.ac.tuwien.dsg.csdg.DependencyGraph;
 import at.ac.tuwien.dsg.csdg.elasticityInformation.elasticityRequirements.SYBLAnnotation;
+import at.ac.tuwien.dsg.csdg.inputProcessing.checkpointing.CheckpointingUtils;
 import at.ac.tuwien.dsg.csdg.inputProcessing.multiLevelModel.InputProcessing;
 import at.ac.tuwien.dsg.csdg.inputProcessing.tosca.TOSCAProcessing;
 import at.ac.tuwien.dsg.rSybl.analysisEngine.utils.AnalysisLogger;
@@ -37,10 +38,29 @@ public class ControlCoordination {
 
     private String currentControls = "";
     private HashMap<String, ControlService> controls = new HashMap<String, ControlService>();
-
+    private CheckpointingUtils checkpointingUtils = CheckpointingUtils.getInstance();
     public ControlCoordination() {
+        checkAndReinitialize();
     }
-
+    private void checkAndReinitialize(){
+        if (checkpointingUtils.checkpointingFolderExists()){
+                   HashMap<String,String> compositionRules= checkpointingUtils.getCompositionRules();
+                   HashMap<String,String> effects = checkpointingUtils.getEffects();
+                   HashMap<String,String> serviceDescriptions = checkpointingUtils.getServiceDescription();
+                   HashMap<String,String> serviceDeployments = checkpointingUtils.getDeploymentDescription();
+                   for (String serviceID:compositionRules.keySet()){
+                       ControlService thisService = new ControlService(serviceID);
+                      
+                       thisService.setApplicationDeployment(serviceDeployments.get(serviceID));
+                       thisService.setApplicationDescriptionInfo(serviceDescriptions.get(serviceID));
+                       thisService.setEffects(effects.get(serviceID));
+                       thisService.setMetricCompositionRules(compositionRules.get(serviceID));
+                       thisService.start();
+                       controls.put(serviceID, thisService);
+                       
+                   }
+                }
+    }
     public void refreshApplicationDeploymentDescription(String deploymentNew) {
     }
 
@@ -68,7 +88,7 @@ public class ControlCoordination {
         }
     }
     public void prepareControl(String cloudServiceId) {
-        ControlService controlService = new ControlService();
+        ControlService controlService = new ControlService(cloudServiceId);
         controls.put(cloudServiceId, controlService);
         currentControls = cloudServiceId;
     }
@@ -178,7 +198,7 @@ public class ControlCoordination {
     public void setApplicationDescriptionInfoInternalModel(String applicationDescriptionXML, String elasticityRequirementsXML, String deploymentInfoXML) {
         InputProcessing inputProcessing = new InputProcessing();
         DependencyGraph dependencyGraph = inputProcessing.loadDependencyGraphFromStrings(applicationDescriptionXML, elasticityRequirementsXML, deploymentInfoXML);
-        ControlService controlService = new ControlService();
+        ControlService controlService = new ControlService(dependencyGraph.getCloudService().getId());
         controlService.setDependencyGraph(dependencyGraph);
         controls.put(dependencyGraph.getCloudService().getId(), controlService);
 
@@ -187,7 +207,7 @@ public class ControlCoordination {
     public void setAndStartToscaControl(String tosca) {
         TOSCAProcessing inputProcessing = new TOSCAProcessing();
         DependencyGraph dependencyGraph = inputProcessing.toscaDescriptionToDependencyGraph(tosca);
-        ControlService controlService = new ControlService();
+        ControlService controlService = new ControlService(dependencyGraph.getCloudService().getId());
         controlService.setDependencyGraph(dependencyGraph);
         controls.put(dependencyGraph.getCloudService().getId(), controlService);
         controls.get(dependencyGraph.getCloudService().getId()).start();

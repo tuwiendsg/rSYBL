@@ -13,18 +13,10 @@
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
  * WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
- * License for the senpecific language governing permissions and limitations under
+ * License for the specific language governing permissions and limitations under
  * the License.
  */
 package at.ac.tuwien.dsg.rSybl.analysisEngine.main;
-
-import java.io.BufferedWriter;
-import java.io.FileWriter;
-import java.io.IOException;
-import java.rmi.RemoteException;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
 
 import at.ac.tuwien.dsg.csdg.DependencyGraph;
 import at.ac.tuwien.dsg.csdg.Node;
@@ -36,14 +28,12 @@ import at.ac.tuwien.dsg.csdg.elasticityInformation.elasticityRequirements.Binary
 import at.ac.tuwien.dsg.csdg.elasticityInformation.elasticityRequirements.Constraint;
 import at.ac.tuwien.dsg.csdg.elasticityInformation.elasticityRequirements.SYBLAnnotation;
 import at.ac.tuwien.dsg.csdg.elasticityInformation.elasticityRequirements.SYBLSpecification;
+import at.ac.tuwien.dsg.csdg.inputProcessing.checkpointing.CheckpointingUtils;
 import at.ac.tuwien.dsg.csdg.inputProcessing.multiLevelModel.InputProcessing;
 import at.ac.tuwien.dsg.csdg.inputProcessing.multiLevelModel.abstractModelXML.SYBLDirectiveMappingFromXML;
 import at.ac.tuwien.dsg.csdg.inputProcessing.tosca.TOSCAProcessing;
 import at.ac.tuwien.dsg.csdg.outputProcessing.OutputProcessing;
-import at.ac.tuwien.dsg.csdg.outputProcessing.OutputProcessingFactory;
-import at.ac.tuwien.dsg.csdg.outputProcessing.OutputProcessingInterface;
 import at.ac.tuwien.dsg.csdg.outputProcessing.eventsNotification.EventNotification;
-
 import at.ac.tuwien.dsg.rSybl.analysisEngine.utils.AnalysisLogger;
 import at.ac.tuwien.dsg.rSybl.analysisEngine.utils.Configuration;
 import at.ac.tuwien.dsg.rSybl.cloudInteractionUnit.api.EnforcementAPIInterface;
@@ -53,11 +43,14 @@ import at.ac.tuwien.dsg.rSybl.dataProcessingUnit.api.MonitoringAPIInterface;
 import at.ac.tuwien.dsg.rSybl.planningEngine.HealthWatch;
 import at.ac.tuwien.dsg.rSybl.planningEngine.PlanningAlgorithmInterface;
 import at.ac.tuwien.dsg.rSybl.planningEngine.PlanningGreedyAlgorithm;
-import at.ac.tuwien.dsg.rSybl.planningEngine.PlanningGreedyAlgorithmWithPolynomialElasticityRelationships;
-import at.ac.tuwien.dsg.rSybl.planningEngine.PlanningHeuristicSearch;
 import at.ac.tuwien.dsg.rSybl.planningEngine.PlanningHeuristicSearchWithPolynomialElasticityRelationships;
-import at.ac.tuwien.dsg.sybl.syblProcessingUnit.processing.SYBLProcessingThread;
-import at.ac.tuwien.dsg.sybl.syblProcessingUnit.utils.SYBLDirectivesEnforcementLogger;
+import java.io.BufferedWriter;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.rmi.RemoteException;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
 
 public class ControlService {
 
@@ -71,14 +64,30 @@ public class ControlService {
     private String deploymentDescription = "";
     private String metricCompositionRules = "";
     private String effects = "";
-
-    public ControlService() {
+    private String cloudServiceID="";
+    private CheckpointingUtils checkpointingUtils ;
+    public ControlService(String id) {
+        cloudServiceID=id;
         new StartThread().start();
-
+        checkpointingUtils=CheckpointingUtils.getInstance();
     }
 
     public String getApplicationDescriptionInfo() {
         return applicationDescription;
+    }
+
+    /**
+     * @return the cloudServiceID
+     */
+    public String getCloudServiceID() {
+        return cloudServiceID;
+    }
+
+    /**
+     * @param cloudServiceID the cloudServiceID to set
+     */
+    public void setCloudServiceID(String cloudServiceID) {
+        this.cloudServiceID = cloudServiceID;
     }
 
     public class StartThread extends Thread {
@@ -109,6 +118,7 @@ public class ControlService {
         deploymentDescription = deployment;
         dependencyGraph = inputProcessing.loadDependencyGraphFromStrings(applicationDescription, "", deploymentDescription);
         replaceDependencyGraph();
+        checkpointingUtils.storeDeploymentDescription(deployment, this.cloudServiceID);
     }
 
     public void start() {
@@ -139,11 +149,14 @@ public class ControlService {
         enforcementAPI = null;
         effects = "";
         metricCompositionRules = "";
+        checkpointingUtils.stopGracefullyControl(this.cloudServiceID);
         }
     }
     
     public void undeployService(){
         enforcementAPI.undeployService(dependencyGraph.getCloudService());
+        checkpointingUtils.stopGracefullyControl(this.cloudServiceID);
+        
     }
  public void removeFromMonitoring(){
      if (monitoringAPI!=null){
@@ -404,14 +417,12 @@ public class ControlService {
 //	}
     public void setApplicationDescriptionInfo(String applicationDescriptionXML) {
         applicationDescription = applicationDescriptionXML;
-
-
-
-
-    }
+        checkpointingUtils.storeServiceDescription(applicationDescriptionXML, cloudServiceID);
+}
 
     public void setApplicationDeployment(String deploymentDescriptionXML) {
         deploymentDescription = deploymentDescriptionXML;
+        checkpointingUtils.storeDeploymentDescription(deploymentDescriptionXML, cloudServiceID);
     }
 
     public void setApplicationDescriptionInfoInternalModel(
@@ -421,6 +432,9 @@ public class ControlService {
         dependencyGraph = inputProcessing.loadDependencyGraphFromStrings(
                 applicationDescriptionXML, elasticityRequirementsXML,
                 deploymentInfoXML);
+        checkpointingUtils.storeServiceDescription(applicationDescriptionXML, cloudServiceID);
+        checkpointingUtils.storeDeploymentDescription(deploymentInfoXML, cloudServiceID);
+        
         //startSYBLProcessingAndPlanning();
     }
 
@@ -430,6 +444,7 @@ public class ControlService {
         dependencyGraph = toscaProcessing.toscaDescriptionToDependencyGraph(tosca);
         OutputProcessing outputProcessing = new OutputProcessing();
         applicationDescription=outputProcessing.getCloudServiceXML(dependencyGraph.getCloudService());
+        checkpointingUtils.storeTOSCADescription(tosca, dependencyGraph.getCloudService().getId());
         //startSYBLProcessingAndPlanning();
     }
 
@@ -812,11 +827,12 @@ public class ControlService {
             planningAlgorithm.setEffects(effects);
         }
         planningAlgorithm.start();
-
+        checkpointingUtils.storeServiceDescription(applicationDescription, cloudServiceID);
     }
 
     public void replaceEffects(String effects) {
         planningAlgorithm.setEffects(effects);
+        checkpointingUtils.storeServiceEffects(effects, cloudServiceID);
     }
 
     public void replaceElasticityRequirements(String requirements) {
@@ -852,11 +868,12 @@ public class ControlService {
             planningAlgorithm.setEffects(effects);
         }
         planningAlgorithm.start();
-
+checkpointingUtils.storeServiceDescription(applicationDescription, cloudServiceID);
     }
 
     public void replaceCompositionRules(String composition) {
         monitoringAPI.setCompositionRules(composition);
+        checkpointingUtils.storeServiceCompositionRules(composition, cloudServiceID);
     }
 
     public String getMetricCompositionRules() {
@@ -865,6 +882,7 @@ public class ControlService {
 
     public void setMetricCompositionRules(String metricCompositionRules) {
         this.metricCompositionRules = metricCompositionRules;
+        checkpointingUtils.storeServiceCompositionRules(metricCompositionRules, cloudServiceID);
     }
 
     public String getEffects() {
@@ -873,7 +891,7 @@ public class ControlService {
 
     public void setEffects(String effects) {
         this.effects = effects;
-
+        checkpointingUtils.storeServiceEffects(effects, cloudServiceID);
     }
     public String getSimpleRequirements(){
         String reqs = "";

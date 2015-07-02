@@ -52,7 +52,9 @@ public class XMLParser
 			doc = parserXML(is);
 			
 			//visit(doc, 0);
-		}
+		}catch(IllegalStateException e){
+                    SYBLDirectivesEnforcementLogger.logger.error("XML parser stopped");
+                }
 		catch(Exception error)
 		{
 			SYBLDirectivesEnforcementLogger.logger.error("XML Parser at constructor "+ error.toString());
@@ -61,6 +63,7 @@ public class XMLParser
 	
 	public void visit(Node node, int level)
 	{
+            try{
 		NodeList nl = node.getChildNodes();
 		
 		for(int i=0, cnt=nl.getLength(); i<cnt; i++)
@@ -70,10 +73,14 @@ public class XMLParser
 			visit(nl.item(i), level+1);
 
 		}
+            }catch(IllegalStateException e){
+                    SYBLDirectivesEnforcementLogger.logger.error("XML parser stopped");
+                }
 	}
 	
 	public Node searchConcept(String conceptName){
-		//split concept name into more concepts to be able to search for it 
+		//split concept name into more concepts to be able to search for it
+            try{
 		String[] conc = conceptName.split("\\.");
 		LinkedList<String> concepts = new LinkedList<String>();
 		for (String s:conc){
@@ -82,12 +89,18 @@ public class XMLParser
 		LinkedList<Node> nodes = new LinkedList<Node>();
 		nodes.addFirst(doc);
 		return searchComplexConcept(concepts,nodes);
+            }catch(IllegalStateException e){
+                    SYBLDirectivesEnforcementLogger.logger.error("XML parser stopped");
+                }
+            return null;
 	}
 	
 	private Node searchComplexConcept(LinkedList<String> conceptNames,LinkedList<Node> toVisit){
+            try{
 		if (!toVisit.isEmpty()){
 		Node currentNode= toVisit.getFirst();	
 		toVisit.removeFirst();
+                if (currentNode!=null){
 		Node n = currentNode.getFirstChild();
 		while (n!=null){
 			toVisit.addFirst(n);
@@ -99,11 +112,16 @@ public class XMLParser
 		if (conceptNames.isEmpty()) return currentNode;
 		return searchComplexConcept(conceptNames,toVisit);
 		}
+                }
+            }catch(IllegalStateException e){
+                    SYBLDirectivesEnforcementLogger.logger.error("XML parser stopped");
+                }
 		return null;
 		
 	}
 	
 	private Node searchConcept(Node root,String conceptName){
+            try{
 		LinkedList<Node> queue = new LinkedList<Node>();
 		queue.addFirst(root);
 		while (queue.size()>0){
@@ -116,7 +134,9 @@ public class XMLParser
 			n = n.getNextSibling();
 		}
 		
-		}
+		}}catch(IllegalStateException e){
+                    SYBLDirectivesEnforcementLogger.logger.error("XML parser stopped");
+                }
 		return null;
 		
 	}
