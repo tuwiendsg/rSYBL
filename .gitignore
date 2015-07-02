@@ -42,3 +42,8 @@ rSYBL-control-service-pom/rSYBL-cloud-interaction-unit/src/main/java/com/extl/ja
 
 rSYBL-control-service-pom/rSYBL-analysis-engine/nb-configuration.xml
 /rSYBL-control-service-pom/rSYBL-learning-engine/target/
+.metadata/
+.recommenders/
+rSYBL-local-service-pom/rSYBL-local-service/dependency-reduced-pom.xml
+rSYBL-control-service-pom/rSYBL-analysis-engine/nb-configuration.xml
+
