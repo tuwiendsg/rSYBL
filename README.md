@@ -23,7 +23,7 @@ A snapshot of user interaction with rSYBL is presented below
 <img src="http://upload.wikimedia.org/wikipedia/commons/thumb/b/b7/Flag_of_Europe.svg/800px-Flag_of_Europe.svg.png" width="100px" >
 </figure>
 <figure>
-<img src="http://www.brightfire2.co.uk/celar/wp-content/themes/rachelbaker-bootstrapwp-Twitter-Bootstrap-for-WordPress-9bc2021/img/logo.png" width="100px" >
+<img src="http://www.celarcloud.eu/wp-content/uploads/2013/04/Celar2.png" width="100px" >
 </figure>
 
 The developement of this tool was supported by the Eropean Union in terms of the <a href="">CELAR FP7 EU</a> project (FP7-ICT-2011-8 #317790).
