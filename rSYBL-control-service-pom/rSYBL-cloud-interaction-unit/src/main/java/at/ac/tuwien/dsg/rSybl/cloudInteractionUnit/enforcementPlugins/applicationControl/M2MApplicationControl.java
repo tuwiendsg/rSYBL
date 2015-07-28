@@ -335,10 +335,6 @@ public class M2MApplicationControl implements EnforcementInterface{
         throw new UnsupportedOperationException("Not supported yet.");
     }
 
-    @Override
-    public boolean scaleOut(double violationDegree, Node toBeScaled) {
-        throw new UnsupportedOperationException("Not supported yet.");
-    }
 
     @Override
     public boolean scaleIn(Node toBeScaled) {
@@ -350,13 +346,14 @@ public class M2MApplicationControl implements EnforcementInterface{
         throw new UnsupportedOperationException("Not supported yet.");
     }
 
+   
     @Override
-    public boolean enforceAction(String actionName, String parameter) {
+    public boolean scaleOut(Node toBeScaled, double violationDegree) {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
     @Override
-    public boolean enforceAction(String actionName, String parameter1, String parameter2) {
+    public boolean scaleIn(Node toBeScaled, double violationDegree) {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 }

@@ -72,6 +72,9 @@ public class Configuration {
     public static String getEffectsPath(){
     	return configuration.getProperty("Effects");
     }
+   public static boolean getDecisionsDifferentiatedOnViolationDegree(){
+    	return Boolean.parseBoolean(configuration.getProperty("DecisionsDifferentiatedOnViolationDegree"));
+    }  
     public static String getMonitoringServiceURL(){
     	return configuration.getProperty("MonitoringServiceURL");
     }   
@@ -82,6 +85,9 @@ public class Configuration {
     }
     public static int getRefreshPeriod(){
     	return Integer.parseInt(configuration.getProperty("REFRESH_PERIOD"));
+    }
+     public static String getResourcesEffectsPath(){
+    	return configuration.getProperty("ResourcesEffects");
     }
     public static boolean getADVISEEnabled(){
         return Boolean.parseBoolean(configuration.getProperty("ADVISEEnabled"));

@@ -44,6 +44,7 @@ import at.ac.tuwien.dsg.rSybl.planningEngine.HealthWatch;
 import at.ac.tuwien.dsg.rSybl.planningEngine.PlanningAlgorithmInterface;
 import at.ac.tuwien.dsg.rSybl.planningEngine.PlanningGreedyAlgorithm;
 import at.ac.tuwien.dsg.rSybl.planningEngine.PlanningHeuristicSearchWithPolynomialElasticityRelationships;
+import at.ac.tuwien.dsg.rSybl.planningEngine.resourcesLevelControl.ResourcesLevelControl;
 import java.io.BufferedWriter;
 import java.io.FileWriter;
 import java.io.IOException;
@@ -57,6 +58,7 @@ public class ControlService {
     private SYBLService syblService;
     private MonitoringAPIInterface monitoringAPI;
     private EnforcementAPIInterface enforcementAPI;
+    private ResourcesLevelControl resourcesLevelControl;
     private HealthWatch healthWatch;
     private DependencyGraph dependencyGraph;
     private PlanningAlgorithmInterface planningAlgorithm;
@@ -64,12 +66,13 @@ public class ControlService {
     private String deploymentDescription = "";
     private String metricCompositionRules = "";
     private String effects = "";
-    private String cloudServiceID="";
-    private CheckpointingUtils checkpointingUtils ;
+    private String cloudServiceID = "";
+    private CheckpointingUtils checkpointingUtils;
+
     public ControlService(String id) {
-        cloudServiceID=id;
+        cloudServiceID = id;
         new StartThread().start();
-        checkpointingUtils=CheckpointingUtils.getInstance();
+        checkpointingUtils = CheckpointingUtils.getInstance();
     }
 
     public String getApplicationDescriptionInfo() {
@@ -103,14 +106,16 @@ public class ControlService {
     public void triggerHealthFix(String servicePartID) {
         healthWatch.triggerHealthFix(servicePartID);
     }
-    public String getXMLRequirements(){
+
+    public String getXMLRequirements() {
         OutputProcessing outputProcessing = new OutputProcessing();
-        try{
-        return outputProcessing.getXMLRequirements(dependencyGraph.getAllElasticityRequirements());
-        }catch(Exception e ){
+        try {
+            return outputProcessing.getXMLRequirements(dependencyGraph.getAllElasticityRequirements());
+        } catch (Exception e) {
             return "";
         }
     }
+
     public void refreshApplicationDeploymentDescription(String deployment) {
         //TODO implement this, have to replace deployment conf 
         InputProcessing inputProcessing = new InputProcessing();
@@ -125,43 +130,50 @@ public class ControlService {
 
         startSYBLProcessingAndPlanning();
         dependencyGraph.setControlState();
-        }
-    public void startControlOnExisting(){
+    }
+
+    public void startControlOnExisting() {
         controlExistingService();
         dependencyGraph.setControlState();
     }
+
     public void stop() {
-        if (dependencyGraph.isInControlState()){
-        monitoringAPI.removeService(dependencyGraph.getCloudService());
-        EventNotification eventNotification = EventNotification.getEventNotification();
-        eventNotification.clearAllEvents();
-        
-        dependencyGraph.setWaitState();
-        if (planningAlgorithm != null) {
-            planningAlgorithm.stop();
-        }
-        if (syblService != null) {
-            syblService.stopProcessingThreads();
-        }
-        planningAlgorithm = null;
-        syblService = null;
-        monitoringAPI = null;
-        enforcementAPI = null;
-        effects = "";
-        metricCompositionRules = "";
-        checkpointingUtils.stopGracefullyControl(this.cloudServiceID);
+        if (dependencyGraph.isInControlState()) {
+            monitoringAPI.removeService(dependencyGraph.getCloudService());
+            EventNotification eventNotification = EventNotification.getEventNotification();
+            eventNotification.clearAllEvents();
+
+            dependencyGraph.setWaitState();
+            if (planningAlgorithm != null) {
+                planningAlgorithm.stop();
+            }
+            if (resourcesLevelControl != null) {
+                resourcesLevelControl.stop();
+            }
+            if (syblService != null) {
+                syblService.stopProcessingThreads();
+            }
+            planningAlgorithm = null;
+            resourcesLevelControl = null;
+            syblService = null;
+            monitoringAPI = null;
+            enforcementAPI = null;
+            effects = "";
+            metricCompositionRules = "";
+            checkpointingUtils.stopGracefullyControl(this.cloudServiceID);
         }
     }
-    
-    public void undeployService(){
+
+    public void undeployService() {
         enforcementAPI.undeployService(dependencyGraph.getCloudService());
         checkpointingUtils.stopGracefullyControl(this.cloudServiceID);
-        
+
     }
- public void removeFromMonitoring(){
-     if (monitoringAPI!=null){
-        monitoringAPI.removeService(dependencyGraph.getCloudService());
-     }
+
+    public void removeFromMonitoring() {
+        if (monitoringAPI != null) {
+            monitoringAPI.removeService(dependencyGraph.getCloudService());
+        }
     }
 
     public void setDependencyGraph(DependencyGraph dependencyGraph) {
@@ -169,20 +181,20 @@ public class ControlService {
     }
 
     public String getJSONStructureOfService() {
-        try{
-        return dependencyGraph.getStructuralDataInJSON();
-        }catch(Exception e){
-            
-                return "";
+        try {
+            return dependencyGraph.getStructuralDataInJSON();
+        } catch (Exception e) {
+
+            return "";
         }
-        }
+    }
 
     private void replaceDependencyGraph() {
         Node node = new Node();
         node = dependencyGraph.getCloudService();
-                OutputProcessing outputProcessing = new OutputProcessing();
-        
-        applicationDescription= outputProcessing.getCloudServiceXML(dependencyGraph.getCloudService());
+        OutputProcessing outputProcessing = new OutputProcessing();
+
+        applicationDescription = outputProcessing.getCloudServiceXML(dependencyGraph.getCloudService());
         monitoringAPI.setControlledService(node);
 
         monitoringAPI.submitElasticityRequirements(dependencyGraph
@@ -201,6 +213,10 @@ public class ControlService {
         }
 
         planningAlgorithm.replaceDependencyGraph(dependencyGraph);
+        if (Configuration.resourceLevelControlEnabled()) {
+            resourcesLevelControl.replaceDependencyGraph(dependencyGraph);
+            resourcesLevelControl.readResourceActionEffects();
+        }
         if (!effects.equalsIgnoreCase("")) {
             planningAlgorithm.setEffects(effects);
         }
@@ -214,100 +230,109 @@ public class ControlService {
         }
         replaceDependencyGraph();
     }
-    public void controlExistingService(){
-            InputProcessing inputProcessing = new InputProcessing();
-            
-            dependencyGraph = inputProcessing.loadDependencyGraphFromStrings(applicationDescription, "", deploymentDescription);
-            Node node = new Node();
-            node = dependencyGraph.getCloudService();
-            AnalysisLogger.logger.info("Current graph is" + dependencyGraph.graphToString());
-            monitoringAPI = new MonitoringAPI();
-            monitoringAPI.controlExistingCloudService(node);
 
-            AnalysisLogger.logger.info("Have just started monitoring plugin for existing cloud service");
+    public void controlExistingService() {
+        InputProcessing inputProcessing = new InputProcessing();
+
+        dependencyGraph = inputProcessing.loadDependencyGraphFromStrings(applicationDescription, "", deploymentDescription);
+        Node node = new Node();
+        node = dependencyGraph.getCloudService();
+        AnalysisLogger.logger.info("Current graph is" + dependencyGraph.graphToString());
+        monitoringAPI = new MonitoringAPI();
+        monitoringAPI.controlExistingCloudService(node);
+
+        AnalysisLogger.logger.info("Have just started monitoring plugin for existing cloud service");
 
 //            monitoringAPI.submitElasticityRequirements(dependencyGraph
 //                    .getAllElasticityRequirements());
 //            AnalysisLogger.logger.info("Have set the requirements on MELA");
-            enforcementAPI = new MultipleEnforcementAPIs();
+        enforcementAPI = new MultipleEnforcementAPIs();
 
-            enforcementAPI.setControlledService(node);
+        enforcementAPI.setControlledService(node);
 
-            enforcementAPI.setMonitoringPlugin(monitoringAPI);
-            AnalysisLogger.logger.info("Have information on enforcement api");
+        enforcementAPI.setMonitoringPlugin(monitoringAPI);
+        AnalysisLogger.logger.info("Have information on enforcement api");
 
-            syblService = new SYBLService(dependencyGraph, monitoringAPI,
-                    enforcementAPI);
-            for (ElasticityRequirement syblSpecification : dependencyGraph
-                    .getAllElasticityRequirements()) {
-                SYBLAnnotation annotation = syblSpecification.getAnnotation();
-                syblService.processAnnotations(syblSpecification
-                        .getAnnotation().getEntityID(), annotation);
+        syblService = new SYBLService(dependencyGraph, monitoringAPI,
+                enforcementAPI);
+        for (ElasticityRequirement syblSpecification : dependencyGraph
+                .getAllElasticityRequirements()) {
+            SYBLAnnotation annotation = syblSpecification.getAnnotation();
+            syblService.processAnnotations(syblSpecification
+                    .getAnnotation().getEntityID(), annotation);
 
-            }
+        }
 
-            AnalysisLogger.logger.info("SYBL Service started");
+        AnalysisLogger.logger.info("SYBL Service started");
 
-            if (Configuration.getPlanningAlgorithm() != null && !Configuration.getPlanningAlgorithm().equals("") && Configuration.getPlanningAlgorithm().toLowerCase().contains("heuristic")) {
-                planningAlgorithm = new PlanningHeuristicSearchWithPolynomialElasticityRelationships(
-                        dependencyGraph, monitoringAPI, enforcementAPI);
-            } else {
-                planningAlgorithm = new PlanningGreedyAlgorithm(
-                        dependencyGraph, monitoringAPI, enforcementAPI);
-            }
-            if (!effects.equalsIgnoreCase("")) {
-                planningAlgorithm.setEffects(effects);
-            }
+        if (Configuration.getPlanningAlgorithm() != null && !Configuration.getPlanningAlgorithm().equals("") && Configuration.getPlanningAlgorithm().toLowerCase().contains("heuristic")) {
+            planningAlgorithm = new PlanningHeuristicSearchWithPolynomialElasticityRelationships(
+                    dependencyGraph, monitoringAPI, enforcementAPI);
+        } else {
+            planningAlgorithm = new PlanningGreedyAlgorithm(
+                    dependencyGraph, monitoringAPI, enforcementAPI);
+        }
+        if (Configuration.resourceLevelControlEnabled()) {
+            resourcesLevelControl = new ResourcesLevelControl(enforcementAPI, monitoringAPI, dependencyGraph);
+            resourcesLevelControl.readResourceActionEffects();
+            resourcesLevelControl.start();
+        }
+        if (!effects.equalsIgnoreCase("")) {
+            planningAlgorithm.setEffects(effects);
+        }
 
-            planningAlgorithm.start();
-            AnalysisLogger.logger.info("Planning algorithm started");
+        planningAlgorithm.start();
+        AnalysisLogger.logger.info("Planning algorithm started");
 
     }
-    public void setStateTEST(){
+
+    public void setStateTEST() {
         InputProcessing inputProcessing = new InputProcessing();
-            
-            dependencyGraph = inputProcessing.loadDependencyGraphFromStrings(applicationDescription, "", deploymentDescription);
-            Node node = new Node();
-            node = dependencyGraph.getCloudService();
-            AnalysisLogger.logger.info("Test mode - Current graph is" + dependencyGraph.graphToString());
-            monitoringAPI = new MonitoringAPI();
-            monitoringAPI.setControlledService(node);
-            if (!metricCompositionRules.equalsIgnoreCase("")) {
-                AnalysisLogger.logger.info("Test mode - Set the composition rules sent via WS ");
-                monitoringAPI.setCompositionRules(metricCompositionRules);
-            } else {
-                AnalysisLogger.logger.info("Test mode - Set the read composition rules");
-                monitoringAPI.setCompositionRules();
-            }
-            AnalysisLogger.logger.info("Test mode - Have just set the cloud service. The number of elasticity requirements is " + dependencyGraph.getAllElasticityRequirements().size());
 
-            monitoringAPI.submitElasticityRequirements(dependencyGraph
-                    .getAllElasticityRequirements());
-            AnalysisLogger.logger.info("Test mode - Have set the requirements on MELA");
-            enforcementAPI = new MultipleEnforcementAPIs();
+        dependencyGraph = inputProcessing.loadDependencyGraphFromStrings(applicationDescription, "", deploymentDescription);
+        Node node = new Node();
+        node = dependencyGraph.getCloudService();
+        AnalysisLogger.logger.info("Test mode - Current graph is" + dependencyGraph.graphToString());
+        monitoringAPI = new MonitoringAPI();
+        monitoringAPI.setControlledService(node);
+        if (!metricCompositionRules.equalsIgnoreCase("")) {
+            AnalysisLogger.logger.info("Test mode - Set the composition rules sent via WS ");
+            monitoringAPI.setCompositionRules(metricCompositionRules);
+        } else {
+            AnalysisLogger.logger.info("Test mode - Set the read composition rules");
+            monitoringAPI.setCompositionRules();
+        }
+        AnalysisLogger.logger.info("Test mode - Have just set the cloud service. The number of elasticity requirements is " + dependencyGraph.getAllElasticityRequirements().size());
 
-            enforcementAPI.setControlledService(node);
+        monitoringAPI.submitElasticityRequirements(dependencyGraph
+                .getAllElasticityRequirements());
+        AnalysisLogger.logger.info("Test mode - Have set the requirements on MELA");
+        enforcementAPI = new MultipleEnforcementAPIs();
 
-            enforcementAPI.setMonitoringPlugin(monitoringAPI);
-            AnalysisLogger.logger.info("Test mode - Have set information on enforcement api");
-            dependencyGraph.setTestingState();
+        enforcementAPI.setControlledService(node);
+
+        enforcementAPI.setMonitoringPlugin(monitoringAPI);
+        AnalysisLogger.logger.info("Test mode - Have set information on enforcement api");
+        dependencyGraph.setTestingState();
 
     }
-    public boolean testEnforcementCapability(String enforcementName, String componentID){
-      return  enforcementAPI.enforceAction(enforcementName, dependencyGraph.getNodeWithID(componentID));
+
+    public boolean testEnforcementCapability(String enforcementName, String componentID) {
+        return enforcementAPI.enforceAction(enforcementName, dependencyGraph.getNodeWithID(componentID));
     }
-    public boolean testEnforcementCapabilityOnPlugin(String target,String enforcementName, String componentID){
-      return  enforcementAPI.enforceAction(target, enforcementName,dependencyGraph.getNodeWithID(componentID));
+
+    public boolean testEnforcementCapabilityOnPlugin(String target, String enforcementName, String componentID) {
+        return enforcementAPI.enforceAction(target, enforcementName, dependencyGraph.getNodeWithID(componentID));
     }
+
     public void startSYBLProcessingAndPlanning() {
         try {
             InputProcessing inputProcessing = new InputProcessing();
-            
+
             dependencyGraph = inputProcessing.loadDependencyGraphFromStrings(applicationDescription, "", deploymentDescription);
 
             //AnalysisLogger.logger.info("Current graph is "
             //	+ dependencyGraph.graphToString());
-
             // at.ac.tuwien.dsg.sybl.monitorandenforcement.runtimeapi.Node
             // clService =
             // MappingToWS.mapNodeToNode(dependencyGraph.getCloudService());
@@ -356,6 +381,11 @@ public class ControlService {
             } else {
                 planningAlgorithm = new PlanningGreedyAlgorithm(
                         dependencyGraph, monitoringAPI, enforcementAPI);
+            }
+            if (Configuration.resourceLevelControlEnabled()) {
+                resourcesLevelControl = new ResourcesLevelControl(enforcementAPI, monitoringAPI, dependencyGraph);
+                resourcesLevelControl.readResourceActionEffects();
+                resourcesLevelControl.start();
             }
             if (!effects.equalsIgnoreCase("")) {
                 planningAlgorithm.setEffects(effects);
@@ -418,7 +448,7 @@ public class ControlService {
     public void setApplicationDescriptionInfo(String applicationDescriptionXML) {
         applicationDescription = applicationDescriptionXML;
         checkpointingUtils.storeServiceDescription(applicationDescriptionXML, cloudServiceID);
-}
+    }
 
     public void setApplicationDeployment(String deploymentDescriptionXML) {
         deploymentDescription = deploymentDescriptionXML;
@@ -434,7 +464,7 @@ public class ControlService {
                 deploymentInfoXML);
         checkpointingUtils.storeServiceDescription(applicationDescriptionXML, cloudServiceID);
         checkpointingUtils.storeDeploymentDescription(deploymentInfoXML, cloudServiceID);
-        
+
         //startSYBLProcessingAndPlanning();
     }
 
@@ -443,7 +473,7 @@ public class ControlService {
         TOSCAProcessing toscaProcessing = new TOSCAProcessing();
         dependencyGraph = toscaProcessing.toscaDescriptionToDependencyGraph(tosca);
         OutputProcessing outputProcessing = new OutputProcessing();
-        applicationDescription=outputProcessing.getCloudServiceXML(dependencyGraph.getCloudService());
+        applicationDescription = outputProcessing.getCloudServiceXML(dependencyGraph.getCloudService());
         checkpointingUtils.storeTOSCADescription(tosca, dependencyGraph.getCloudService().getId());
         //startSYBLProcessingAndPlanning();
     }
@@ -609,7 +639,7 @@ public class ControlService {
                                                                 binaryRestrictionC1,
                                                                 binaryRestrictionC2)
                                                                 .equalsIgnoreCase(
-                                                                "")) {
+                                                                        "")) {
                                                             String metric = checkIfConstraintsAreConflicting(
                                                                     binaryRestrictionC1,
                                                                     binaryRestrictionC2);
@@ -633,13 +663,13 @@ public class ControlService {
                                 NodeType.SERVICE_TOPOLOGY) != null) {
                             for (Node topology1 : topology
                                     .getAllRelatedNodesOfType(
-                                    RelationshipType.COMPOSITION_RELATIONSHIP,
-                                    NodeType.SERVICE_TOPOLOGY)) {
+                                            RelationshipType.COMPOSITION_RELATIONSHIP,
+                                            NodeType.SERVICE_TOPOLOGY)) {
                                 for (ElasticityRequirement el : topology
                                         .getElasticityRequirements()) {
                                     SYBLSpecification specification = SYBLDirectiveMappingFromXML
                                             .mapFromSYBLAnnotation(el
-                                            .getAnnotation());
+                                                    .getAnnotation());
                                     if (specification
                                             .getComponentId()
                                             .equalsIgnoreCase(topology1.getId())) {
@@ -658,7 +688,7 @@ public class ControlService {
                                                                         binaryRestrictionC1,
                                                                         binaryRestrictionC2)
                                                                         .equalsIgnoreCase(
-                                                                        "")) {
+                                                                                "")) {
                                                                     String metric = checkIfConstraintsAreConflicting(
                                                                             binaryRestrictionC1,
                                                                             binaryRestrictionC2);
@@ -685,7 +715,7 @@ public class ControlService {
                                         .getElasticityRequirements()) {
                                     SYBLSpecification specification = SYBLDirectiveMappingFromXML
                                             .mapFromSYBLAnnotation(el
-                                            .getAnnotation());
+                                                    .getAnnotation());
                                     if (specification.getComponentId()
                                             .equalsIgnoreCase(comp.getId())) {
                                         for (Constraint c1 : constraints) {
@@ -703,7 +733,7 @@ public class ControlService {
                                                                         binaryRestrictionC1,
                                                                         binaryRestrictionC2)
                                                                         .equalsIgnoreCase(
-                                                                        "")) {
+                                                                                "")) {
                                                                     String metric = checkIfConstraintsAreConflicting(
                                                                             binaryRestrictionC1,
                                                                             binaryRestrictionC2);
@@ -728,13 +758,13 @@ public class ControlService {
                                     NodeType.SERVICE_UNIT) != null) {
                                 for (Node comp : entity
                                         .getAllRelatedNodesOfType(
-                                        RelationshipType.COMPOSITION_RELATIONSHIP,
-                                        NodeType.SERVICE_UNIT)) {
+                                                RelationshipType.COMPOSITION_RELATIONSHIP,
+                                                NodeType.SERVICE_UNIT)) {
                                     for (ElasticityRequirement el : comp
                                             .getElasticityRequirements()) {
                                         SYBLSpecification specification = SYBLDirectiveMappingFromXML
                                                 .mapFromSYBLAnnotation(el
-                                                .getAnnotation());
+                                                        .getAnnotation());
                                         if (specification.getComponentId()
                                                 .equalsIgnoreCase(comp.getId())) {
                                             for (Constraint c1 : constraints) {
@@ -752,7 +782,7 @@ public class ControlService {
                                                                             binaryRestrictionC1,
                                                                             binaryRestrictionC2)
                                                                             .equalsIgnoreCase(
-                                                                            "")) {
+                                                                                    "")) {
                                                                         String metric = checkIfConstraintsAreConflicting(
                                                                                 binaryRestrictionC1,
                                                                                 binaryRestrictionC2);
@@ -782,7 +812,7 @@ public class ControlService {
                 .getAllElasticityRequirements()) {
             SYBLSpecification specification = SYBLDirectiveMappingFromXML
                     .mapFromSYBLAnnotation(elasticityRequirement
-                    .getAnnotation());
+                            .getAnnotation());
             List<Constraint> constr = new ArrayList<Constraint>();
             constr.addAll(specification.getConstraint());
             for (Constraint i : constr) {
@@ -794,7 +824,6 @@ public class ControlService {
             }
         }
     }
-
 
     public void replaceCloudServiceRequirements(String newCloudServiceDescription) {
         InputProcessing inputProcessing = new InputProcessing();
@@ -820,6 +849,7 @@ public class ControlService {
                     .getAnnotation().getEntityID(), annotation);
 
         }
+
         planningAlgorithm.stop();
         planningAlgorithm = new PlanningGreedyAlgorithm(
                 dependencyGraph, monitoringAPI, enforcementAPI);
@@ -864,11 +894,17 @@ public class ControlService {
         planningAlgorithm.stop();
         planningAlgorithm = new PlanningGreedyAlgorithm(
                 dependencyGraph, monitoringAPI, enforcementAPI);
+        if (Configuration.resourceLevelControlEnabled()) {
+            resourcesLevelControl.stop();
+            resourcesLevelControl = new ResourcesLevelControl(enforcementAPI, monitoringAPI, dependencyGraph);
+            resourcesLevelControl.readResourceActionEffects();
+            resourcesLevelControl.start();
+        }
         if (!effects.equalsIgnoreCase("")) {
             planningAlgorithm.setEffects(effects);
         }
         planningAlgorithm.start();
-checkpointingUtils.storeServiceDescription(applicationDescription, cloudServiceID);
+        checkpointingUtils.storeServiceDescription(applicationDescription, cloudServiceID);
     }
 
     public void replaceCompositionRules(String composition) {
@@ -893,19 +929,20 @@ checkpointingUtils.storeServiceDescription(applicationDescription, cloudServiceI
         this.effects = effects;
         checkpointingUtils.storeServiceEffects(effects, cloudServiceID);
     }
-    public String getSimpleRequirements(){
+
+    public String getSimpleRequirements() {
         String reqs = "";
-        for (ElasticityRequirement requirement:dependencyGraph.getAllElasticityRequirements()){
-           
-            if (requirement.getAnnotation().getStrategies()!=null && !requirement.getAnnotation().getStrategies().equalsIgnoreCase("")){
-                reqs+=requirement.getAnnotation().getEntityID()+"-"+requirement.getAnnotation().getStrategies()+"~\n";
+        for (ElasticityRequirement requirement : dependencyGraph.getAllElasticityRequirements()) {
+
+            if (requirement.getAnnotation().getStrategies() != null && !requirement.getAnnotation().getStrategies().equalsIgnoreCase("")) {
+                reqs += requirement.getAnnotation().getEntityID() + "-" + requirement.getAnnotation().getStrategies() + "~\n";
             }
 
-            if (requirement.getAnnotation().getConstraints()!=null && !requirement.getAnnotation().getConstraints().equalsIgnoreCase("")){
-                reqs+=requirement.getAnnotation().getEntityID()+"-"+requirement.getAnnotation().getConstraints()+"~\n";
+            if (requirement.getAnnotation().getConstraints() != null && !requirement.getAnnotation().getConstraints().equalsIgnoreCase("")) {
+                reqs += requirement.getAnnotation().getEntityID() + "-" + requirement.getAnnotation().getConstraints() + "~\n";
             }
-               if (requirement.getAnnotation().getMonitoring()!=null && !requirement.getAnnotation().getMonitoring().equalsIgnoreCase("")){
-                reqs+=requirement.getAnnotation().getEntityID()+"-"+requirement.getAnnotation().getMonitoring()+"~\n";
+            if (requirement.getAnnotation().getMonitoring() != null && !requirement.getAnnotation().getMonitoring().equalsIgnoreCase("")) {
+                reqs += requirement.getAnnotation().getEntityID() + "-" + requirement.getAnnotation().getMonitoring() + "~\n";
             }
         }
         return reqs;

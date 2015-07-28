@@ -34,7 +34,6 @@ import java.util.AbstractMap;
 import java.util.HashMap;
 import java.util.Map;
 
-
 public class ActionPlanEnforcement {
 
     private EnforcementAPIInterface enforcementAPI = null;
@@ -57,30 +56,13 @@ public class ActionPlanEnforcement {
 
     }
 
-    public void enforceResult(ArrayList<Pair<ActionEffect, Integer>> result, DependencyGraph dependencyGraph, double violationDegree, ArrayList<Constraint> constraintsFixed, ArrayList<Strategy> strategiesImproved) {
+    public void enforceResult(ArrayList<Pair<ActionEffect, Integer>> result, DependencyGraph dependencyGraph, double violationDegree, List<Constraint> constraintsFixed, List<Strategy> strategiesImproved) {
         if (result.size() > 0) {
-            actionPlanEvent = new ActionPlanEvent();
-            actionPlanEvent.setServiceId(dependencyGraph.getCloudService().getId());
-            actionPlanEvent.setStage(IEvent.Stage.START);
-            actionPlanEvent.setType(Type.ELASTICITY_CONTROL);
-            actionPlanEvent.setConstraints(constraintsFixed);
-            actionPlanEvent.setStrategies(strategiesImproved);
-            ArrayList<AbstractMap.SimpleEntry<String, String>> res = new ArrayList<AbstractMap.SimpleEntry<String, String>>();
-            for (Pair<ActionEffect, Integer> actionEffect : result) {
-                res.add(new AbstractMap.SimpleEntry(actionEffect.getFirst().getActionType(), actionEffect.getFirst().getTargetedEntityID()));
-            }
-            eventNotification.sendEvent(actionPlanEvent);
+
             this.violationDegree = violationDegree;
 
-            
-
             enforceResult(result, dependencyGraph, constraintsFixed, strategiesImproved);
-            actionPlanEvent = new ActionPlanEvent();
-            actionPlanEvent.setType(Type.ELASTICITY_CONTROL);
-            actionPlanEvent.setConstraints(constraintsFixed);
-            actionPlanEvent.setStrategies(strategiesImproved);
-            actionPlanEvent.setServiceId(dependencyGraph.getCloudService().getId());
-            actionPlanEvent.setStage(IEvent.Stage.FINISHED);
+
         }
 
     }
@@ -99,35 +81,35 @@ public class ActionPlanEnforcement {
             }
         }
         outputProcessing.saveActionPlan(capabilities);
-        
+
         if (!dependencyGraph.isInControlState()) {
             PlanningLogger.logger.info("Not enforcing action due to breakpoint ");
             return;
         }
         PlanningLogger.logger.info("Number of actions to enforce" + result.size());
         List<ArrayList<Pair<ActionEffect, Integer>>> paralelRes = parallellizeResult(result);
-        if (result.size()>0){
-             actionPlanEvent = new ActionPlanEvent();
+        if (result.size() > 0) {
+            actionPlanEvent = new ActionPlanEvent();
             actionPlanEvent.setServiceId(dependencyGraph.getCloudService().getId());
             actionPlanEvent.setStage(IEvent.Stage.START);
             actionPlanEvent.setType(Type.ELASTICITY_CONTROL);
             actionPlanEvent.setConstraints((ArrayList<Constraint>) constraintsFixed);
             actionPlanEvent.setStrategies((ArrayList<Strategy>) strategiesImproved);
         }
-        for (ArrayList<Pair<ActionEffect,Integer>> actionsToEnf:paralelRes){
-            for (Pair<ActionEffect,Integer> action:actionsToEnf){
-                actionPlanEvent.addEffect(new AbstractMap.SimpleEntry<>(action.getFirst().getTargetedEntityID(),action.getFirst().getActionName()));
+        for (ArrayList<Pair<ActionEffect, Integer>> actionsToEnf : paralelRes) {
+            for (Pair<ActionEffect, Integer> action : actionsToEnf) {
+                actionPlanEvent.addEffect(new AbstractMap.SimpleEntry<>(action.getFirst().getTargetedEntityID(), action.getFirst().getActionName()));
             }
         }
-        if (actionPlanEvent.getEffect()!=null && actionPlanEvent.getEffect().size()>0){
-        eventNotification.sendEvent(actionPlanEvent);
+        if (actionPlanEvent.getEffect() != null && actionPlanEvent.getEffect().size() > 0) {
+            eventNotification.sendEvent(actionPlanEvent);
         }
-          actionPlanEvent = new ActionPlanEvent();
-            actionPlanEvent.setType(Type.ELASTICITY_CONTROL);
-            actionPlanEvent.setConstraints((ArrayList<Constraint>) constraintsFixed);
-            actionPlanEvent.setStrategies((ArrayList<Strategy>) strategiesImproved);
-            actionPlanEvent.setServiceId(dependencyGraph.getCloudService().getId());
-            actionPlanEvent.setStage(IEvent.Stage.FINISHED);
+        actionPlanEvent = new ActionPlanEvent();
+        actionPlanEvent.setType(Type.ELASTICITY_CONTROL);
+        actionPlanEvent.setConstraints((ArrayList<Constraint>) constraintsFixed);
+        actionPlanEvent.setStrategies((ArrayList<Strategy>) strategiesImproved);
+        actionPlanEvent.setServiceId(dependencyGraph.getCloudService().getId());
+        actionPlanEvent.setStage(IEvent.Stage.FINISHED);
         for (ArrayList<Pair<ActionEffect, Integer>> actionsToEnf : paralelRes) {
             List<Thread> threadsToExec = new ArrayList<Thread>();
             PlanningLogger.logger.info("~~~ paralel actions executed " + actionsToEnf.size());
@@ -139,7 +121,6 @@ public class ActionPlanEnforcement {
                 threadsToExec.add(t);
 //                 actionPlanEvent.addEffect(new AbstractMap.SimpleEntry<>(action.getFirst().getTargetedEntityID(),action.getFirst().getActionName()));
 
-
             }
             for (Thread actionInThread : threadsToExec) {
                 try {
@@ -150,12 +131,11 @@ public class ActionPlanEnforcement {
             }
 
         }
-              
+
         if ((actionPlanEvent.getEffect() != null && actionPlanEvent.getEffect().size() > 0)) {
 
             eventNotification.sendEvent(actionPlanEvent);
-        } 
-
+        }
 
 //                for (Pair<ActionEffect, Integer> actionEffect : result) {
 //			PlanningLogger.logger.info("Enforcing capability "
@@ -599,6 +579,7 @@ public class ActionPlanEnforcement {
             target = actionName.split("\\.")[0];
             actionName = actionName.split("\\.")[1];
         }
+
         if (target.equalsIgnoreCase("")) {
             for (ElasticityCapability capability : node
                     .getElasticityCapabilities()) {
@@ -612,12 +593,23 @@ public class ActionPlanEnforcement {
         if (target.equalsIgnoreCase("")) {
             switch (actionName.toLowerCase()) {
                 case "scaleout":
-                    return enforcementAPI.scaleout(node);
-
+                    if (violationDegree > 0) {
+                        return enforcementAPI.scaleout(node, violationDegree);
+                    } else {
+                        return enforcementAPI.scaleout(node);
+                    }
                 case "scalein":
-                    return enforcementAPI.scalein(node);
+                    if (violationDegree > 0) {
+                        return enforcementAPI.scalein(node, violationDegree);
+                    } else {
+                        return enforcementAPI.scalein(node);
+                    }
                 default:
-                    return enforcementAPI.enforceAction(actionName, node);
+                    if (violationDegree > 0) {
+                        return enforcementAPI.enforceAction(actionName, node, violationDegree);
+                    } else {
+                        return enforcementAPI.enforceAction(actionName, node);
+                    }
 
             }
         } else {
@@ -634,8 +626,15 @@ public class ActionPlanEnforcement {
 
                             if (elasticityPrimitive.getParameters()
                                     .equalsIgnoreCase("")) {
-                                boolean x = enforcementAPI.enforceAction(target,
-                                        elasticityPrimitive.getMethodName(), node);
+                                boolean x = false;
+                                if (violationDegree > 0) {
+                                    x = enforcementAPI.enforceAction(target,
+                                            elasticityPrimitive.getMethodName(), node, violationDegree);
+                                } else {
+                                    x = enforcementAPI.enforceAction(target,
+                                            elasticityPrimitive.getMethodName(), node);
+                                }
+
                                 if (x == false) {
                                     res = false;
                                 }
@@ -652,7 +651,7 @@ public class ActionPlanEnforcement {
                                         afterPrimitives.add(dependency);
 
                                     }
-                                    //TODO:
+
                                 }
                                 Object[] parameters = new Object[elasticityPrimitive
                                         .getParameters().split(",").length];
@@ -729,14 +728,27 @@ public class ActionPlanEnforcement {
                                         .getMethodName();
 
                                 if (methodName.equalsIgnoreCase("")) {
-                                    boolean x = enforcementAPI.enforceAction(target,
-                                            actionName, node, parameters);
+                                    boolean x = false;
+                                    if (violationDegree > 0) {
+                                        x = enforcementAPI.enforceAction(target,
+                                                actionName, node, parameters, violationDegree);
+                                    } else {
+                                        x = enforcementAPI.enforceAction(target,
+                                                actionName, node, parameters);
+                                    }
+
                                     if (!x) {
                                         res = false;
                                     }
                                 } else {
-                                    boolean x = enforcementAPI.enforceAction(target,
-                                            methodName, node, parameters);
+                                    boolean x = false;
+                                    if (violationDegree > 0) {
+                                        x = enforcementAPI.enforceAction(target,
+                                                methodName, node, parameters, violationDegree);
+                                    } else {
+                                        x = enforcementAPI.enforceAction(target,
+                                                methodName, node, parameters);
+                                    }
                                     if (!x) {
                                         res = false;
                                     }
@@ -792,35 +804,66 @@ public class ActionPlanEnforcement {
             actionName = actionName.split("\\.")[1];
         }
 
-
         if (target.equalsIgnoreCase("")) {
             switch (actionName.toLowerCase()) {
                 case "scaleout":
-                    enforcementAPI.scaleout(dependencyGraph.getNodeWithID(ec.getServicePartID()));
+                    if (violationDegree > 0) {
+                        enforcementAPI.scaleout(dependencyGraph.getNodeWithID(ec.getServicePartID()), violationDegree);
+                    } else {
+                        enforcementAPI.scaleout(dependencyGraph.getNodeWithID(ec.getServicePartID()));
+                    }
                     break;
                 case "scalein":
-                    enforcementAPI.scalein(dependencyGraph.getNodeWithID(ec.getServicePartID()));
+                    if (violationDegree > 0) {
+                        enforcementAPI.scalein(dependencyGraph.getNodeWithID(ec.getServicePartID()), violationDegree);
+                    } else {
+                        enforcementAPI.scalein(dependencyGraph.getNodeWithID(ec.getServicePartID()));
+                    }
+
                     break;
                 default:
-                    enforcementAPI.enforceAction(actionName,
-                            dependencyGraph.getNodeWithID(ec.getServicePartID()));
+                    if (violationDegree > 0) {
+                        enforcementAPI.enforceAction(actionName,
+                                dependencyGraph.getNodeWithID(ec.getServicePartID()), violationDegree);
+                    } else {
+                        enforcementAPI.enforceAction(actionName,
+                                dependencyGraph.getNodeWithID(ec.getServicePartID()));
+                    }
+
                     break;
             }
         } else {
             switch (actionName.toLowerCase()) {
                 case "scaleout":
-                    enforcementAPI.scaleout(target,
-                            dependencyGraph.getNodeWithID(ec.getServicePartID()));
+                    if (violationDegree > 0) {
+                        enforcementAPI.scaleout(target,
+                                dependencyGraph.getNodeWithID(ec.getServicePartID()), violationDegree);
+                    } else {
+                        enforcementAPI.scaleout(target,
+                                dependencyGraph.getNodeWithID(ec.getServicePartID()));
+                    }
                     break;
                 case "scalein":
-                    enforcementAPI
-                            .scalein(target, dependencyGraph.getNodeWithID(ec.getServicePartID()));
+                    if (violationDegree > 0) {
+                        enforcementAPI
+                                .scalein(target, dependencyGraph.getNodeWithID(ec.getServicePartID()), violationDegree);
+                    } else {
+                        enforcementAPI
+                                .scalein(target, dependencyGraph.getNodeWithID(ec.getServicePartID()));
+                    }
+
                     break;
                 default:
                     if (target.equalsIgnoreCase("")) {
-                        enforcementAPI.enforceAction(target,
-                                actionName,
-                                dependencyGraph.getNodeWithID(ec.getServicePartID()));
+                        if (violationDegree > 0) {
+                            enforcementAPI.enforceAction(target,
+                                    actionName,
+                                    dependencyGraph.getNodeWithID(ec.getServicePartID()), violationDegree);
+                        } else {
+                            enforcementAPI.enforceAction(target,
+                                    actionName,
+                                    dependencyGraph.getNodeWithID(ec.getServicePartID()));
+                        }
                     }
 
                     break;
@@ -848,31 +891,60 @@ public class ActionPlanEnforcement {
         if (target.equalsIgnoreCase("")) {
             switch (actionName.toLowerCase()) {
                 case "scaleout":
-                    enforcementAPI.scaleout(actionEffect.getTargetedEntity());
+                    if (violationDegree > 0) {
+                        enforcementAPI.scaleout(actionEffect.getTargetedEntity(), violationDegree);
+                    } else {
+                        enforcementAPI.scaleout(actionEffect.getTargetedEntity());
+                    }
                     break;
                 case "scalein":
-                    enforcementAPI.scalein(actionEffect.getTargetedEntity());
+                    if (violationDegree > 0) {
+                        enforcementAPI.scalein(actionEffect.getTargetedEntity(), violationDegree);
+                    } else {
+                        enforcementAPI.scalein(actionEffect.getTargetedEntity());
+                    }
                     break;
                 default:
-                    enforcementAPI.enforceAction(actionEffect.getActionType(),
-                            actionEffect.getTargetedEntity());
+                    if (violationDegree > 0) {
+                        enforcementAPI.enforceAction(actionEffect.getActionType(),
+                                actionEffect.getTargetedEntity(), violationDegree);
+                    } else {
+                        enforcementAPI.enforceAction(actionEffect.getActionType(),
+                                actionEffect.getTargetedEntity());
+                    }
                     break;
             }
         } else {
             switch (actionName.toLowerCase()) {
                 case "scaleout":
-                    enforcementAPI.scaleout(target,
-                            actionEffect.getTargetedEntity());
+                    if (violationDegree > 0) {
+                        enforcementAPI.scaleout(target,
+                                actionEffect.getTargetedEntity(),violationDegree);
+                    } else {
+                        enforcementAPI.scaleout(target,
+                                actionEffect.getTargetedEntity());
+                    }
                     break;
                 case "scalein":
+                    if (violationDegree>0){
                     enforcementAPI
-                            .scalein(target, actionEffect.getTargetedEntity());
+                            .scalein(target, actionEffect.getTargetedEntity(),violationDegree);
+                    }else{
+                     enforcementAPI
+                            .scalein(target, actionEffect.getTargetedEntity());   
+                    }
                     break;
                 default:
                     if (target.equalsIgnoreCase("")) {
+                        if (violationDegree>0){
                         enforcementAPI.enforceAction(target,
                                 actionEffect.getActionType(),
-                                actionEffect.getTargetedEntity());
+                                actionEffect.getTargetedEntity(),violationDegree);
+                        }else{
+                         enforcementAPI.enforceAction(target,
+                                actionEffect.getActionType(),
+                                actionEffect.getTargetedEntity());   
+                        }
                     }
 
                     break;

@@ -113,7 +113,7 @@ public class InputProcessing {
         try {
             jc = JAXBContext.newInstance(CloudServiceXML.class);
             Unmarshaller u = jc.createUnmarshaller();
-            cloudServiceXML = (CloudServiceXML) u.unmarshal(this.getClass().getClassLoader().getResourceAsStream(Configuration.getModelDescrFile()));
+            cloudServiceXML = (CloudServiceXML) u.unmarshal(Configuration.class.getClassLoader().getResourceAsStream(Configuration.getModelDescrFile()));
         } catch (JAXBException e) {
             e.printStackTrace();
         }
@@ -124,7 +124,7 @@ public class InputProcessing {
             Unmarshaller u = a.createUnmarshaller();
             String directivePath = Configuration.getDirectivesPath();
             if (directivePath != null) {
-                syblSpecifications = (SYBLElasticityRequirementsDescription) u.unmarshal(this.getClass().getClassLoader().getResourceAsStream(directivePath));
+                syblSpecifications = (SYBLElasticityRequirementsDescription) u.unmarshal(Configuration.class.getClassLoader().getResourceAsStream(directivePath));
             }
             for (SYBLAnnotation syblAnnotation : parseXMLInjectedAnnotations(cloudServiceXML)) {
                 if (syblSpecifications == null) {

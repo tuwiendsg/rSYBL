@@ -39,26 +39,28 @@ public interface EnforcementAPIInterface {
     public void submitElasticityRequirements(ArrayList<ElasticityRequirement> description);
     
     public boolean scalein(Node arg0);
+    public boolean scalein(Node arg0, double violationDegree);
     public void undeployService(Node service);
     public void setMonitoringPlugin(MonitoringAPIInterface monitoringInterface);
 
     public boolean scaleout(Node arg0);
- public boolean scaleout(double violationDegree,Node arg0);
+ public boolean scaleout(Node arg0,double violationDegree);
     public boolean enforceAction(String actionName, Node e);
-public boolean enforceAction(double violationDegree,String actionName, Node e);
+public boolean enforceAction(String actionName, Node e,double violationDegree);
     public boolean enforceElasticityCapability(ElasticityCapability capability, Node e);
 
     public boolean scalein(String target, Node arg0);
-
+    public boolean scalein(String target, Node arg0, double violationDegree);
     public boolean scaleout(String target, Node arg0);
- public boolean scaleout(double violationDegree,String target, Node arg0);
+ public boolean scaleout(String target, Node arg0,double violationDegree);
     public boolean enforceAction(String target, String actionName, Node e);
-    public boolean enforceAction(double violationDegree, String target, String actionName, Node e);
+    public boolean enforceAction(String target, String actionName, Node e,double violationDegree);
 
     public boolean enforceElasticityCapability(String target, ElasticityCapability capability, Node e);
 
     public boolean enforceAction(String target, String actionName, Node node, Object[] parameters);
         public boolean enforceAction( String actionName, Node node, Object[] parameters);
 
-    public boolean enforceAction(double violationDegree, String target, String actionName, Node node, Object[] parameters);
+    public boolean enforceAction(String target, String actionName, Node node, Object[] parameters,double violationDegree);
+    
 }

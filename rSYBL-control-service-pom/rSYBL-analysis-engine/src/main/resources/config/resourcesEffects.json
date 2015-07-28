@@ -1,0 +1,50 @@
+{
+    "cores": {
+        "2": {
+            "cpuUsage": -20.0,
+            "cpuUsedPercent": -20.0
+        },
+        "4": {
+            "cpuUsage": -40.0,
+            "cpuUsedPercent": -40.0
+
+        },
+        "6": {
+            "cpuUsage": -60.0,
+            "cpuUsedPercent": -60.0
+        },
+        "-2": {
+            "cpuUsage": 20.0,
+            "cpuUsedPercent": 20.0
+        },
+        "-4": {
+            "cpuUsage": 40.0,
+            "cpuUsedPercent": 40.0
+        },
+        "-6": {
+            "cpuUsage": 60.0,
+            "cpuUsedPercent": 60.0
+        }
+    },
+    "memory": {
+        "2": {
+            "memUsage": -20.0,
+            "memUsedPercent": -20.0        },
+        "4": {
+            "memUsage": -40.0,
+            "memUsedPercent": -40.0        },
+        "6": {
+            "memUsage": -60.0,
+            "memUsedPercent": -60.0        },
+        "-2": {
+            "memUsage": 20.0,
+            "memUsedPercent": 20.0        },
+        "-4": {
+            "memUsage": 40.0,
+            "memUsedPercent": 40.0
+        },
+        "-6": {
+            "memUsage": 60.0,
+            "memUsedPercent": 60.0        }
+    }
+}

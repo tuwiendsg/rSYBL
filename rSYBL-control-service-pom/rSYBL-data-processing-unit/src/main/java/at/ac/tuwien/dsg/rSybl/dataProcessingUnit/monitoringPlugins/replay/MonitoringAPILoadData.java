@@ -1,10 +1,27 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
+/** 
+   Copyright 2013 Technische Universitat Wien (TUW), Distributed SystemsGroup E184.               
+   
+   This work was partially supported by the European Commission in terms of the CELAR FP7 project (FP7-ICT-2011-8 #317790).
+ 
+   Licensed under the Apache License, Version 2.0 (the "License");
+   you may not use this file except in compliance with the License.
+   You may obtain a copy of the License at
+
+       http://www.apache.org/licenses/LICENSE-2.0
+
+   Unless required by applicable law or agreed to in writing, software
+   distributed under the License is distributed on an "AS IS" BASIS,
+   WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+   See the License for the specific language governing permissions and
+   limitations under the License.
+*/
+
+/**
+ *  Author : Georgiana Copil - e.copil@dsg.tuwien.ac.at
  */
 package at.ac.tuwien.dsg.rSybl.dataProcessingUnit.monitoringPlugins.replay;
 
+import at.ac.tuwien.dsg.csdg.DependencyGraph;
 import at.ac.tuwien.dsg.csdg.Node;
 import at.ac.tuwien.dsg.csdg.Relationship;
 import at.ac.tuwien.dsg.csdg.elasticityInformation.ElasticityRequirement;
@@ -85,7 +102,7 @@ public class MonitoringAPILoadData implements MonitoringInterface {
             headers.put(service.getId(), new HashMap<Integer, String>());
             for (String s : string) {
                 
-                headers.get(service.getId()).put(i, s.toLowerCase().replace(" ", ""));
+                headers.get(service.getId()).put(i, s.replace(" ", ""));
                 i++;
             }
         } catch (FileNotFoundException ex) {
@@ -106,7 +123,7 @@ public class MonitoringAPILoadData implements MonitoringInterface {
                  headers.put(node.getId(), new HashMap<Integer, String>());
                 for (String s : string) {
                    
-                    headers.get(node.getId()).put(i, s.toLowerCase().replace(" ", ""));
+                    headers.get(node.getId()).put(i, s.replace(" ", ""));
                     i++;
                 }
             } catch (FileNotFoundException ex) {
@@ -131,7 +148,33 @@ public class MonitoringAPILoadData implements MonitoringInterface {
                 for (String s : string) {
                     
 
-                    headers.get(node.getId()).put(i, s.toLowerCase().replace(" ", ""));
+                    headers.get(node.getId()).put(i, s.replace(" ", ""));
+                    i++;
+                }
+            } catch (FileNotFoundException ex) {
+                Logger.getLogger(MonitoringAPILoadData.class.getName()).log(Level.SEVERE, null, ex);
+            }
+            this.readers.put(node.getId(), csF);
+        }
+        DependencyGraph depGraph = new DependencyGraph();
+        depGraph.setCloudService(service);
+        List<Node> vms = depGraph.getAllVMs();
+        for (Node node:vms){
+            try {
+                csF = new BufferedReader(new InputStreamReader(new FileInputStream("./load/" + node.getId() + ".csv"), Charset.forName("UTF-8")));
+                String[] string = null;
+                try {
+                    String line = csF.readLine();
+                    string = line.split(",");
+                } catch (IOException ex) {
+                    Logger.getLogger(MonitoringAPILoadData.class.getName()).log(Level.SEVERE, null, ex);
+                }
+                int i = 0;
+                headers.put(node.getId(), new HashMap<Integer, String>());
+                for (String s : string) {
+                    
+
+                    headers.get(node.getId()).put(i, s.replace(" ", ""));
                     i++;
                 }
             } catch (FileNotFoundException ex) {
@@ -366,7 +409,7 @@ public class MonitoringAPILoadData implements MonitoringInterface {
 
     @Override
     public Double getMetricValue(String metricName, Node node) {
-        return this.currentValues.get(node.getId()).get(metricName.toLowerCase());
+        return this.currentValues.get(node.getId()).get(metricName);
 
     }
 

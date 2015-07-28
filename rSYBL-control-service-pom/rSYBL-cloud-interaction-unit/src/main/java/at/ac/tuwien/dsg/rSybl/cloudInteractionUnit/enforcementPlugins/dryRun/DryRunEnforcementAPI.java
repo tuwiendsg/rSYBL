@@ -661,12 +661,7 @@ public class DryRunEnforcementAPI implements EnforcementInterface {
         this.monitoring = monitoring;
     }
 
-    @Override
-    public boolean enforceAction(String actionName, Node entity) {
-        // TODO Auto-generated method stub
-        return true;
-    }
-
+   
     @Override
     public boolean containsElasticityCapability(Node entity, String capability) {
         for (String cap : getElasticityCapabilities()) {
@@ -683,12 +678,16 @@ public class DryRunEnforcementAPI implements EnforcementInterface {
     }
 
     @Override
-    public boolean enforceAction(String actionName, String parameter) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    public boolean scaleOut(Node toBeScaled, double violationDegree) {
+        System.out.println("scaling out "+toBeScaled+" violation degree "+violationDegree);
+        return true;
     }
 
     @Override
-    public boolean enforceAction(String actionName, String parameter1, String parameter2) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    public boolean scaleIn(Node toBeScaled, double violationDegree) {
+        System.out.println("scaling in "+toBeScaled+" violation degree "+violationDegree);
+        return true;
     }
+
+  
 }

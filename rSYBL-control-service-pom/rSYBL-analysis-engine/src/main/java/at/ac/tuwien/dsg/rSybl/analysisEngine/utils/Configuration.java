@@ -72,4 +72,7 @@ public class Configuration {
 public static String getPlanningAlgorithm(){
     	return configuration.getProperty("PlanningAlgorithm");
     }
+public static boolean resourceLevelControlEnabled(){
+    return Boolean.parseBoolean(configuration.getProperty("ResourceLevelControlEnabled"));
+}
 }

@@ -31,8 +31,6 @@ import at.ac.tuwien.dsg.csdg.elasticityInformation.elasticityRequirements.SYBLAn
 import at.ac.tuwien.dsg.csdg.inputProcessing.checkpointing.CheckpointingUtils;
 import at.ac.tuwien.dsg.csdg.inputProcessing.multiLevelModel.InputProcessing;
 import at.ac.tuwien.dsg.csdg.inputProcessing.tosca.TOSCAProcessing;
-import at.ac.tuwien.dsg.rSybl.analysisEngine.utils.AnalysisLogger;
-import org.springframework.web.util.HtmlUtils;
 
 public class ControlCoordination {
 

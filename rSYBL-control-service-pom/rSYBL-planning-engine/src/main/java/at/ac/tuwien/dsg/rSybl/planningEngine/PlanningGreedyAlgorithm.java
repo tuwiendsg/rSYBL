@@ -485,8 +485,14 @@ public class PlanningGreedyAlgorithm implements PlanningAlgorithmInterface {
             monitoringAPI.sendMessageToAnalysisService("Requirements " + contextRepresentation.getViolatedConstraints() + " are violated, and rSYBL can not solve the problem.");
         } else {
 
+           if (Configuration.getDecisionsDifferentiatedOnViolationDegree()){
+            ActionPlanEnforcement actionPlanEnforcement = new ActionPlanEnforcement(enforcementAPI);
+            actionPlanEnforcement.enforceResult(result, dependencyGraph, violationDegree,contextRepresentation.getFixedConstraintsAsConstraints(lastContextRepresentation), contextRepresentation.getImprovedStrategiesAsStrategies(lastContextRepresentation, strategiesThatNeedToBeImproved));
+            }else{
             ActionPlanEnforcement actionPlanEnforcement = new ActionPlanEnforcement(enforcementAPI);
             actionPlanEnforcement.enforceResult(result, dependencyGraph, contextRepresentation.getFixedConstraintsAsConstraints(lastContextRepresentation), contextRepresentation.getImprovedStrategiesAsStrategies(lastContextRepresentation, strategiesThatNeedToBeImproved));
+                
+            }
         }
     }
 
@@ -742,10 +748,15 @@ public class PlanningGreedyAlgorithm implements PlanningAlgorithmInterface {
             eventNotification.sendEvent(customEvent);
             monitoringAPI.sendMessageToAnalysisService("Requirements " + contextRepresentation.getViolatedConstraints() + " are violated, and rSYBL can not solve the problem.");
         } else {
-
+            if (Configuration.getDecisionsDifferentiatedOnViolationDegree()){
+            ActionPlanEnforcement actionPlanEnforcement = new ActionPlanEnforcement(enforcementAPI);
+            actionPlanEnforcement.enforceResult(result, dependencyGraph, violationDegree,contextRepresentation.getFixedConstraintsAsConstraints(lastContextRepresentation), contextRepresentation.getImprovedStrategiesAsStrategies(lastContextRepresentation, strategiesThatNeedToBeImproved));
+            }else{
             ActionPlanEnforcement actionPlanEnforcement = new ActionPlanEnforcement(enforcementAPI);
             actionPlanEnforcement.enforceResult(result, dependencyGraph, contextRepresentation.getFixedConstraintsAsConstraints(lastContextRepresentation), contextRepresentation.getImprovedStrategiesAsStrategies(lastContextRepresentation, strategiesThatNeedToBeImproved));
-        }
+                
+            }
+            }
     }
 
     @Override

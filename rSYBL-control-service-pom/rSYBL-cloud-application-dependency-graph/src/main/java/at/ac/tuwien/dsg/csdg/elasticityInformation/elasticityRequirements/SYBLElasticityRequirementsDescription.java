@@ -40,7 +40,6 @@ import javax.xml.bind.annotation.XmlType;
 import javax.xml.transform.Result;
 import javax.xml.transform.stream.StreamResult;
 
-import org.omg.CORBA.portable.InputStream;
 
 @XmlAccessorType(XmlAccessType.FIELD)
 

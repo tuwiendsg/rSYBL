@@ -109,7 +109,12 @@ public class Configuration {
     public static String getEnforcementPlugin() {
         return configuration.getProperty("EnforcementPlugin");
     }
-
+public static int getRefreshPeriod(){
+    	return Integer.parseInt(configuration.getProperty("REFRESH_PERIOD"));
+    }
+     public static String getResourcesEffectsPath(){
+    	return configuration.getProperty("ResourcesEffects");
+    }
     //PluginName:Class
     public static HashMap<String, String> getEnforcementPlugins() {
         String[] enforcements;

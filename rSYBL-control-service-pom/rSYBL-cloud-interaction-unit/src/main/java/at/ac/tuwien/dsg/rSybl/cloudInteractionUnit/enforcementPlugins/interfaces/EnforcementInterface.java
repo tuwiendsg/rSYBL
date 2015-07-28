@@ -29,12 +29,10 @@ import at.ac.tuwien.dsg.rSybl.dataProcessingUnit.api.MonitoringAPIInterface;
 
 public interface EnforcementInterface {
 public boolean scaleOut(Node toBeScaled);
-public boolean scaleOut(double violationDegree,Node toBeScaled);
+public boolean scaleOut(Node toBeScaled,double violationDegree);
 public boolean scaleIn(Node toBeScaled);
+public boolean scaleIn(Node toBeScaled, double violationDegree);
 public List<String> getElasticityCapabilities();
-public boolean enforceAction(String actionName, Node entity);
-public boolean enforceAction(String actionName, String parameter);
-public boolean enforceAction(String actionName, String parameter1, String parameter2);
 
 public void setControlledService(Node controlledService);
 public Node getControlledService();

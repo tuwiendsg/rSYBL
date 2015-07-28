@@ -86,7 +86,7 @@ public class EnforcementAPI {
         return executingControlAction;
     }
 
-    public boolean enforceAction(double violationDegree, String target, String actionName, Node node, Object[] parameters) {
+    public boolean enforceAction(String target, String actionName, Node node, Object[] parameters,double violationDegree) {
         Method foundMethod = null;
         boolean res = false;
         try {
@@ -336,9 +336,9 @@ public class EnforcementAPI {
         return res;
     }
 
-    public boolean scaleout(double violationDegree, Node arg0) {
+    public boolean scaleout(Node arg0,double violationDegree) {
         boolean res = true;
-        res = offeredCapabilities.scaleOut(violationDegree, arg0);
+        res = offeredCapabilities.scaleOut(arg0,violationDegree);
         List<String> metrics = monitoringAPIInterface.getAvailableMetrics(arg0);
         // monitoringAPIInterface.enforcingActionStarted("ScaleOut", arg0);
         numberOfWaits = 0;
@@ -453,7 +453,7 @@ public class EnforcementAPI {
 
     }
 
-    public boolean enforceAction(double violationDegree, String actionName, Node e) {
+    public boolean enforceAction( String actionName, Node e,double violationDegree) {
 
         if (className == null) {
             className = Configuration.getEnforcementPlugin();
@@ -624,8 +624,8 @@ public class EnforcementAPI {
                 }
             } else {
                 if (capability.getCallType().toLowerCase().contains("plugin")) {
-                    res = offeredCapabilities.enforceAction(
-                            capability.getEndpoint(), e);
+//                    res = offeredCapabilities.enforceAction(
+//                            capability.getEndpoint(), e);
                 }
             }
             RuntimeLogger.logger.info("Finished enforcing action "
@@ -637,8 +637,47 @@ public class EnforcementAPI {
     public void setExecutingControlAction(boolean executingControlAction) {
         this.executingControlAction = executingControlAction;
     }
+       public boolean scalein(Node arg0, double violationDegree) {
+            boolean res = false;
+        if (arg0.getAllRelatedNodes().size() > 1) {
 
-   
+            res = offeredCapabilities.scaleIn(arg0,violationDegree);
+            List<String> metrics = monitoringAPIInterface
+                    .getAvailableMetrics(arg0);
+            numberOfWaits = 0;
+            while (!monitoringAPIInterface.isHealthy()) {
+                numberOfWaits++;
+                if (numberOfWaits > 10) {
+                    EventNotification eventNotification = EventNotification.getEventNotification();
+                    CustomEvent customEvent = new CustomEvent();
+                    customEvent.setCloudServiceID(this.getControlledService().getId());
+                    customEvent.setType(IEvent.Type.UNHEALTHY_SP);
+                    customEvent.setTarget(arg0.getId());
+                    customEvent.setMessage(arg0.getId() + "not healthy for " + (numberOfWaits * 15000) + " seconds.");
+                    eventNotification.sendEvent(customEvent);
+                }
+                RuntimeLogger.logger.info("Waiting for action....");
+                try {
+                    Thread.sleep(15000);
+                } catch (InterruptedException ex) {
+                    // TODO Auto-generated catch block
+                    ex.printStackTrace();
+                }
+
+
+            }
+
+            // monitoringAPIInterface.enforcingActionEnded("ScaleIn", arg0);
+            RuntimeLogger.logger.info("Finished scaling in " + arg0.getId()
+                    + " ...");
+
+        } else {
+            res = false;
+            RuntimeLogger.logger.info("Number of nodes associated with "
+                    + arg0.getAllRelatedNodes().size());
+        }
+        return res;
+       }
     public boolean enforceAction(String actionName, String parameter) {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }

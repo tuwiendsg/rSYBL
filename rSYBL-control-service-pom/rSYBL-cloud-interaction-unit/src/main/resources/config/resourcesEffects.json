@@ -1,0 +1,72 @@
+{
+    "cores": {
+        "2": {
+            "cpuUsage": -20.0,
+            "cpuUsedPercent": -20.0,
+            "cost": 0.1
+        },
+        "4": {
+            "cpuUsage": -40.0,
+            "cpuUsedPercent": -40.0,
+            "cost": 0.2
+
+        },
+        "6": {
+            "cpuUsage": -60.0,
+            "cpuUsedPercent": -60.0,
+            "cost": 0.3
+
+        },
+        "-2": {
+            "cpuUsage": 20.0,
+            "cpuUsedPercent": 20.0,
+            "cost": -0.1
+
+        },
+        "-4": {
+            "cpuUsage": 40.0,
+            "cpuUsedPercent": 40.0,
+            "cost": -0.2
+
+        },
+        "-6": {
+            "cpuUsage": 60.0,
+            "cpuUsedPercent": 60.0,
+            "cost": -0.3
+
+        }
+    },
+    "memory": {
+        "2": {
+            "memUsage": -20.0,
+            "memUsedPercent": -20.0,
+            "cost": 0.1
+        },
+        "4": {
+            "memUsage": -40.0,
+            "memUsedPercent": -40.0,
+            "cost": 0.2
+        },
+        "6": {
+            "memUsage": -60.0,
+            "memUsedPercent": -60.0,
+            "cost": 0.3
+        },
+        "-2": {
+            "memUsage": 20.0,
+            "memUsedPercent": 20.0,
+            "cost": -0.1
+        },
+        "-4": {
+            "memUsage": 40.0,
+            "memUsedPercent": 40.0,
+            "cost": -0.2
+
+        },
+        "-6": {
+            "memUsage": 60.0,
+            "memUsedPercent": 60.0,
+            "cost": -0.3
+        }
+    }
+}
