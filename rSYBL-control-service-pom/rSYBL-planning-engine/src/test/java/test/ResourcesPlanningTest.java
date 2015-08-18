@@ -66,7 +66,7 @@ public class ResourcesPlanningTest {
         planning = new ResourcesLevelControl(enforcementAPI, monitoringAPI, dependencyGraph);
 
     }
-    @Test
+    //@Test
     public void testReadingEffectsFromFile(){
         planning.readResourceActionEffects();
     }
@@ -74,9 +74,4 @@ public class ResourcesPlanningTest {
     public void tearDown() {
     }
 
-    // TODO add test methods here.
-    // The methods must be annotated with annotation @Test. For example:
-    //
-    // @Test
-    // public void hello() {}
 }
