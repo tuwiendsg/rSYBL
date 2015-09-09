@@ -549,6 +549,7 @@ public class InputProcessing {
                                 Node vmNode = new Node();
                                 vmNode.setId(associatedVM.getIp());
                                 vmNode.getStaticInformation().put("UUID", associatedVM.getUuid());
+                                vmNode.getStaticInformation().put("flavor", associatedVM.getFlavor());
                                 vmNode.setNodeType(NodeType.VIRTUAL_MACHINE);
                                 SimpleRelationship vmRel = new SimpleRelationship();
                                 vmRel.setSourceElement(artifactNode.getId());
@@ -576,6 +577,7 @@ public class InputProcessing {
                                 Node vmNode = new Node();
                                 vmNode.setId(associatedVM.getIp());
                                 vmNode.getStaticInformation().put("UUID", associatedVM.getUuid());
+                                vmNode.getStaticInformation().put("flavor",associatedVM.getFlavor());
                                 vmNode.setNodeType(NodeType.VIRTUAL_MACHINE);
                                 SimpleRelationship vmRel = new SimpleRelationship();
                                 vmRel.setSourceElement(artifactNode.getId());
@@ -608,6 +610,7 @@ public class InputProcessing {
                         vmNode.setId(associatedVM.getIp());
 
                         vmNode.getStaticInformation().put("UUID", associatedVM.getUuid());
+                        vmNode.getStaticInformation().put("flavor",associatedVM.getFlavor());
                         vmNode.setNodeType(NodeType.VIRTUAL_MACHINE);
                         SimpleRelationship vmRel = new SimpleRelationship();
                         vmRel.setSourceElement(node.getId());

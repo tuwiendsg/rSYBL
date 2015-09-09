@@ -38,6 +38,8 @@ import javax.xml.bind.annotation.XmlType;
 		private String ip="";
 	    @XmlAttribute(name="UUID")
 	    private String uuid="";
+            @XmlAttribute(name="flavor")
+            private String flavor="";
                  @XmlElement(name = "ElasticityCapability")
         private List<ElasticityCapability> elasticityCapabilities=new ArrayList<ElasticityCapability>();
 		public String getIp() {
@@ -68,6 +70,20 @@ import javax.xml.bind.annotation.XmlType;
      */
     public void setElasticityCapabilities(List<ElasticityCapability> elasticityCapabilities) {
         this.setElasticityCapabilities(elasticityCapabilities);
+    }
+
+    /**
+     * @return the flavor
+     */
+    public String getFlavor() {
+        return flavor;
+    }
+
+    /**
+     * @param flavor the flavor to set
+     */
+    public void setFlavor(String flavor) {
+        this.flavor = flavor;
     }
 
 

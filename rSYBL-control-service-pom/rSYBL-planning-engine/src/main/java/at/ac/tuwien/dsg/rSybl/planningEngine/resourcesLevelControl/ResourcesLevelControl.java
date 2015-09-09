@@ -29,7 +29,6 @@ import at.ac.tuwien.dsg.csdg.elasticityInformation.elasticityRequirements.Constr
 import at.ac.tuwien.dsg.csdg.elasticityInformation.elasticityRequirements.SYBLSpecification;
 import at.ac.tuwien.dsg.csdg.inputProcessing.multiLevelModel.abstractModelXML.SYBLDirectiveMappingFromXML;
 import at.ac.tuwien.dsg.rSybl.cloudInteractionUnit.api.EnforcementAPIInterface;
-import at.ac.tuwien.dsg.rSybl.cloudInteractionUnit.api.MultipleEnforcementAPIs;
 import at.ac.tuwien.dsg.rSybl.cloudInteractionUnit.utils.Configuration;
 import at.ac.tuwien.dsg.rSybl.cloudInteractionUnit.utils.RuntimeLogger;
 import at.ac.tuwien.dsg.rSybl.dataProcessingUnit.api.MonitoringAPIInterface;
@@ -52,29 +51,29 @@ import org.json.simple.parser.JSONParser;
  * @author Georgiana
  */
 public class ResourcesLevelControl implements Runnable {
-
+    
     private Timer t;
     private int REFRESH_PERIOD = 350000;
     private DependencyGraph dependencyGraph;
     private EnforcementAPIInterface enforcementAPI;
     private MonitoringAPIInterface monitoringAPI;
     private double stdDevThreshold = 40;
-
+    
     private HashMap<String, HashMap<Double, HashMap<String, Double>>> expectedEffects = new HashMap<String, HashMap<Double, HashMap<String, Double>>>();
-    private HashMap<String, Double> solution = new HashMap<String, Double>();
-
+    private HashMap<String, HashMap<String, Double>> solution = new HashMap<String, HashMap<String, Double>>();
+    
     public ResourcesLevelControl(EnforcementAPIInterface enforcementAPIInterface, MonitoringAPIInterface monitoringAPIInterface, DependencyGraph dependencyGraph) {
         enforcementAPI = enforcementAPIInterface;
         monitoringAPI = monitoringAPIInterface;
         this.dependencyGraph = dependencyGraph;
         REFRESH_PERIOD = Configuration.getRefreshPeriod();
-
+        
     }
-
+    
     public void start() {
         run();
     }
-
+    
     public void stop() {
         boolean ok = false;
         while (!ok) {
@@ -91,101 +90,104 @@ public class ResourcesLevelControl implements Runnable {
         t.purge();
         t.cancel();
     }
-
+    
     public void replaceDependencyGraph(DependencyGraph dependencyGraph) {
         this.dependencyGraph = dependencyGraph;
-
+        
     }
-
+    
     public void checkForOverusedResourcesAndScale() {
         List<Node> serviceUnits = dependencyGraph.getAllServiceUnits();
         for (Node serviceUnit : serviceUnits) {
             List<String> metrics = monitoringAPI.getAvailableMetrics(serviceUnit);
             double remainingCost = this.remainingCost(serviceUnit);
             for (String metric : metrics) {
-
+                
                 if (metric.toLowerCase().contains("usage") || metric.toLowerCase().contains("usedpercent")) {
                     try {
                         double val = monitoringAPI.getMetricValue(metric, serviceUnit);
                         List<Node> associatedVMs = serviceUnit.getAllRelatedNodesOfType(Relationship.RelationshipType.HOSTED_ON_RELATIONSHIP, Node.NodeType.VIRTUAL_MACHINE);
-                        double max =0;
-                        Node maxVm=null;
+                        double max = 0;
+                        Node maxVm = null;
                         boolean foundSmaller = false;
                         HashMap<String, Double> currentValues = new HashMap<>();
                         for (Node vm : associatedVMs) {
                             try {
-                                double vmMetric =monitoringAPI.getMetricValue(metric, vm); 
-                                if (vmMetric>max){
-                                    max=vmMetric;
-                                    maxVm=vm;
+                                double vmMetric = monitoringAPI.getMetricValue(metric, vm);                                
+                                if (vmMetric > max) {
+                                    max = vmMetric;
+                                    maxVm = vm;
                                 }
-                                if (vmMetric<50){
-                                    foundSmaller=true;
+                                if (vmMetric < 50) {
+                                    foundSmaller = true;
                                 }
                                 currentValues.put(vm.getId(), vmMetric);
                             } catch (Exception ex) {
                                 Logger.getLogger(ResourcesLevelControl.class.getName()).log(Level.SEVERE, null, ex);
                             }
                         }
-                        if (maxVm!=null && max>90 && foundSmaller){
+                        if (maxVm != null && max > 90 && foundSmaller) {
                             searchAction(serviceUnit, maxVm, metric, val, remainingCost);
-                        }else{
-                        double stdDev = computeStdDeviation(currentValues);
-                        if (stdDev > stdDevThreshold) {
-                            double maxDiff = -2;
-                            Node vmToFix = null;
-                            for (Node vm : associatedVMs) {
-                                double vmValue = monitoringAPI.getMetricValue(metric, vm);
-                                if (maxDiff < Math.abs(vmValue - val)) {
-                                    maxDiff = Math.abs(vmValue - val);
-                                    vmToFix = vm;
+                        } else {
+                            double stdDev = computeStdDeviation(currentValues);
+                            if (stdDev > stdDevThreshold) {
+                                double maxDiff = -2;
+                                Node vmToFix = null;
+                                for (Node vm : associatedVMs) {
+                                    double vmValue = monitoringAPI.getMetricValue(metric, vm);
+                                    if (maxDiff < Math.abs(vmValue - val)) {
+                                        maxDiff = Math.abs(vmValue - val);
+                                        vmToFix = vm;
+                                    }
+                                }
+                                if (vmToFix != null) {
+                                    searchAction(serviceUnit, vmToFix, metric, stdDev, remainingCost);
                                 }
                             }
-                            if (vmToFix!=null){
-                            searchAction(serviceUnit, vmToFix, metric, stdDev, remainingCost);
-                            }
-                        }
                         }
                     } catch (Exception ex) {
                         ex.printStackTrace();
                         RuntimeLogger.logger.info("Could not get metric " + metric + " for node " + serviceUnit + " ex " + ex.getLocalizedMessage());
                     }
-
+                    
                 }
             }
-            executeGeneratedSolution(serviceUnit, remainingCost);
-        }
-
-    }
-
-    private void executeGeneratedSolution(Node serviceUnit, double remainingCost) {
-        if (solution.size()!=0){
-        Object[] parameters = new Object[2 * solution.size() + 1];
-        int i = 0;
-        for (String type : this.solution.keySet()) {
-            parameters[i] = type;
-            parameters[i + 1] = solution.get(type);
-            i += 2;
+            executeGeneratedSolution(remainingCost);
         }
         
-        parameters[i] = remainingCost;
-        
-        enforcementAPI.enforceAction("scaleVertically", serviceUnit, parameters);
-        }
     }
-
+    
+    private void executeGeneratedSolution(double remainingCost) {
+        for (String vmID : solution.keySet()) {
+            if (solution.size() != 0) {
+                Object[] parameters = new Object[2 * solution.size() + 1];
+                int i = 0;
+                for (String type : this.solution.get(vmID).keySet()) {
+                    parameters[i] = type;
+                    parameters[i + 1] = solution.get(vmID).get(type);
+                    i += 2;
+                }
+                
+                parameters[i] = remainingCost;
+                
+                enforcementAPI.enforceAction("scaleVertically", dependencyGraph.getNodeWithID(vmID), parameters);
+            }
+        }
+        solution = new HashMap<>();
+    }
+    
     public double remainingCost(Node serviceUnit) {
         List<ElasticityRequirement> requirements = new ArrayList<>();
         Node serviceTopology = dependencyGraph.findParentNode(serviceUnit.getId());
         Node cloudService = dependencyGraph.findParentNode(serviceTopology.getId());
-
+        
         requirements.addAll(serviceUnit.getElasticityRequirements());
         requirements.addAll(serviceTopology.getElasticityRequirements());
         requirements.addAll(cloudService.getElasticityRequirements());
         double minCost = 1000000;
         for (ElasticityRequirement elasticityRequirement : requirements) {
             Node unit = dependencyGraph.getNodeWithID(elasticityRequirement.getAnnotation().getEntityID());
-
+            
             SYBLSpecification syblSpecification = SYBLDirectiveMappingFromXML.mapFromSYBLAnnotation(elasticityRequirement.getAnnotation());
             for (Constraint c : syblSpecification.getConstraint()) {
                 BinaryRestriction restriction = c.getToEnforce().getBinaryRestriction().get(0).getBinaryRestrictions().get(0);
@@ -206,17 +208,17 @@ public class ResourcesLevelControl implements Runnable {
                             minCost = Double.parseDouble(restriction.getLeftHandSide().getNumber()) - currentCost;
                         }
                     } catch (Exception ex) {
-
+                        
                         RuntimeLogger.logger.info("Could not get metric " + restriction.getRightHandSide().getMetric() + " for node " + unit + " ex " + ex.getLocalizedMessage());
                     }
                 }
             }
-
+            
         }
-
+        
         return minCost;
     }
-
+    
     public boolean searchAction(Node serviceUnit, Node vm, String metric, double initialStdDev, double remainingCost) {
         boolean ok = true;
         List<Node> associatedVMs = serviceUnit.getAllRelatedNodesOfType(Relationship.RelationshipType.HOSTED_ON_RELATIONSHIP, Node.NodeType.VIRTUAL_MACHINE);
@@ -228,43 +230,46 @@ public class ResourcesLevelControl implements Runnable {
                 Logger.getLogger(ResourcesLevelControl.class.getName()).log(Level.SEVERE, null, ex);
             }
         }
-
+        
         double minStdDev = initialStdDev;
         String resTypeMinStdDev = "";
         double resSizeMinStdDev = 10000;
-
+        
         for (String resourceType : this.expectedEffects.keySet()) {
             for (double resourceSize : expectedEffects.get(resourceType).keySet()) {
                 double valBefore = currentValues.get(vm.getId());
-                if (expectedEffects.get(resourceType).get(resourceSize).get(metric)!=null){
-                currentValues.put(vm.getId(), valBefore + expectedEffects.get(resourceType).get(resourceSize).get(metric));
-                double newStdDev = computeStdDeviation(currentValues);
-                if (newStdDev < minStdDev) {
-                    minStdDev=newStdDev;
-                    resTypeMinStdDev = resourceType;
-                    resSizeMinStdDev = resourceSize;
-                }
+                if (expectedEffects.get(resourceType).get(resourceSize).get(metric) != null) {
+                    currentValues.put(vm.getId(), valBefore + expectedEffects.get(resourceType).get(resourceSize).get(metric));
+                    double newStdDev = computeStdDeviation(currentValues);
+                    if (newStdDev < minStdDev) {
+                        minStdDev = newStdDev;
+                        resTypeMinStdDev = resourceType;
+                        resSizeMinStdDev = resourceSize;
+                    }
                 }
             }
         }
-        if (!resTypeMinStdDev.equalsIgnoreCase("")){
-        this.solution.put(resTypeMinStdDev, resSizeMinStdDev);
+        if (!resTypeMinStdDev.equalsIgnoreCase("")) {
+            if (!solution.containsKey(vm.getId())) {
+                solution.put(vm.getId(), new HashMap<String, Double>());
+            }
+            this.solution.get(vm.getId()).put(resTypeMinStdDev, resSizeMinStdDev);
         }
         return ok;
     }
-
+    
     public void readResourceActionEffects() {
         JSONParser parser = new JSONParser();
         try {
             InputStream inputStream = Configuration.class.getClassLoader().getResourceAsStream(Configuration.getResourcesEffectsPath());
             Object obj = parser.parse(new InputStreamReader(inputStream));
-
+            
             JSONObject jsonObject = (JSONObject) obj;
-
+            
             for (Object resourceType : jsonObject.keySet()) {
                 expectedEffects.put((String) resourceType, new HashMap<Double, HashMap<String, Double>>());
                 JSONObject object = (JSONObject) jsonObject.get(resourceType);
-
+                
                 for (Object resourceSize : object.keySet()) {
                     expectedEffects.get((String) resourceType).put(Double.parseDouble((String) resourceSize), new HashMap<String, Double>());
                     JSONObject metrics = (JSONObject) object.get(resourceSize);
@@ -278,7 +283,7 @@ public class ResourcesLevelControl implements Runnable {
             RuntimeLogger.logger.error("Error while reading resources effects");
         }
     }
-
+    
     public double computeStdDeviation(HashMap<String, Double> currentValues) {
         double sum = 0;
         for (Double val : currentValues.values()) {
@@ -290,10 +295,10 @@ public class ResourcesLevelControl implements Runnable {
             sumOfSquares += Math.pow((val - average), 2);
         }
         sumOfSquares /= currentValues.size();
-
+        
         return Math.sqrt(sumOfSquares);
     }
-
+    
     @Override
     public void run() {
         t = new Timer();
@@ -309,17 +314,17 @@ public class ResourcesLevelControl implements Runnable {
 //                        }
 
                         Node cloudService = monitoringAPI.getControlledService();
-
+                        
                         dependencyGraph.setCloudService(cloudService);
-
+                        
                         checkForOverusedResourcesAndScale();
                     }
                 }
-            }, 2*REFRESH_PERIOD, 2*REFRESH_PERIOD);
+            }, 2 * REFRESH_PERIOD, 2 * REFRESH_PERIOD);
         } catch (Exception e) {
             RuntimeLogger.logger.info("Found error " + e.getMessage());
-
+            
         }
     }
-
+    
 }
