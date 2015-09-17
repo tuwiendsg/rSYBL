@@ -32,6 +32,7 @@ import at.ac.tuwien.dsg.rSybl.cloudInteractionUnit.api.EnforcementAPIInterface;
 import at.ac.tuwien.dsg.rSybl.cloudInteractionUnit.utils.Configuration;
 import at.ac.tuwien.dsg.rSybl.cloudInteractionUnit.utils.RuntimeLogger;
 import at.ac.tuwien.dsg.rSybl.dataProcessingUnit.api.MonitoringAPIInterface;
+import at.ac.tuwien.dsg.rSybl.planningEngine.utils.PlanningLogger;
 
 import java.io.InputStream;
 import java.io.InputStreamReader;
@@ -57,7 +58,7 @@ public class ResourcesLevelControl implements Runnable {
     private DependencyGraph dependencyGraph;
     private EnforcementAPIInterface enforcementAPI;
     private MonitoringAPIInterface monitoringAPI;
-    private double stdDevThreshold = 40;
+    private double stdDevThreshold = 23.0;
     
     private HashMap<String, HashMap<Double, HashMap<String, Double>>> expectedEffects = new HashMap<String, HashMap<Double, HashMap<String, Double>>>();
     private HashMap<String, HashMap<String, Double>> solution = new HashMap<String, HashMap<String, Double>>();
@@ -67,7 +68,7 @@ public class ResourcesLevelControl implements Runnable {
         monitoringAPI = monitoringAPIInterface;
         this.dependencyGraph = dependencyGraph;
         REFRESH_PERIOD = Configuration.getRefreshPeriod();
-        
+        readResourceActionEffects();
     }
     
     public void start() {
@@ -105,15 +106,16 @@ public class ResourcesLevelControl implements Runnable {
                 
                 if (metric.toLowerCase().contains("usage") || metric.toLowerCase().contains("usedpercent")) {
                     try {
-                        double val = monitoringAPI.getMetricValue(metric, serviceUnit);
                         List<Node> associatedVMs = serviceUnit.getAllRelatedNodesOfType(Relationship.RelationshipType.HOSTED_ON_RELATIONSHIP, Node.NodeType.VIRTUAL_MACHINE);
                         double max = 0;
                         Node maxVm = null;
                         boolean foundSmaller = false;
                         HashMap<String, Double> currentValues = new HashMap<>();
+                        double sum = 0;
                         for (Node vm : associatedVMs) {
                             try {
-                                double vmMetric = monitoringAPI.getMetricValue(metric, vm);                                
+                                double vmMetric = monitoringAPI.getMetricValue(metric, vm);   
+                                sum += vmMetric;
                                 if (vmMetric > max) {
                                     max = vmMetric;
                                     maxVm = vm;
@@ -123,31 +125,33 @@ public class ResourcesLevelControl implements Runnable {
                                 }
                                 currentValues.put(vm.getId(), vmMetric);
                             } catch (Exception ex) {
-                                Logger.getLogger(ResourcesLevelControl.class.getName()).log(Level.SEVERE, null, ex);
+                                PlanningLogger.logger.info("Error in resources control, when converting values for metrics "+ ex);
                             }
                         }
+                        double val = sum/associatedVMs.size();
+                        
                         if (maxVm != null && max > 90 && foundSmaller) {
-                            searchAction(serviceUnit, maxVm, metric, val, remainingCost);
+                            searchAction(serviceUnit, maxVm, metric, val, remainingCost,currentValues);
                         } else {
                             double stdDev = computeStdDeviation(currentValues);
                             if (stdDev > stdDevThreshold) {
                                 double maxDiff = -2;
                                 Node vmToFix = null;
                                 for (Node vm : associatedVMs) {
-                                    double vmValue = monitoringAPI.getMetricValue(metric, vm);
+                                    double vmValue = currentValues.get(vm.getId());
                                     if (maxDiff < Math.abs(vmValue - val)) {
                                         maxDiff = Math.abs(vmValue - val);
                                         vmToFix = vm;
                                     }
                                 }
                                 if (vmToFix != null) {
-                                    searchAction(serviceUnit, vmToFix, metric, stdDev, remainingCost);
+                                    searchAction(serviceUnit, vmToFix, metric, stdDev, remainingCost,currentValues);
                                 }
                             }
                         }
                     } catch (Exception ex) {
-                        ex.printStackTrace();
-                        RuntimeLogger.logger.info("Could not get metric " + metric + " for node " + serviceUnit + " ex " + ex.getLocalizedMessage());
+//                        ex.printStackTrace();
+                        PlanningLogger.logger.info("Could not get metric " + metric + " for node " + serviceUnit + " ex " + ex.getLocalizedMessage());
                     }
                     
                 }
@@ -160,7 +164,8 @@ public class ResourcesLevelControl implements Runnable {
     private void executeGeneratedSolution(double remainingCost) {
         for (String vmID : solution.keySet()) {
             if (solution.size() != 0) {
-                Object[] parameters = new Object[2 * solution.size() + 1];
+                
+                Object[] parameters = new Object[2 * solution.get(vmID).size() + 1];
                 int i = 0;
                 for (String type : this.solution.get(vmID).keySet()) {
                     parameters[i] = type;
@@ -219,17 +224,8 @@ public class ResourcesLevelControl implements Runnable {
         return minCost;
     }
     
-    public boolean searchAction(Node serviceUnit, Node vm, String metric, double initialStdDev, double remainingCost) {
+    public boolean searchAction(Node serviceUnit, Node vm, String metric, double initialStdDev, double remainingCost,HashMap<String,Double> currentValues) {
         boolean ok = true;
-        List<Node> associatedVMs = serviceUnit.getAllRelatedNodesOfType(Relationship.RelationshipType.HOSTED_ON_RELATIONSHIP, Node.NodeType.VIRTUAL_MACHINE);
-        HashMap<String, Double> currentValues = new HashMap<>();
-        for (Node n : associatedVMs) {
-            try {
-                currentValues.put(n.getId(), monitoringAPI.getMetricValue(metric, n));
-            } catch (Exception ex) {
-                Logger.getLogger(ResourcesLevelControl.class.getName()).log(Level.SEVERE, null, ex);
-            }
-        }
         
         double minStdDev = initialStdDev;
         String resTypeMinStdDev = "";
@@ -246,6 +242,7 @@ public class ResourcesLevelControl implements Runnable {
                         resTypeMinStdDev = resourceType;
                         resSizeMinStdDev = resourceSize;
                     }
+                    currentValues.put(vm.getId(), valBefore);
                 }
             }
         }
@@ -316,13 +313,13 @@ public class ResourcesLevelControl implements Runnable {
                         Node cloudService = monitoringAPI.getControlledService();
                         
                         dependencyGraph.setCloudService(cloudService);
-                        
+                        PlanningLogger.logger.info("Planning resource level control ");
                         checkForOverusedResourcesAndScale();
                     }
                 }
             }, 2 * REFRESH_PERIOD, 2 * REFRESH_PERIOD);
         } catch (Exception e) {
-            RuntimeLogger.logger.info("Found error " + e.getMessage());
+            PlanningLogger.logger.info("Found error " + e.getMessage());
             
         }
     }

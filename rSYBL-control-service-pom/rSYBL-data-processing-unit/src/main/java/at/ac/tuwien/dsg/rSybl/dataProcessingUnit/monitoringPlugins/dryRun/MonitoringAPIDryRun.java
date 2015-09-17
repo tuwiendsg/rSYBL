@@ -145,7 +145,10 @@ public class MonitoringAPIDryRun  implements MonitoringInterface{
 	@Override
 	public List<String> getAvailableMetrics(Node node) {
 		// TODO Auto-generated method stub
-		return new ArrayList<String>();
+            ArrayList<String> metrics = new ArrayList<String>();
+            metrics.add("cpuUsage");
+            metrics.add("memUsage");
+		return metrics;
 	}
 
 	@Override

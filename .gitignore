@@ -49,3 +49,9 @@ rSYBL-control-service-pom/rSYBL-analysis-engine/nb-configuration.xml
 
 
 rSYBL-control-service-pom/rSYBL-cloud-interaction-unit/src/main/java/at/ac/tuwien/dsg/rSybl/cloudInteractionUnit/enforcementPlugins/flexiant/flexConnector/
+
+rSYBL-control-service-pom/rSYBL-planning-engine/load/DataControllerUnit.csv
+
+*.csv
+
+*.log

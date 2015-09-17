@@ -66,7 +66,7 @@ public class ResourcesPlanningTest {
         planning = new ResourcesLevelControl(enforcementAPI, monitoringAPI, dependencyGraph);
 
     }
-    //@Test
+//    @Test
     public void testReadingEffectsFromFile(){
         planning.readResourceActionEffects();
     }
