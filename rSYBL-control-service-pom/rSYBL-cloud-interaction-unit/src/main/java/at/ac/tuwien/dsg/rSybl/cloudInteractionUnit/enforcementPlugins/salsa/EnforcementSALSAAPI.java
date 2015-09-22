@@ -727,5 +727,9 @@ public class EnforcementSALSAAPI implements EnforcementInterface {
         return scaleIn(toBeScaled);
     }
 
+    @Override
+    public void enforceAction(Node serviceID, String actionName) {
+    }
+
    
 }

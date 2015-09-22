@@ -356,4 +356,8 @@ public class M2MApplicationControl implements EnforcementInterface{
     public boolean scaleIn(Node toBeScaled, double violationDegree) {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
+
+    @Override
+    public void enforceAction(Node serviceID, String actionName) {
+    }
 }

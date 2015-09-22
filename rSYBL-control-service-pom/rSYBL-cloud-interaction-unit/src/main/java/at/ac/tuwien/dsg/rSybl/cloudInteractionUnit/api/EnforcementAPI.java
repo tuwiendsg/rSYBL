@@ -129,12 +129,70 @@ public class EnforcementAPI {
                 }
 
             } else {
-                res = false;
-                RuntimeLogger.logger.info("------------Method not found:> "
-                        + foundMethod + " on " + target + " " + node
-                        + " params " + parameters.length);
+                String myAction="enforceAction";
+                
+                for (Method method : Class.forName(className).getMethods()) {
+                if (method.getName().toLowerCase()
+                        .equalsIgnoreCase(myAction.toLowerCase())) {
+                    foundMethod = method;
 
+                }
+                }
+                Class[] partypes = new Class[2];
+                Object[] myParameters = new Object[2];
+                partypes[1] = String.class;
+                myParameters[1] = actionName;
+
+                partypes[0] = Node.class;
+                myParameters[0] = node;
+                int i = 2;
+
+                Method actionMethod;
+
+                try {
+                    actionMethod = Class.forName(className).getMethod(
+                            foundMethod.getName(), partypes);
+
+                    res = (boolean) actionMethod.invoke(offeredCapabilities,
+                            myParameters);
+                } catch (IllegalAccessException | IllegalArgumentException | InvocationTargetException | NoSuchMethodException e1) {
+                    // TODO Auto-generated catch block
+                    e1.printStackTrace();
+                    res = false;
+                }
+                List<String> metrics = monitoringAPIInterface
+                        .getAvailableMetrics(node);
+                try {
+                    Thread.sleep(10000);
+                } catch (InterruptedException ex) {
+                    // TODO Auto-generated catch block
+                    ex.printStackTrace();
+                }
+                numberOfWaits=0;
+                while (!monitoringAPIInterface.isHealthy()) {
+                    RuntimeLogger.logger.info("Waiting for action....");
+                     numberOfWaits++;
+                if (numberOfWaits>10){
+                    EventNotification eventNotification = EventNotification.getEventNotification();
+                    CustomEvent customEvent = new CustomEvent();
+                    customEvent.setCloudServiceID(this.getControlledService().getId());
+                    customEvent.setType(IEvent.Type.UNHEALTHY_SP);
+                    customEvent.setTarget(node.getId());
+                    customEvent.setMessage(node.getId()+" not healthy for "+(numberOfWaits*15000)+" seconds.");
+                    eventNotification.sendEvent(customEvent);
+                }
+                    try {
+                        Thread.sleep(15000);
+                    } catch (InterruptedException ex) {
+                        // TODO Auto-generated catch block
+                        ex.printStackTrace();
+                    }
+
+
+                }
             }
+
+            
             List<String> metrics = monitoringAPIInterface
                     .getAvailableMetrics(node);
             // monitoringAPIInterface.enforcingActionStarted("ScaleIn", arg0);
@@ -212,11 +270,68 @@ public class EnforcementAPI {
                 }
 
             } else {
-                res = false;
-                RuntimeLogger.logger.info("------------Method not found:> "
-                        + foundMethod + " on " + " " + node
-                        + " params " + parameters.length);
+                String myAction="enforceAction";
+                
+                for (Method method : Class.forName(className).getMethods()) {
+                if (method.getName().toLowerCase()
+                        .equalsIgnoreCase(myAction.toLowerCase())) {
+                    foundMethod = method;
 
+                }
+                }
+                Class[] partypes = new Class[2];
+                Object[] myParameters = new Object[2];
+                partypes[1] = String.class;
+                myParameters[1] = actionName;
+
+                partypes[0] = Node.class;
+                myParameters[0] = node;
+                int i = 2;
+
+                Method actionMethod;
+
+                try {
+                    actionMethod = Class.forName(className).getMethod(
+                            foundMethod.getName(), partypes);
+
+                    res = (boolean) actionMethod.invoke(offeredCapabilities,
+                            myParameters);
+                } catch (IllegalAccessException | IllegalArgumentException | InvocationTargetException | NoSuchMethodException e1) {
+                    // TODO Auto-generated catch block
+                    e1.printStackTrace();
+                    res = false;
+                }
+                List<String> metrics = monitoringAPIInterface
+                        .getAvailableMetrics(node);
+                try {
+                    Thread.sleep(10000);
+                } catch (InterruptedException ex) {
+                    // TODO Auto-generated catch block
+                    ex.printStackTrace();
+                }
+                numberOfWaits=0;
+                while (!monitoringAPIInterface.isHealthy()) {
+                    RuntimeLogger.logger.info("Waiting for action....");
+                     numberOfWaits++;
+                if (numberOfWaits>10){
+                    EventNotification eventNotification = EventNotification.getEventNotification();
+                    CustomEvent customEvent = new CustomEvent();
+                    customEvent.setCloudServiceID(this.getControlledService().getId());
+                    customEvent.setType(IEvent.Type.UNHEALTHY_SP);
+                    customEvent.setTarget(node.getId());
+                    customEvent.setMessage(node.getId()+" not healthy for "+(numberOfWaits*15000)+" seconds.");
+                    eventNotification.sendEvent(customEvent);
+                }
+                    try {
+                        Thread.sleep(15000);
+                    } catch (InterruptedException ex) {
+                        // TODO Auto-generated catch block
+                        ex.printStackTrace();
+                    }
+
+
+                }
+            
             }
             List<String> metrics = monitoringAPIInterface
                     .getAvailableMetrics(node);
@@ -440,9 +555,71 @@ public class EnforcementAPI {
 
                 }
             } else {
-                res = false;
+                 
+                String myAction="enforceAction";
+                
+                for (Method method : Class.forName(className).getMethods()) {
+                if (method.getName().toLowerCase()
+                        .equalsIgnoreCase(myAction.toLowerCase())) {
+                    foundMethod = method;
 
+                }
+                }
+                Class[] partypes = new Class[2];
+                Object[] myParameters = new Object[2];
+                partypes[1] = String.class;
+                myParameters[1] = actionName;
+
+                partypes[0] = Node.class;
+                myParameters[0] = e;
+                int i = 2;
+
+                Method actionMethod;
+
+                try {
+                    actionMethod = Class.forName(className).getMethod(
+                            foundMethod.getName(), partypes);
+
+                    res = (boolean) actionMethod.invoke(offeredCapabilities,
+                            myParameters);
+                } catch (IllegalAccessException | IllegalArgumentException | InvocationTargetException | NoSuchMethodException e1) {
+                    // TODO Auto-generated catch block
+                    e1.printStackTrace();
+                    res = false;
+                }
+                List<String> metrics = monitoringAPIInterface
+                        .getAvailableMetrics(e);
+                try {
+                    Thread.sleep(10000);
+                } catch (InterruptedException ex) {
+                    // TODO Auto-generated catch block
+                    ex.printStackTrace();
+                }
+                numberOfWaits=0;
+                while (!monitoringAPIInterface.isHealthy()) {
+                    RuntimeLogger.logger.info("Waiting for action....");
+                     numberOfWaits++;
+                if (numberOfWaits>10){
+                    EventNotification eventNotification = EventNotification.getEventNotification();
+                    CustomEvent customEvent = new CustomEvent();
+                    customEvent.setCloudServiceID(this.getControlledService().getId());
+                    customEvent.setType(IEvent.Type.UNHEALTHY_SP);
+                    customEvent.setTarget(e.getId());
+                    customEvent.setMessage(e.getId()+" not healthy for "+(numberOfWaits*15000)+" seconds.");
+                    eventNotification.sendEvent(customEvent);
+                }
+                    try {
+                        Thread.sleep(15000);
+                    } catch (InterruptedException ex) {
+                        // TODO Auto-generated catch block
+                        ex.printStackTrace();
+                    }
+
+
+                }
             }
+
+            
         } catch (SecurityException | ClassNotFoundException e1) {
             // TODO Auto-generated catch block
             e1.printStackTrace();
@@ -468,7 +645,7 @@ public class EnforcementAPI {
 
                 }
             }
-
+            
             if (foundMethod != null) {
                 Class[] partypes = new Class[2];
                 Object[] myParameters = new Object[2];
@@ -523,9 +700,69 @@ public class EnforcementAPI {
 
                 }
             } else {
-                res = false;
+                String myAction="enforceAction";
+                
+                for (Method method : Class.forName(className).getMethods()) {
+                if (method.getName().toLowerCase()
+                        .equalsIgnoreCase(myAction.toLowerCase())) {
+                    foundMethod = method;
 
+                }
+                }
+                Class[] partypes = new Class[2];
+                Object[] myParameters = new Object[2];
+                partypes[1] = String.class;
+                myParameters[1] = actionName;
+
+                partypes[0] = Node.class;
+                myParameters[0] = e;
+                int i = 2;
+
+                Method actionMethod;
+
+                try {
+                    actionMethod = Class.forName(className).getMethod(
+                            foundMethod.getName(), partypes);
+
+                    res = (boolean) actionMethod.invoke(offeredCapabilities,
+                            myParameters);
+                } catch (IllegalAccessException | IllegalArgumentException | InvocationTargetException | NoSuchMethodException e1) {
+                    // TODO Auto-generated catch block
+                    e1.printStackTrace();
+                    res = false;
+                }
+                List<String> metrics = monitoringAPIInterface
+                        .getAvailableMetrics(e);
+                try {
+                    Thread.sleep(10000);
+                } catch (InterruptedException ex) {
+                    // TODO Auto-generated catch block
+                    ex.printStackTrace();
+                }
+                numberOfWaits=0;
+                while (!monitoringAPIInterface.isHealthy()) {
+                    RuntimeLogger.logger.info("Waiting for action....");
+                     numberOfWaits++;
+                if (numberOfWaits>10){
+                    EventNotification eventNotification = EventNotification.getEventNotification();
+                    CustomEvent customEvent = new CustomEvent();
+                    customEvent.setCloudServiceID(this.getControlledService().getId());
+                    customEvent.setType(IEvent.Type.UNHEALTHY_SP);
+                    customEvent.setTarget(e.getId());
+                    customEvent.setMessage(e.getId()+" not healthy for "+(numberOfWaits*15000)+" seconds.");
+                    eventNotification.sendEvent(customEvent);
+                }
+                    try {
+                        Thread.sleep(15000);
+                    } catch (InterruptedException ex) {
+                        // TODO Auto-generated catch block
+                        ex.printStackTrace();
+                    }
+
+
+                }
             }
+            
         } catch (SecurityException | ClassNotFoundException e1) {
             // TODO Auto-generated catch block
             e1.printStackTrace();

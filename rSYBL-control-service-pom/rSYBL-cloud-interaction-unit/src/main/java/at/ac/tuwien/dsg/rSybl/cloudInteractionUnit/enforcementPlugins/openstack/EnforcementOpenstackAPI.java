@@ -593,5 +593,9 @@ public boolean containsElasticityCapability(Node entity, String capability) {
 return scaleIn(toBeScaled);
             }
 
+    @Override
+    public void enforceAction(Node serviceID, String actionName) {
+    }
+
    
 }

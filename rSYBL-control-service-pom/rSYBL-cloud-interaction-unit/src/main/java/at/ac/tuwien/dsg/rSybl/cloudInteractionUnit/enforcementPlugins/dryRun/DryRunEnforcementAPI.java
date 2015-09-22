@@ -689,5 +689,9 @@ public class DryRunEnforcementAPI implements EnforcementInterface {
         return true;
     }
 
+    @Override
+    public void enforceAction(Node serviceID, String actionName) {
+    }
+
   
 }
