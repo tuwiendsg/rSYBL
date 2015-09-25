@@ -2,9 +2,8 @@ package at.ac.tuwien.dsg.rSybl.client;
 
 /**
  * Copyright 2013 Technische Universitat Wien (TUW), Distributed SystemsGroup
- * E184.  *
- * This work was partially supported by the European Commission in terms of the
- * CELAR FP7 project (FP7-ICT-2011-8 #317790).
+ * E184. * This work was partially supported by the European Commission in terms
+ * of the CELAR FP7 project (FP7-ICT-2011-8 #317790).
  *
  * Licensed under the Apache License, Version 2.0 (the "License"); you may not
  * use this file except in compliance with the License. You may obtain a copy of
@@ -21,13 +20,14 @@ package at.ac.tuwien.dsg.rSybl.client;
 /**
  * Author : Georgiana Copil - e.copil@dsg.tuwien.ac.at
  */
-
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.net.HttpURLConnection;
+import java.net.URI;
+import java.net.URISyntaxException;
 import java.net.URL;
 import java.nio.charset.Charset;
 import java.nio.file.Files;
@@ -59,17 +59,25 @@ public class SYBLControlClient {
             sYBLControlClient.prepareControl(applicationID);
             sYBLControlClient.setApplicationDescription(applicationID, tosca);
             sYBLControlClient.setApplicationDeployment(applicationID, deployment);
-           sYBLControlClient.startApplication(applicationID);
+            sYBLControlClient.startApplication(applicationID);
 
         } catch (IOException ex) {
             Logger.getLogger(SYBLControlClient.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
-    
+
     static String readFile(String path, Charset encoding)
             throws IOException {
-        byte[] encoded = Files.readAllBytes(Paths.get(path));
+        byte[] encoded = null;
+        try {
+            encoded = Files.readAllBytes(Paths.get(new URI(path)));
+        } catch (URISyntaxException ex) {
+            Logger.getLogger(SYBLControlClient.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (IOException ex) {
+            Logger.getLogger(SYBLControlClient.class.getName()).log(Level.SEVERE, null, ex);
+        }
         return new String(encoded, encoding);
+
     }
 
     public void modifyAppDescription(String applicationID, String newAppDescription, String appDeployment, String effects) {
@@ -91,34 +99,23 @@ public class SYBLControlClient {
 
         callPUT(appDescription, applicationID + "/description/tosca");
 
-
-
     }
 
     public void testElasticityCapability(String applicationID, String componentID, String elasticityCapability) {
 
-
         callPUT("", applicationID + "/" + componentID + "/testElasticityCapability/" + elasticityCapability);
-
-
 
     }
 
     public void startTest(String applicationID) {
 
-
         callPUT("", applicationID + "/startTEST");
-
-
 
     }
 
     public void testElasticityCapabilityWithPlugin(String applicationID, String componentID, String pluginID, String elasticityCapability) {
 
-
         callPUT("", applicationID + "/" + componentID + "/testElasticityCapability/" + pluginID + "/" + elasticityCapability);
-
-
 
     }
 
@@ -129,17 +126,13 @@ public class SYBLControlClient {
 
     public void prepareControl(String id) {
 
-
         callPUT(id, id + "/prepareControl");
-
 
     }
 
     public void setMetricsCompositionRules(String id, String rules) {
 
-
         callPUT(rules, id + "/metricsCompositionRules");
-
 
     }
 
@@ -187,8 +180,7 @@ public class SYBLControlClient {
                 connection.disconnect();
             }
         }
-        
-        
+
     }
 
     private void callPOST(String body, String methodName) {
@@ -248,7 +240,6 @@ public class SYBLControlClient {
     public void setElasticityCapabilitiesEffects(String id, String effects) {
 
         callPUT(effects, id + "/elasticityCapabilitiesEffects");
-
 
     }
 }

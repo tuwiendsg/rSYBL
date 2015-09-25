@@ -12,21 +12,7 @@
     <module>rSYBL-local-service-pom</module>
     <module>eOMP</module>
   </modules>
-<!--	<distributionManagement>
-                <repository>
-                        <id>infosys-repo</id>
-                        <name>infosys-repo</name>
-                        <uniqueVersion>true</uniqueVersion>
-                        <url>scp://www.infosys.tuwien.ac.at/web/website/mvn</url>
-                </repository>
-                <snapshotRepository>
-                        <id>infosys-repo</id>
-                        <name>infosys-repo</name>
-                        <url>scp://www.infosys.tuwien.ac.at/web/website/mvn</url>
-                        <uniqueVersion>true</uniqueVersion>
-                </snapshotRepository>
-        </distributionManagement>-->
-
+ 
 
         <build>
         <pluginManagement>
@@ -47,5 +33,22 @@
         </extensions>
   
         </build>
+        
+        <repositories>
+        <repository>
+            <id>dsg-repo-central</id>
+            <url>http://repo.infosys.tuwien.ac.at/artifactory/comot</url>
+            <snapshots>
+                <enabled>false</enabled>
+            </snapshots>
+        </repository>
+        <repository>
+            <id>dsg-repo-snapshots</id>
+            <url>http://repo.infosys.tuwien.ac.at/artifactory/comot</url>
+            <releases>
+                <enabled>false</enabled>
+            </releases>
+        </repository>
+    </repositories>
       
 </project>
