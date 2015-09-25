@@ -690,7 +690,9 @@ public class DryRunEnforcementAPI implements EnforcementInterface {
     }
 
     @Override
-    public void enforceAction(Node serviceID, String actionName) {
+    public boolean enforceAction(Node serviceID, String actionName) {
+        System.out.println("Enforcing action "+actionName);
+        return true;
     }
 
   

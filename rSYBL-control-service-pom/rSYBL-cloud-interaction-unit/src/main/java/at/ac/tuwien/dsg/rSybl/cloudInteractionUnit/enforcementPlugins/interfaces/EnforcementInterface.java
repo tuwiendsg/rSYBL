@@ -39,5 +39,5 @@ public Node getControlledService();
 public void setMonitoringPlugin(MonitoringAPIInterface monitoring);
 public boolean containsElasticityCapability(Node entity, String capability);
 public void undeployService(Node serviceID);
-public void enforceAction(Node serviceID, String actionName);
+public boolean enforceAction(Node serviceID, String actionName);
 }
