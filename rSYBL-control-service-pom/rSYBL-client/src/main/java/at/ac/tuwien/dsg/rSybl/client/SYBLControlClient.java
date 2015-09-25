@@ -22,10 +22,6 @@ package at.ac.tuwien.dsg.rSybl.client;
  * Author : Georgiana Copil - e.copil@dsg.tuwien.ac.at
  */
 
-
-import com.sun.jersey.api.client.Client;
-import com.sun.jersey.api.client.WebResource;
-import com.sun.jersey.api.client.config.ClientConfig;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
@@ -38,8 +34,6 @@ import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-
-import javax.ws.rs.core.MediaType;
 
 public class SYBLControlClient {
 
@@ -151,17 +145,48 @@ public class SYBLControlClient {
 
     private void callPUT(String body, String methodName) {
 
-        Client c = Client.create();
+        URL url = null;
+        HttpURLConnection connection = null;
+        try {
+            url = new URL(REST_API_URL + "/" + methodName);
+            connection = (HttpURLConnection) url.openConnection();
+            connection.setDoOutput(true);
+            connection.setInstanceFollowRedirects(false);
+            connection.setRequestMethod("PUT");
+            connection.setRequestProperty("Content-Type", "application/xml");
+            connection.setRequestProperty("Accept", "application/json");
 
-        c.getProperties().put(
-                ClientConfig.PROPERTY_FOLLOW_REDIRECTS, true);
-        WebResource r = c.resource(REST_API_URL + "/" + methodName);
-        
-         r.accept(
-                MediaType.APPLICATION_XML_TYPE).
-                header("Content-Type", "application/xml; charset=utf-8").
-                header("Accept", "application/xml, multipart/related").
-                put(String.class, body);
+            //write message body
+            OutputStream os = connection.getOutputStream();
+            os.write(body.getBytes(Charset.forName("UTF-8")));
+            os.flush();
+            os.close();
+
+            InputStream errorStream = connection.getErrorStream();
+            if (errorStream != null) {
+                BufferedReader reader = new BufferedReader(new InputStreamReader(errorStream));
+                String line;
+                while ((line = reader.readLine()) != null) {
+                    Logger.getLogger(SYBLControlClient.class.getName()).log(Level.SEVERE, line);
+                }
+            }
+
+            InputStream inputStream = connection.getInputStream();
+            if (inputStream != null) {
+                BufferedReader reader = new BufferedReader(new InputStreamReader(inputStream));
+                String line;
+                while ((line = reader.readLine()) != null) {
+                    Logger.getLogger(SYBLControlClient.class.getName()).log(Level.SEVERE, line);
+                }
+            }
+
+        } catch (Exception e) {
+            Logger.getLogger(SYBLControlClient.class.getName()).log(Level.SEVERE, e.getMessage(), e);
+        } finally {
+            if (connection != null) {
+                connection.disconnect();
+            }
+        }
         
         
     }
