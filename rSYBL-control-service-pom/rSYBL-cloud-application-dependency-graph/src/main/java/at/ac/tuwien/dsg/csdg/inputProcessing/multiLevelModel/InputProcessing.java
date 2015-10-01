@@ -41,7 +41,7 @@ import at.ac.tuwien.dsg.csdg.Node.NodeType;
 import at.ac.tuwien.dsg.csdg.PolynomialElasticityRelationship;
 import at.ac.tuwien.dsg.csdg.Relationship;
 import at.ac.tuwien.dsg.csdg.Relationship.RelationshipType;
-import at.ac.tuwien.dsg.csdg.elasticityInformation.ElasticityCapability;
+import at.ac.tuwien.dsg.csdg.elasticityInformation.ElasticityCapabilityInformation;
 import at.ac.tuwien.dsg.csdg.elasticityInformation.ElasticityMetric;
 import at.ac.tuwien.dsg.csdg.elasticityInformation.ElasticityRequirement;
 import at.ac.tuwien.dsg.csdg.elasticityInformation.elasticityRequirements.SYBLAnnotation;
@@ -563,7 +563,7 @@ public class InputProcessing {
                             containerRel.setType(RelationshipType.HOSTED_ON_RELATIONSHIP);
                             artifactNode.addNode(containerNode, containerRel);
                             for (at.ac.tuwien.dsg.csdg.inputProcessing.multiLevelModel.deploymentDescription.ElasticityCapability elasticityCapability : container.getElasticityCapabilities()) {
-                                ElasticityCapability newElasticityCapability = new ElasticityCapability();
+                                ElasticityCapabilityInformation newElasticityCapability = new ElasticityCapabilityInformation();
                                 newElasticityCapability.setServicePartID(deploymentUnit.getServiceUnitID());
                                 newElasticityCapability.setName(elasticityCapability.getName());
                                 newElasticityCapability.setCallType(elasticityCapability.getType());
@@ -586,7 +586,7 @@ public class InputProcessing {
                                 artifactNode.addNode(vmNode, vmRel);
                             }
                             for (at.ac.tuwien.dsg.csdg.inputProcessing.multiLevelModel.deploymentDescription.ElasticityCapability elasticityCapability : artifact.getElasticityCapabilities()) {
-                                ElasticityCapability newElasticityCapability = new ElasticityCapability();
+                                ElasticityCapabilityInformation newElasticityCapability = new ElasticityCapabilityInformation();
                                                                 newElasticityCapability.setServicePartID(deploymentUnit.getServiceUnitID());
 
                                 newElasticityCapability.setName(elasticityCapability.getName());
@@ -618,7 +618,7 @@ public class InputProcessing {
                         vmRel.setType(RelationshipType.HOSTED_ON_RELATIONSHIP);
                         node.addNode(vmNode, vmRel);
                         for (at.ac.tuwien.dsg.csdg.inputProcessing.multiLevelModel.deploymentDescription.ElasticityCapability elasticityCapability : associatedVM.getElasticityCapabilities()) {
-                                ElasticityCapability newElasticityCapability = new ElasticityCapability();
+                                ElasticityCapabilityInformation newElasticityCapability = new ElasticityCapabilityInformation();
                                                                 newElasticityCapability.setServicePartID(deploymentUnit.getServiceUnitID());
 
                                 newElasticityCapability.setName(elasticityCapability.getName());
@@ -630,7 +630,7 @@ public class InputProcessing {
                     }
                 }
                 for (at.ac.tuwien.dsg.csdg.inputProcessing.multiLevelModel.deploymentDescription.ElasticityCapability elasticityCapability : deploymentUnit.getElasticityCapabilities()) {
-                    ElasticityCapability newElasticityCapability = new ElasticityCapability();
+                    ElasticityCapabilityInformation newElasticityCapability = new ElasticityCapabilityInformation();
                                                     newElasticityCapability.setServicePartID(deploymentUnit.getServiceUnitID());
 
                     newElasticityCapability.setName(elasticityCapability.getName());

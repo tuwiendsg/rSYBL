@@ -28,7 +28,7 @@ import java.util.List;
 
 import at.ac.tuwien.dsg.csdg.Node.NodeType;
 import at.ac.tuwien.dsg.csdg.Relationship.RelationshipType;
-import at.ac.tuwien.dsg.csdg.elasticityInformation.ElasticityCapability;
+import at.ac.tuwien.dsg.csdg.elasticityInformation.ElasticityCapabilityInformation;
 import at.ac.tuwien.dsg.csdg.elasticityInformation.ElasticityMetric;
 import at.ac.tuwien.dsg.csdg.elasticityInformation.ElasticityRequirement;
 import at.ac.tuwien.dsg.csdg.inputProcessing.multiLevelModel.abstractModelXML.CloudServiceXML;
@@ -295,8 +295,8 @@ public class DependencyGraph implements Serializable{
 			}
 		return elasticityRequirements;
 	}
-        public ArrayList<ElasticityCapability> getAllElasticityCapabilities(){
-		ArrayList<ElasticityCapability> elasticityCapabilities= new ArrayList<ElasticityCapability>();
+        public ArrayList<ElasticityCapabilityInformation> getAllElasticityCapabilities(){
+		ArrayList<ElasticityCapabilityInformation> elasticityCapabilities= new ArrayList<ElasticityCapabilityInformation>();
 		elasticityCapabilities.addAll(cloudService.getElasticityCapabilities());
 		for (Node n:getAllServiceTopologies()){
 			elasticityCapabilities.addAll(n.getElasticityCapabilities());

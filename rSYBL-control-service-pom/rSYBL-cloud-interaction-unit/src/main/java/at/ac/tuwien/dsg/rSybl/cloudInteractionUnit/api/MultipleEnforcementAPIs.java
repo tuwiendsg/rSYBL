@@ -27,7 +27,7 @@ import java.util.HashMap;
 
 import at.ac.tuwien.dsg.csdg.Node;
 import at.ac.tuwien.dsg.csdg.Relationship.RelationshipType;
-import at.ac.tuwien.dsg.csdg.elasticityInformation.ElasticityCapability;
+import at.ac.tuwien.dsg.csdg.elasticityInformation.ElasticityCapabilityInformation;
 import at.ac.tuwien.dsg.csdg.elasticityInformation.ElasticityRequirement;
 import at.ac.tuwien.dsg.csdg.outputProcessing.eventsNotification.ActionEvent;
 import at.ac.tuwien.dsg.csdg.outputProcessing.eventsNotification.EventNotification;
@@ -373,7 +373,7 @@ public class MultipleEnforcementAPIs implements EnforcementAPIInterface {
     }
 
     @Override
-    public boolean enforceElasticityCapability(ElasticityCapability capability,
+    public boolean enforceElasticityCapability(ElasticityCapabilityInformation capability,
             Node e) {
         EnforcementAPI enforcementAPI = enforcementAPIs.values().iterator()
                 .next();
@@ -659,7 +659,7 @@ public class MultipleEnforcementAPIs implements EnforcementAPIInterface {
 
     @Override
     public boolean enforceElasticityCapability(String target,
-            ElasticityCapability capability, Node e) {
+            ElasticityCapabilityInformation capability, Node e) {
 
         boolean res = false;
         EnforcementAPI enforcementAPI = enforcementAPIs.get(target);

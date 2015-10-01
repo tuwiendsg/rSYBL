@@ -9,7 +9,7 @@ import at.ac.tuwien.dsg.csdg.DependencyGraph;
 import at.ac.tuwien.dsg.csdg.Node;
 import at.ac.tuwien.dsg.csdg.Node.NodeType;
 import at.ac.tuwien.dsg.csdg.Relationship.RelationshipType;
-import at.ac.tuwien.dsg.csdg.elasticityInformation.ElasticityCapability;
+import at.ac.tuwien.dsg.csdg.elasticityInformation.ElasticityCapabilityInformation;
 import at.ac.tuwien.dsg.csdg.elasticityInformation.ElasticityRequirement;
 import at.ac.tuwien.dsg.csdg.elasticityInformation.elasticityRequirements.Constraint;
 import at.ac.tuwien.dsg.csdg.elasticityInformation.elasticityRequirements.Strategy;
@@ -68,10 +68,10 @@ public class ActionPlanEnforcement {
     }
 
     public void enforceResult(ArrayList<Pair<ActionEffect, Integer>> result, DependencyGraph dependencyGraph, List<Constraint> constraintsFixed, List<Strategy> strategiesImproved) {
-        HashMap<Node, ElasticityCapability> capabilities = new HashMap<Node, ElasticityCapability>();
+        HashMap<Node, ElasticityCapabilityInformation> capabilities = new HashMap<Node, ElasticityCapabilityInformation>();
 
         for (Pair<ActionEffect, Integer> pair : result) {
-            for (ElasticityCapability elasticityCapability : pair.getFirst().getTargetedEntity().getElasticityCapabilities()) {
+            for (ElasticityCapabilityInformation elasticityCapability : pair.getFirst().getTargetedEntity().getElasticityCapabilities()) {
                 if (checkECPossible(pair.getFirst())) {
 
                     if (elasticityCapability.getName().toLowerCase().contains(pair.getFirst().getActionType().toLowerCase())) {
@@ -170,7 +170,7 @@ public class ActionPlanEnforcement {
 //		}
     }
 
-    public void enforceElasticityCapabilityFromNode(ElasticityCapability capability, Node n, DependencyGraph dependencyGraph) {
+    public void enforceElasticityCapabilityFromNode(ElasticityCapabilityInformation capability, Node n, DependencyGraph dependencyGraph) {
         EnforceElasticityCapabilityInThread enforceActionInThread = new EnforceElasticityCapabilityInThread(capability, n, dependencyGraph);
 
         Thread t = new Thread(enforceActionInThread);
@@ -180,11 +180,11 @@ public class ActionPlanEnforcement {
 
     public class EnforceElasticityCapabilityInThread implements Runnable {
 
-        ElasticityCapability elasticityCapability;
+        ElasticityCapabilityInformation elasticityCapability;
         DependencyGraph dependencyGraph;
         Node node;
 
-        public EnforceElasticityCapabilityInThread(ElasticityCapability actionEffect, Node node, DependencyGraph dependencyGraph) {
+        public EnforceElasticityCapabilityInThread(ElasticityCapabilityInformation actionEffect, Node node, DependencyGraph dependencyGraph) {
             this.elasticityCapability = actionEffect;
             this.node = node;
             this.dependencyGraph = dependencyGraph;
@@ -243,7 +243,7 @@ public class ActionPlanEnforcement {
             String actionName = actionEffect.getActionType().toLowerCase();
             List<String> primitivesEnforced = new ArrayList<String>();
             String capabilitiesEnforced = "";
-            for (ElasticityCapability elasticityCapability : actionEffect
+            for (ElasticityCapabilityInformation elasticityCapability : actionEffect
                     .getTargetedEntity().getElasticityCapabilities()) {
                 if (checkECPossible(actionEffect)) {
                     if (elasticityCapability.getName().toLowerCase().contains(actionName.toLowerCase())) {
@@ -327,7 +327,7 @@ public class ActionPlanEnforcement {
     public List<String> getTargetsOfPrimitives(ActionEffect actionEffect) {
         List<String> targets = new ArrayList<String>();
         String ac = actionEffect.getActionType().toLowerCase();
-        for (ElasticityCapability elasticityCapability : actionEffect
+        for (ElasticityCapabilityInformation elasticityCapability : actionEffect
                 .getTargetedEntity().getElasticityCapabilities()) {
             if (elasticityCapability.getName().equalsIgnoreCase(ac)) {
                 //if (!elasticityCapability.getName().toLowerCase().contains("scalein") || (elasticityCapability.getName().toLowerCase().contains("scalein")&& actionEffect.getTargetedEntity().getAllRelatedNodesOfType(RelationshipType.HOSTED_ON_RELATIONSHIP, NodeType.VIRTUAL_MACHINE).size()>1)){
@@ -342,7 +342,7 @@ public class ActionPlanEnforcement {
                         actionName = actionName.split("\\.")[1];
                     } else {
                         boolean foundCap = false;
-                        for (ElasticityCapability capability : actionEffect.getTargetedEntity().getElasticityCapabilities()) {
+                        for (ElasticityCapabilityInformation capability : actionEffect.getTargetedEntity().getElasticityCapabilities()) {
                             if (capability.getName().toLowerCase().contains(actionName)) {
                                 if (capability.getName().toLowerCase().contains(".")) {
                                     targets.add(capability.getName().split("\\.")[0].toLowerCase());
@@ -366,7 +366,7 @@ public class ActionPlanEnforcement {
             ActionEffect actionEffect, DependencyGraph dependencyGraph) {
 
         String actionName = actionEffect.getActionType().toLowerCase();
-        for (ElasticityCapability elasticityCapability : actionEffect
+        for (ElasticityCapabilityInformation elasticityCapability : actionEffect
                 .getTargetedEntity().getElasticityCapabilities()) {
             if (elasticityCapability.getName().equalsIgnoreCase(actionName)) {
                 //	if (!elasticityCapability.getName().toLowerCase().contains("scalein") || (elasticityCapability.getName().toLowerCase().contains("scalein")&& actionEffect.getTargetedEntity().getAllRelatedNodesOfType(RelationshipType.HOSTED_ON_RELATIONSHIP, NodeType.VIRTUAL_MACHINE).size()>1)){
@@ -581,7 +581,7 @@ public class ActionPlanEnforcement {
         }
 
         if (target.equalsIgnoreCase("")) {
-            for (ElasticityCapability capability : node
+            for (ElasticityCapabilityInformation capability : node
                     .getElasticityCapabilities()) {
                 if (capability.getName().toLowerCase().contains(actionName)) {
                     if (capability.getName().toLowerCase().contains(".")) {
@@ -796,7 +796,7 @@ public class ActionPlanEnforcement {
         }
     }
 
-    public void enforceElasticityCapability(DependencyGraph dependencyGraph, ElasticityCapability ec) {
+    public void enforceElasticityCapability(DependencyGraph dependencyGraph, ElasticityCapabilityInformation ec) {
         String target = "";
         String actionName = ec.getName();
         if (actionName.contains(".")) {
@@ -879,7 +879,7 @@ public class ActionPlanEnforcement {
             actionName = actionName.split("\\.")[1];
         }
         if (target.equalsIgnoreCase("")) {
-            for (ElasticityCapability capability : actionEffect
+            for (ElasticityCapabilityInformation capability : actionEffect
                     .getTargetedEntity().getElasticityCapabilities()) {
                 if (capability.getName().toLowerCase().contains(actionName)) {
                     if (capability.getName().toLowerCase().contains(".")) {

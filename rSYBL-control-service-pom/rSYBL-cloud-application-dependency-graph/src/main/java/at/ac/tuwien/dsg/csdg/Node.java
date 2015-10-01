@@ -30,7 +30,7 @@ import java.util.Map.Entry;
 import java.util.Set;
 
 import at.ac.tuwien.dsg.csdg.Relationship.RelationshipType;
-import at.ac.tuwien.dsg.csdg.elasticityInformation.ElasticityCapability;
+import at.ac.tuwien.dsg.csdg.elasticityInformation.ElasticityCapabilityInformation;
 import at.ac.tuwien.dsg.csdg.elasticityInformation.ElasticityMetric;
 import at.ac.tuwien.dsg.csdg.elasticityInformation.ElasticityRequirement;
 import at.ac.tuwien.dsg.csdg.utils.DependencyGraphLogger;
@@ -38,7 +38,7 @@ import at.ac.tuwien.dsg.csdg.utils.DependencyGraphLogger;
 public class Node implements Serializable {
 
     private ArrayList<ElasticityRequirement> elasticityRequirements = new ArrayList<ElasticityRequirement>();
-    private ArrayList<ElasticityCapability> elasticityCapabilities = new ArrayList<ElasticityCapability>();
+    private ArrayList<ElasticityCapabilityInformation> elasticityCapabilities = new ArrayList<ElasticityCapabilityInformation>();
     private ArrayList<ElasticityMetric> elasticityMetrics = new ArrayList<ElasticityMetric>();
     private HashMap<Node, Relationship> relatedNodes = new HashMap<Node, Relationship>(); // KEEP THESE TWO SYNCHRONIZED
     private HashMap<RelationshipType, ArrayList<Node>> relationships = new HashMap<RelationshipType, ArrayList<Node>>(); // KEEP THESE TWO SYNCHRONIZED
@@ -59,11 +59,11 @@ public class Node implements Serializable {
         this.elasticityRequirements = elasticityRequirements;
     }
 
-    public ArrayList<ElasticityCapability> getElasticityCapabilities() {
+    public ArrayList<ElasticityCapabilityInformation> getElasticityCapabilities() {
         return elasticityCapabilities;
     }
 
-    public void setElasticityCapabilities(ArrayList<ElasticityCapability> elasticityCapabilities) {
+    public void setElasticityCapabilities(ArrayList<ElasticityCapabilityInformation> elasticityCapabilities) {
         this.elasticityCapabilities = elasticityCapabilities;
     }
 
@@ -71,7 +71,7 @@ public class Node implements Serializable {
         elasticityRequirements.add(elasticityRequirement);
     }
 
-    public void addElasticityCapability(ElasticityCapability elasticityCapability) {
+    public void addElasticityCapability(ElasticityCapabilityInformation elasticityCapability) {
         elasticityCapabilities.add(elasticityCapability);
     }
 
@@ -238,9 +238,9 @@ public class Node implements Serializable {
             return null;
         }
     }
-    public List<ElasticityCapability> getElasticityCapabilitiesByKeyword(String keyword){
-        ArrayList<ElasticityCapability> capabilities = new ArrayList<ElasticityCapability>();
-        for (ElasticityCapability elasticityCapability:elasticityCapabilities){
+    public List<ElasticityCapabilityInformation> getElasticityCapabilitiesByKeyword(String keyword){
+        ArrayList<ElasticityCapabilityInformation> capabilities = new ArrayList<ElasticityCapabilityInformation>();
+        for (ElasticityCapabilityInformation elasticityCapability:elasticityCapabilities){
             if (elasticityCapability.getName().toLowerCase().contains(keyword.toLowerCase()))
                 capabilities.add(elasticityCapability);
         }

@@ -36,7 +36,7 @@ import java.util.logging.Logger;
 
 import at.ac.tuwien.dsg.csdg.Node;
 import at.ac.tuwien.dsg.csdg.Relationship.RelationshipType;
-import at.ac.tuwien.dsg.csdg.elasticityInformation.ElasticityCapability;
+import at.ac.tuwien.dsg.csdg.elasticityInformation.ElasticityCapabilityInformation;
 import at.ac.tuwien.dsg.csdg.elasticityInformation.ElasticityRequirement;
 import at.ac.tuwien.dsg.csdg.outputProcessing.eventsNotification.CustomEvent;
 import at.ac.tuwien.dsg.csdg.outputProcessing.eventsNotification.EventNotification;
@@ -794,7 +794,7 @@ public class EnforcementAPI {
 
     // TODO depending on the protocol specified and the parameters, call the
     // capability = default parameter - Service Part ID
-    public boolean enforceElasticityCapability(ElasticityCapability capability,
+    public boolean enforceElasticityCapability(ElasticityCapabilityInformation capability,
             Node e) {
         boolean res = false;
         if (e != null) {

@@ -23,7 +23,7 @@ package at.ac.tuwien.dsg.csdg.outputProcessing;
 
 import at.ac.tuwien.dsg.csdg.Node;
 import at.ac.tuwien.dsg.csdg.Relationship;
-import at.ac.tuwien.dsg.csdg.elasticityInformation.ElasticityCapability;
+import at.ac.tuwien.dsg.csdg.elasticityInformation.ElasticityCapabilityInformation;
 import at.ac.tuwien.dsg.csdg.elasticityInformation.ElasticityRequirement;
 import at.ac.tuwien.dsg.csdg.elasticityInformation.elasticityRequirements.SYBLElasticityRequirementsDescription;
 import at.ac.tuwien.dsg.csdg.elasticityInformation.elasticityRequirements.SYBLSpecification;
@@ -140,7 +140,7 @@ public class OutputProcessing implements OutputProcessingInterface {
         return res;
     }
     @Override
-    public void saveActionPlan(HashMap<Node,ElasticityCapability> actionPlan) {
+    public void saveActionPlan(HashMap<Node,ElasticityCapabilityInformation> actionPlan) {
        	try {
 				  Date date = new Date();
 			 if (Configuration.getFileForStoringActionPlans()!=null && !Configuration.getFileForStoringActionPlans().equalsIgnoreCase(""))
@@ -151,7 +151,7 @@ public class OutputProcessing implements OutputProcessingInterface {
 					 * monitoring sequence
 					 */
 				  String toWrite = date.toString()+",";
-				  for (Entry<Node,ElasticityCapability> entry:actionPlan.entrySet())
+				  for (Entry<Node,ElasticityCapabilityInformation> entry:actionPlan.entrySet())
 					try {
 						toWrite+=entry.getKey().getId()+":"+entry.getValue().getName();
 					} catch (Exception e) {

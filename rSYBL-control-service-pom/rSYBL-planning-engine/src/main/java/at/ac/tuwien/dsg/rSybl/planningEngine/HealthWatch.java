@@ -7,7 +7,7 @@ package at.ac.tuwien.dsg.rSybl.planningEngine;
 import at.ac.tuwien.dsg.csdg.DependencyGraph;
 import at.ac.tuwien.dsg.csdg.Node;
 import at.ac.tuwien.dsg.csdg.Relationship;
-import at.ac.tuwien.dsg.csdg.elasticityInformation.ElasticityCapability;
+import at.ac.tuwien.dsg.csdg.elasticityInformation.ElasticityCapabilityInformation;
 import at.ac.tuwien.dsg.rSybl.cloudInteractionUnit.api.EnforcementAPI;
 import at.ac.tuwien.dsg.rSybl.cloudInteractionUnit.api.EnforcementAPIInterface;
 import at.ac.tuwien.dsg.rSybl.cloudInteractionUnit.api.MultipleEnforcementAPIs;
@@ -38,8 +38,8 @@ public class HealthWatch {
     
     public void restartNode(Node nodeToRestart, Node servicePartToFix) {
 
-        List<ElasticityCapability> caps = nodeToRestart.getElasticityCapabilitiesByKeyword("restart");
-        for (ElasticityCapability capability : caps) {
+        List<ElasticityCapabilityInformation> caps = nodeToRestart.getElasticityCapabilitiesByKeyword("restart");
+        for (ElasticityCapabilityInformation capability : caps) {
             if (!monitoringAPI.checkHealthy(servicePartToFix)) {
                 actionPlanEnforcement.enforceElasticityCapabilityFromNode(capability, nodeToRestart, dependencyGraph);
             }

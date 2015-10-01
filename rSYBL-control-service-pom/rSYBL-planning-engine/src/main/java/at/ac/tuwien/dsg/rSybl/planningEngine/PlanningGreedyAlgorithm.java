@@ -30,7 +30,7 @@ import at.ac.tuwien.dsg.csdg.Node;
 import at.ac.tuwien.dsg.csdg.Node.NodeType;
 import at.ac.tuwien.dsg.csdg.Relationship;
 import at.ac.tuwien.dsg.csdg.Relationship.RelationshipType;
-import at.ac.tuwien.dsg.csdg.elasticityInformation.ElasticityCapability;
+import at.ac.tuwien.dsg.csdg.elasticityInformation.ElasticityCapabilityInformation;
 import at.ac.tuwien.dsg.csdg.elasticityInformation.ElasticityRequirement;
 import at.ac.tuwien.dsg.csdg.elasticityInformation.elasticityRequirements.Condition;
 import at.ac.tuwien.dsg.csdg.elasticityInformation.elasticityRequirements.SYBLSpecification;
@@ -265,7 +265,7 @@ public class PlanningGreedyAlgorithm implements PlanningAlgorithmInterface {
 
             for (ActionEffect effect : defaultEffects.values()) {
                 boolean checkIfAvailable = false;
-                for (ElasticityCapability capability : dependencyGraph.getNodeWithID(target).getElasticityCapabilities()) {
+                for (ElasticityCapabilityInformation capability : dependencyGraph.getNodeWithID(target).getElasticityCapabilities()) {
                     if (capability.getPrimitiveOperations().contains(effect.getActionName())) {
                         checkIfAvailable = true;
 
@@ -329,7 +329,7 @@ public class PlanningGreedyAlgorithm implements PlanningAlgorithmInterface {
             HashMap<Integer, List<Pair<ActionEffect, String>>> fixedDirectives = new HashMap<Integer, List<Pair<ActionEffect, String>>>();
             HashMap<Integer, List<Pair<ActionEffect, String>>> fixedStrategies = new HashMap<Integer, List<Pair<ActionEffect, String>>>();
             // PlanningLogger.logger.info("~~~~~~~~~~~Number of actions possible: "+actionEffects.values().size());
-            for (ElasticityCapability elasticityCapability : dependencyGraph.getAllElasticityCapabilities()) {
+            for (ElasticityCapabilityInformation elasticityCapability : dependencyGraph.getAllElasticityCapabilities()) {
                 String servicePartID = elasticityCapability.getServicePartID();
 
                 for (ActionEffect actionEffect : actionEffects.values()) {

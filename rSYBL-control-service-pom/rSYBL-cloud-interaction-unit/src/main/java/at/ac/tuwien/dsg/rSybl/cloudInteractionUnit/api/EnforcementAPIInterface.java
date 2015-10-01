@@ -24,7 +24,7 @@ package at.ac.tuwien.dsg.rSybl.cloudInteractionUnit.api;
 import java.util.ArrayList;
 
 import at.ac.tuwien.dsg.csdg.Node;
-import at.ac.tuwien.dsg.csdg.elasticityInformation.ElasticityCapability;
+import at.ac.tuwien.dsg.csdg.elasticityInformation.ElasticityCapabilityInformation;
 import at.ac.tuwien.dsg.csdg.elasticityInformation.ElasticityRequirement;
 import at.ac.tuwien.dsg.rSybl.dataProcessingUnit.api.MonitoringAPIInterface;
 import java.util.List;
@@ -47,7 +47,7 @@ public interface EnforcementAPIInterface {
  public boolean scaleout(Node arg0,double violationDegree);
     public boolean enforceAction(String actionName, Node e);
 public boolean enforceAction(String actionName, Node e,double violationDegree);
-    public boolean enforceElasticityCapability(ElasticityCapability capability, Node e);
+    public boolean enforceElasticityCapability(ElasticityCapabilityInformation capability, Node e);
 
     public boolean scalein(String target, Node arg0);
     public boolean scalein(String target, Node arg0, double violationDegree);
@@ -56,7 +56,7 @@ public boolean enforceAction(String actionName, Node e,double violationDegree);
     public boolean enforceAction(String target, String actionName, Node e);
     public boolean enforceAction(String target, String actionName, Node e,double violationDegree);
 
-    public boolean enforceElasticityCapability(String target, ElasticityCapability capability, Node e);
+    public boolean enforceElasticityCapability(String target, ElasticityCapabilityInformation capability, Node e);
 
     public boolean enforceAction(String target, String actionName, Node node, Object[] parameters);
         public boolean enforceAction( String actionName, Node node, Object[] parameters);

@@ -6,7 +6,7 @@ package at.ac.tuwien.dsg.rSybl.learningEngine.advise;
 
 import at.ac.tuwien.dsg.csdg.DependencyGraph;
 import at.ac.tuwien.dsg.csdg.Node;
-import at.ac.tuwien.dsg.csdg.elasticityInformation.ElasticityCapability;
+import at.ac.tuwien.dsg.csdg.elasticityInformation.ElasticityCapabilityInformation;
 import at.ac.tuwien.dsg.rSybl.dataProcessingUnit.api.MonitoringAPIInterface;
 import at.ac.tuwien.dsg.rSybl.dataProcessingUnit.api.model.MonitoringSnapshot;
 import at.ac.tuwien.dsg.rSybl.dataProcessingUnit.api.model.ServicePartMonitor;
@@ -33,7 +33,7 @@ import org.ejml.simple.SimpleMatrix;
  */
 public class ECPBehavioralModel {
 
-    private ElasticityCapability capability = new ElasticityCapability();
+    private ElasticityCapabilityInformation capability = new ElasticityCapabilityInformation();
     private LinkedHashMap<String, NodeBehavior> nodeBehaviors = new LinkedHashMap<>();
     private MonitoringAPIInterface monitoringAPIInterface;
     private DependencyGraph dependencyGraph;
@@ -537,14 +537,14 @@ public class ECPBehavioralModel {
     /**
      * @return the capability
      */
-    public ElasticityCapability getCapability() {
+    public ElasticityCapabilityInformation getCapability() {
         return capability;
     }
 
     /**
      * @param capability the capability to set
      */
-    public void setCapability(ElasticityCapability capability) {
+    public void setCapability(ElasticityCapabilityInformation capability) {
         this.capability = capability;
     }
 

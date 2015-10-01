@@ -22,7 +22,7 @@
 package at.ac.tuwien.dsg.csdg.outputProcessing;
 
 import at.ac.tuwien.dsg.csdg.Node;
-import at.ac.tuwien.dsg.csdg.elasticityInformation.ElasticityCapability;
+import at.ac.tuwien.dsg.csdg.elasticityInformation.ElasticityCapabilityInformation;
 import java.util.HashMap;
 
 /**
@@ -30,5 +30,5 @@ import java.util.HashMap;
  * @author Georgiana
  */
 public interface OutputProcessingInterface {
-    public void saveActionPlan(HashMap<Node,ElasticityCapability> actionplan);
+    public void saveActionPlan(HashMap<Node,ElasticityCapabilityInformation> actionplan);
 }
