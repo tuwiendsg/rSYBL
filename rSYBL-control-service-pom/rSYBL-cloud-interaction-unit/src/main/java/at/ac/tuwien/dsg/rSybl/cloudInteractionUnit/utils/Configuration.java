@@ -81,7 +81,9 @@ public class Configuration {
     public static String getClusterUUID() {
         return configuration.getProperty("ClusterUUID");
     }
-
+public static boolean resourceLevelControlEnabled(){
+    return Boolean.parseBoolean(configuration.getProperty("ResourceLevelControlEnabled"));
+}
     public static String getNetworkUUID() {
         return configuration.getProperty("NetworkUUID");
     }
