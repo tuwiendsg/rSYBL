@@ -6,7 +6,7 @@ package at.ac.tuwien.dsg.rSybl.learningEngine.advise;
 
 import at.ac.tuwien.dsg.csdg.DependencyGraph;
 import at.ac.tuwien.dsg.csdg.Node;
-import at.ac.tuwien.dsg.csdg.elasticityInformation.ElasticityCapability;
+import at.ac.tuwien.dsg.csdg.elasticityInformation.ElasticityCapabilityInformation;
 import at.ac.tuwien.dsg.rSybl.dataProcessingUnit.api.MonitoringAPIInterface;
 import at.ac.tuwien.dsg.rSybl.dataProcessingUnit.api.model.MonitoringSnapshot;
 import at.ac.tuwien.dsg.rSybl.dataProcessingUnit.api.model.ServicePartMonitor;
@@ -68,7 +68,7 @@ public class ComputeBehavior {
                 if (!behaviors.containsKey(node.getId())) {
                     behaviors.put(node.getId(), new HashMap<String, ECPBehavioralModel>());
                 }
-                for (ElasticityCapability capability : node.getElasticityCapabilities()) {
+                for (ElasticityCapabilityInformation capability : node.getElasticityCapabilities()) {
                     ECPBehavioralModel behavioralModel = new ECPBehavioralModel(cloudService, monitoringInterface);
                     behavioralModel.setCapability(capability);
                     
@@ -81,7 +81,7 @@ public class ComputeBehavior {
                 if (!behaviors.containsKey(node.getId())) {
                     behaviors.put(node.getId(), new HashMap<String, ECPBehavioralModel>());
                 }
-                for (ElasticityCapability capability : node.getElasticityCapabilities()) {
+                for (ElasticityCapabilityInformation capability : node.getElasticityCapabilities()) {
                     behaviors.get(node.getId()).put(capability.getName(), new ECPBehavioralModel(cloudService, monitoringInterface));
                 }
             }
@@ -90,14 +90,14 @@ public class ComputeBehavior {
             if (!behaviors.containsKey(cloudService.getId())) {
                 behaviors.put(cloudService.getId(), new HashMap<String, ECPBehavioralModel>());
             }
-            for (ElasticityCapability capability : cloudService.getElasticityCapabilities()) {
+            for (ElasticityCapabilityInformation capability : cloudService.getElasticityCapabilities()) {
                 behaviors.get(cloudService.getId()).put(capability.getName(), new ECPBehavioralModel(cloudService, monitoringInterface));
             }
         }
          for (String node : behaviors.keySet()) {
                 for (String ec : behaviors.get(node).keySet()) {
                     ECPBehavioralModel behavioralModel = behaviors.get(node).get(ec);
-                    for (ElasticityCapability capability : dependencyGraph.getNodeWithID(node).getElasticityCapabilities()) {
+                    for (ElasticityCapabilityInformation capability : dependencyGraph.getNodeWithID(node).getElasticityCapabilities()) {
                         if (capability.getName().equalsIgnoreCase(ec)) {
                             behavioralModel.setCapability(capability);
                             break;
@@ -138,10 +138,10 @@ public class ComputeBehavior {
     }
 
 
-    public ECPBehavioralModel getBehaviorModel(ElasticityCapability capability, Node node) {
+    public ECPBehavioralModel getBehaviorModel(ElasticityCapabilityInformation capability, Node node) {
         return behaviors.get(node.getId()).get(capability.getName());
     }
-    public double avgActionTime(ElasticityCapability capability, Node node){
+    public double avgActionTime(ElasticityCapabilityInformation capability, Node node){
         if (behaviors!=null && behaviors.size()>0 && behaviors.containsKey(node.getId()) && behaviors.get(node.getId()).containsKey(capability.getName())) {
             return behaviors.get(node.getId()).get(capability.getName()).avgActionTime();
         }
@@ -149,10 +149,10 @@ public class ComputeBehavior {
             return -1;
         }
     }
-     public double stdDevActionTime(ElasticityCapability capability, Node node){
+     public double stdDevActionTime(ElasticityCapabilityInformation capability, Node node){
         return behaviors.get(node.getId()).entrySet().iterator().next().getValue().stdDeviationActionTime();
     }
-    public LinkedHashMap<String, LinkedHashMap<String, MyEntry<Double, NDimensionalPoint>>> computeExpectedBehavior(ElasticityCapability capability, List<MonitoringSnapshot> snapshots) {
+    public LinkedHashMap<String, LinkedHashMap<String, MyEntry<Double, NDimensionalPoint>>> computeExpectedBehavior(ElasticityCapabilityInformation capability, List<MonitoringSnapshot> snapshots) {
         LinkedHashMap<String, LinkedHashMap<String, NDimensionalPoint>> currentBehavior = new LinkedHashMap<>();
         
         while (snapshots.isEmpty()){

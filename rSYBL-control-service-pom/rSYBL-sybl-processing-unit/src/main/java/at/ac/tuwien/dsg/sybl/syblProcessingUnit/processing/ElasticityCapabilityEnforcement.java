@@ -9,7 +9,7 @@ import at.ac.tuwien.dsg.csdg.DependencyGraph;
 import at.ac.tuwien.dsg.csdg.Node;
 import at.ac.tuwien.dsg.csdg.Node.NodeType;
 import at.ac.tuwien.dsg.csdg.Relationship.RelationshipType;
-import at.ac.tuwien.dsg.csdg.elasticityInformation.ElasticityCapability;
+import at.ac.tuwien.dsg.csdg.elasticityInformation.ElasticityCapabilityInformation;
 import at.ac.tuwien.dsg.csdg.elasticityInformation.elasticityRequirements.Constraint;
 import at.ac.tuwien.dsg.csdg.elasticityInformation.elasticityRequirements.Strategy;
 import at.ac.tuwien.dsg.csdg.inputProcessing.multiLevelModel.InputProcessing;
@@ -41,7 +41,7 @@ public class ElasticityCapabilityEnforcement {
         }
     }
 
-    public boolean checkECPossible(ElasticityCapability ec) {
+    public boolean checkECPossible(ElasticityCapabilityInformation ec) {
         List<String> execTargets = enforcementAPI.getPluginsExecutingActions();
         for (String target : getTargetsOfPrimitives(ec)) {
             if (execTargets.contains(target)) {
@@ -51,7 +51,7 @@ public class ElasticityCapabilityEnforcement {
         return true;
     }
 
-    public List<String> getTargetsOfPrimitives(ElasticityCapability elasticityCapability) {
+    public List<String> getTargetsOfPrimitives(ElasticityCapabilityInformation elasticityCapability) {
         List<String> targets = new ArrayList<String>();
         String[] primitives = elasticityCapability
                 .getPrimitiveOperations().split(";");
@@ -78,7 +78,7 @@ public class ElasticityCapabilityEnforcement {
         } else {
             SYBLDirectivesEnforcementLogger.logger.info("Starting enforcing action" + actionName + " on target " + target + ".");
         }
-        for (ElasticityCapability elasticityCapability : target.getElasticityCapabilities()) {
+        for (ElasticityCapabilityInformation elasticityCapability : target.getElasticityCapabilities()) {
             if (elasticityCapability.getName().trim().equalsIgnoreCase(actionName.trim()) && checkECPossible(elasticityCapability)) {
                 if (!elasticityCapability.getName().toLowerCase().contains("scalein") || (elasticityCapability.getName().toLowerCase().contains("scalein") && target.getAllRelatedNodesOfType(RelationshipType.HOSTED_ON_RELATIONSHIP, NodeType.VIRTUAL_MACHINE).size() > 1)) {
                     ActionPlanEvent actionPlanEvent = new ActionPlanEvent();
@@ -319,7 +319,7 @@ public class ElasticityCapabilityEnforcement {
             actionName = actionName.split("\\.")[1];
         }
         if (target.equalsIgnoreCase("")) {
-            for (ElasticityCapability capability : node
+            for (ElasticityCapabilityInformation capability : node
                     .getElasticityCapabilities()) {
                 if (capability.getName().toLowerCase().contains(actionName)) {
                     if (capability.getName().toLowerCase().contains(".")) {

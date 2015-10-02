@@ -73,9 +73,9 @@ public class MELA_API3 implements MonitoringInterface {
 
     private boolean existsStructureData = false;
     private boolean serviceSet = false;
-    private static final String REST_API_URL = Configuration.getMonitoringServiceURL();
+//    private static final String REST_API_URL = Configuration.getMonitoringServiceURL();
 //    private static final String REST_API_URL = "http://109.231.121.88:8080/MELA-DataService/REST_WS";
-    //private static final String REST_API_URL = "http://localhost:8080/MELA-AnalysisService-0.1-SNAPSHOT/REST_WS";
+    private static final String REST_API_URL = "http://localhost:8480/MELA/REST_WS";
     // private static final String REST_API_URL="http://localhost:8080/MELA-AnalysisService-1.0/REST_WS";
     private static final int MONITORING_DATA_REFRESH_INTERVAL = 10; //in seconds
     private MonitoredElementMonitoringSnapshot latestMonitoringData;

@@ -6,7 +6,7 @@ package at.ac.tuwien.dsg.rSybl.planningEngine.adviseEffects;
 
 import at.ac.tuwien.dsg.csdg.DependencyGraph;
 import at.ac.tuwien.dsg.csdg.Node;
-import at.ac.tuwien.dsg.csdg.elasticityInformation.ElasticityCapability;
+import at.ac.tuwien.dsg.csdg.elasticityInformation.ElasticityCapabilityInformation;
 import at.ac.tuwien.dsg.csdg.outputProcessing.eventsNotification.EventNotification;
 import at.ac.tuwien.dsg.rSybl.cloudInteractionUnit.api.EnforcementAPIInterface;
 import at.ac.tuwien.dsg.rSybl.dataProcessingUnit.api.MonitoringAPIInterface;
@@ -47,8 +47,8 @@ public class PlanningGreedyWithADVISE implements PlanningAlgorithmInterface {
     private MonitoringAPIInterface monitoringInterface;
     private LinkedHashMap<String, LinkedHashMap<String, LinkedList<Double>>> measurements = new LinkedHashMap<String, LinkedHashMap<String, LinkedList<Double>>>();
     private int POLYNOMIAL_EQUATION_DEGREE = 3;
-    private LinkedHashMap<ElasticityCapability, Double> expectedOverallEffect = new LinkedHashMap<>();
-    private LinkedHashMap<ElasticityCapability, Double> expectedFinalEffect = new LinkedHashMap<>();
+    private LinkedHashMap<ElasticityCapabilityInformation, Double> expectedOverallEffect = new LinkedHashMap<>();
+    private LinkedHashMap<ElasticityCapabilityInformation, Double> expectedFinalEffect = new LinkedHashMap<>();
     private double noActionOverallViolatedConstraints = 0;
     private double noActionFinalViolatedConstraints = 0;
     private int MINUTES_TO_WAIT_AFTER_ABNORMAL_DISTANCE = 5;
@@ -76,7 +76,7 @@ public class PlanningGreedyWithADVISE implements PlanningAlgorithmInterface {
         behavior = new ComputeBehavior(cloudService, monitoringInterface);
 
     }
-    public ElasticityCapability findCapabilityToEnforce() {
+    public ElasticityCapabilityInformation findCapabilityToEnforce() {
         DependencyGraph dependencyGraph = new DependencyGraph();
         dependencyGraph.setCloudService(cloudService);
         boolean sufficientInfo = true;
@@ -87,17 +87,17 @@ public class PlanningGreedyWithADVISE implements PlanningAlgorithmInterface {
         }
         constraintsViolatedWithout /= withoutEnforcing.size() * 1.0;
         if (constraintsViolatedWithout > 0) {
-            ElasticityCapability elasticityCapability = null;
+            ElasticityCapabilityInformation elasticityCapability = null;
             double minViolatedConstraints = 100000000.0;
             double minViolatedFinalConstraints = 100000000.0;
-            ElasticityCapability overallEc = null;
-            ElasticityCapability finalEc = null;
+            ElasticityCapabilityInformation overallEc = null;
+            ElasticityCapabilityInformation finalEc = null;
             List<MonitoringSnapshot> snapshots = monitoringInterface.getAllMonitoringInformationOnPeriod(ECPBehavioralModel.CHANGE_INTERVAL);
             String justification="";
 //                       double diff1 =0 ;
 //                double diff2 = 0;
            boolean foundNotPredictable=false;
-            for (ElasticityCapability ec : dependencyGraph.getAllElasticityCapabilities()) {
+            for (ElasticityCapabilityInformation ec : dependencyGraph.getAllElasticityCapabilities()) {
 
                 ECEnforcementEffect ecEnforcementEffect = new ECEnforcementEffect(behavior, cloudService, monitoringInterface, ec,snapshots);
                 expectedOverallEffect.put(ec, ecEnforcementEffect.overallViolatedConstraints());
@@ -143,14 +143,14 @@ public class PlanningGreedyWithADVISE implements PlanningAlgorithmInterface {
 //                    return elasticityCapability;
 //                }
             } }else {
-                LinkedHashMap<ElasticityCapability, Double> strategies = new LinkedHashMap<ElasticityCapability, Double>();
+                LinkedHashMap<ElasticityCapabilityInformation, Double> strategies = new LinkedHashMap<ElasticityCapabilityInformation, Double>();
                 double maxImprovedStrategies = 0;
-                ElasticityCapability forStrategiesEC = null;
+                ElasticityCapabilityInformation forStrategiesEC = null;
                 boolean foundNotPredictable = false;
                             List<MonitoringSnapshot> snapshots = monitoringInterface.getAllMonitoringInformationOnPeriod(ECPBehavioralModel.CHANGE_INTERVAL);
             String justification="";
 double diff=-10;
-                for (ElasticityCapability ec : dependencyGraph.getAllElasticityCapabilities()) {
+                for (ElasticityCapabilityInformation ec : dependencyGraph.getAllElasticityCapabilities()) {
                     ECEnforcementEffect eCEnforcementEffect = new ECEnforcementEffect(behavior, cloudService, monitoringInterface, ec,snapshots);
                     if (eCEnforcementEffect.getImprovedStrategies(initialContext)!=ECEnforcementEffect.MAX_CONSTRAINTS && eCEnforcementEffect.getFinalStateViolatedConstraints()!=ECEnforcementEffect.MAX_CONSTRAINTS)
                     strategies.put(ec, eCEnforcementEffect.getImprovedStrategies(initialContext)-eCEnforcementEffect.getFinalStateViolatedConstraints());
@@ -245,7 +245,7 @@ public void writeJustification(String justification, String decision){
             }
         }
 
-        for (ElasticityCapability capability : dependencyGraph.getAllElasticityCapabilities()) {
+        for (ElasticityCapabilityInformation capability : dependencyGraph.getAllElasticityCapabilities()) {
             if (behavior.avgActionTime(capability, dependencyGraph.getNodeWithID(capability.getServicePartID())) > 0) {
                 stdDevSum += behavior.stdDevActionTime(capability, dependencyGraph.getNodeWithID(capability.getServicePartID()));
                 nbActions += 1;
@@ -374,7 +374,7 @@ public void writeJustification(String justification, String decision){
     public void discoverPlan() {
         planning = true;
         initializeContexts();
-        ElasticityCapability capability = findCapabilityToEnforce();
+        ElasticityCapabilityInformation capability = findCapabilityToEnforce();
         if (capability != null) {
             ActionPlanEnforcement actionPlanEnforcement = new ActionPlanEnforcement(enforcementAPI);
             actionPlanEnforcement.enforceElasticityCapability(dependencyGraph, capability);

@@ -9,7 +9,7 @@ import at.ac.tuwien.dsg.csdg.DependencyGraph;
 import at.ac.tuwien.dsg.csdg.LoadElasticityDependency;
 import at.ac.tuwien.dsg.csdg.Node;
 import at.ac.tuwien.dsg.csdg.Relationship;
-import at.ac.tuwien.dsg.csdg.elasticityInformation.ElasticityCapability;
+import at.ac.tuwien.dsg.csdg.elasticityInformation.ElasticityCapabilityInformation;
 import at.ac.tuwien.dsg.csdg.elasticityInformation.ElasticityRequirement;
 import at.ac.tuwien.dsg.csdg.elasticityInformation.elasticityRequirements.BinaryRestriction;
 import at.ac.tuwien.dsg.csdg.elasticityInformation.elasticityRequirements.BinaryRestrictionsConjunction;
@@ -43,7 +43,7 @@ import java.util.logging.Logger;
 public class ECEnforcementEffect {
 
     private LinkedList<ContextRepresentation> withEnforcing = new LinkedList<ContextRepresentation>();
-    private ElasticityCapability capability;
+    private ElasticityCapabilityInformation capability;
     private LinkedHashMap<String, LinkedHashMap<String, LinkedList<Double>>> measurements = new LinkedHashMap<String, LinkedHashMap<String, LinkedList<Double>>>();
     private DependencyGraph dependencyGraph;
     private double ACCEPTABLE_DISTANCE= 400;
@@ -51,7 +51,7 @@ public class ECEnforcementEffect {
     private MonitoringAPIInterface monitoringInterface;
     private Node cloudService;
     private ComputeBehavior behavior;
-    public ECEnforcementEffect(ComputeBehavior behavior, Node cloudService, MonitoringAPIInterface monitoringAPIInterface, ElasticityCapability capability1,List<MonitoringSnapshot> snapshots) {
+    public ECEnforcementEffect(ComputeBehavior behavior, Node cloudService, MonitoringAPIInterface monitoringAPIInterface, ElasticityCapabilityInformation capability1,List<MonitoringSnapshot> snapshots) {
         dependencyGraph = new DependencyGraph();
         dependencyGraph.setCloudService(cloudService);
         monitoringInterface = monitoringAPIInterface;
