@@ -31,6 +31,7 @@ import at.ac.tuwien.dsg.csdg.Node;
 import at.ac.tuwien.dsg.csdg.SimpleRelationship;
 import at.ac.tuwien.dsg.csdg.Node.NodeType;
 import at.ac.tuwien.dsg.csdg.Relationship.RelationshipType;
+import at.ac.tuwien.dsg.csdg.elasticityInformation.elasticityRequirements.Strategy;
 import at.ac.tuwien.dsg.rSybl.cloudInteractionUnit.enforcementPlugins.interfaces.EnforcementInterface;
 import at.ac.tuwien.dsg.rSybl.cloudInteractionUnit.utils.Configuration;
 import at.ac.tuwien.dsg.rSybl.cloudInteractionUnit.utils.RuntimeLogger;
@@ -693,6 +694,11 @@ public class DryRunEnforcementAPI implements EnforcementInterface {
     public boolean enforceAction(Node serviceID, String actionName) {
         System.out.println("Enforcing action "+actionName);
         return true;
+    }
+
+    @Override
+    public void diagonallyScale(Node service, Strategy strategy) {
+        System.out.println("Scalling diagonally ");
     }
 
   

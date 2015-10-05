@@ -29,6 +29,7 @@ import at.ac.tuwien.dsg.csdg.Node;
 import at.ac.tuwien.dsg.csdg.Relationship.RelationshipType;
 import at.ac.tuwien.dsg.csdg.elasticityInformation.ElasticityCapabilityInformation;
 import at.ac.tuwien.dsg.csdg.elasticityInformation.ElasticityRequirement;
+import at.ac.tuwien.dsg.csdg.elasticityInformation.elasticityRequirements.Strategy;
 import at.ac.tuwien.dsg.csdg.outputProcessing.eventsNotification.ActionEvent;
 import at.ac.tuwien.dsg.csdg.outputProcessing.eventsNotification.EventNotification;
 import at.ac.tuwien.dsg.csdg.outputProcessing.eventsNotification.IEvent;
@@ -1038,6 +1039,15 @@ public class MultipleEnforcementAPIs implements EnforcementAPIInterface {
 
         }
         return res;
+    }
+
+    @Override
+    public void diagonallyScale(Node node, Strategy strategy) {
+        for (Entry<String, EnforcementAPI> enforcementAPI : enforcementAPIs.entrySet()) {
+            if (!enforcementAPI.getValue().isExecutingControlAction()) {
+                enforcementAPI.getValue().dynamicallyScale(node,strategy);
+            }
+        }
     }
 
 }

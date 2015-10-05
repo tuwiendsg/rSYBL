@@ -25,6 +25,7 @@ package at.ac.tuwien.dsg.rSybl.cloudInteractionUnit.enforcementPlugins.interface
 import java.util.List;
 
 import at.ac.tuwien.dsg.csdg.Node;
+import at.ac.tuwien.dsg.csdg.elasticityInformation.elasticityRequirements.Strategy;
 import at.ac.tuwien.dsg.rSybl.dataProcessingUnit.api.MonitoringAPIInterface;
 
 public interface EnforcementInterface {
@@ -40,4 +41,5 @@ public void setMonitoringPlugin(MonitoringAPIInterface monitoring);
 public boolean containsElasticityCapability(Node entity, String capability);
 public void undeployService(Node serviceID);
 public boolean enforceAction(Node serviceID, String actionName);
+public void diagonallyScale(Node service, Strategy strategy);
 }

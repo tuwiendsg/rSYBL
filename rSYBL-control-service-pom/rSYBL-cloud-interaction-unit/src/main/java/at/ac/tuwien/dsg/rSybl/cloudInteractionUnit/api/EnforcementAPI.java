@@ -35,9 +35,9 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import at.ac.tuwien.dsg.csdg.Node;
-import at.ac.tuwien.dsg.csdg.Relationship.RelationshipType;
 import at.ac.tuwien.dsg.csdg.elasticityInformation.ElasticityCapabilityInformation;
 import at.ac.tuwien.dsg.csdg.elasticityInformation.ElasticityRequirement;
+import at.ac.tuwien.dsg.csdg.elasticityInformation.elasticityRequirements.Strategy;
 import at.ac.tuwien.dsg.csdg.outputProcessing.eventsNotification.CustomEvent;
 import at.ac.tuwien.dsg.csdg.outputProcessing.eventsNotification.EventNotification;
 import at.ac.tuwien.dsg.csdg.outputProcessing.eventsNotification.IEvent;
@@ -783,8 +783,10 @@ public class EnforcementAPI {
     }
 
     public Node getControlledService() {
-        // TODO Auto-generated method stub
         return offeredCapabilities.getControlledService();
+    }
+     public void dynamicallyScale(Node service, Strategy strategy) {
+         offeredCapabilities.diagonallyScale(service, strategy);
     }
 
     public void submitElasticityRequirements(

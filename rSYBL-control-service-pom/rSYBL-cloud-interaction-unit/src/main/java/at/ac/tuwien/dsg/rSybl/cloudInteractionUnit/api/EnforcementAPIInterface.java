@@ -26,6 +26,7 @@ import java.util.ArrayList;
 import at.ac.tuwien.dsg.csdg.Node;
 import at.ac.tuwien.dsg.csdg.elasticityInformation.ElasticityCapabilityInformation;
 import at.ac.tuwien.dsg.csdg.elasticityInformation.ElasticityRequirement;
+import at.ac.tuwien.dsg.csdg.elasticityInformation.elasticityRequirements.Strategy;
 import at.ac.tuwien.dsg.rSybl.dataProcessingUnit.api.MonitoringAPIInterface;
 import java.util.List;
 
@@ -62,5 +63,6 @@ public boolean enforceAction(String actionName, Node e,double violationDegree);
         public boolean enforceAction( String actionName, Node node, Object[] parameters);
 
     public boolean enforceAction(String target, String actionName, Node node, Object[] parameters,double violationDegree);
+    public void diagonallyScale(Node node, Strategy strategy);
     
 }
