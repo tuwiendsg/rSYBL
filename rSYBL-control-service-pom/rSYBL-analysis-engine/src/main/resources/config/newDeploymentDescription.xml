@@ -10,7 +10,7 @@
 		
 		</DeploymentUnit>
 	<DeploymentUnit serviceUnitID="DataControllerServiceUnit"
-		defaultFlavor="m1.tiny" defaultImage="31eceb21-bf20-479e-a674-fe0e400d184b" >
+		defaultFlavor="m1.tiny" defaultImage="31eceb21-bf20-479e-a674-fe0e400d184b">
 	<AssociatedVM IP="10.99.0.30"/>
 	</DeploymentUnit>
 	<DeploymentUnit serviceUnitID="DataNodeServiceUnit"

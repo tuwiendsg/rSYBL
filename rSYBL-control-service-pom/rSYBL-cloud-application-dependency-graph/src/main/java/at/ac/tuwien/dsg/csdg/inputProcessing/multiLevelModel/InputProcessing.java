@@ -527,7 +527,9 @@ public class InputProcessing {
                 if (deploymentUnit.getDefaultImage() != null) {
                     node.getStaticInformation().put("DefaultImage", deploymentUnit.getDefaultImage());
                 }
-
+                if (deploymentUnit.getContextualization()!=null){
+                    node.getStaticInformation().put("Contextualization", deploymentUnit.getContextualization());
+                }
                 if (deploymentUnit.getArtifacts() != null && deploymentUnit.getArtifacts().size() > 0) {
                     for (Artifact artifact : deploymentUnit.getArtifacts()) {
                         Node artifactNode = new Node();
@@ -544,12 +546,14 @@ public class InputProcessing {
                             containerNode.setId(container.getId());
                             containerNode.getStaticInformation().put("Name", container.getName());
                             containerNode.getStaticInformation().put("Path", container.getPath());
+                           
                             AssociatedVM associatedVM = container.getVm();
                             if (associatedVM != null) {
                                 Node vmNode = new Node();
                                 vmNode.setId(associatedVM.getIp());
                                 vmNode.getStaticInformation().put("UUID", associatedVM.getUuid());
                                 vmNode.getStaticInformation().put("flavor", associatedVM.getFlavor());
+                               
                                 vmNode.setNodeType(NodeType.VIRTUAL_MACHINE);
                                 SimpleRelationship vmRel = new SimpleRelationship();
                                 vmRel.setSourceElement(artifactNode.getId());

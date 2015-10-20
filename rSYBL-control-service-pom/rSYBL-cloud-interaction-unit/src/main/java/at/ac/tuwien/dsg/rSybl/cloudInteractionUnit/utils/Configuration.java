@@ -69,7 +69,16 @@ public class Configuration {
     public static String getVdcUUID() {
         return configuration.getProperty("VdcUUID");
     }
-
+    
+    public static String getGoogleProjectID(){
+        return configuration.getProperty("GoogleProjectID");
+    }
+    public static String getGoogleClientSecretsPath(){
+        return configuration.getProperty("GoogleClientSecrets");
+    }
+     public static String getGoogleZoneName(){
+        return configuration.getProperty("GoogleZoneName");
+    }
     public static String getDefaultProductOfferUUID() {
         return configuration.getProperty("DefaultProductOfferUUID");
     }
@@ -91,6 +100,9 @@ public static boolean resourceLevelControlEnabled(){
     public static String getSSHKey() {
         return configuration.getProperty("SSHKey");
     }
+     public static String getGoogleAccount(){
+         return configuration.getProperty("GoogleAccount");
+     }
 
     public static String getPassword() {
         return configuration.getProperty("Password");

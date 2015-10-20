@@ -39,6 +39,8 @@ public class DeploymentUnit {
  private String defaultFlavor="";
  @XmlAttribute(name = "serviceUnitID")
  private String serviceUnitID="";
+ @XmlAttribute(name="contextualization")
+ private String contextualization="";
    @XmlElement(name="AssociatedVM")
  private List<AssociatedVM> associatedVMs = new ArrayList<AssociatedVM>();
  @XmlElement(name = "Artifact")
@@ -94,5 +96,19 @@ public void addElasticityCapability(ElasticityCapability elasticityCapability){
      */
     public void setAssociatedVMs(List<AssociatedVM> associatedVMs) {
         this.associatedVMs = associatedVMs;
+    }
+
+    /**
+     * @return the contextualization
+     */
+    public String getContextualization() {
+        return contextualization;
+    }
+
+    /**
+     * @param contextualization the contextualization to set
+     */
+    public void setContextualization(String contextualization) {
+        this.contextualization = contextualization;
     }
 }
