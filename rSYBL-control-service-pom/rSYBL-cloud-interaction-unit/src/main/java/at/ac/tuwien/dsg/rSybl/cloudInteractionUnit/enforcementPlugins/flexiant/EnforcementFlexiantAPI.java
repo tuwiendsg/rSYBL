@@ -597,4 +597,5 @@ public class EnforcementFlexiantAPI implements EnforcementInterface {
     public void diagonallyScale(Node service, Strategy strategy) {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
+
 }

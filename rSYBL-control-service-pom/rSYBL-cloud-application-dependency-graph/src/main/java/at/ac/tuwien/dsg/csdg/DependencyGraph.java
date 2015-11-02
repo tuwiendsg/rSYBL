@@ -435,27 +435,41 @@ public class DependencyGraph implements Serializable{
            String reqID= splitReq[0];
            String reqtype=splitReq[1].trim().split(" ")[0];
            if (reqtype.equalsIgnoreCase("constraint")){
-              for(ElasticityRequirement elasticityRequirement: getAllElasticityRequirements()){
-                  if (elasticityRequirement.getAnnotation().getConstraints().split(":")[0].equalsIgnoreCase(reqID)){
-                      ElasticityRequirement newReq=elasticityRequirement;
+              for(ElasticityRequirement elasticityRequirement1: getAllElasticityRequirements()){
+                  String[] reqs = elasticityRequirement1.getAnnotation().getConstraints().split(";");
+                  for (String elasticityRequirement:reqs){
+                      if (elasticityRequirement.charAt(0)==' '){
+                          elasticityRequirement=elasticityRequirement.substring(1,elasticityRequirement.length());
+                      }
+                  if (elasticityRequirement.split(":")[0].equalsIgnoreCase(reqID)){
+                      String replReq=elasticityRequirement1.getAnnotation().getConstraints().replaceFirst(elasticityRequirement, requirement);
+                      elasticityRequirement1.getAnnotation().setConstraints(replReq);
+                      ElasticityRequirement newReq=elasticityRequirement1;
                       newReq.getAnnotation().setConstraints(requirement);
-                      Node n=getNodeWithID(elasticityRequirement.getAnnotation().getEntityID());
-                      n.getElasticityRequirements().remove(elasticityRequirement);
+                      Node n=getNodeWithID(elasticityRequirement1.getAnnotation().getEntityID());
+                      n.getElasticityRequirements().remove(elasticityRequirement1);
                       n.getElasticityRequirements().add(newReq);
                       
+                  }
                   }
               }
            }else
            {
                if (reqtype.equalsIgnoreCase("strategy")){
-                     for(ElasticityRequirement elasticityRequirement: getAllElasticityRequirements()){
-                  if (elasticityRequirement.getAnnotation().getStrategies().split(":")[0].equalsIgnoreCase(reqID)){
-                      ElasticityRequirement newReq=elasticityRequirement;
+                     for(ElasticityRequirement elasticityRequirement1: getAllElasticityRequirements()){
+                          String[] reqs = elasticityRequirement1.getAnnotation().getStrategies().split(";");
+                  for (String elasticityRequirement:reqs){
+                 
+                  if (elasticityRequirement.equalsIgnoreCase(reqID)){
+                      String replReq=elasticityRequirement1.getAnnotation().getStrategies().replaceFirst(elasticityRequirement, requirement);
+                      elasticityRequirement1.getAnnotation().setStrategies(replReq);
+                      ElasticityRequirement newReq=elasticityRequirement1;
                       newReq.getAnnotation().setStrategies(requirement);
-                      Node n=getNodeWithID(elasticityRequirement.getAnnotation().getEntityID());
-                      n.getElasticityRequirements().remove(elasticityRequirement);
+                      Node n=getNodeWithID(elasticityRequirement1.getAnnotation().getEntityID());
+                      n.getElasticityRequirements().remove(elasticityRequirement1);
                       n.getElasticityRequirements().add(newReq);
                       
+                  }
                   }
               }
                }else{
