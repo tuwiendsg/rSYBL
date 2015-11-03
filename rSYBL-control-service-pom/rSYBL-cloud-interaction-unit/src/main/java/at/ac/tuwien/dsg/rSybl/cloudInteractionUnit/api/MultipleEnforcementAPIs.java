@@ -292,6 +292,8 @@ public class MultipleEnforcementAPIs implements EnforcementAPIInterface {
         boolean res = false;
         EnforcementAPI enforcementAPI = (enforcementAPIs.isEmpty()) ? new EnforcementAPI() : enforcementAPIs.values().iterator().next();
         if (!enforcementAPI.isExecutingControlAction() && e != null) {
+                        if (!actionName.toLowerCase().contains("scalein") || (actionName.toLowerCase().contains("scalein") && e.getAllRelatedNodesOfType(RelationshipType.HOSTED_ON_RELATIONSHIP).size() > 1)) {
+
             enforcingAction = true;
             enforcementAPI.setExecutingControlAction(true);
             monitoringAPIInterface.enforcingActionStarted(actionName, e);
@@ -327,6 +329,7 @@ public class MultipleEnforcementAPIs implements EnforcementAPIInterface {
             enforcingAction = false;
 
         }
+        }
         return res;
     }
 
@@ -335,6 +338,8 @@ public class MultipleEnforcementAPIs implements EnforcementAPIInterface {
         boolean res = false;
         EnforcementAPI enforcementAPI = (enforcementAPIs.isEmpty()) ? new EnforcementAPI() : enforcementAPIs.values().iterator().next();
         if (!enforcementAPI.isExecutingControlAction() && e != null) {
+                        if (!actionName.toLowerCase().contains("scalein") || (actionName.toLowerCase().contains("scalein") && e.getAllRelatedNodesOfType(RelationshipType.HOSTED_ON_RELATIONSHIP).size() > 1)) {
+
             enforcingAction = true;
             enforcementAPI.setExecutingControlAction(true);
             monitoringAPIInterface.enforcingActionStarted(actionName, e);
@@ -368,7 +373,7 @@ public class MultipleEnforcementAPIs implements EnforcementAPIInterface {
             }
             enforcementAPI.setExecutingControlAction(false);
             enforcingAction = false;
-
+                        }
         }
         return res;
     }
@@ -380,6 +385,8 @@ public class MultipleEnforcementAPIs implements EnforcementAPIInterface {
                 .next();
         boolean res = false;
         if (!enforcementAPI.isExecutingControlAction() && e != null) {
+                        if (!capability.getName().toLowerCase().contains("scalein") || (capability.getName().toLowerCase().contains("scalein") && e.getAllRelatedNodesOfType(RelationshipType.HOSTED_ON_RELATIONSHIP).size() > 1)) {
+
             enforcingAction = true;
             enforcementAPI.setExecutingControlAction(true);
             monitoringAPIInterface.enforcingActionStarted(capability.getName(),
@@ -415,7 +422,7 @@ public class MultipleEnforcementAPIs implements EnforcementAPIInterface {
             }
             enforcementAPI.setExecutingControlAction(false);
             enforcingAction = false;
-
+                        }
         }
         return res;
     }
@@ -574,6 +581,8 @@ public class MultipleEnforcementAPIs implements EnforcementAPIInterface {
         boolean res = false;
         EnforcementAPI enforcementAPI = enforcementAPIs.get(target);
         if (!enforcementAPI.isExecutingControlAction() && e != null) {
+                        if (!actionName.toLowerCase().contains("scalein") || (actionName.toLowerCase().contains("scalein") && e.getAllRelatedNodesOfType(RelationshipType.HOSTED_ON_RELATIONSHIP).size() > 1)) {
+
             enforcingAction = true;
             enforcementAPI.setExecutingControlAction(true);
 
@@ -607,7 +616,7 @@ public class MultipleEnforcementAPIs implements EnforcementAPIInterface {
             }
             enforcementAPI.setExecutingControlAction(false);
             enforcingAction = false;
-
+                        }
         }
         return res;
     }
@@ -618,6 +627,8 @@ public class MultipleEnforcementAPIs implements EnforcementAPIInterface {
         boolean res = false;
         EnforcementAPI enforcementAPI = enforcementAPIs.get(target);
         if (!enforcementAPI.isExecutingControlAction() && e != null) {
+                        if (!actionName.toLowerCase().contains("scalein") || (actionName.toLowerCase().contains("scalein") && e.getAllRelatedNodesOfType(RelationshipType.HOSTED_ON_RELATIONSHIP).size() > 1)) {
+
             enforcingAction = true;
             enforcementAPI.setExecutingControlAction(true);
             monitoringAPIInterface.enforcingActionStarted(actionName
@@ -653,7 +664,7 @@ public class MultipleEnforcementAPIs implements EnforcementAPIInterface {
             }
             enforcementAPI.setExecutingControlAction(false);
             enforcingAction = false;
-
+                        }
         }
         return res;
     }
@@ -665,6 +676,8 @@ public class MultipleEnforcementAPIs implements EnforcementAPIInterface {
         boolean res = false;
         EnforcementAPI enforcementAPI = enforcementAPIs.get(target);
         if (!enforcementAPI.isExecutingControlAction() && e != null) {
+                        if (!capability.getName().toLowerCase().contains("scalein") || (capability.getName().toLowerCase().contains("scalein") && e.getAllRelatedNodesOfType(RelationshipType.HOSTED_ON_RELATIONSHIP).size() > 1)) {
+
             enforcingAction = true;
             monitoringAPIInterface.enforcingActionStarted(capability.getName()
                     + target, e);
@@ -702,7 +715,7 @@ public class MultipleEnforcementAPIs implements EnforcementAPIInterface {
             }
             enforcementAPI.setExecutingControlAction(false);
             enforcingAction = false;
-
+                        }
         }
         return res;
     }
