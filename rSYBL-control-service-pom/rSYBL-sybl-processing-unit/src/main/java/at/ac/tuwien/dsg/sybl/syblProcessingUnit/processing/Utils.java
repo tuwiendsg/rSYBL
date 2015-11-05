@@ -388,7 +388,7 @@ public void processStrategies(String strategies) {
 
 }
 public void doEnforcementWithPrimitives(String enf, String strategyName, Strategy s){
-    if (!enf.toLowerCase().contains("diagonallyscale")&&!enf.toLowerCase().contains("scalediagonally")){
+//    if (!enf.toLowerCase().contains("diagonallyscale")&&!enf.toLowerCase().contains("scalediagonally")){
 	if (!enf.contains("minimize") &&  !enf.contains("maximize")){
 		if (enf.contains("(")){
 			String actionName = enf.split("[(]")[0];
@@ -407,12 +407,14 @@ public void doEnforcementWithPrimitives(String enf, String strategyName, Strateg
                         
 		}
 		}
-    }else{
-        //TODO
-       ElasticityCapabilityEnforcement capabilityEnforcement = new ElasticityCapabilityEnforcement(enforcementAPI);
-			capabilityEnforcement.scaleDiagonally(currentEntity,s);
-                        
-    }
+//    }
+
+//else{
+//        //TODO
+//       ElasticityCapabilityEnforcement capabilityEnforcement = new ElasticityCapabilityEnforcement(enforcementAPI);
+//			capabilityEnforcement.scaleDiagonally(currentEntity,s);
+//                        
+//    }
 }
 public void processStrategy(Rule r) {
 	if (r.getText().contains("CASE")) {
