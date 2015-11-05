@@ -89,15 +89,16 @@ public class SYBLProcessingThread implements Runnable {
 	@Override
 	public void run() {
 		while (ok){
-			utils.processSyblSpecifications();
-			utils.clearDisabledRules();
-		
-			try {
+                    try {
 				Thread.sleep(REFRESH_TIME);
 			} catch (InterruptedException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
+			utils.processSyblSpecifications();
+			utils.clearDisabledRules();
+		
+			
 			
 		}
 	}
