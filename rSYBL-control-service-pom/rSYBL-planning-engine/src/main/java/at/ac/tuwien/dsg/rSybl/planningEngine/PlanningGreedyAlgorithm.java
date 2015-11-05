@@ -800,7 +800,7 @@ public class PlanningGreedyAlgorithm implements PlanningAlgorithmInterface {
                 public void run() {
                     checkWhetherLearningIsAccurateAndSwitch();
                 }
-            }, 0, REFRESH_PERIOD);
+            }, REFRESH_PERIOD, REFRESH_PERIOD);
         }
 
         run();
