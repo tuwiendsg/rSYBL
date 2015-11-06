@@ -44,6 +44,8 @@ import at.ac.tuwien.dsg.sybl.syblProcessingUnit.languageDescription.SYBLDescript
 import at.ac.tuwien.dsg.sybl.syblProcessingUnit.utils.EnvironmentVariable;
 import at.ac.tuwien.dsg.sybl.syblProcessingUnit.utils.Rule;
 import at.ac.tuwien.dsg.sybl.syblProcessingUnit.utils.SYBLDirectivesEnforcementLogger;
+import java.util.Random;
+import java.util.concurrent.ThreadLocalRandom;
 
 
 public class Utils {
@@ -106,7 +108,7 @@ if (notifications!=null && !notifications.equalsIgnoreCase("")) {
 
 		if (!strategies.equals("")) {
 			//SYBLDirectivesEnforcementLogger.logger.info("=============================================");
-			SYBLDirectivesEnforcementLogger.logger.info("Strategies are: " + strategies);
+                        SYBLDirectivesEnforcementLogger.logger.info("Strategies are: " + strategies);
 			processStrategies(strategies);
 		}
 		if (!priorities.equalsIgnoreCase("")) {
@@ -129,22 +131,36 @@ if (notifications!=null && !notifications.equalsIgnoreCase("")) {
 				r.setText(s[1]);
 				rules.add(r);
 			}
-			if (!strategies.equals(""))
-			for (String m : strategies.split(";")) {
+			if (!strategies.equals("")){
+                            String[] str = strategies.split(";");
+                            shuffleArray(str);
+			for (String m : str) {
 				String[] s = m.split(":");
 				Rule r = new Rule();
 				r.setName(eliminateSpaces(s[0]));
 				r.setText(s[1]);
 				rules.add(r);
 			}
-
+                        }
 			processPriorities(priorities,rules);
 
 		}
 
 
 	}
-        
+        static void shuffleArray(String[] ar)
+  {
+    // If running on Java 6 or older, use `new Random()` on RHS here
+    Random rnd = new Random();
+    for (int i = ar.length - 1; i > 0; i--)
+    {
+      int index = rnd.nextInt(i + 1);
+      // Simple swap
+      String a = ar[index];
+      ar[index] = ar[i];
+      ar[i] = a;
+    }
+  }
 // ==========================processing code========================================//
 public void processPriorities(String priorities,ArrayList<Rule> rules)  {
 	String[] s = priorities.split(";");
@@ -372,6 +388,7 @@ public void processMonitoring(String monitoring) {
 public void processStrategies(String strategies) {
 //SYBLDirectivesEnforcementLogger.logger.info("Processing strategies : " +strategies);
 	String[] s = strategies.split(";");
+        shuffleArray(s);
 	for (String c : s) {
 		String[] x = c.split(":");
 		
